@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapper;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -19,10 +19,10 @@ class ValueAssertion
     private final CharSequence testName;
     private final double expectedValue;
     private final Ratio tolerance;
-    private final EqCondition condition;
+    private final RelativeOrder condition;
 
     public ValueAssertion(final CharSequence testName,
-            final EqCondition condition,
+            final RelativeOrder condition,
             final double expectedValue,
             final Ratio tolerance) {
         this.testName = testName;

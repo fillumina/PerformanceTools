@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapper;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -26,10 +26,10 @@ class PercentageAssertion
     private final CharSequence testName;
     private final Ratio expectedRatio;
     private final Ratio tolerance;
-    private final EqCondition condition;
+    private final RelativeOrder condition;
 
     PercentageAssertion(final CharSequence testName,
-            final EqCondition condition,
+            final RelativeOrder condition,
             final Ratio expectedPercentage,
             final Ratio tolerance) {
         this.testName = testName;
@@ -48,8 +48,8 @@ class PercentageAssertion
     public void check(final Assertable assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
-            MeasureRatioCalculator ratios =
-                    new MeasureRatioCalculator(assertable);
+            RatioAgainstBiggerMeasureCalculator ratios =
+                    new RatioAgainstBiggerMeasureCalculator(assertable);
             MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
 
             if (actualRatio == null) {
@@ -65,7 +65,7 @@ class PercentageAssertion
     @Override
     public void appendTo(Appendable appendable, Assertable assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
-        MeasureRatioCalculator ratios = new MeasureRatioCalculator(assertable);
+        RatioAgainstBiggerMeasureCalculator ratios = new RatioAgainstBiggerMeasureCalculator(assertable);
         MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
         if (actualRatio != null) {
             new AppendableWrapper(appendable)

@@ -1,60 +1,44 @@
 package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.util.collection.ArrayListMap;
-import com.fillumina.performance.util.collection.UnmodifiableList;
+import com.fillumina.performance.util.collection.AbstractMapListWrapper;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMap<T extends TNamed> extends ArrayListMap<TName, T> {
-
-    private static final Function<TNamed, TName> TNAME_EXTRACTOR =
-            t -> t.getName();
-
-    @SuppressWarnings("unchecked")
-    private static <T extends TNamed> Function<T,TName> getDefaultExtractor() {
-        return (Function<T, TName>) TNAME_EXTRACTOR;
-    }
+public class TNameMap<T extends TNamed>
+        extends AbstractMapListWrapper<TNameMap<T>, TName, T> {
+    private static final long serialVersionUID = 1L;
 
     public TNameMap() {
-        super(getDefaultExtractor());
     }
 
     public TNameMap(int size) {
-        super(getDefaultExtractor(), size);
+        super(size);
     }
 
-    public TNameMap(List<T> list) {
-        super(getDefaultExtractor(), list);
+    public TNameMap(TNameMap<T> copy) {
+        super(copy);
     }
 
-    public TNameMap(Map<TName,T> copy) {
-        super(getDefaultExtractor(), copy.size());
-        copy.forEach((k,v) -> put(k,v));
+    private TNameMap(List<T> list) {
+        super(list);
     }
 
-    protected TNameMap(List<T> list, Void direct) {
-        super(getDefaultExtractor(), list, null);
+    @Override
+    protected TName getKeyFromValue(T value) {
+        return value.getName();
+    }
+
+    @Override
+    protected TNameMap<T> createNew(List<T> list) {
+        return new TNameMap<>(list);
     }
 
     /** Equality is defined in terms of equals string representations. */
-    public T get(CharSequence testName) {
-        String nameStr = testName.toString();
-        return findByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
-    }
-
-    @Override
-    public TNameMap<T> unmodifiable() {
-        return new TNameMap<>(new UnmodifiableList<>(values()), null);
-    }
-
-    @Override
-    public TNameMap<T> add(T... values) {
-        super.add(values);
-        return this;
+    public T get(CharSequence key) {
+        String str = key.toString();
+        return findByKey(t -> t.equals(key) || str.equals(t.toString()));
     }
 }

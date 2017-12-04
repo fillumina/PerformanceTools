@@ -34,13 +34,13 @@ public class StatsHolder extends Printable<StatsHolder>
     private static final String SEPARATOR = " : ";
 
     public static class Builder {
-        private final Stats.Type type;
+        private final StatsType type;
         private final LinkedTree<TName, Stats> tree;
         private final StringGenerator<Stats> generator;
         private LinkedTree<TName, Stats> current;
 
         private Builder(
-                Stats.Type type,
+                StatsType type,
                 TName tname,
                 Stats assertable,
                 StringGenerator<Stats> generator) {
@@ -85,26 +85,26 @@ public class StatsHolder extends Printable<StatsHolder>
         }
     }
 
-    private final Stats.Type statsType;
+    private final StatsType statsType;
     private final LinkedTree<TName, Stats> tree;
     private final StringGenerator<Stats> formatter;
     private Tree<TName, Stats> unmodifiableTree;
     private MixedStatsHolder caller;
 
     /** @return a builder to create a tree statistics */
-    public static Builder builder(Stats.Type type) {
+    public static Builder builder(StatsType type) {
         return builder(type, TN.EMPTY, null, null);
     }
 
     /** @return a builder to create tree statistics */
     public static Builder builder(
-            Stats.Type type, String name) {
+            StatsType type, String name) {
         return builder(type, TN.tname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
     public static Builder builder(
-            Stats.Type type, TName tname) {
+            StatsType type, TName tname) {
         return builder(type, TN.notNull(tname), null, null);
     }
 
@@ -116,7 +116,7 @@ public class StatsHolder extends Printable<StatsHolder>
 
     /** @return a builder to create a tree statistics */
     public static Builder builder(
-            Stats.Type type,
+            StatsType type,
             TName name,
             Stats assertable,
             StringGenerator<Stats> stringGenerator) {
@@ -124,34 +124,34 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     public StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final Stats stats) {
         this(type, null, stats, null);
     }
 
     public StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final TName name,
             final Stats stats) {
         this(type, name, stats, null);
     }
 
     public StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final String name,
             final Stats stats) {
         this(type, TN.tname(name), stats, null);
     }
 
     public StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final TName name,
             final StringGenerator<Stats> formatter) {
         this(type, name, null, formatter);
     }
 
     public StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final TName name,
             final Stats stats,
             final StringGenerator<Stats> formatter) {
@@ -159,7 +159,7 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     private StatsHolder(
-            final Stats.Type type,
+            final StatsType type,
             final LinkedTree<TName,Stats> tree,
             final StringGenerator<Stats> formatter) {
         this.statsType = type;
@@ -185,7 +185,7 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     @Override
-    public Stats.Type getStatsType() {
+    public StatsType getStatsType() {
         return statsType;
     }
 

@@ -4,7 +4,7 @@ package com.fillumina.performance.util;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum EqCondition {
+public enum RelativeOrder {
     EQUALS("equals to", '='),
     LESS("less than", '<'),
     GREATER("greater than", '>');
@@ -12,7 +12,7 @@ public enum EqCondition {
     private final String message;
     private final char symbol;
 
-    EqCondition(String message, char symbol) {
+    RelativeOrder(String message, char symbol) {
         this.message = message;
         this.symbol = symbol;
     }

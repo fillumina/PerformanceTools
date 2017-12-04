@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -20,7 +20,7 @@ public class ValueAssertionErrorTest {
         ValueAssertion assertion =
                 new ValueAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         23,
                         Ratio.percentage(3));
 
@@ -37,10 +37,10 @@ public class ValueAssertionErrorTest {
             assertEquals(12.3, e.getActualValue().getMean(), 1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);
 
-            Map<EqCondition,Ratio> map = e.getWhatIfToleranceMap();
-            assertEquals(87.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
-            assertEquals(87.0, map.get(EqCondition.GREATER).getPercentage(), 0);
-            assertNull(map.get(EqCondition.LESS));
+            Map<RelativeOrder,Ratio> map = e.getWhatIfToleranceMap();
+            assertEquals(87.0, map.get(RelativeOrder.EQUALS).getPercentage(), 0);
+            assertEquals(87.0, map.get(RelativeOrder.GREATER).getPercentage(), 0);
+            assertNull(map.get(RelativeOrder.LESS));
         }
     }
 

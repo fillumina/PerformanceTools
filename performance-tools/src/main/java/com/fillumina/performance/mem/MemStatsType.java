@@ -1,16 +1,17 @@
 package com.fillumina.performance.mem;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public enum MemStatsType implements Stats.Type {
+public enum MemStatsType implements StatsType {
     ALLOCATED("Allocated"),
     USED("Used");
 
-    private String name;
+    String name;
 
     MemStatsType(String value) {
         this.name = value;

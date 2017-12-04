@@ -23,9 +23,9 @@ public class AssertionTest {
         final AssertableMock assertable = new AssertableMock("one");
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        assertion.check(assertable, failedAssertions, unusedAssertion);
+        assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
 
-        assertEquals(0, unusedAssertion.getList().size());
+        assertEquals(0, unusedAssertion.getUnusedAssertionList().size());
 
         assertEquals(1, failedAssertions.size());
         assertEquals(assertion, failedAssertions.get(assertable).get(0));
@@ -38,12 +38,12 @@ public class AssertionTest {
         final AssertableMock assertable = new AssertableMock("one");
         Map<Assertable, List<Assertion>> failedAssertions = new LinkedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        assertion.check(assertable, failedAssertions, unusedAssertion);
+        assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
 
         assertEquals(0, failedAssertions.size());
 
-        assertEquals(1, unusedAssertion.getList().size());
-        assertEquals(assertion, unusedAssertion.getList().get(0));
+        assertEquals(1, unusedAssertion.getUnusedAssertionList().size());
+        assertEquals(assertion, unusedAssertion.getUnusedAssertionList().get(0));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -24,7 +24,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             CharSequence secondTestName,
             Measure second,
             Ratio tolerance,
-            EqCondition requiredCondition,
+            RelativeOrder requiredCondition,
             Assertable assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.firstTestName = firstTestName;
@@ -35,7 +35,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    public boolean isConditionSatisfied(EqCondition condition,
+    public boolean isConditionSatisfied(RelativeOrder condition,
             Ratio tolerance) {
         ConfidenceInterval aci = firstMeasure.getConfidenceInterval(Ratio.P_99);
         double aLower = aci.getLowerBound();
@@ -77,7 +77,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         StringBuilder buf = new StringBuilder();
         buf.append('\'').append(firstTestName)
                 .append("' (").append(firstMeasure).append(") ")
-                .append("expected ").append(getCondition().getMessage())
+                .append("expected ").append(getRelativeOrder().getMessage())
                 .append(' ')
                 .append('\'').append(secondTestName)
                 .append("' (").append(secondMeasure).append(") ")

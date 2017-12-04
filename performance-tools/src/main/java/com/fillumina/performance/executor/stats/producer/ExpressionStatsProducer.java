@@ -5,7 +5,7 @@ import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.ExtendedStats;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.Stats.Type;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.tname.TName;
 import java.util.LinkedHashMap;
@@ -42,7 +42,7 @@ public class ExpressionStatsProducer extends
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
         MixedStatsHolder mixedHolder = getProducer().get();
 
-        mixedHolder.getStatsMap().forEach( (Type type, StatsHolder holder) -> {
+        mixedHolder.getStatsMap().forEach((StatsType type, StatsHolder holder) -> {
             Map<List<TName>,Stats> map = new LinkedHashMap<>();
             holder.getTree().flattenTo(map);
             map.forEach( (List<TName> list, Stats stats) -> {

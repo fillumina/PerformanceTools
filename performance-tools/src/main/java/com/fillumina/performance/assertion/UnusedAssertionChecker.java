@@ -24,7 +24,7 @@ public class UnusedAssertionChecker {
         }
     }
 
-    public List<Assertion> getList() {
+    public List<Assertion> getUnusedAssertionList() {
         if (!checkedMap.isEmpty()) {
             Iterator<Boolean> it = checkedMap.values().iterator();
             while (it.hasNext()) {

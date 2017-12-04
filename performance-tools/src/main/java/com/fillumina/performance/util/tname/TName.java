@@ -29,17 +29,6 @@ public class TName extends AbstractList<String>
         return new TName(null, null);
     }
 
-    public static String toString(String... names) {
-        StringBuilder buf = new StringBuilder();
-        for (String n : names) {
-            if (buf.length() != 0) {
-                buf.append(SEPARATOR);
-            }
-            buf.append(n);
-        }
-        return buf.toString();
-    }
-
     public static TName commonPrefix(Iterable<TName> iterable) {
         Iterator<TName> it = iterable.iterator();
         if (!it.hasNext()) {
@@ -53,7 +42,7 @@ public class TName extends AbstractList<String>
     }
 
     private final TName parent;
-    private final int size;
+    private final int level;
     private final String lastName;
     private final int hashCode;
     private final String fullName;
@@ -62,7 +51,7 @@ public class TName extends AbstractList<String>
     private TName(TName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
-        this.size = parent == null ? 0 : parent.size() + 1;
+        this.level = parent == null ? 0 : parent.size() + 1;
         this.hashCode = innerHashCode(parent, lastName);
         this.fullName = toStringWithSeparator(SEPARATOR);
     }
@@ -86,7 +75,7 @@ public class TName extends AbstractList<String>
 
     @Override
     public int size() {
-        return size;
+        return level;
     }
 
     public boolean hasParent() {
@@ -98,9 +87,9 @@ public class TName extends AbstractList<String>
     }
 
     public List<TName> getItems() {
-        TName[] array = new TName[size];
+        TName[] array = new TName[level];
         TName current = this;
-        for (int index = size - 1; index >= 0; index--) {
+        for (int index = level - 1; index >= 0; index--) {
             array[index] = current;
             current = current.parent;
         }
@@ -109,8 +98,8 @@ public class TName extends AbstractList<String>
 
     @Override
     public String[] toArray() {
-        String[] array = new String[size];
-        int s = size;
+        String[] array = new String[level];
+        int s = level;
         TName current = this;
         while (s > 0) {
             array[--s] = current.lastName;
@@ -181,12 +170,12 @@ public class TName extends AbstractList<String>
     }
 
     /** @return all but last name. */
-    public synchronized String getPrefix() {
+    public synchronized String getPrefixString(String separator) {
         StringBuilder buf = new StringBuilder();
         String[] array = toArray();
         for (int i=0, l=array.length-1; i<l; i++) {
             if (i > 0) {
-                buf.append(SEPARATOR);
+                buf.append(separator);
             }
             buf.append(array[i]);
         }
@@ -224,7 +213,7 @@ public class TName extends AbstractList<String>
     }
 
     public TName commonPrefix(TName other) {
-        int minlen = Math.min(size, other.size);
+        int minlen = Math.min(level, other.level);
         TName prefix = getRoot();
         for (int i=0; i<minlen; i++) {
             String indexedName = get(i);
@@ -238,10 +227,8 @@ public class TName extends AbstractList<String>
     }
 
     private static int innerHashCode(TName parent, String lastName) {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(parent);
-        hash = 59 * hash + Objects.hashCode(lastName);
-        return hash;
+        return (parent != null ? parent.hashCode * (59 * 7) : 0) +
+                lastName != null ? Objects.hashCode(lastName) : 57;
     }
 
     @Override
@@ -290,7 +277,7 @@ public class TName extends AbstractList<String>
 
     @Override
     public String get(int index) {
-        int backIndex = size - index;
+        int backIndex = level - index;
         TName current = this;
         for (int i=1; i<backIndex; i++) {
             current = current.parent;

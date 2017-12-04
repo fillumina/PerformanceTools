@@ -2,8 +2,10 @@ package com.fillumina.performance.util.collection;
 
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -16,11 +18,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ArrayListMapTest extends AbstractMapTest {
+public class AbstractMapListWrapperTest extends AbstractMapTest {
 
     private static class ArrayMapImpl<K,V> implements Map<K,V> {
-        private final ArrayListMap<K,Entry<K,V>> map =
-                new ArrayListMap<>(e -> e.getKey());
+        private final AbstractMapListWrapper<?,K,Entry<K,V>> map =
+                AbstractMapListWrapper.create( e -> e.getKey() );
 
         @Override
         public int size() {
@@ -169,9 +171,29 @@ public class ArrayListMapTest extends AbstractMapTest {
         return new ArrayMapImpl<>();
     }
 
+    private static class MapListWrapperImpl
+            extends AbstractMapListWrapper<MapListWrapperImpl,String,Integer> {
+
+        public MapListWrapperImpl() {}
+
+        public MapListWrapperImpl(List<Integer> list) {
+            super(list);
+        }
+
+        @Override
+        protected String getKeyFromValue(Integer value) {
+            return "" + value;
+        }
+
+        @Override
+        protected MapListWrapperImpl createNew(List<Integer> list) {
+            return new MapListWrapperImpl(list);
+        }
+    }
+
     @Test
     public void shouldFindIndexOfKey() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -183,7 +205,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldGetAtIndex() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -195,7 +217,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldFindIndexOfValue() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -207,7 +229,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldRemoveAtIndexAtFirst() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -220,7 +242,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldRemoveAtIndexInMiddle() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -233,7 +255,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldRemoveAtIndexAtEnd() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -246,7 +268,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldPutAtIndexFirst() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -260,7 +282,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldPutAtIndexInMiddle() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -274,7 +296,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldPutAtIndexAtBeforeEnd() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -288,7 +310,7 @@ public class ArrayListMapTest extends AbstractMapTest {
 
     @Test
     public void shouldPutAtIndexAtEnd() {
-        ArrayListMap<String,Integer> map = new ArrayListMap<>(t -> "" + t);
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
         for (int i=0; i<10; i++) {
             map.add(i);
         }
@@ -298,5 +320,21 @@ public class ArrayListMapTest extends AbstractMapTest {
         assertEquals(11, map.size());
         assertEquals(9, map.getAtIndex(9), 0);
         assertEquals(99, map.getAtIndex(10), 0);
+    }
+
+    @Test
+    public void shouldDetectUnmodifiableMapWhileNotModifyingTheMap() {
+        AbstractMapListWrapper<?,String,Integer> map = new MapListWrapperImpl();
+        for (int i=0; i<10; i++) {
+            map.add(i);
+        }
+
+        List<Integer> copyBefore = new ArrayList<>(map.values());
+
+        assertTrue(map.unmodifiable().isUnmodifiable());
+
+        List<Integer> copyAfter = new ArrayList<>(map.values());
+
+        assertEquals(copyBefore, copyAfter);
     }
 }

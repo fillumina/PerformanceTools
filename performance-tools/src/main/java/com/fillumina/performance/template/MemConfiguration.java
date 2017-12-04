@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
@@ -32,7 +33,7 @@ public class MemConfiguration<C>
 
     private final SampleProducer<?> sampleProducer;
     private final String description;
-    private final Stats.Type type;
+    private final StatsType type;
 
     private boolean active = false;
     private int samples = 7;
@@ -48,7 +49,7 @@ public class MemConfiguration<C>
 
     public MemConfiguration(SampleProducer<?> sampleProducer,
             String description,
-            Stats.Type type) {
+            StatsType type) {
         this.sampleProducer = sampleProducer;
         this.description = description;
         this.type = type;
@@ -57,7 +58,7 @@ public class MemConfiguration<C>
     public MemConfiguration(C caller,
             SampleProducer<?> sampleProducer,
             String description,
-            Stats.Type type) {
+            StatsType type) {
         super(caller);
         this.sampleProducer = sampleProducer;
         this.description = description;
@@ -68,7 +69,7 @@ public class MemConfiguration<C>
             Setter<C, MixedProducerConfiguration> setter,
             SampleProducer<?> sampleProducer,
             String description,
-            Stats.Type type) {
+            StatsType type) {
         super(setter);
         this.sampleProducer = sampleProducer;
         this.description = description;
@@ -152,7 +153,7 @@ public class MemConfiguration<C>
             }
 
             @Override
-            public Map<Stats.Type, StringGenerator<Stats>> getStringGenerators() {
+            public Map<StatsType, StringGenerator<Stats>> getStringGenerators() {
                 return ArrayMap.create(type, stringGenerator);
             }
 

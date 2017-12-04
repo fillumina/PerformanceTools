@@ -9,7 +9,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -57,7 +57,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
     }
 
     @Override
-    public void check(Assertable assertable,
+    public void checkAndReport(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         List<TName> tnames = extractFullNames(assertable);
@@ -69,7 +69,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             } else {
                 unusedAssertionChecker.setUsed(evaluator);
                 for (Assertion a : assertions) {
-                    a.check(assertable, failedAssertions, dummy);
+                    a.checkAndReport(assertable, failedAssertions, dummy);
                 }
             }
         }
@@ -214,7 +214,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
             private final Ratio tolerance;
             private final TNameMatcher nameMatcher;
             private TNameMatcher otherMatcher;
-            private EqCondition equalityCondition;
+            private RelativeOrder equalityCondition;
 
             public OrderCondition(TNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
@@ -222,18 +222,18 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
 
             public TNameMatcher.MatcherBuilder<C> lessThan() {
-                return fluid(EqCondition.LESS);
+                return fluid(RelativeOrder.LESS);
             }
 
             public TNameMatcher.MatcherBuilder<C> greaterThan() {
-                return fluid(EqCondition.GREATER);
+                return fluid(RelativeOrder.GREATER);
             }
 
             public TNameMatcher.MatcherBuilder<C> equalsTo() {
-                return fluid(EqCondition.EQUALS);
+                return fluid(RelativeOrder.EQUALS);
             }
 
-            private TNameMatcher.MatcherBuilder<C> fluid(final EqCondition condition) {
+            private TNameMatcher.MatcherBuilder<C> fluid(final RelativeOrder condition) {
                 return TNameMatcher.builder((builtObject) -> {
                     otherMatcher = builtObject;
                     equalityCondition = condition;
@@ -259,19 +259,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public Builder<C> lessThan(TNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
-                equalityCondition = EqCondition.LESS;
+                equalityCondition = RelativeOrder.LESS;
                 return addToEvaluators(this);
             }
 
             public Builder<C> greaterThan(TNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
-                equalityCondition = EqCondition.GREATER;
+                equalityCondition = RelativeOrder.GREATER;
                 return addToEvaluators(this);
             }
 
             public Builder<C> equalsTo(TNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
-                equalityCondition = EqCondition.EQUALS;
+                equalityCondition = RelativeOrder.EQUALS;
                 return addToEvaluators(this);
             }
 
@@ -321,7 +321,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         public class PercentageCondition implements Evaluator {
             private final TNameMatcher nameMatcher;
             private final Ratio tolerance;
-            private EqCondition equalityCondition;
+            private RelativeOrder equalityCondition;
             private Ratio percentage;
 
             public PercentageCondition(TNameMatcher nameMatcher, Ratio tolerance) {
@@ -331,19 +331,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public Builder<C> lessThan(Ratio percentage) {
                 this.percentage = percentage;
-                equalityCondition = EqCondition.LESS;
+                equalityCondition = RelativeOrder.LESS;
                 return addToEvaluators(this);
             }
 
             public Builder<C> greaterThan(Ratio percentage) {
                 this.percentage = percentage;
-                equalityCondition = EqCondition.GREATER;
+                equalityCondition = RelativeOrder.GREATER;
                 return addToEvaluators(this);
             }
 
             public Builder<C> equalsTo(Ratio percentage) {
                 this.percentage = percentage;
-                equalityCondition = EqCondition.EQUALS;
+                equalityCondition = RelativeOrder.EQUALS;
                 return addToEvaluators(this);
             }
 
@@ -388,7 +388,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         public class ValueCondition implements Evaluator {
             private final TNameMatcher nameMatcher;
             private final Ratio tolerance;
-            private EqCondition equalityCondition;
+            private RelativeOrder equalityCondition;
             private double value;
 
             public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
@@ -398,19 +398,19 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public Builder<C> lessThan(double value) {
                 this.value = value;
-                equalityCondition = EqCondition.LESS;
+                equalityCondition = RelativeOrder.LESS;
                 return addToEvaluators(this);
             }
 
             public Builder<C> greaterThan(double value) {
                 this.value = value;
-                equalityCondition = EqCondition.GREATER;
+                equalityCondition = RelativeOrder.GREATER;
                 return addToEvaluators(this);
             }
 
             public Builder<C> equalsTo(double value) {
                 this.value = value;
-                equalityCondition = EqCondition.EQUALS;
+                equalityCondition = RelativeOrder.EQUALS;
                 return addToEvaluators(this);
             }
 

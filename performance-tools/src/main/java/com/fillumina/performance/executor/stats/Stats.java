@@ -35,9 +35,8 @@ public class Stats extends Printable<Stats>
         implements StatsTyped, Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public interface Type { Type DEFAULT = new Type() {}; }
 
-    private final Type type;
+    private final StatsType type;
     private final BiggerMeasure refMeasure;
     private final List<TName> names;
     private final Map<TName, DimensionalMeasure> map;
@@ -56,10 +55,10 @@ public class Stats extends Printable<Stats>
         measures.forEach((CharSequence s, Measure m) ->
                 map.put(TN.tname(s),
                         new DimensionalOnlineMeasure(Magnitude.UNIT, m)) );
-        return new Stats(Type.DEFAULT, map);
+        return new Stats(StatsType.DEFAULT, map);
     }
 
-    public Stats(Type type, Map<TName,DimensionalMeasure> measures) {
+    public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
         this.type = type;
         this.map = Collections.unmodifiableMap(new LinkedHashMap<>(measures));
         this.names = Collections.unmodifiableList(new ArrayList<>(measures.keySet()));
@@ -84,7 +83,7 @@ public class Stats extends Printable<Stats>
     }
 
     @Override
-    public Type getStatsType() {
+    public StatsType getStatsType() {
         return type;
     }
 

@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.ArrayMap;
@@ -35,19 +36,19 @@ public class MixedAssertionableResult<C> {
     }
 
     public static class Builder {
-        private final ArrayMap<Stats.Type, AssertionableResult.Builder> map =
+        private final ArrayMap<StatsType, AssertionableResult.Builder> map =
                 new ArrayMap<>();
 
         /** @param classes Sets the right class order (optional). */
-        public Builder(Stats.Type... types) {
-            for (Stats.Type t : types) {
+        public Builder(StatsType... types) {
+            for (StatsType t : types) {
                 map.put(t, getStatsBuilder(t));
             }
         }
 
         @SuppressWarnings("unchecked")
         public final AssertionableResult.Builder getStatsBuilder(
-                Stats.Type type) {
+                StatsType type) {
             AssertionableResult.Builder statsBuilder =  map.get(type);
             if (statsBuilder == null) {
                 statsBuilder = AssertionableResult.builder();
@@ -66,15 +67,15 @@ public class MixedAssertionableResult<C> {
     }
 
     /** @param types Sets the right class order (optional). */
-    public static Builder builder(Stats.Type... types) {
+    public static Builder builder(StatsType... types) {
         return new Builder(types);
     }
 
-    private final Map<Stats.Type, AssertionableResult<C>> map;
+    private final Map<StatsType, AssertionableResult<C>> map;
     private final CallBackSetter<C> setter;
 
     private MixedAssertionableResult(
-            Map<Stats.Type, AssertionableResult<C>> map,
+            Map<StatsType, AssertionableResult<C>> map,
             CallBackSetter<C> setter) {
         this.map = Collections.unmodifiableMap(map);
         this.setter = setter;
@@ -84,7 +85,7 @@ public class MixedAssertionableResult<C> {
         setter.setCallBack(callBack);
     }
 
-    public AssertionableResult<C> getStats(Stats.Type type) {
+    public AssertionableResult<C> getStats(StatsType type) {
         return map.get(type);
     }
 
@@ -101,7 +102,7 @@ public class MixedAssertionableResult<C> {
         return new Appender(new StringBuilder()).appendResults().toString();
     }
 
-    public Map<Stats.Type, AssertionableResult<C>> getMap() {
+    public Map<StatsType, AssertionableResult<C>> getMap() {
         return map;
     }
 

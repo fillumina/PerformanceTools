@@ -31,7 +31,7 @@ public class ExtendedStats extends Stats {
         this(other.getStatsType(), other.getMeasureMap(), other.expression);
     }
 
-    public ExtendedStats(Type type,
+    public ExtendedStats(StatsType type,
             Map<TName, DimensionalMeasure> measures,
             ExpressionSolver expression) {
         super(type, measures);

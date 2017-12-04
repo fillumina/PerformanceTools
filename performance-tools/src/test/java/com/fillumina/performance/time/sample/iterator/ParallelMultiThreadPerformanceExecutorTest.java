@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -126,7 +127,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
             }
         });
 
-        Map<Stats.Type,Sample> resultMap = pt.execute();
+        Map<StatsType,Sample> resultMap = pt.execute();
         System.out.println("result=" + resultMap.toString());
     }
 }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class PercentageAssertionTest {
         PercentageAssertion assertion =
                 new PercentageAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
@@ -32,7 +32,7 @@ public class PercentageAssertionTest {
         PercentageAssertion assertion =
                 new PercentageAssertion(
                         "first",
-                        EqCondition.LESS,
+                        RelativeOrder.LESS,
                         Ratio.percentage(30),
                         Ratio.percentage(3));
 
@@ -47,7 +47,7 @@ public class PercentageAssertionTest {
         PercentageAssertion assertion =
                 new PercentageAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 
@@ -61,7 +61,7 @@ public class PercentageAssertionTest {
         PercentageAssertion assertion =
                 new PercentageAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(23),
                         Ratio.percentage(3));
 

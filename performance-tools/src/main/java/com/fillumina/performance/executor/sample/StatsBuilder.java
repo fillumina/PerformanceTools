@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -22,7 +23,7 @@ public class StatsBuilder implements StatsTyped {
 
     private static class Accumulator implements TNamed {
         TName name;
-        Stats.Type type;
+        StatsType type;
         List<Double> values = new ArrayList<>();
         long totalIterations;
         long totalTime;
@@ -34,36 +35,16 @@ public class StatsBuilder implements StatsTyped {
     }
 
     private final TNameMap<Accumulator> accumulators = new TNameMap<>();
-    private final Stats.Type type;
+    private final StatsType type;
     private Unit<?> unit;
 
-    public StatsBuilder(Stats.Type type) {
+    public StatsBuilder(StatsType type) {
         this.type = type;
     }
 
     @Override
-    public Stats.Type getStatsType() {
+    public StatsType getStatsType() {
         return type;
-    }
-
-    /**
-     * Builds a {@link Stats} out of the collected samples.
-     *
-     * @param message       The message to addSample to the statistics
-     * @param confidence    The confidence used
-     * @return              The statistics computed over the collected samples
-     */
-    public Stats createStats(ListFilter<Double> filter) {
-        Map<TName, DimensionalMeasure> measures = new ArrayMap<>();
-
-        this.accumulators.values().forEach((Accumulator acc) -> {
-            List<Double> filtered = filter.filter(acc.values);
-            DimensionalOnlineMeasure measure =
-                    new DimensionalOnlineMeasure(unit, filtered);
-            measures.put(acc.name, measure);
-        });
-
-        return new Stats(type, measures);
     }
 
     public void addSample(Sample sample) {
@@ -77,6 +58,26 @@ public class StatsBuilder implements StatsTyped {
             acc.totalTime += v.getTimeNs();
             acc.values.add(v.getValue());
         });
+    }
+
+    /**
+     * Builds a {@link Stats} out of the collected samples.
+     *
+     * @param message       The message to addSample to the statistics
+     * @param confidence    The confidence used
+     * @return              The statistics computed over the collected samples
+     */
+    public Stats createStats(ListFilter<Double> filter) {
+        Map<TName, DimensionalMeasure> map = new ArrayMap<>();
+
+        this.accumulators.values().forEach((Accumulator acc) -> {
+            List<Double> filtered = filter.filter(acc.values);
+            DimensionalOnlineMeasure measure =
+                    new DimensionalOnlineMeasure(unit, filtered);
+            map.put(acc.name, measure);
+        });
+
+        return new Stats(type, map);
     }
 
     private Accumulator getAccumulator(TName name) {

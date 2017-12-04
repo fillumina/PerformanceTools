@@ -21,20 +21,20 @@ import org.junit.Test;
 public class MixedStatsHolderTest {
 
     private static class AssertableMock_1 extends StatsMock {
-        public static final Stats.Type TYPE = new MockStatsType("1");
-        @Override public Type getType() { return TYPE; }
+        public static final StatsType TYPE = new MockStatsType("1");
+        @Override public StatsType getType() { return TYPE; }
     }
     private static class AssertableMock_2 extends StatsMock {
-        public static final Stats.Type TYPE = new MockStatsType("2");
-        @Override public Type getType() { return TYPE; }
+        public static final StatsType TYPE = new MockStatsType("2");
+        @Override public StatsType getType() { return TYPE; }
     }
     private static class AssertableMock_3 extends StatsMock {
-        public static final Stats.Type TYPE = new MockStatsType("3");
-        @Override public Type getType() { return TYPE; }
+        public static final StatsType TYPE = new MockStatsType("3");
+        @Override public StatsType getType() { return TYPE; }
     }
 
     private static class StatsMock extends Stats {
-        public static final Stats.Type TYPE = new MockStatsType("0");
+        public static final StatsType TYPE = new MockStatsType("0");
         private static final long serialVersionUID = 1L;
         private final String name;
 
@@ -53,7 +53,7 @@ public class MixedStatsHolderTest {
             return name;
         }
 
-        public Type getType() {
+        public StatsType getType() {
             return TYPE;
         }
     }
@@ -133,7 +133,7 @@ public class MixedStatsHolderTest {
                         TN.tname("two"), a2)
                 .build();
 
-        Set<Stats.Type> set = mixedHolder.getTypes();
+        Set<StatsType> set = mixedHolder.getTypes();
         assertTrue(set.containsAll(Arrays.asList(
                 StatsMock.TYPE, AssertableMock_1.TYPE
         )));
@@ -150,7 +150,7 @@ public class MixedStatsHolderTest {
                         TN.tname("two"), a2)
                 .build();
 
-        Map<Stats.Type, StatsHolder> map = mixedHolder.getStatsMap();
+        Map<StatsType, StatsHolder> map = mixedHolder.getStatsMap();
 
         assertTrue(map.keySet().containsAll(Arrays.asList(
                 StatsMock.TYPE, AssertableMock_1.TYPE
@@ -270,7 +270,7 @@ public class MixedStatsHolderTest {
     }
 
     private Assertable getAssertable(MixedStatsHolder mixedHolder,
-            Stats.Type type, TName name) {
+            StatsType type, TName name) {
         return mixedHolder
                 .getStatsHolder(type)
                 .getTree()

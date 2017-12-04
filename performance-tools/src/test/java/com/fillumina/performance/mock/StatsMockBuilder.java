@@ -5,6 +5,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class StatsMockBuilder {
     private final List<Data> dataList = new ArrayList<>();
-    private final Stats.Type statsType;
+    private final StatsType statsType;
     private CharSequence name;
     private Ratio confidence = Ratio.P_95;
 
@@ -31,7 +32,7 @@ public class StatsMockBuilder {
         return create(MockStatsType.INSTANCE, title, objs);
     }
 
-    public static Stats create(Stats.Type statsType, TName title, Object... objs) {
+    public static Stats create(StatsType statsType, TName title, Object... objs) {
         StatsMockBuilder builder = new StatsMockBuilder(statsType);
         for (int i=0,l=objs.length; i<l; i+=2) {
             String testName = (String) objs[i];
@@ -47,7 +48,7 @@ public class StatsMockBuilder {
         this(MockStatsType.INSTANCE);
     }
 
-    public StatsMockBuilder(Stats.Type statsType) {
+    public StatsMockBuilder(StatsType statsType) {
         this.statsType = statsType;
     }
 

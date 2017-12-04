@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
@@ -40,8 +41,7 @@ public class PerformanceGenerator {
         // consolidate into a single MixedAssertableHolder
         producers.forEach(conf -> {
             MixedStatsHolder mixedHolder = executeSingleTest(testConfig, conf);
-            mixedHolder.getStatsMap().forEach(
-                    (Stats.Type type, StatsHolder holder) ->
+            mixedHolder.getStatsMap().forEach((StatsType type, StatsHolder holder) ->
                         builder.addAssertable(type, holder));
         });
 

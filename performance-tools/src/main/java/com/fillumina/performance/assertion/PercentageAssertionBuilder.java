@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
@@ -31,7 +31,7 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(EqCondition equality, double expected) {
+    public I is(RelativeOrder equality, double expected) {
         switch(equality) {
             case EQUALS: return sameAs(expected);
             case LESS: return lessThan(expected);
@@ -43,7 +43,7 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     public I sameAs(final double expectedPercentage) {
         return selector.addAssertion(new PercentageAssertion(
                 name,
-                EqCondition.EQUALS,
+                RelativeOrder.EQUALS,
                 Ratio.percentage(expectedPercentage),
                 tolerance));
     }
@@ -51,7 +51,7 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     public I lessThan(final double expectedPercentage) {
         return selector.addAssertion(new PercentageAssertion(
                 name,
-                EqCondition.LESS,
+                RelativeOrder.LESS,
                 Ratio.percentage(expectedPercentage),
                 tolerance));
     }
@@ -59,7 +59,7 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     public I greaterThan(final double expectedPercentage) {
         return selector.addAssertion(new PercentageAssertion(
                 name,
-                EqCondition.GREATER,
+                RelativeOrder.GREATER,
                 Ratio.percentage(expectedPercentage),
                 tolerance));
     }

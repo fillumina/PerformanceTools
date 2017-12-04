@@ -3,12 +3,13 @@ package com.fillumina.performance.executor.sample;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.sample.strgen.SampleCsvStringGenerator;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.util.CsvProducer;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 
 /**
  *
@@ -18,10 +19,10 @@ public class Sample
         implements StatsTyped, CsvProducer, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Stats.Type type;
+    private final StatsType type;
     private final TNameMap<SampleValue> map;
 
-    public Sample(Stats.Type type, TNameMap<SampleValue> map) {
+    public Sample(StatsType type, TNameMap<SampleValue> map) {
         this.type = type;
         this.map = map;
     }
@@ -31,7 +32,7 @@ public class Sample
     }
 
     @Override
-    public Stats.Type getStatsType() {
+    public StatsType getStatsType() {
         return type;
     }
 
@@ -47,7 +48,7 @@ public class Sample
         return testSample.getValue();
     }
 
-    public Collection<? extends CharSequence> getTestNames() {
+    public List<TName> getTestNames() {
         return map.keyList();
     }
 

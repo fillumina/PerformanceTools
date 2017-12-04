@@ -121,10 +121,10 @@ public class AssertionableResult<C>
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         for (Assertable assertable : getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
-                assertion.check(assertable, failedAssertions, unusedAssertion);
+                assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
             });
         }
-        List<Assertion> unusedAssertionList = unusedAssertion.getList();
+        List<Assertion> unusedAssertionList = unusedAssertion.getUnusedAssertionList();
         if (!unusedAssertionList.isEmpty()) {
             failedAssertions.put(UNCHECKED, unusedAssertionList);
         }

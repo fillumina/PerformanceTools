@@ -8,6 +8,7 @@ import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
 import com.fillumina.performance.mem.sample.MemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
@@ -66,7 +67,7 @@ public class MemStatsProducer
         StatsCreator sampleCollector = new StatsCreator(getName());
         setUpTests();
         for (int i=0; i<samples; i++) {
-            Map<Stats.Type, Sample> sample = sampleProducer.get();
+            Map<StatsType, Sample> sample = sampleProducer.get();
             notifyListeners(sample, i, samples);
             sampleCollector.addSample(sample);
         }
@@ -102,7 +103,7 @@ public class MemStatsProducer
         }
     }
 
-    protected void notifyListeners(Map<Stats.Type,Sample> sampleMap,
+    protected void notifyListeners(Map<StatsType,Sample> sampleMap,
             int currentSampleIndex, int totalSamples) {
         for (Sample sample : sampleMap.values()) {
             for (SampleValue v : sample.getValuesMap().values()) {

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class MeasureRatioCalculator
+class RatioAgainstBiggerMeasureCalculator
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -18,7 +18,7 @@ class MeasureRatioCalculator
     private final int refIndex;
     private final CharSequence refName;
 
-    public MeasureRatioCalculator(Assertable assertable) {
+    public RatioAgainstBiggerMeasureCalculator(Assertable assertable) {
         this.assertable = assertable;
         CharSequence name = null;
         int index = -1;

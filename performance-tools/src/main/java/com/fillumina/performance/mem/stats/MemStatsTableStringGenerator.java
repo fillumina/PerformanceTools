@@ -88,7 +88,7 @@ public class MemStatsTableStringGenerator
      */
     public String getTable(final Stats stats, final MemUnit unit) {
         String name = stats.getMeasureMap().keySet().iterator().next()
-                .getPrefix();
+                .getPrefixString(" : ");
 
         String title;
         if (name != null && !name.isEmpty()) {

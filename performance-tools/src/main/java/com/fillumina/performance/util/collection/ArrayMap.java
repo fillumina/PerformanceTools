@@ -15,12 +15,12 @@ import java.util.function.Function;
 
 /**
  * It's a map loaded over an array.
- * It maintains insertion order, caches hash codes and is very fast to clone.
- * It's insertion and extraction times are both O(N) but can be fast because
- * of locality in respect of other nominally O(1) hash based maps for few
- * items.
- * It's {@link #keyList()} can be accessed with O(1).
- * It uses cursor which is faster than a standard iterator but is not
+ * It maintains insertion order, caches hash codes, can access its elements by
+ * index randomly and is very fast to clone.
+ * It's insertion and extraction times are both O(N) but can be fast for few
+ * items because of locality.
+ * {@link #keyList()} items are accessed with O(1).
+ * It uses {@link #Cursor} which is faster than a standard iterator but is not
  * compliant with {@link Map} specifications because every {@link Map.Entry}
  * returned is in fact the same object.
  *
@@ -36,6 +36,12 @@ public class ArrayMap<K,V>
     private Object[] array;
     private int[] hashes;
     private int size;
+
+    private Set<Entry<K,V>> entrySet;
+    private Set<K> keySet;
+    private Collection<V> values;
+    private List<K> keyList;
+    private UnmodifiableView unmodifiableView;
 
     @SuppressWarnings("unchecked")
     public static <K,V> ArrayMap<K,V> emtpy() {
@@ -68,11 +74,32 @@ public class ArrayMap<K,V>
         return map;
     }
 
+    @SuppressWarnings("unchecked")
+    public K getKeyAtIndex(int index) {
+        if (index >= size()) {
+            throw new IndexOutOfBoundsException("size= " + size());
+        }
+        return (K) array[index << 1];
+    }
+
+    @SuppressWarnings("unchecked")
+    public V getValueAtIndex(int index) {
+        if (index >= size()) {
+            throw new IndexOutOfBoundsException("size= " + size());
+        }
+        return (V) array[(index << 1) + 1];
+    }
+
     public Entry<K,V> getEntryAtIndex(int index) {
         return new Cursor(index << 1);
     }
 
+    public Cursor getCursorAtIndex(int index) {
+        return new Cursor(index << 1);
+    }
+
     public class UnmodifiableView extends ArrayMap<K,V> {
+        private static final long serialVersionUID = 1L;
 
         private UnmodifiableView(Object[] array, int[] hashes, int size) {
             super(array, hashes, size);
@@ -84,6 +111,11 @@ public class ArrayMap<K,V>
                 super.hashes = ArrayMap.this.hashes;
                 super.size = ArrayMap.this.size;
             }
+        }
+
+        @Override
+        public boolean isUnmodifiable() {
+            return true;
         }
 
         @Override
@@ -120,9 +152,14 @@ public class ArrayMap<K,V>
         }
     }
 
-    private UnmodifiableView unmodifiableView;
+    public boolean isUnmodifiable() {
+        return false;
+    }
 
     public ArrayMap<K,V> unmodifiable() {
+        if (isUnmodifiable()) {
+            return this;
+        }
         if (unmodifiableView == null) {
             unmodifiableView = new UnmodifiableView(array, hashes, size);
         }
@@ -261,7 +298,7 @@ public class ArrayMap<K,V>
         size = 0;
     }
 
-    private class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
+    public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
         private int index = -2;
         private boolean removed;
 
@@ -269,6 +306,10 @@ public class ArrayMap<K,V>
 
         public Cursor(int index) {
             this.index = index;
+        }
+
+        public void setIndex(int index) {
+            this.index = (index << 1);
         }
 
         @Override
@@ -350,11 +391,6 @@ public class ArrayMap<K,V>
         return new Cursor();
     }
 
-    private Set<K> keySet;
-    private List<K> keyList;
-    private Collection<V> values;
-    private Set<Entry<K,V>> entrySet;
-
     private abstract class View<T> extends AbstractSet<T> {
         abstract T select(Entry<K,V> entry);
 
@@ -389,7 +425,6 @@ public class ArrayMap<K,V>
     }
 
     private class UnmodifiableKeyList extends AbstractList<K> {
-
         @Override
         public int size() {
             return size >> 1;

@@ -23,6 +23,8 @@ public class SampleValue
     private final TName name;
     private final Quantity<?> quantity;
     private final String type;
+
+    // TODO remove these, they aren't used anywhere
     private final long iterations;
     private final long timeNs;
 

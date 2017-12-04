@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.stats.Ratio;
@@ -45,7 +45,7 @@ public class AssertionsOrderTest {
         try {
             speedAssertion.check(assertable);
         } catch (OrderAssertionError e) {
-            assertEquals(EqCondition.LESS, e.getCondition());
+            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
             assertEquals("Second", e.getFirstTestName().toString());
             assertEquals("First", e.getSecondTestName().toString());
             assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
@@ -104,17 +104,17 @@ public class AssertionsOrderTest {
         try {
             assertion.check(assertable);
         } catch (OrderAssertionError e) {
-            assertEquals(EqCondition.GREATER, e.getCondition());
+            assertEquals(RelativeOrder.GREATER, e.getRelativeOrder());
             assertEquals("First", e.getFirstTestName().toString());
             assertEquals("Second", e.getSecondTestName().toString());
             assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
             assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
 
-            Map<EqCondition,Ratio> whatIfMap = e.getWhatIfToleranceMap();
-            assertEquals(1.01, whatIfMap.get(EqCondition.GREATER).getDecimal(), 0);
-            assertEquals(1.01, whatIfMap.get(EqCondition.EQUALS).getDecimal(), 0);
-            assertNull(whatIfMap.get(EqCondition.LESS));
+            Map<RelativeOrder,Ratio> whatIfMap = e.getWhatIfToleranceMap();
+            assertEquals(1.01, whatIfMap.get(RelativeOrder.GREATER).getDecimal(), 0);
+            assertEquals(1.01, whatIfMap.get(RelativeOrder.EQUALS).getDecimal(), 0);
+            assertNull(whatIfMap.get(RelativeOrder.LESS));
             return;
         }
         fail();
@@ -136,7 +136,7 @@ public class AssertionsOrderTest {
             assertion.check(assertable);
             fail();
         } catch (OrderAssertionError e) {
-            assertEquals(EqCondition.EQUALS, e.getCondition());
+            assertEquals(RelativeOrder.EQUALS, e.getRelativeOrder());
             assertEquals("Second", e.getSecondTestName().toString());
             assertEquals("First", e.getFirstTestName().toString());
             assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
@@ -203,7 +203,7 @@ public class AssertionsOrderTest {
             assertion.check(assertable);
             fail("second test should fail");
         } catch (OrderAssertionError e) {
-            assertEquals(EqCondition.LESS, e.getCondition());
+            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
             assertEquals("Second", e.getFirstTestName().toString());
             assertEquals("First", e.getSecondTestName().toString());
             assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);

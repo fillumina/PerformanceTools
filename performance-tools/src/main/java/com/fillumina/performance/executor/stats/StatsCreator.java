@@ -13,15 +13,15 @@ import java.util.Map;
  */
 public class StatsCreator {
 
-    private final Map<Stats.Type, StatsBuilder> buildersMap = new HashMap<>();
+    private final Map<StatsType, StatsBuilder> buildersMap = new HashMap<>();
     private final TName name;
 
     public StatsCreator(TName name) {
         this.name = name;
     }
 
-    public StatsCreator addSample(Map<Stats.Type, Sample> map) {
-        map.forEach((Stats.Type type , Sample sample) -> {
+    public StatsCreator addSample(Map<StatsType, Sample> map) {
+        map.forEach((StatsType type , Sample sample) -> {
             addSample(sample);
         });
         return this;
@@ -32,7 +32,7 @@ public class StatsCreator {
         return this;
     }
 
-    private StatsBuilder getStatsBuilderFor(Stats.Type type) {
+    private StatsBuilder getStatsBuilderFor(StatsType type) {
         StatsBuilder statsBuilder = buildersMap.get(type);
         if (statsBuilder == null) {
             statsBuilder = new StatsBuilder(type);
@@ -44,7 +44,7 @@ public class StatsCreator {
     public MixedStatsHolder getMixedAssertableHolder(
             ListFilter<Double> filter) {
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
-        buildersMap.forEach( (Stats.Type type, StatsBuilder statsBuilder) -> {
+        buildersMap.forEach( (StatsType type, StatsBuilder statsBuilder) -> {
                 Stats stats = statsBuilder.createStats(filter);
                 builder.addAssertable(type, name, stats);
         });

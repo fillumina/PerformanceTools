@@ -34,12 +34,12 @@ public interface Assertion
     /**
      * Adds itself to the given {@link failedAssertions} if fails.
      *
-     * @param assertable            the assertable to check against
+     * @param assertable            the {@link Assertable} to check
      * @param failedAssertions      failed assertions for each assertable
-     * @param unusedAssertionChecker   unchecked assertions (to recognize wrong
-     *                              tests)
+     * @param unusedAssertionChecker   unchecked assertions (to recognize
+     *                              unused assertions)
      */
-    default void check(Assertable assertable,
+    default void checkAndReport(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         try {

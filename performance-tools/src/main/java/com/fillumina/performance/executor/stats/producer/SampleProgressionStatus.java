@@ -3,6 +3,7 @@ package com.fillumina.performance.executor.stats.producer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class SampleProgressionStatus {
     private final UnmodifiableIntList iterations;
     private final int repetition;
 
-    private final Map<Stats.Type,Sample> samples;
+    private final Map<StatsType,Sample> samples;
     private final MixedStatsHolder lastStats;
     private final int timeSpentCoolingCpuMs;
     private final String statusMessage;
@@ -28,7 +29,7 @@ public class SampleProgressionStatus {
             int totalSamples,
             int repetition,
             UnmodifiableIntList iterations,
-            Map<Stats.Type,Sample> samples,
+            Map<StatsType,Sample> samples,
             MixedStatsHolder mixedHolder,
             int timeSpentCoolingCpuMs,
             String statusMessage) {
@@ -54,7 +55,7 @@ public class SampleProgressionStatus {
         return repetition;
     }
 
-    public Map<Stats.Type,Sample> getSamples() {
+    public Map<StatsType,Sample> getSamples() {
         return samples;
     }
 

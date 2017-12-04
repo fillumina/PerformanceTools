@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.mock.StatsMockBuilder;
@@ -128,8 +129,8 @@ public class PerformanceGeneratorTest {
         assertEquals(33, stats2.getMeasure(TN.tname("two","a")).getCount(), 0);
     }
 
-    public static final Stats.Type TYPE_A = new MockStatsType("TYPE_A");
-    public static final Stats.Type TYPE_B = new MockStatsType("TYPE_B");
+    public static final StatsType TYPE_A = new MockStatsType("TYPE_A");
+    public static final StatsType TYPE_B = new MockStatsType("TYPE_B");
 
     public static class PerformanceGeneratorMock
             extends PerformanceGenerator {
@@ -149,7 +150,7 @@ public class PerformanceGeneratorTest {
                     .build();
         }
 
-        private Stats createStats(Stats.Type type, String name, double mean) {
+        private Stats createStats(StatsType type, String name, double mean) {
             return new StatsMockBuilder(type).addTest(TN.tname(name))
                     .mean(mean)
                     .endTest()

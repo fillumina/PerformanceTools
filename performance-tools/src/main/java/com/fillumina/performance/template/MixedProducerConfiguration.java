@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.StringGenerator;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import java.util.Map;
  */
 public interface MixedProducerConfiguration extends ProducerConfiguration {
 
-    Map<Stats.Type,StringGenerator<Stats>> getStringGenerators();
+    Map<StatsType,StringGenerator<Stats>> getStringGenerators();
 
     void setVerbosity(Verbosity verbostiy);
 }

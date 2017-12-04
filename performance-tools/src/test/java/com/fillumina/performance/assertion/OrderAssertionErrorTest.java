@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +22,7 @@ public class OrderAssertionErrorTest {
                 new OrderAssertion(
                         "first",
                         "second",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -38,10 +38,10 @@ public class OrderAssertionErrorTest {
             assertEquals("second", e.getSecondTestName());
             assertEquals(Ratio.percentage(3), e.getTolerance());
 
-            Map<EqCondition,Ratio> map = e.getWhatIfToleranceMap();
-            assertEquals(271.0, map.get(EqCondition.EQUALS).getPercentage(), 0);
-            assertEquals(271.0, map.get(EqCondition.GREATER).getPercentage(), 0);
-            assertNull(map.get(EqCondition.LESS));
+            Map<RelativeOrder,Ratio> map = e.getWhatIfToleranceMap();
+            assertEquals(271.0, map.get(RelativeOrder.EQUALS).getPercentage(), 0);
+            assertEquals(271.0, map.get(RelativeOrder.GREATER).getPercentage(), 0);
+            assertNull(map.get(RelativeOrder.LESS));
         }
 
     }
@@ -52,7 +52,7 @@ public class OrderAssertionErrorTest {
                 new OrderAssertion(
                         "first",
                         "second",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -62,8 +62,7 @@ public class OrderAssertionErrorTest {
             assertion.accept(assertable);
             fail();
         } catch(OrderAssertionError e) {
-            assertTrue(e.isConditionSatisfied(
-                    EqCondition.GREATER,
+            assertTrue(e.isConditionSatisfied(RelativeOrder.GREATER,
                     Ratio.percentage(271.0)));
         }
 

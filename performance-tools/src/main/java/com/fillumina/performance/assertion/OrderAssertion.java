@@ -1,13 +1,13 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.AppendableWrapper;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 
 /**
- * It uses the standard margin of error of the measures with confidence of 99 %
+ * It uses the standard margin of error of the measures
  * and than it evaluates if their ratio is within the required tolerance.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -16,7 +16,7 @@ class OrderAssertion
         implements Assertion, Serializable {
 
     private static final long serialVersionUID = 1L;
-    private final EqCondition condition;
+    private final RelativeOrder condition;
     private final CharSequence firstTestName;
     private final CharSequence secondTestName;
     private final Ratio tolerance;
@@ -24,7 +24,7 @@ class OrderAssertion
     public OrderAssertion(
             final CharSequence firstTestName,
             final CharSequence secondTestName,
-            final EqCondition condition,
+            final RelativeOrder condition,
             final Ratio tolerance) {
         this.condition = condition;
         this.firstTestName = firstTestName;

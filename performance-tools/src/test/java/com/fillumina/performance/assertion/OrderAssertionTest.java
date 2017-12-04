@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class OrderAssertionTest {
     public void shouldConsumeAndThrowException() {
         OrderAssertion assertion =
                 new OrderAssertion("first", "second",
-                        EqCondition.GREATER,
+                        RelativeOrder.GREATER,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -30,7 +30,7 @@ public class OrderAssertionTest {
     public void shouldConsumeLessThanAndBeOk() {
         OrderAssertion assertion =
                 new OrderAssertion("first", "second",
-                        EqCondition.LESS,
+                        RelativeOrder.LESS,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -43,7 +43,7 @@ public class OrderAssertionTest {
     public void shouldConsumeEqualsAndThrowException() {
         OrderAssertion assertion =
                 new OrderAssertion("first", "second",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -55,7 +55,7 @@ public class OrderAssertionTest {
     public static void main(final String[] args) {
         OrderAssertion assertion =
                 new OrderAssertion("first", "second",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(

@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.ArrayMap;
@@ -62,19 +63,19 @@ public class DefaultPerformanceTimer
      * If a test takes more than that it will be executed only once.
      */
     @Override
-    public Map<Stats.Type, Sample> get() {
+    public Map<StatsType, Sample> get() {
         int[] estimatedIterations = estimateIterations(sampleTimeMs);
         return executeWithIterations(estimatedIterations);
     }
 
     @Override
-    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+    public Map<StatsType, Sample> executeWithIterations(int... iterations) {
         TimeSampleBuilder builder = iterate(iterations);
         Sample avgSample = builder.buildAverageTimeSample();
         dispatchToConsumers(avgSample);
         Sample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return new ArrayMap<Stats.Type,Sample>()
+        return new ArrayMap<StatsType,Sample>()
                 .add(TimeStatsType.AVERAGE, avgSample)
                 .add(TimeStatsType.THROUGHPUT, thrSample);
     }

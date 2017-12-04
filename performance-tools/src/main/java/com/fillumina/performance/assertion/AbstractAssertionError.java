@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
 import com.fillumina.performance.util.ExpBinarySearcher;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.EnumMap;
@@ -14,18 +14,18 @@ import java.util.Map;
 public abstract class AbstractAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
-    private final EqCondition condition;
+    private final RelativeOrder relativeOrder;
     private final Ratio tolerance;
 
     public AbstractAssertionError(
-            EqCondition condition,
+            RelativeOrder requiredOrder,
             Ratio tolerance) {
         super();
-        this.condition = condition;
+        this.relativeOrder = requiredOrder;
         this.tolerance = tolerance;
     }
 
-    public abstract boolean isConditionSatisfied(EqCondition condition,
+    public abstract boolean isConditionSatisfied(RelativeOrder relativeOrder,
             Ratio tolerance);
 
     public void checkAndThrowExceptionIfNotSatisfied() {
@@ -35,21 +35,21 @@ public abstract class AbstractAssertionError extends AssertionError {
     }
 
     public boolean isConditionSatisfied() {
-        return isConditionSatisfied(condition, tolerance);
+        return isConditionSatisfied(relativeOrder, tolerance);
     }
 
     public Ratio getTolerance() {
         return tolerance;
     }
 
-    public EqCondition getCondition() {
-        return condition;
+    public RelativeOrder getRelativeOrder() {
+        return relativeOrder;
     }
 
     /** What if scenario proposed as solution for the error. */
     protected void appendWhatIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
-        for (Map.Entry<EqCondition, Ratio> e :
+        for (Map.Entry<RelativeOrder, Ratio> e :
                 getWhatIfToleranceMap().entrySet()) {
             Ratio t = e.getValue();
             buf.append(e.getKey().name().toLowerCase())
@@ -60,10 +60,10 @@ public abstract class AbstractAssertionError extends AssertionError {
         buf.append(System.lineSeparator());
     }
 
-    public Map<EqCondition, Ratio> getWhatIfToleranceMap() {
-        Map<EqCondition, Ratio> map =
-                new EnumMap<>(EqCondition.class);
-        for (EqCondition oc : EqCondition.values()) {
+    public Map<RelativeOrder, Ratio> getWhatIfToleranceMap() {
+        Map<RelativeOrder, Ratio> map =
+                new EnumMap<>(RelativeOrder.class);
+        for (RelativeOrder oc : RelativeOrder.values()) {
             Ratio tr = findToleranceRequiredToSatisfyCondition(oc);
             if (!tr.isZero()) {
                 map.put(oc, tr);
@@ -73,10 +73,10 @@ public abstract class AbstractAssertionError extends AssertionError {
     }
 
     private Ratio findToleranceRequiredToSatisfyCondition(
-            final EqCondition oc) {
+            final RelativeOrder o) {
 
         int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,
-                (int v) -> isConditionSatisfied(oc, Ratio.percentage(v)));
+                (int v) -> isConditionSatisfied(o, Ratio.percentage(v)));
 
         if (p == -1) {
             return Ratio.MAX;

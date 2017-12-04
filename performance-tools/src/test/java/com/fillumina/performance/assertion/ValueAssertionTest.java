@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class ValueAssertionTest {
         ValueAssertion assertion =
                 new ValueAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         23,
                         Ratio.percentage(3));
 
@@ -32,7 +32,7 @@ public class ValueAssertionTest {
         ValueAssertion assertion =
                 new ValueAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         11.8,
                         Ratio.percentage(5));
 
@@ -47,7 +47,7 @@ public class ValueAssertionTest {
         ValueAssertion assertion =
                 new ValueAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         23,
                         Ratio.percentage(3));
 
@@ -61,7 +61,7 @@ public class ValueAssertionTest {
         ValueAssertion assertion =
                 new ValueAssertion(
                         "first",
-                        EqCondition.EQUALS,
+                        RelativeOrder.EQUALS,
                         23,
                         Ratio.percentage(3));
 

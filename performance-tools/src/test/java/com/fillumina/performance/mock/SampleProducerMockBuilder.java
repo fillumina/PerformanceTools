@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -20,7 +21,7 @@ import java.util.Map;
  */
 public class SampleProducerMockBuilder {
     private final List<Data> dataList = new ArrayList<>();
-    private final Stats.Type statsType;
+    private final StatsType statsType;
     private int samples = 33;
     private Ratio confidence = Ratio.P_95;
 
@@ -28,7 +29,7 @@ public class SampleProducerMockBuilder {
         this(MockStatsType.INSTANCE);
     }
 
-    public SampleProducerMockBuilder(Stats.Type statsType) {
+    public SampleProducerMockBuilder(StatsType statsType) {
         this.statsType = statsType;
     }
 
@@ -43,7 +44,7 @@ public class SampleProducerMockBuilder {
         }
 
         @Override
-        public Map<Stats.Type, Sample> get() {
+        public Map<StatsType, Sample> get() {
             final TNameMap<SampleValue> map = new TNameMap<>();
             getTests().forEach((CharSequence name, Runnable test) -> {
                 TName tname = (TName) name;
@@ -55,7 +56,7 @@ public class SampleProducerMockBuilder {
         }
 
         @Override
-        public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+        public Map<StatsType, Sample> executeWithIterations(int... iterations) {
             return get();
         }
 

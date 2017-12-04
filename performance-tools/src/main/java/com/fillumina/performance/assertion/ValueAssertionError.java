@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -22,7 +22,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             Measure actualValue,
             double expectedPercentage,
             Ratio tolerance,
-            EqCondition requiredCondition,
+            RelativeOrder requiredCondition,
             Assertable assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.testName = testName;
@@ -32,7 +32,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    public boolean isConditionSatisfied(EqCondition condition,
+    public boolean isConditionSatisfied(RelativeOrder condition,
             Ratio tolerance) {
         ConfidenceInterval interval =
                 actualValue.getConfidenceInterval(Ratio.P_99);
@@ -72,7 +72,7 @@ public class ValueAssertionError extends AbstractAssertionError {
         StringBuilder buf = new StringBuilder();
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
-                .append(getCondition())
+                .append(getRelativeOrder())
                 .append(' ')
                 .append(expected)
                 .append(", found ")

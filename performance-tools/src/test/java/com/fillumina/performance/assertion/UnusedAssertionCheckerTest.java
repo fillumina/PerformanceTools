@@ -23,7 +23,7 @@ public class UnusedAssertionCheckerTest {
         unused.setUsed(a2);
         unused.setUsed(a3);
 
-        assertTrue(unused.getList().isEmpty());
+        assertTrue(unused.getUnusedAssertionList().isEmpty());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class UnusedAssertionCheckerTest {
         unused.setUnused(a2);
         unused.setUnused(a3);
 
-        assertEquals(3, unused.getList().size());
+        assertEquals(3, unused.getUnusedAssertionList().size());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class UnusedAssertionCheckerTest {
         unused.setUsed(a2);
         unused.setUnused(a3);
 
-        List<Assertion> list = unused.getList();
+        List<Assertion> list = unused.getUnusedAssertionList();
         assertEquals(2, list.size());
         assertTrue(list.contains(a1));
         assertTrue(list.contains(a3));

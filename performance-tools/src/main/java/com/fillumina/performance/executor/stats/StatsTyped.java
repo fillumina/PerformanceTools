@@ -6,5 +6,5 @@ package com.fillumina.performance.executor.stats;
  */
 public interface StatsTyped {
 
-    Stats.Type getStatsType();
+    StatsType getStatsType();
 }

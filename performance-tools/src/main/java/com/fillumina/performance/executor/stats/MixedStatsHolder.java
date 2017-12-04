@@ -20,14 +20,14 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
     public static final MixedStatsHolder EMPTY =
             new MixedStatsHolder(
-                    Collections.<Stats.Type, StatsHolder>emptyMap());
+                    Collections.<StatsType, StatsHolder>emptyMap());
 
     public static class Builder {
         private final MixedStatsHolder mixedHolder =
                 new MixedStatsHolder();
 
         public Builder addAssertable(
-                final Stats.Type type,
+                final StatsType type,
                 final TName name,
                 final Stats stats) {
             StatsHolder statsHolder = new StatsHolder(type, name, stats);
@@ -36,7 +36,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
             return this;
         }
 
-        public Builder addAssertable(final Stats.Type type,
+        public Builder addAssertable(final StatsType type,
                 final StatsHolder assertableHolder) {
             assertableHolder.setCaller(mixedHolder);
             mixedHolder.map.put(type, assertableHolder);
@@ -54,7 +54,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
     public static class Joiner {
         private final TName name;
-        private final Map<Stats.Type,StatsHolder.Builder> map =
+        private final Map<StatsType,StatsHolder.Builder> map =
                 new LinkedHashMap<>();
 
         public Joiner(TName name) {
@@ -64,9 +64,9 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         public Joiner addSubExperiment(
                 MixedStatsHolder mixedHolder) {
             if (mixedHolder != null) {
-                for (Map.Entry<Stats.Type, StatsHolder> e :
+                for (Map.Entry<StatsType, StatsHolder> e :
                         mixedHolder.getStatsMap().entrySet()) {
-                    Stats.Type type = e.getKey();
+                    StatsType type = e.getKey();
                     StatsHolder stats = e.getValue();
                     getBuilder(type).addSubExperiment(stats);
                 }
@@ -76,7 +76,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
         @SuppressWarnings("unchecked")
         private StatsHolder.Builder getBuilder(
-                Stats.Type t) {
+                StatsType t) {
             StatsHolder.Builder builder = map.get(t);
             if (builder == null) {
                 builder = StatsHolder.builder(t, name);
@@ -86,10 +86,10 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         }
 
         public MixedStatsHolder join() {
-            Map<Stats.Type, StatsHolder> statsHolderMap = new LinkedHashMap<>();
-            for (Map.Entry<Stats.Type,
+            Map<StatsType, StatsHolder> statsHolderMap = new LinkedHashMap<>();
+            for (Map.Entry<StatsType,
                     StatsHolder.Builder> entry: map.entrySet()) {
-                Stats.Type type = entry.getKey();
+                StatsType type = entry.getKey();
                 StatsHolder.Builder builder = entry.getValue();
                 statsHolderMap.put(type, builder.build());
             }
@@ -105,8 +105,8 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         return new Joiner(name);
     }
 
-    private final Map<Stats.Type, StatsHolder> map;
-    private final Map<Stats.Type, StatsHolder> uMap;
+    private final Map<StatsType, StatsHolder> map;
+    private final Map<StatsType, StatsHolder> uMap;
 
     public MixedStatsHolder(StatsHolder... stats) {
         this(new ArrayMap<>());
@@ -116,7 +116,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         }
     }
 
-    private MixedStatsHolder(Map<Stats.Type, StatsHolder> map) {
+    private MixedStatsHolder(Map<StatsType, StatsHolder> map) {
         this.map = map;
         this.uMap = Collections.unmodifiableMap(map);
     }
@@ -125,11 +125,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         return map.isEmpty();
     }
 
-    public Set<Stats.Type> getTypes() {
+    public Set<StatsType> getTypes() {
         return uMap.keySet();
     }
 
-    public Map<Stats.Type, StatsHolder> getStatsMap() {
+    public Map<StatsType, StatsHolder> getStatsMap() {
         return uMap;
     }
 
@@ -141,7 +141,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         return map.values().iterator().next();
     }
 
-    public StatsHolder getStatsHolder(Stats.Type type) {
+    public StatsHolder getStatsHolder(StatsType type) {
         StatsHolder holder = map.get(type);
         return holder;
     }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
@@ -28,7 +28,7 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(EqCondition equality, TName other) {
+    public I is(RelativeOrder equality, TName other) {
         switch(equality) {
             case EQUALS: return sameAs(other);
             case LESS: return lessThan(other);
@@ -39,19 +39,19 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     public I sameAs(final CharSequence other) {
         return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, EqCondition.EQUALS,
+                        name, other, RelativeOrder.EQUALS,
                         tolerance));
     }
 
     public I greaterThan(final CharSequence other) {
         return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, EqCondition.GREATER,
+                        name, other, RelativeOrder.GREATER,
                         tolerance));
     }
 
     public I lessThan(final CharSequence other) {
         return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, EqCondition.LESS,
+                        name, other, RelativeOrder.LESS,
                         tolerance));
     }
 }

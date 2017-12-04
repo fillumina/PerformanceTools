@@ -9,14 +9,15 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureRatioCalculatorTest {
+public class RatioAgainstBiggerMeasureCalculatorTest {
 
     @Test
     public void shouldGetTheRatioBetweenTwoMeasures() {
         AssertableMock assertable =
                 AssertableMock.create("first", 12.3, "second", 45.6);
 
-        MeasureRatioCalculator calc = new MeasureRatioCalculator(assertable);
+        RatioAgainstBiggerMeasureCalculator calc =
+                new RatioAgainstBiggerMeasureCalculator(assertable);
 
         assertEquals(1.0,
                 calc.getRatio("second", Ratio.P_95).getValue(), 0);
@@ -30,7 +31,8 @@ public class MeasureRatioCalculatorTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        MeasureRatioCalculator calc = new MeasureRatioCalculator(assertable);
+        RatioAgainstBiggerMeasureCalculator calc =
+                new RatioAgainstBiggerMeasureCalculator(assertable);
 
         assertEquals(1.0,
                 calc.getRatio("second", Ratio.P_95).getValue(), 0);

@@ -3,6 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,12 +42,12 @@ public class SampleProducerMock
     }
 
     @Override
-    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+    public Map<StatsType, Sample> executeWithIterations(int... iterations) {
         return get();
     }
 
     @Override
-    public Map<Stats.Type, Sample> get() {
+    public Map<StatsType, Sample> get() {
         SampleCreator.Builder builder = SampleCreator.builder();
         for (Samples s : samples) {
             builder.add(s.name, s.values[index % s.values.length]);

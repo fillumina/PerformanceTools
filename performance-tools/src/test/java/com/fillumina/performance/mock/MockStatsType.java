@@ -1,16 +1,17 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MockStatsType implements Stats.Type {
+public class MockStatsType implements StatsType {
 
     public static final MockStatsType INSTANCE = new MockStatsType("Mock Stats");
 
-    private final String name;
+    final String name;
 
     public MockStatsType(String name) {
         this.name = name;

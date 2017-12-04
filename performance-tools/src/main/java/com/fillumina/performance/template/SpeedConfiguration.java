@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.time.TimeStatsType;
@@ -248,7 +249,7 @@ public class SpeedConfiguration<C>
             }
 
             @Override
-            public Map<Stats.Type, StringGenerator<Stats>>
+            public Map<StatsType, StringGenerator<Stats>>
                     getStringGenerators() {
                 return ArrayMap.create(TimeStatsType.AVERAGE,
                         averageTimeStatsStringGenerator,

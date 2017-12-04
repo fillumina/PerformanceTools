@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.EqCondition;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
@@ -21,7 +21,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
             MeasureRatio actualRatio,
             Ratio expectedRatio,
             Ratio tolerance,
-            EqCondition requiredCondition,
+            RelativeOrder requiredCondition,
             Assertable assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.testName = testName;
@@ -31,7 +31,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    public boolean isConditionSatisfied(EqCondition condition,
+    public boolean isConditionSatisfied(RelativeOrder condition,
             Ratio tolerance) {
         double lower = actualRatio.getLowerBound();
         double upper = actualRatio.getUpperBound();
@@ -70,7 +70,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
         StringBuilder buf = new StringBuilder();
         buf.append('\'').append(testName).append('\'')
                 .append(" expected ")
-                .append(getCondition())
+                .append(getRelativeOrder())
                 .append(' ')
                 .append(expected)
                 .append(", found ")

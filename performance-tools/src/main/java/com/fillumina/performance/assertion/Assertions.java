@@ -24,7 +24,7 @@ public class Assertions
     private final Collection<Assertion> collection;
 
     public static Assertions withTolerance(final Ratio tolerance) {
-        return new Assertions().tolerance(tolerance);
+        return new Assertions().setTolerance(tolerance);
     }
 
     public Assertions() {
@@ -42,7 +42,7 @@ public class Assertions
     }
 
     /**
-     * Check the given {@link Assertable}.
+     * Checks the given {@link Assertable}.
      *
      * @param assertable       the {@link Assertable} to check
      * @throws AssertionError  if the {@link Assertable} doesn't comply
@@ -53,11 +53,11 @@ public class Assertions
     }
 
     @Override
-    public void check(Assertable assertable,
+    public void checkAndReport(Assertable assertable,
             Map<Assertable, List<Assertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         collection.forEach(a ->
-                a.check(assertable, failedAssertions, unusedAssertionChecker) );
+                a.checkAndReport(assertable, failedAssertions, unusedAssertionChecker) );
     }
 
     @Override

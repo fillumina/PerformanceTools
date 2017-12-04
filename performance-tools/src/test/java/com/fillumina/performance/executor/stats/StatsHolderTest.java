@@ -251,7 +251,7 @@ public class StatsHolderTest {
         TName two = TN.tname("root", "subroot", "two");
         TName three = TN.tname("root", "subroot", "three");
 
-        Stats.Type type = MockStatsType.INSTANCE;
+        StatsType type = MockStatsType.INSTANCE;
 
         StatsHolder holder =
                 StatsHolder.builder(type, "root")

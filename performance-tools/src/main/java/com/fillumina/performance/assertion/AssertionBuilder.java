@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 
 /**
- * Assertion Builder.
+ * Helper to build {@link Assertion}s.
  *
  * @param I self
  * @param C caller used for fluent interface
@@ -102,7 +102,7 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     /** Set the test tolerance. */
     @SuppressWarnings("unchecked")
-    public I tolerance(final Ratio tolerance) {
+    public I setTolerance(final Ratio tolerance) {
         this.tolerance = tolerance;
         return (I) this;
     }

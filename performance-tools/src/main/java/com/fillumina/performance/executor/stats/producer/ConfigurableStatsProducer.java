@@ -7,6 +7,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTypedMap;
 import com.fillumina.performance.time.HeatDetector;
 import com.fillumina.performance.util.GarbageCollectorExecutor;
@@ -183,7 +184,7 @@ public class ConfigurableStatsProducer
         int coolerTime = -1;
         StatsCreator creator;
         MixedStatsHolder mixedHolder;
-        Map<Stats.Type,Stats> statsMap;
+        Map<StatsType,Stats> statsMap;
         Collection<Stats> statsColl;
         int repetitions = 0;
 
@@ -204,7 +205,7 @@ public class ConfigurableStatsProducer
                 UnmodifiableIntList iterationsPerSample =
                         strategy.getIterations();
 
-                Map<Stats.Type,Sample> resultSampleMap =
+                Map<StatsType,Sample> resultSampleMap =
                         executeTests(iterationsPerSample.toIntArray());
                 creator.addSample(resultSampleMap);
 
@@ -248,7 +249,7 @@ public class ConfigurableStatsProducer
         return mixedHolder;
     }
 
-    private Map<Stats.Type, Sample> executeTests(int[] iterationsPerSample) {
+    private Map<StatsType, Sample> executeTests(int[] iterationsPerSample) {
         if (iterationsPerSample == null ||
                 iterationsPerSample.length != getTests().size()) {
             return getSampleProducer().execute();
@@ -257,7 +258,7 @@ public class ConfigurableStatsProducer
     }
 
     @SuppressWarnings("unchecked")
-    private Map<Stats.Type, Stats> getAllAssertables(
+    private Map<StatsType, Stats> getAllAssertables(
             MixedStatsHolder mixedHolder) {
         StatsTypedMap<Stats> map = new StatsTypedMap<>();
         for (StatsHolder h : mixedHolder.getStatsMap().values()) {

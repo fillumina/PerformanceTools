@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.stats.AbstractStatsProducerTest;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsTableStringGenerator;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.mock.SampleProducerMock;
@@ -41,7 +42,7 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         SampleProducerMock sampleProducer = new SampleProducerMock() {
             @Override
-            public Map<Stats.Type, Sample> get() {
+            public Map<StatsType, Sample> get() {
                 for (Runnable r : getTests().values()) {
                     r.run();
                 }

@@ -11,6 +11,7 @@ public class UnmodifiableList<T> extends AbstractList<T> {
 
     private final T[] array;
 
+    /** Reads all the items from the give collection. */
     @SuppressWarnings("unchecked")
     public UnmodifiableList(Collection<T> coll) {
         this((T[])coll.toArray());

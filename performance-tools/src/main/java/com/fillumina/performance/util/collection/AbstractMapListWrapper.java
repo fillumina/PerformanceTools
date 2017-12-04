@@ -18,58 +18,109 @@ import java.util.function.Predicate;
 
 /**
  * A {@link Map} implementation which uses a given mapping function to extract
- * keys from values (implicitly creating an entry out of each v).
- * It keeps inserting order.
+ * keys from values. It keeps inserting order.
  * It's size efficient and reasonably fast for a relatively few entries
  * (it's backed by an {@link ArrayList} so most operations take linear time).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ArrayListMap<K,V>
+public abstract class AbstractMapListWrapper
+            <I extends AbstractMapListWrapper<I,K,V>, K,V>
         implements Map<K,V>, Iterable<Entry<K,V>>, Serializable {
     private static final long serialVersionUID = 1L;
-    
-    private final Function<V,K> keyExtractor;
-    private final List<V> list;
 
-    public ArrayListMap(Function<V, K> keyExtractor) {
-        this(keyExtractor, 10);
+    private static class MapListWrapper<K,V>
+            extends AbstractMapListWrapper<MapListWrapper<K,V>,K,V> {
+        private static final long serialVersionUID = 1L;
+
+        private final Function<V,K> keyExtractor;
+
+        public MapListWrapper(Function<V,K> keyExtractor) {
+            this.keyExtractor = keyExtractor;
+        }
+
+        private MapListWrapper(Function<V, K> keyExtractor, List<V> list) {
+            super(list);
+            this.keyExtractor = keyExtractor;
+        }
+
+        @Override
+        protected K getKeyFromValue(V value) {
+            return keyExtractor.apply(value);
+        }
+
+        @Override
+        protected MapListWrapper<K,V> createNew(List<V> list) {
+            return new MapListWrapper<>(keyExtractor, list);
+        }
     }
 
-    public ArrayListMap(Function<V, K> keyExtractor, int size) {
-        this.keyExtractor = keyExtractor;
+    private final List<V> list;
+
+    private KeySet keySet;
+    private Values values;
+    private EntrySet entrySet;
+    private I unmodifiable;
+
+    public static <K,V> AbstractMapListWrapper<?,K,V> create(
+            Function<V,K> keyExtractor) {
+        return new MapListWrapper<>(keyExtractor);
+    }
+
+    public AbstractMapListWrapper() {
+        this(10);
+    }
+
+    public AbstractMapListWrapper(AbstractMapListWrapper<I,K,V> copy) {
+        this.list = new ArrayList<>(copy.list);
+    }
+
+    public AbstractMapListWrapper(int size) {
         this.list = new ArrayList<>(size);
     }
 
-    public ArrayListMap(Function<V, K> keyExtractor, List<V> list) {
-        this.keyExtractor = keyExtractor;
-        this.list = new ArrayList<>(list.size());
-        // cannot just copy because there could be key clashing
-        addAll(list);
+    protected AbstractMapListWrapper(List<V> direct) {
+        this.list = direct;
     }
 
-    protected ArrayListMap(Function<V, K> keyExtractor, List<V> list, Void direct) {
-        this.keyExtractor = keyExtractor;
-        this.list = list;
-    }
+    protected abstract K getKeyFromValue(V value);
+    protected abstract I createNew(List<V> list);
 
-    public ArrayListMap<K,V> add(V... values) {
+    @SuppressWarnings("unchecked")
+    public I add(V... values) {
         if (values != null || values.length > 0) {
             for (V v : values) {
                 put(v);
             }
         }
-        return this;
+        return (I) this;
     }
 
-    public ArrayListMap<K,V> view(Function<V,K> keyExtractor) {
-        return new ArrayListMap<>(keyExtractor, list);
+    public void addAll(Collection<V> coll) {
+        if (coll != null && !coll.isEmpty()) {
+            coll.forEach( (V v) -> put(v) );
+        }
     }
 
-    public ArrayListMap<K,V> unmodifiable() {
-        return new ArrayListMap<>(keyExtractor,
-                Collections.unmodifiableList(list),
-                null);
+    public boolean isUnmodifiable() {
+        int lastIndex = size();
+        try {
+            list.add(null);
+            list.remove(lastIndex);
+            return false;
+        } catch (UnsupportedOperationException e) {
+            return true;
+        }
+    }
+
+    public I unmodifiable() {
+        if (isUnmodifiable()) {
+            return (I) this;
+        }
+        if (unmodifiable == null) {
+            unmodifiable = createNew(Collections.unmodifiableList(list));
+        }
+        return unmodifiable;
     }
 
     public void trimToSize() {
@@ -82,7 +133,7 @@ public class ArrayListMap<K,V>
         int s = list.size();
         for (int i=0; i<s; i++) {
             V v = list.get(i);
-            if (Objects.equals(key, keyExtractor.apply(v))) {
+            if (Objects.equals(key, getKeyFromValue(v))) {
                 return i;
             }
         }
@@ -106,7 +157,7 @@ public class ArrayListMap<K,V>
     }
 
     public void putAtIndex(int index, V value) {
-        int idx = indexOfKey(keyExtractor.apply(value));
+        int idx = indexOfKey(getKeyFromValue(value));
         if (idx != -1) {
             list.remove(idx);
         }
@@ -126,7 +177,7 @@ public class ArrayListMap<K,V>
     @Override
     public boolean containsKey(Object key) {
         for (V v : list) {
-            if (Objects.equals(key, keyExtractor.apply(v))) {
+            if (Objects.equals(key, getKeyFromValue(v))) {
                 return true;
             }
         }
@@ -141,7 +192,7 @@ public class ArrayListMap<K,V>
     /** Searches an element by specifying a predicate over keys. */
     public V findByKey(Predicate<K> predicate) {
         for (V v : list) {
-            if (predicate.test(keyExtractor.apply(v))) {
+            if (predicate.test(getKeyFromValue(v))) {
                 return v;
             }
         }
@@ -161,21 +212,15 @@ public class ArrayListMap<K,V>
     @Override
     public V get(Object key) {
         for (V v : list) {
-            if (Objects.equals(key, keyExtractor.apply(v))) {
+            if (Objects.equals(key, getKeyFromValue(v))) {
                 return v;
             }
         }
         return null;
     }
 
-    public void addAll(Collection<V> values) {
-        for (V v : values) {
-            put(v);
-        }
-    }
-
     public V put(V value) {
-        return put(keyExtractor.apply(value), value);
+        return put(getKeyFromValue(value), value);
     }
 
     @Override
@@ -183,7 +228,7 @@ public class ArrayListMap<K,V>
         ListIterator<V> it = list.listIterator();
         while (it.hasNext()) {
             V v = it.next();
-            if (Objects.equals(key, keyExtractor.apply(v))) {
+            if (Objects.equals(key, getKeyFromValue(v))) {
                 it.set(value);
                 return v;
             }
@@ -197,7 +242,7 @@ public class ArrayListMap<K,V>
         Iterator<V> it = list.iterator();
         while (it.hasNext()) {
             V v = it.next();
-            if (Objects.equals(key, keyExtractor.apply(v))) {
+            if (Objects.equals(key, getKeyFromValue(v))) {
                 it.remove();
                 return v;
             }
@@ -222,13 +267,13 @@ public class ArrayListMap<K,V>
             @Override
             public K remove(int index) {
                 V v = list.remove(index);
-                return v == null ? null : keyExtractor.apply(v);
+                return v == null ? null : getKeyFromValue(v);
             }
 
             @Override
             public K get(int index) {
                 V v = list.get(index);
-                return v == null ? null : keyExtractor.apply(v);
+                return v == null ? null : getKeyFromValue(v);
             }
 
             @Override
@@ -245,106 +290,35 @@ public class ArrayListMap<K,V>
 
     @Override
     public Set<K> keySet() {
-        // can remove but not add elements
-        return new AbstractSet<K>() {
-            @Override
-            public Iterator<K> iterator() {
-                return new Iterator<K>() {
-                    private Iterator<V> it = list.iterator();
-
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
-
-                    @Override
-                    public K next() {
-                        return keyExtractor.apply(it.next());
-                    }
-
-                    @Override
-                    public void remove() {
-                        it.remove();
-                    }
-                };
-            }
-
-            @Override
-            public boolean remove(Object o) {
-                @SuppressWarnings("unchecked")
-                int idx = indexOfKey((K)o);
-                if (idx != -1) {
-                    list.remove(idx);
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public void clear() {
-                list.clear();
-            }
-
-            @Override
-            public int size() {
-                return list.size();
-            }
-        };
+        if (keySet == null) {
+            keySet = new KeySet();
+        }
+        return keySet;
     }
 
     @Override
     public List<V> values() {
-        // can remove but not add elements
-        return new AbstractList<V>() {
-            @Override
-            public V remove(int index) {
-                return list.remove(index);
-            }
-
-            @Override
-            public V get(int index) {
-                return list.get(index);
-            }
-
-            @Override
-            public void clear() {
-                list.clear();
-            }
-
-            @Override
-            public int size() {
-                return list.size();
-            }
-        };
+        if (values == null) {
+            values = new Values();
+        }
+        return values;
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return new AbstractSet<Entry<K,V>>() {
-            @Override
-            public Iterator<Entry<K, V>> iterator() {
-                return new Cursor();
-            }
-
-            @Override
-            public void clear() {
-                list.clear();
-            }
-
-            @Override
-            public int size() {
-                return list.size();
-            }
-        };
+        if (entrySet == null) {
+            entrySet = new EntrySet();
+        }
+        return entrySet;
     }
 
     private class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
-        private ListIterator<V> it = list.listIterator();
+        private final ListIterator<V> it = list.listIterator();
         private V v;
 
         @Override
         public K getKey() {
-            return keyExtractor.apply(v);
+            return getKeyFromValue(v);
         }
 
         @Override
@@ -355,7 +329,7 @@ public class ArrayListMap<K,V>
         @Override
         public V setValue(V value) {
             V oldv = v;
-            if (!containsKey(keyExtractor.apply(value))) {
+            if (!containsKey(getKeyFromValue(value))) {
                 it.set(value);
                 v = value;
                 return oldv;
@@ -407,7 +381,8 @@ public class ArrayListMap<K,V>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ArrayListMap<?, ?> other = (ArrayListMap<?, ?>) obj;
+        final AbstractMapListWrapper<?,?,?> other =
+                (AbstractMapListWrapper<?,?,?>) obj;
         if (!Objects.equals(this.list, other.list)) {
             return false;
         }
@@ -417,5 +392,90 @@ public class ArrayListMap<K,V>
     @Override
     public String toString() {
         return getClass().getSimpleName() + list.toString();
+    }
+
+    private class EntrySet extends AbstractSet<Entry<K, V>> {
+        @Override
+        public Iterator<Entry<K, V>> iterator() {
+            return new Cursor();
+        }
+
+        @Override
+        public void clear() {
+            list.clear();
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
+    }
+
+    private class Values extends AbstractList<V> {
+        @Override
+        public V remove(int index) {
+            return list.remove(index);
+        }
+
+        @Override
+        public V get(int index) {
+            return list.get(index);
+        }
+
+        @Override
+        public void clear() {
+            list.clear();
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
+    }
+
+    private class KeySet extends AbstractSet<K> {
+
+        @Override
+        public Iterator<K> iterator() {
+            return new Iterator<K>() {
+                private Iterator<V> it = list.iterator();
+
+                @Override
+                public boolean hasNext() {
+                    return it.hasNext();
+                }
+
+                @Override
+                public K next() {
+                    return getKeyFromValue(it.next());
+                }
+
+                @Override
+                public void remove() {
+                    it.remove();
+                }
+            };
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            @SuppressWarnings("unchecked")
+                    int idx = indexOfKey((K)o);
+            if (idx != -1) {
+                list.remove(idx);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void clear() {
+            list.clear();
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
     }
 }

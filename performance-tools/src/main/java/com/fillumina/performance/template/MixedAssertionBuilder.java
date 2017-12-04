@@ -4,6 +4,7 @@ import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.executor.stats.TNameMatcherAssertion;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.CallBackBuilder;
@@ -47,21 +48,21 @@ public class MixedAssertionBuilder<C>
     }
 
     public MixedAssertionBuilder<C> addAssertion(
-            Stats.Type type,
+            StatsType type,
             Assertion assertion) {
         mixedStatsBuilder.getStatsBuilder(type).addAssertion(assertion);
         return this;
     }
 
     public AssertionBuilder<?, MixedAssertionBuilder<C>> addAssertionBuilder(
-            Stats.Type type) {
+            StatsType type) {
         return new AssertionBuilder<>(this,
                 a -> addAssertion(type, a),
                 tolerance);
     }
 
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>>
-        addAssertionMatcher(Stats.Type type) {
+        addAssertionMatcher(StatsType type) {
         return TNameMatcherAssertion.builder(assertion -> {
                     addAssertion(type, assertion);
                     return MixedAssertionBuilder.this;

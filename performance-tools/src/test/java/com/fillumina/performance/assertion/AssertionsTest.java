@@ -125,7 +125,7 @@ public class AssertionsTest {
 
         Assertions statsAssertion = new Assertions();
 
-        statsAssertion.tolerance(tolerance);
+        statsAssertion.setTolerance(tolerance);
 
         assertEquals(tolerance, statsAssertion.getTolerance());
     }

@@ -1,65 +1,44 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.util.collection.ArrayListMap;
-import com.fillumina.performance.util.collection.UnmodifiableList;
+import com.fillumina.performance.util.collection.AbstractMapListWrapper;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-@Deprecated
 public class StatsTypedMap<T extends StatsTyped>
-        extends ArrayListMap<Stats.Type, T> {
+        extends AbstractMapListWrapper<StatsTypedMap<T>, StatsType, T> {
     private static final long serialVersionUID = 1L;
 
-    private static final Function<StatsTyped, Stats.Type> TNAME_EXTRACTOR =
-            t -> t.getStatsType();
-
-    @SuppressWarnings("unchecked")
-    private static <T extends StatsTyped> Function<T,Stats.Type>
-            getDefaultExtractor() {
-        return (Function<T, Stats.Type>) TNAME_EXTRACTOR;
-    }
-
     public StatsTypedMap() {
-        super(getDefaultExtractor());
     }
 
     public StatsTypedMap(int size) {
-        super(getDefaultExtractor(), size);
+        super(size);
     }
 
-    public StatsTypedMap(List<T> list) {
-        super(getDefaultExtractor(), list);
+    public StatsTypedMap(StatsTypedMap<T> copy) {
+        super(copy);
     }
 
-    public StatsTypedMap(Map<Stats.Type,T> copy) {
-        super(getDefaultExtractor(), copy.size());
-        copy.forEach((k,v) -> put(k,v));
+    private StatsTypedMap(List<T> list) {
+        super(list);
     }
 
-    protected StatsTypedMap(List<T> list, Void direct) {
-        super(getDefaultExtractor(), list, null);
+    @Override
+    protected StatsType getKeyFromValue(T value) {
+        return value.getStatsType();
     }
 
-    /** Equality is defined in terms of equals string representations. */
+    @Override
+    protected StatsTypedMap<T> createNew(List<T> list) {
+        return new StatsTypedMap<>(list);
+    }
+
+    /** Equality is defined in terms of equal string representations. */
     public T get(CharSequence testName) {
         String nameStr = testName.toString();
         return findByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
     }
-
-    @Override
-    public StatsTypedMap<T> unmodifiable() {
-        return new StatsTypedMap<>(new UnmodifiableList<>(values()), null);
-    }
-
-    @Override
-    public StatsTypedMap<T> add(T... values) {
-        super.add(values);
-        return this;
-    }
-
 }

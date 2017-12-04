@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.StopWatch;
@@ -24,13 +25,13 @@ public abstract class AbstractMemSampleProducer
     static final MemoryConsumption MC = MemoryConsumption.INSTANCE;
 
     @Override
-    public Map<Stats.Type, Sample> executeWithIterations(int... iterations) {
+    public Map<StatsType, Sample> executeWithIterations(int... iterations) {
         Sample sample = getSampleWithIterations(iterations);
         return wrapIntoSingletonMap(sample);
     }
 
     @Override
-    public Map<Stats.Type, Sample> get() {
+    public Map<StatsType, Sample> get() {
         Sample sample = getSampleWithIterations();
         return wrapIntoSingletonMap(sample);
     }
@@ -79,7 +80,7 @@ public abstract class AbstractMemSampleProducer
         return result;
     }
 
-    private Map<Stats.Type, Sample> wrapIntoSingletonMap(Sample sample) {
+    private Map<StatsType, Sample> wrapIntoSingletonMap(Sample sample) {
         return Collections.singletonMap(getStatsType(), sample);
     }
 }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.MemStatsType;
 
 /**
@@ -10,7 +11,7 @@ import com.fillumina.performance.mem.MemStatsType;
 public class AllocatedMemSampleProducer extends AbstractMemSampleProducer {
 
     @Override
-    public Stats.Type getStatsType() {
+    public StatsType getStatsType() {
         return MemStatsType.ALLOCATED;
     }
 

@@ -3,6 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.StopWatch;
@@ -35,7 +36,7 @@ public class PerformanceBuilder {
             mixedStats.setCallBack(this);
         }
 
-        public AssertionableResult<MixedHolder> getResult(Stats.Type type) {
+        public AssertionableResult<MixedHolder> getResult(StatsType type) {
             return mixedStats.getStats(type);
         }
 
