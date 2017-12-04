@@ -23,10 +23,12 @@ public class IterationTimeCollectorTest {
         collector.add(ONE, 100, 5);
 
         Sample sample = collector.buildAverageTimeSample();
+
         SampleValue value = sample.getValuesMap().get(ONE);
 
-        assertEquals(200, value.getTimeNs());
-        assertEquals(10, value.getIterations());
+        assertEquals(sample.toString(),
+                (100.0 / 5.0 + 100.0 / 5.0) / 2.0,
+                value.getQuantity().toBase(), 0);
     }
 
     @Test
@@ -37,8 +39,9 @@ public class IterationTimeCollectorTest {
         Sample sample = collector.buildAverageTimeSample();
         SampleValue value = sample.getValuesMap().get(ONE);
 
-        assertEquals(100, value.getTimeNs());
-        assertEquals(5, value.getIterations());
+        assertEquals(sample.toString(),
+                100.0 / 5.0,
+                value.getQuantity().toBase(), 0);
     }
 
     @Test
@@ -50,8 +53,9 @@ public class IterationTimeCollectorTest {
         Sample sample = collector.buildAverageTimeSample();
         SampleValue value = sample.getValuesMap().get(ONE);
 
-        assertEquals(300, value.getTimeNs());
-        assertEquals(15, value.getIterations());
+        assertEquals(sample.toString(),
+                (100.0 / 5.0 + 200.0 / 10.0) / 2.0,
+                value.getQuantity().toBase(), 0);
     }
 
     @Test
@@ -63,12 +67,14 @@ public class IterationTimeCollectorTest {
         Sample sample = collector.buildAverageTimeSample();
 
         SampleValue one = sample.getValuesMap().get(ONE);
-        assertEquals(100, one.getTimeNs());
-        assertEquals(5, one.getIterations());
+        assertEquals(sample.toString(),
+                100.0 / 5.0,
+                one.getQuantity().toBase(), 0);
 
         SampleValue two = sample.getValuesMap().get(TWO);
-        assertEquals(200, two.getTimeNs());
-        assertEquals(20, two.getIterations());
+        assertEquals(sample.toString(),
+                200.0 / 20.0,
+                two.getQuantity().toBase(), 0);
     }
 
 }

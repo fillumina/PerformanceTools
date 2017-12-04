@@ -51,21 +51,6 @@ public class ConsoleTimeProgressionListener
                     (status.getTotalSamples() - sample);
         } else {
             stopWatch.start();
-            buf.append("ITERATIONS PER SAMPLE:")
-                    .append(System.lineSeparator());
-            TableFormatter itTable = new TableFormatter();
-            itTable.cell("idx").cell("name").cell("iterations").endl();
-            int pos = 0;
-            for (SampleValue sv : timeSample.getValuesMap().values()) {
-                itTable
-                        .cell(pos)
-                        .cell("'" + sv.getName().toString() + "'")
-                        .cell(sv.getIterations())
-                        .endl();
-                pos++;
-            }
-            buf.append(itTable.toString());
-            buf.append(System.lineSeparator());
         }
         String totalSamplesStr = Integer.toString(status.getTotalSamples());
         String sampleStr = Integer.toString(sample);
@@ -82,11 +67,11 @@ public class ConsoleTimeProgressionListener
                 .append(totalSamplesStr)
                 .append(" ETC=") // Estimated Time to Complete
                 .append(etc)
-                .append(" \ttime(ns)= ");
+                .append(" \tns (iterations)= ");
 
         CsvFormatter cf = new CsvFormatter();
-        for (SampleValue tsv : timeSample.getValuesMap().values()) {
-            cf.append(/*'\'', entry.getKey(), "' ",*/tsv.getTimeNs());
+        for (SampleValue sv : timeSample.getValuesMap().values()) {
+            cf.append(sv.toStringValue());
         }
         buf.append(cf.toString());
         switch (status.getTimeSpentCoolingCpuMs()) {

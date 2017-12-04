@@ -6,6 +6,7 @@ import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.ThroughputUnit;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.LinkedHashMap;
@@ -72,10 +73,9 @@ public class TimeSampleCollector implements TimeSampleBuilder {
             TName name = e.getKey();
             IterationTimeAccumulator ita = e.getValue();
 
-            SampleValue s = new SampleValue(
+            SampleValue s = new TimeSampleValue(
                     name,
-                    valueFunc.apply(ita),
-                    unit,
+                    Quantity.from(valueFunc.apply(ita), unit),
                     type,
                     ita.getIterations(),
                     ita.getTimeNs());

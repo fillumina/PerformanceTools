@@ -1,13 +1,10 @@
-package com.fillumina.performance.executor.sample;
+package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.StatsType;
-import com.fillumina.performance.executor.stats.StatsTyped;
+import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
-import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.Unit;
@@ -21,20 +18,7 @@ import java.util.Map;
  */
 public class StatsBuilder implements StatsTyped {
 
-    private static class Accumulator implements TNamed {
-        TName name;
-        StatsType type;
-        List<Double> values = new ArrayList<>();
-        long totalIterations;
-        long totalTime;
-
-        @Override
-        public TName getName() {
-            return name;
-        }
-    }
-
-    private final TNameMap<Accumulator> accumulators = new TNameMap<>();
+    private final ArrayMap<TName, List<Double>> accumulators = new ArrayMap<>();
     private final StatsType type;
     private Unit<?> unit;
 
@@ -50,13 +34,10 @@ public class StatsBuilder implements StatsTyped {
     public void addSample(Sample sample) {
         sample.getValuesMap().values().forEach((SampleValue v) -> {
             if (unit == null) {
-                unit = v.getUnit();
+                unit = v.getQuantity().getUnit();
             }
-            Accumulator acc = getAccumulator(v.getName());
-            acc.name = v.getName();
-            acc.totalIterations += v.getIterations();
-            acc.totalTime += v.getTimeNs();
-            acc.values.add(v.getValue());
+            List<Double> list = getAccumulator(v.getName());
+            list.add(v.getQuantity().toBase());
         });
     }
 
@@ -70,20 +51,20 @@ public class StatsBuilder implements StatsTyped {
     public Stats createStats(ListFilter<Double> filter) {
         Map<TName, DimensionalMeasure> map = new ArrayMap<>();
 
-        this.accumulators.values().forEach((Accumulator acc) -> {
-            List<Double> filtered = filter.filter(acc.values);
+        this.accumulators.forEach((TName name, List<Double> list) -> {
+            List<Double> filtered = filter.filter(list);
             DimensionalOnlineMeasure measure =
                     new DimensionalOnlineMeasure(unit, filtered);
-            map.put(acc.name, measure);
+            map.put(name, measure);
         });
 
         return new Stats(type, map);
     }
 
-    private Accumulator getAccumulator(TName name) {
-        Accumulator a = accumulators.get(name);
+    private List<Double> getAccumulator(TName name) {
+        List<Double> a = accumulators.get(name);
         if (a == null) {
-            a = new Accumulator();
+            a = new ArrayList<>();
             accumulators.put(name, a);
         }
         return a;

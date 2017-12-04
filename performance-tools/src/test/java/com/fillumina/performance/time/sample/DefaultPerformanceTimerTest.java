@@ -6,7 +6,6 @@ import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mock.CountingTestable;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
-import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.collection.ArrayMap;
@@ -42,7 +41,7 @@ public class DefaultPerformanceTimerTest {
     }
 
     @Test
-    public void shouldExecuteTheTestsFullyAutomatically() {
+    public void shouldExecuteATestWithTheGivenNumberOfIterations() {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
         PerformanceTimer pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor()) {
@@ -53,33 +52,8 @@ public class DefaultPerformanceTimerTest {
                     }
                 };
         pt.addTest(ONE, () -> iterationCounter.incrementAndGet() );
-        Sample sample = pt.get().get(TimeStatsType.AVERAGE);
-        assertEquals(13, sample.getValuesMap().get(ONE).getIterations());
-    }
-
-    @Test
-    public void shouldExecuteATestWithTheGivenNumberOfIterations() {
-        Sample sample = new DefaultPerformanceTimer(
-                new PerformanceExecutor() {
-                    @Override
-                    public TimeSampleBuilder executeIterations(
-                            ArrayMap<TName, Runnable> tests, int[] iterations) {
-                        return SpeedSampleMock.builder()
-                                .addTest(ONE)
-                                    .iterations(iterations[0])
-                                    .nansecondsPerOp(100)
-                                .endTest()
-                                .createSample();
-                    }
-                })
-                .addTest("test", NullRunnable.INSTANCE)
-                .iterate(123)
-                .buildAverageTimeSample();
-
-        SampleValue value = sample.getValuesMap().get(ONE);
-
-        assertEquals(123, value.getIterations());
-        assertEquals(12_300, value.getTimeNs());
+        pt.execute();
+        assertEquals(13, iterationCounter.get(), 0);
     }
 
     @Test
@@ -93,27 +67,25 @@ public class DefaultPerformanceTimerTest {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
                                     .iterations(iterations[0])
-                                    .nansecondsPerOp(100)
+                                    .nansecondsPerOp(123)
                                 .endTest()
                                 .addTest("two")
                                     .iterations(iterations[1])
-                                    .nansecondsPerOp(10)
+                                    .nansecondsPerOp(456)
                                 .endTest()
                                 .createSample();
                     }
                 })
                 .addTest("test_1", NullRunnable.INSTANCE)
                 .addTest("test_2", NullRunnable.INSTANCE)
-                .iterate(new int[] {123, 456})
+                .iterate(1)
                 .buildAverageTimeSample();
 
         SampleValue value1 = sample.getValuesMap().get(ONE);
-        assertEquals(123, value1.getIterations());
-        assertEquals(12_300, value1.getTimeNs());
+        assertEquals(123, value1.getQuantity().toBase(), 0);
 
         SampleValue value2 = sample.getValuesMap().get("two");
-        assertEquals(456, value2.getIterations());
-        assertEquals(4_560, value2.getTimeNs());
+        assertEquals(456, value2.getQuantity().toBase(), 0);
     }
 
     @Test

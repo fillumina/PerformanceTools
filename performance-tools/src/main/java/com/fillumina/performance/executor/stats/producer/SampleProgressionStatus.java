@@ -1,8 +1,7 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.formatter.TableFormatter;

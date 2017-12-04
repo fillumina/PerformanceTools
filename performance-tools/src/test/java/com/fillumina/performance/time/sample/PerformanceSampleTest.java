@@ -2,10 +2,8 @@ package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
-import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +32,6 @@ public class PerformanceSampleTest {
     @Test
     public void shouldGetTheSize() {
         assertEquals(3, sample.getValuesMap().size());
-    }
-
-    @Test
-    public void shouldGetTheIterationsNumber() {
-        final Map<TName, SampleValue> timeMap = sample.getValuesMap();
-        assertEquals(ITERATIONS, timeMap.get(FIRST).getIterations());
-        assertEquals(ITERATIONS, timeMap.get(SECOND).getIterations());
-        assertEquals(ITERATIONS, timeMap.get(THIRD).getIterations());
     }
 
     @Test

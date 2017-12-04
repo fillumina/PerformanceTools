@@ -29,7 +29,7 @@ public class SampleCreator {
             String name = (String) array[i];
             double value = Double.valueOf(Objects.toString(array[i+1]));
             SampleValue sampleValue = new SampleValue(
-                    TN.tname(name), value, IntervalUnit.MILLISECONDS);
+                    TN.tname(name), value, IntervalUnit.NANOSECONDS);
             map.add(sampleValue);
         }
         return map;

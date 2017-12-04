@@ -1,11 +1,10 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsCreator;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
@@ -107,7 +106,7 @@ public class MemStatsProducer
             int currentSampleIndex, int totalSamples) {
         for (Sample sample : sampleMap.values()) {
             for (SampleValue v : sample.getValuesMap().values()) {
-                notifyListeners(v.getName(), 0, 0, (long) v.getValue());
+                notifyListeners(v.getName(), 0, 0, (long) v.getQuantity().toBase());
             }
         }
     }

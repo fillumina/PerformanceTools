@@ -3,13 +3,14 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.mock.CountingTestable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -46,7 +47,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
 
         ArrayMap<TName,Runnable> testMap = new ArrayMap<>();
-        testMap.put(TN.tname("alpha"), new CountingTestable());
+        testMap.put(TN.tname("alpha"), new LfsrRunnable());
 
         Sample sample = executor
                 .executeIterations(testMap, new int[]{1})
@@ -54,8 +55,18 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         Map<TName,SampleValue> timeMap = sample.getValuesMap();
 
         assertEquals(3, timeMap.size());
-        assertEquals(1, timeMap.get(TN.tname("alpha","single")).getIterations());
-        assertEquals(2, timeMap.get(TN.tname("alpha", "0")).getIterations());
-        assertEquals(2, timeMap.get(TN.tname("alpha", "parallel")).getIterations());
+
+        double single = timeMap
+                        .get(TN.tname("alpha","single"))
+                        .getQuantity().toBase();
+        double parallel = timeMap
+                        .get(TN.tname("alpha", "parallel"))
+                        .getQuantity().toBase();
+        double thread = timeMap
+                        .get(TN.tname("alpha", "0"))
+                        .getQuantity().toBase();
+
+        assertTrue(sample.toString(), thread < single);
+        assertTrue(sample.toString(), thread < parallel);
     }
 }

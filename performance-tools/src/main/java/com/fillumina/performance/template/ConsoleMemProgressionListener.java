@@ -103,7 +103,7 @@ public class ConsoleMemProgressionListener
         CsvFormatter cf = new CsvFormatter();
         for (Sample s : status.getSamples().values()) {
             for (SampleValue sv : s.getValuesMap().values()) {
-                cf.append(Math.round(sv.getValue()));
+                cf.append(Math.round(sv.getQuantity().toBase()));
             }
         }
         buf.append(cf.toString());

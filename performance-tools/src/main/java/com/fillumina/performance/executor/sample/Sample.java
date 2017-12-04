@@ -27,6 +27,7 @@ public class Sample
         this.map = map;
     }
 
+    // TODO check for String and TName
     public SampleValue getSampleValue(CharSequence name) {
         return map.get(name);
     }
@@ -45,7 +46,7 @@ public class Sample
         if (testSample == null) {
             throw new MeasureNotFoundException(testName, getTestNames());
         }
-        return testSample.getValue();
+        return testSample.getQuantity().toBase();
     }
 
     public List<TName> getTestNames() {

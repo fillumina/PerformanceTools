@@ -1,7 +1,6 @@
 package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.AbstractTestExecutor;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;

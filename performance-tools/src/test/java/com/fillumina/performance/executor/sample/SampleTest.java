@@ -78,7 +78,7 @@ public class SampleTest {
     @Test
     public void shouldGetValue() {
         SampleValue oneValue =
-                new SampleValue(TN.tname("one"), 12.2, IntervalUnit.MILLISECONDS);
+                new SampleValue(TN.tname("one"), 12.2, IntervalUnit.NANOSECONDS);
         TNameMap<SampleValue> map = new TNameMap<SampleValue>().add(oneValue);
 
         Sample sample = new Sample(MockStatsType.INSTANCE, map);

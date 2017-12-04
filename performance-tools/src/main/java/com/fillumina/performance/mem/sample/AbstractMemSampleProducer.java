@@ -3,11 +3,9 @@ package com.fillumina.performance.mem.sample;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.MemUnit;
@@ -43,7 +41,6 @@ public abstract class AbstractMemSampleProducer
     public Sample getSampleWithIterations(int... iterations) {
         TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
         int index = 0;
-        StopWatch stopWatch = new StopWatch();
         for (Map.Entry<TName,Runnable> e : getTests()) {
             TName name = e.getKey();
             Runnable test = e.getValue();
@@ -51,17 +48,13 @@ public abstract class AbstractMemSampleProducer
             long mem = 0;
 
             int it = getIterations(iterations, index);
-            stopWatch.start();
             for (int i=0,l=it; i<l; i++) {
                 long zero = execute(new LfsrRunnable());
                 mem += execute(test) - zero;
             }
-            long elapsedNs = stopWatch.stop();
             double memory = mem * 1.0 / it;
 
-            map.put(new SampleValue(name, memory, MemUnit.B,
-                    getStatsType().toString(),
-                    (long)it, elapsedNs));
+            map.put(new SampleValue(name, memory, MemUnit.B));
             index++;
         }
         Sample sample = new Sample(getStatsType(), map);

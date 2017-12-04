@@ -1,8 +1,7 @@
-package com.fillumina.performance.executor.sample;
+package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.mock.MockStatsType;
+import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import static org.junit.Assert.assertEquals;
@@ -32,8 +31,7 @@ public class StatsBuilderImplTest {
         assertEquals(4, stats.getMeasure("one").getMean(), 0);
     }
 
-    private StatsBuilder createStatsBuilder(
-            String name, double... values) {
+    private StatsBuilder createStatsBuilder(String name, double... values) {
         StatsBuilder statsBuilder = new StatsBuilder(MockStatsType.INSTANCE);
         for (double v : values) {
             statsBuilder.addSample(SampleCreator.createSample(name, v));

@@ -2,8 +2,6 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
@@ -75,32 +73,17 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         int oneWorkers = 2;
         int twoWorkers = 3;
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
-                    .addTask("one", oneWorkers, new Runnable() {
-                            @Override
-                            public void run() {
-                                oneCounter.getAndIncrement();
-                            }
-                        })
-                    .addTask("two", twoWorkers, new Runnable() {
-                            @Override
-                            public void run() {
-                                twoCounter.getAndIncrement();
-                            }
-                        }));
+                    .addTask("one", oneWorkers,
+                            () -> oneCounter.getAndIncrement() )
+                    .addTask("two", twoWorkers,
+                            () -> twoCounter.getAndIncrement() ) );
 
-        Sample sample = executor
-                .executeIterations(testMap, new int[]{250})
-                .buildAverageTimeSample();
+        executor.executeIterations(testMap, new int[]{250});
 
-//        System.out.println(sample);
-//        System.out.println("counter_1=" + oneCounter.get());
-//        System.out.println("counter_2=" + twoCounter.get());
-
-        Map<TName,SampleValue> map = sample.getValuesMap();
-        assertEquals(map.get(TN.tname("asymmetric", "one")).getIterations(),
-                oneCounter.get());
-        assertEquals(map.get(TN.tname("asymmetric", "two")).getIterations(),
-                twoCounter.get());
+        // the 2 tests are executed about with the same iterations
+        assertEquals(
+                "count_1=" + oneCounter.get() + ", count_2=" + twoCounter.get(),
+                1.0, 1.0 * oneCounter.get() / twoCounter.get(), 0.3);
     }
 
     public static void main(final String[] args) {

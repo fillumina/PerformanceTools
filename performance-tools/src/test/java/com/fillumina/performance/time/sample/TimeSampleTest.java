@@ -20,10 +20,9 @@ import org.junit.Test;
  */
 public class TimeSampleTest {
     private static final IntervalUnit UNIT = IntervalUnit.MILLISECONDS;
+    private static final double SCALE = 1E6;
 
-    private static final int ITERATION_TWO = 50;
     private static final int ELAPSED_TWO = 2_500;
-    private static final int ITERATION_ONE = 100;
     private static final int ELAPSED_ONE = 10_000;
 
     private static final TName TWO = TN.tname("two");
@@ -35,10 +34,8 @@ public class TimeSampleTest {
     @Before
     public void initMap() {
         this.map = new TNameMap<>();
-        map.add(new SampleValue(
-                ONE, ELAPSED_ONE, UNIT, "average", ITERATION_ONE, 500));
-        map.add(new SampleValue(
-                TWO, ELAPSED_TWO, UNIT, "average", ITERATION_TWO, 200));
+        map.add(new SampleValue(ONE, ELAPSED_ONE, UNIT));
+        map.add(new SampleValue(TWO, ELAPSED_TWO, UNIT));
 
         this.sample = new Sample(MockStatsType.INSTANCE, map);
     }
@@ -59,7 +56,7 @@ public class TimeSampleTest {
 
     @Test
     public void shouldReturnTheValues() {
-        assertEquals(ELAPSED_ONE, sample.getValue(ONE), 0.01);
-        assertEquals(ELAPSED_TWO, sample.getValue(TWO), 0.01);
+        assertEquals(ELAPSED_ONE * SCALE, sample.getValue(ONE), 0.01);
+        assertEquals(ELAPSED_TWO * SCALE, sample.getValue(TWO), 0.01);
     }
 }

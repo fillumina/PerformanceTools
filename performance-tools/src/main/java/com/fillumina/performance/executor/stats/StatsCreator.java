@@ -1,7 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.sample.StatsBuilder;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.HashMap;

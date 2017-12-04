@@ -8,7 +8,6 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
-import com.fillumina.performance.util.unit.Units;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,42 +17,18 @@ import java.util.Objects;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SampleValue
-        implements TNamed, CsvProducer, TableProducer, Comparable<SampleValue> {
+        implements TNamed, CsvProducer, TableProducer {
 
     private final TName name;
     private final Quantity<?> quantity;
-    private final String type;
-
-    // TODO remove these, they aren't used anywhere
-    private final long iterations;
-    private final long timeNs;
 
     public SampleValue(TName name, double value, Unit<?> unit) {
         this(name, Quantity.from(value, unit));
     }
 
     public SampleValue(TName name, Quantity<?> quantity) {
-        this(name, quantity, "type", 1, 0);
-    }
-
-    public SampleValue(TName name,
-            double value, Unit<?> unit,
-            String type,
-            long iterations,
-            long timeNs) {
-        this(name, Quantity.from(value, unit), type, iterations, timeNs);
-    }
-
-    public SampleValue(TName name,
-            Quantity<?> quantity,
-            String type,
-            long iterations,
-            long timeNs) {
         this.name = name;
         this.quantity = quantity;
-        this.type = type;
-        this.iterations = iterations;
-        this.timeNs = timeNs;
     }
 
     @Override
@@ -61,40 +36,15 @@ public class SampleValue
         return name;
     }
 
-    public double getValue() {
-        return quantity.getValue();
-    }
-
-    public Unit<?> getUnit() {
-        return quantity.getUnit();
-    }
-
     public Quantity<?> getQuantity() {
         return quantity;
-    }
-
-    public long getIterations() {
-        return iterations;
-    }
-
-    public long getTimeNs() {
-        return timeNs;
-    }
-
-    @Override
-    public int compareTo(SampleValue o) {
-        return Double.compare(getValue(), o.getValue());
     }
 
     @Override
     public Map<String, String> toTable() {
         return createTable(
                 "name", getName(),
-                "iterations", iterations,
-                "timeNs", timeNs,
-                type, Units.toString(getValue(), 3, getUnit()));
-
-        //return createTable("name", getName(), "value", getValue());
+                "value", quantity.toString());
     }
 
     protected ArrayMap<String, String> createTable(Object... values) {
@@ -105,6 +55,10 @@ public class SampleValue
             map.put(key,value);
         }
         return map;
+    }
+
+    public String toStringValue() {
+        return String.format("%.2f", quantity.toBase());
     }
 
     @Override
@@ -135,9 +89,6 @@ public class SampleValue
         int hash = 5;
         hash = 97 * hash + Objects.hashCode(this.name);
         hash = 97 * hash + Objects.hashCode(this.quantity);
-        hash = 97 * hash + Objects.hashCode(this.type);
-        hash = 97 * hash + (int) (this.iterations ^ (this.iterations >>> 32));
-        hash = 97 * hash + (int) (this.timeNs ^ (this.timeNs >>> 32));
         return hash;
     }
 
@@ -153,15 +104,6 @@ public class SampleValue
             return false;
         }
         final SampleValue other = (SampleValue) obj;
-        if (this.iterations != other.iterations) {
-            return false;
-        }
-        if (this.timeNs != other.timeNs) {
-            return false;
-        }
-        if (!Objects.equals(this.type, other.type)) {
-            return false;
-        }
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
