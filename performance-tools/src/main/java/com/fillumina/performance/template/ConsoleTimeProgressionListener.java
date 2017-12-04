@@ -67,7 +67,7 @@ public class ConsoleTimeProgressionListener
                 .append(totalSamplesStr)
                 .append(" ETC=") // Estimated Time to Complete
                 .append(etc)
-                .append(" \tns (iterations)= ");
+                .append(" \titerations= ");
 
         CsvFormatter cf = new CsvFormatter();
         for (SampleValue sv : timeSample.getValuesMap().values()) {

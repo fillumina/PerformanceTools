@@ -3,6 +3,7 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Quantity;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -10,7 +11,8 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TimeSampleValue extends SampleValue {
+public class TimeSampleValue extends SampleValue implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String type;
     private final long iterations;
@@ -37,10 +39,11 @@ public class TimeSampleValue extends SampleValue {
 
     @Override
     public String toStringValue() {
-        return timeNs + " (" + iterations + ")";
+        return Long.toString(iterations);
     }
 
-    public String toStringLine() {
+    @Override
+    public String toString() {
         StringBuilder buf = new StringBuilder();
         for (Map.Entry<String,String> e : toTable().entrySet()) {
             if (buf.length() != 0) {
