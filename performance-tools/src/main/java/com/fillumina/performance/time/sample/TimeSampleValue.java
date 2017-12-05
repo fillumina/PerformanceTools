@@ -4,7 +4,6 @@ import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Holds the iteration performance sample value for a single test.
@@ -38,34 +37,19 @@ public class TimeSampleValue extends SampleValue implements Serializable {
     }
 
     @Override
+    public String toCsv() {
+        return super.toCsv() + ", " + timeNs + ", " + iterations;
+    }
+
+    @Override
     public String toStringValue() {
         return Long.toString(iterations);
     }
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        for (Map.Entry<String,String> e : toTable().entrySet()) {
-            if (buf.length() != 0) {
-                buf.append(", ");
-            }
-            buf.append(e.getKey())
-                    .append(": ")
-                    .append(timeNs)
-                    .append(" (")
-                    .append(iterations)
-                    .append(")");
-        }
-        return buf.toString();
-    }
-
-    @Override
-    public Map<String, String> toTable() {
-        return createTable(
-                "name", getName(),
-                "iterations", iterations,
-                "timeNs", timeNs,
-                type, getQuantity().toString());
+        return super.toString() + " " + type.toString() +
+                " (ns=" + timeNs + ", it=" + iterations + ")";
     }
 }
 

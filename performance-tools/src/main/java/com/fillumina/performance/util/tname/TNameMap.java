@@ -36,7 +36,7 @@ public class TNameMap<T extends TNamed>
         return new TNameMap<>(list);
     }
 
-    /** Equality is defined in terms of equals string representations. */
+    /** Equality is defined in terms of equal string representations. */
     public T get(CharSequence key) {
         String str = key.toString();
         return findByKey(t -> t.equals(key) || str.equals(t.toString()));

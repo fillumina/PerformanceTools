@@ -1,7 +1,9 @@
 package com.fillumina.performance.util.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -39,6 +41,40 @@ public class QuantityTest {
         assertEquals(-1, sec60.compareTo(min10));
         assertEquals(0, min10.compareTo(min10));
         assertEquals(0, sec60.compareTo(sec60));
+    }
+
+    @Test
+    public void shouldBeLessThan() {
+        Quantity<IntervalUnit> min10 = new Quantity<>(10, IntervalUnit.MINUTES);
+        Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
+
+        assertTrue(sec60.isLessThan(min10));
+        assertFalse(min10.isLessThan(sec60));
+        assertFalse(min10.isLessThan(min10));
+    }
+
+    @Test
+    public void shouldBeGreaterThan() {
+        Quantity<IntervalUnit> min10 = new Quantity<>(10, IntervalUnit.MINUTES);
+        Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
+
+        assertTrue(min10.isGreaterThan(sec60));
+        assertFalse(sec60.isGreaterThan(min10));
+        assertFalse(min10.isGreaterThan(min10));
+    }
+
+    @Test
+    public void shouldBeEqualsTo() {
+        Quantity<IntervalUnit> min10 = new Quantity<>(10, IntervalUnit.MINUTES);
+        Quantity<IntervalUnit> min1 = new Quantity<>(1, IntervalUnit.MINUTES);
+        Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
+
+        assertTrue(min10.isEqualsTo(min10));
+        assertTrue(sec60.isEqualsTo(sec60));
+        assertTrue(sec60.isEqualsTo(min1));
+        assertTrue(min1.isEqualsTo(sec60));
+        assertFalse(min10.isEqualsTo(sec60));
+        assertFalse(sec60.isEqualsTo(min10));
     }
 
     @Test

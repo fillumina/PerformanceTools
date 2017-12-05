@@ -1,13 +1,12 @@
 package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.executor.sample.strgen.SampleCsvStringGenerator;
-import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
-import com.fillumina.performance.util.CsvProducer;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.unit.Quantity;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,8 +14,7 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Sample
-        implements StatsTyped, CsvProducer, Serializable {
+public class Sample implements StatsTyped, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final StatsType type;
@@ -27,7 +25,6 @@ public class Sample
         this.map = map;
     }
 
-    // TODO check for String and TName
     public SampleValue getSampleValue(CharSequence name) {
         return map.get(name);
     }
@@ -41,25 +38,40 @@ public class Sample
         return map.unmodifiable();
     }
 
-    public double getValue(CharSequence testName) {
-        SampleValue testSample = getSampleValue(testName);
-        if (testSample == null) {
-            throw new MeasureNotFoundException(testName, getTestNames());
-        }
-        return testSample.getQuantity().toBase();
-    }
-
     public List<TName> getTestNames() {
         return map.keyList();
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+    public <U extends Unit<U>> Quantity<U> getQuantity(CharSequence testName) {
+        SampleValue testSample = getSampleValue(testName);
+        if (testSample == null) {
+            throw new MeasureNotFoundException(testName, getTestNames());
+        }
+        return (Quantity<U>) testSample.getQuantity();
+    }
+
     public String toCsv() {
-        return SampleCsvStringGenerator.INSTANCE.toString(this);
+        StringBuilder buf = new StringBuilder();
+        buf.append(type.toString());
+        map.values().forEach( value -> buf.append(", ").append(value.toCsv()) );
+        return buf.toString();
     }
 
     @Override
     public String toString() {
-        return SampleLineStringGenerator.INSTANCE.toString(this);
+        StringBuilder buf = new StringBuilder();
+        buf.append(type.toString()).append("{");
+        boolean first = true;
+        for (SampleValue v : map.values()) {
+            if (first) {
+                first = false;
+            } else {
+                buf.append(", ");
+            }
+            buf.append(v.toString());
+        }
+        buf.append("}");
+        return buf.toString();
     }
 }

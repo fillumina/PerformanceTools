@@ -26,7 +26,7 @@ public abstract class SinkTestHelper {
         final Sample sample = pt.iterate(iterations)
                 .buildAverageTimeSample();
         if (printout) {
-            System.out.println(sample.getValue(name));
+            System.out.println(sample.getQuantity(name));
             //System.out.println("total time       " + sample.getTotalTimeNs());
         }
     }

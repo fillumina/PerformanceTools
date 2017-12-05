@@ -1,14 +1,10 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.util.CsvProducer;
-import com.fillumina.performance.util.TableProducer;
-import com.fillumina.performance.util.collection.ArrayMap;
-import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
-import java.util.Map;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -16,9 +12,9 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleValue
-        implements TNamed, CsvProducer, TableProducer {
-
+public class SampleValue implements TNamed, Serializable {
+    private static final long serialVersionUID = 1L;
+    
     private final TName name;
     private final Quantity<?> quantity;
 
@@ -40,21 +36,8 @@ public class SampleValue
         return quantity;
     }
 
-    @Override
-    public Map<String, String> toTable() {
-        return createTable(
-                "name", getName(),
-                "value", quantity.toString());
-    }
-
-    protected ArrayMap<String, String> createTable(Object... values) {
-        ArrayMap<String,String> map = new ArrayMap<>();
-        for (int i=0,l=values.length; i<l; i+=2) {
-            String key = Objects.toString(values[i]);
-            String value = Objects.toString(values[i+1]);
-            map.put(key,value);
-        }
-        return map;
+    public String toCsv() {
+        return name.toString() + ", " + quantity.toBase();
     }
 
     public String toStringValue() {
@@ -63,25 +46,7 @@ public class SampleValue
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder();
-        for (Map.Entry<String,String> e : toTable().entrySet()) {
-            if (buf.length() != 0) {
-                buf.append(", ");
-            }
-            buf.append(e.getKey())
-                    .append(": ")
-                    .append(e.getValue());
-        }
-        return buf.toString();
-    }
-
-    @Override
-    public String toCsv() {
-        CsvFormatter csv = new CsvFormatter();
-        for (String s : toTable().values()) {
-            csv.append(s);
-        }
-        return csv.toString();
+        return name.toString() + "=" + quantity.toString();
     }
 
     @Override

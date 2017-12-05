@@ -56,7 +56,7 @@ public class TimeSampleTest {
 
     @Test
     public void shouldReturnTheValues() {
-        assertEquals(ELAPSED_ONE * SCALE, sample.getValue(ONE), 0.01);
-        assertEquals(ELAPSED_TWO * SCALE, sample.getValue(TWO), 0.01);
+        assertEquals(ELAPSED_ONE * SCALE, sample.getQuantity(ONE).toBase(), 0.01);
+        assertEquals(ELAPSED_TWO * SCALE, sample.getQuantity(TWO).toBase(), 0.01);
     }
 }

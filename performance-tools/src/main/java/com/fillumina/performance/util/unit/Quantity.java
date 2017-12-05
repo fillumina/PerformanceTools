@@ -1,8 +1,8 @@
 package com.fillumina.performance.util.unit;
 
 /**
- * Record a value with its dimension.
- * This class is immutable.
+ * A value with its dimension.
+ * Immutable class.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -59,8 +59,20 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         return new Quantity<>(tot, unit);
     }
 
-    public boolean isSameUnit(Quantity<?> quantity) {
-        return unit.units().getBase() == quantity.unit.units().getBase();
+    public boolean isSameUnit(Quantity<?> other) {
+        return unit.units().getBase() == other.unit.units().getBase();
+    }
+
+    public boolean isLessThan(Quantity<U> other) {
+        return compareTo(other) == -1;
+    }
+
+    public boolean isGreaterThan(Quantity<U> other) {
+        return compareTo(other) == 1;
+    }
+
+    public boolean isEqualsTo(Quantity<U> other) {
+        return compareTo(other) == 0;
     }
 
     @Override
@@ -69,6 +81,7 @@ public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
         return Double.compare(as(u), other.as(u));
     }
 
+    /** NOTE it considers equal values differing by less than 1E-12. */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Quantity)) {

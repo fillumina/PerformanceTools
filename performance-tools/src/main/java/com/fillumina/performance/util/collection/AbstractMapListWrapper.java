@@ -58,6 +58,7 @@ public abstract class AbstractMapListWrapper
     private final List<V> list;
 
     private KeySet keySet;
+    private KeyList keyList;
     private Values values;
     private EntrySet entrySet;
     private I unmodifiable;
@@ -103,10 +104,11 @@ public abstract class AbstractMapListWrapper
     }
 
     public boolean isUnmodifiable() {
-        int lastIndex = size();
+        int lastIndex = size() - 1;
         try {
-            list.add(null);
+            V lastItem = list.get(lastIndex);
             list.remove(lastIndex);
+            list.add(lastItem);
             return false;
         } catch (UnsupportedOperationException e) {
             return true;
@@ -263,29 +265,10 @@ public abstract class AbstractMapListWrapper
     }
 
     public List<K> keyList() {
-        return new AbstractList<K>() {
-            @Override
-            public K remove(int index) {
-                V v = list.remove(index);
-                return v == null ? null : getKeyFromValue(v);
-            }
-
-            @Override
-            public K get(int index) {
-                V v = list.get(index);
-                return v == null ? null : getKeyFromValue(v);
-            }
-
-            @Override
-            public void clear() {
-                list.clear();
-            }
-
-            @Override
-            public int size() {
-                return list.size();
-            }
-        };
+        if (keyList == null) {
+            keyList = new KeyList();
+        }
+        return keyList;
     }
 
     @Override
@@ -460,12 +443,37 @@ public abstract class AbstractMapListWrapper
         @Override
         public boolean remove(Object o) {
             @SuppressWarnings("unchecked")
-                    int idx = indexOfKey((K)o);
+            int idx = indexOfKey((K)o);
             if (idx != -1) {
                 list.remove(idx);
                 return true;
             }
             return false;
+        }
+
+        @Override
+        public void clear() {
+            list.clear();
+        }
+
+        @Override
+        public int size() {
+            return list.size();
+        }
+    }
+
+    private class KeyList extends AbstractList<K> {
+
+        @Override
+        public K remove(int index) {
+            V v = list.remove(index);
+            return v == null ? null : getKeyFromValue(v);
+        }
+
+        @Override
+        public K get(int index) {
+            V v = list.get(index);
+            return v == null ? null : getKeyFromValue(v);
         }
 
         @Override
