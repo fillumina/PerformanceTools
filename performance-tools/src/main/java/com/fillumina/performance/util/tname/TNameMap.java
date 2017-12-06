@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.collection.AbstractMapListWrapper;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,9 +37,42 @@ public class TNameMap<T extends TNamed>
         return new TNameMap<>(list);
     }
 
-    /** Equality is defined in terms of equal string representations. */
+    /** Search by string equality. */
     public T get(CharSequence key) {
-        String str = key.toString();
-        return findByKey(t -> t.equals(key) || str.equals(t.toString()));
+        String s = key.toString();
+        Iterator<Entry<TName,T>> it = iterator();
+        while (it.hasNext()) {
+            Entry<TName,T> e = it.next();
+            if ( s.equals(e.getKey().toString()) ) {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    public T get(String... key) {
+        Iterator<Entry<TName,T>> it = iterator();
+        while (it.hasNext()) {
+            Entry<TName,T> e = it.next();
+            if (equals(e.getKey(), key)) {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    static boolean equals(TName tname, String[] key) {
+        if (tname.size() != key.length) {
+            return false;
+        }
+        int index = key.length;
+        Iterator<String> it = tname.reverseIterator();
+        while (it.hasNext()) {
+            index--;
+            if (index < 0 || !key[index].equals(it.next()) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }

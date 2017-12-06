@@ -214,4 +214,55 @@ public class TNameTest {
         assertEquals(1,
                 root.append("a", "c").compareTo(root.append("a", "b")));
     }
+
+    @Test
+    public void shouldReverseIterate() {
+        TName name = TName.createRoot().append("one", "two", "three");
+
+        Iterator<String> it = name.reverseIterator();
+        assertTrue(it.hasNext());
+        assertEquals("three", it.next());
+
+        assertTrue(it.hasNext());
+        assertEquals("two", it.next());
+
+        assertTrue(it.hasNext());
+        assertEquals("one", it.next());
+
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void shouldReverseIterateWithOneElement() {
+        TName name = TName.createRoot().append("one");
+
+        Iterator<String> it = name.reverseIterator();
+
+        assertTrue(it.hasNext());
+        assertEquals("one", it.next());
+
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void shouldReverseIterateWithRoot() {
+        TName name = TName.createRoot();
+
+        Iterator<String> it = name.reverseIterator();
+        assertFalse(it.hasNext());
+    }
+
+    @Test
+    public void shouldDetectIsRoot() {
+        TName root = TName.createRoot();
+
+        assertTrue(root.isRoot());
+    }
+
+    @Test
+    public void shouldDetectIsNotRoot() {
+        TName name = TName.createRoot().append("one", "two", "three");
+
+        assertFalse(name.isRoot());
+    }
 }

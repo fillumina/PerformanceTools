@@ -56,6 +56,10 @@ public class TName extends AbstractList<String>
         this.fullName = toStringWithSeparator(SEPARATOR);
     }
 
+    public boolean isRoot() {
+        return parent == null;
+    }
+
     public boolean isSameRoot(TName cn) {
         return getRoot() == cn.getRoot();
     }
@@ -293,6 +297,25 @@ public class TName extends AbstractList<String>
     @Override
     public Iterator<String> iterator() {
         return listIterator(0);
+    }
+
+    /** Much faster than {@link #iterator()} */
+    public Iterator<String> reverseIterator() {
+        return new Iterator<String>() {
+            private TName current = TName.this;
+
+            @Override
+            public boolean hasNext() {
+                return !current.isRoot();
+            }
+
+            @Override
+            public String next() {
+                String result = current.lastName;
+                current = current.parent;
+                return result;
+            }
+        };
     }
 
     @Override

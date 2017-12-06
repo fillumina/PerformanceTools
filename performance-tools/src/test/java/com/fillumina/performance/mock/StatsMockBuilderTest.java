@@ -53,8 +53,8 @@ public class StatsMockBuilderTest {
 
         Stats stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
-        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);
+        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 2.0);
+        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 2.0);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class StatsMockBuilderTest {
 
         Stats stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
-        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);
+        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 2.0);
+        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 2.0);
     }
 
 }

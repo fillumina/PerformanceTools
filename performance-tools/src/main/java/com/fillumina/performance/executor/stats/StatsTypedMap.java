@@ -35,10 +35,4 @@ public class StatsTypedMap<T extends StatsTyped>
     protected StatsTypedMap<T> createNew(List<T> list) {
         return new StatsTypedMap<>(list);
     }
-
-    /** Equality is defined in terms of equal string representations. */
-    public T get(CharSequence testName) {
-        String nameStr = testName.toString();
-        return findByKey(t -> t.equals(testName) || nameStr.equals(t.toString()));
-    }
 }
