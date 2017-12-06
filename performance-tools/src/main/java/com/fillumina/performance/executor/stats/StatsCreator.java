@@ -1,52 +1,76 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
-import java.util.HashMap;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
+import com.fillumina.performance.util.unit.Unit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class StatsCreator {
+public class StatsCreator implements StatsTyped {
 
-    private final Map<StatsType, StatsBuilder> buildersMap = new HashMap<>();
-    private final TName name;
+    private final ArrayMap<TName, List<Double>> valuesMap = new ArrayMap<>();
+    private final StatsType type;
+    private Unit<?> unit;
 
-    public StatsCreator(TName name) {
-        this.name = name;
+    public StatsCreator(StatsType type) {
+        this.type = type;
     }
 
-    public StatsCreator addSample(Map<StatsType, Sample> map) {
-        map.forEach((StatsType type , Sample sample) -> {
-            addSample(sample);
+    @Override
+    public StatsType getStatsType() {
+        return type;
+    }
+
+    public void addSample(Sample sample) {
+        sample.getValuesMap().values().forEach((SampleValue v) -> {
+            if (unit == null) {
+                unit = v.getQuantity().getUnit();
+            }
+            List<Double> list = getValueList(v.getName());
+            list.add(v.getQuantity().toBase());
         });
-        return this;
     }
 
-    public StatsCreator addSample(Sample sample) {
-        getStatsBuilderFor(sample.getStatsType()).addSample(sample);
-        return this;
+    public Stats createStats() {
+        return createStats(ListFilter.<Double>identity());
     }
 
-    private StatsBuilder getStatsBuilderFor(StatsType type) {
-        StatsBuilder statsBuilder = buildersMap.get(type);
-        if (statsBuilder == null) {
-            statsBuilder = new StatsBuilder(type);
-            buildersMap.put(type, statsBuilder);
+    /**
+     * Builds a {@link Stats} out of the collected samples.
+     *
+     * @param message       The message to addSample to the statistics
+     * @param confidence    The confidence used
+     * @return              The statistics computed over the collected samples
+     */
+    public Stats createStats(ListFilter<Double> filter) {
+        Map<TName, DimensionalMeasure> map = new ArrayMap<>();
+
+        valuesMap.forEach((TName name, List<Double> list) -> {
+            List<Double> filtered = filter.filter(list);
+            DimensionalOnlineMeasure measure =
+                    new DimensionalOnlineMeasure(unit, filtered);
+            map.put(name, measure);
+        });
+
+        return new Stats(type, map);
+    }
+
+    private List<Double> getValueList(TName name) {
+        List<Double> a = valuesMap.get(name);
+        if (a == null) {
+            a = new ArrayList<>();
+            valuesMap.put(name, a);
         }
-        return statsBuilder;
-    }
-
-    public MixedStatsHolder getMixedAssertableHolder(
-            ListFilter<Double> filter) {
-        MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
-        buildersMap.forEach( (StatsType type, StatsBuilder statsBuilder) -> {
-                Stats stats = statsBuilder.createStats(filter);
-                builder.addAssertable(type, name, stats);
-        });
-        return builder.build();
+        return a;
     }
 }

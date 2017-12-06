@@ -5,7 +5,7 @@ import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTypedMap;
@@ -182,7 +182,7 @@ public class ConfigurableStatsProducer
         int sampleNumber;
         boolean toBeRepeated;
         int coolerTime = -1;
-        StatsCreator creator;
+        MixedStatsHolderCreator creator;
         MixedStatsHolder mixedHolder;
         Map<StatsType,Stats> statsMap;
         Collection<Stats> statsColl;
@@ -190,7 +190,7 @@ public class ConfigurableStatsProducer
 
         long start = System.nanoTime();
         do {
-            creator = new StatsCreator(getName());
+            creator = new MixedStatsHolderCreator(getName());
 
             sampleNumber = strategy.getExpectedNumberOfSamples();
             checkSampleValidity(sampleNumber);

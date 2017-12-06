@@ -3,6 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
@@ -16,10 +17,15 @@ import java.util.function.Function;
  */
 public class SampleCreator {
 
-    /** @param array couples of (String name,double values) */
+    /** @param array couples of (String name,double value) */
     public static Sample createSample(Object... array) {
+        return createSample(MockStatsType.INSTANCE, array);
+    }
+
+    /** @param array couples of (String name,double value) */
+    public static Sample createSample(StatsType type, Object... array) {
         TNameMap<SampleValue> map = createMap(array);
-        return new Sample(MockStatsType.INSTANCE, map);
+        return new Sample(type, map);
     }
 
     public static TNameMap<SampleValue> createMap(Object... array)

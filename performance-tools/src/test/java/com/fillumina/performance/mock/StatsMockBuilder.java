@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
@@ -75,7 +75,7 @@ public class StatsMockBuilder {
             index++;
         }
 
-        StatsCreator statsCreator = new StatsCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;
@@ -108,7 +108,7 @@ public class StatsMockBuilder {
             index++;
         }
 
-        StatsCreator statsCreator = new StatsCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;
@@ -148,7 +148,7 @@ public class StatsMockBuilder {
             index++;
         }
 
-        StatsCreator statsCreator = new StatsCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;

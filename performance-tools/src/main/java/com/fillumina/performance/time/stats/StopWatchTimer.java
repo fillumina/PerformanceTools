@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.ConsumerNotifierImpl;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -21,7 +21,7 @@ public class StopWatchTimer
 
     private final ListFilter<Double> filter;
     private TimeSampleCollector collector;
-    private StatsCreator creator;
+    private MixedStatsHolderCreator creator;
     private long last;
 
     public StopWatchTimer() {
@@ -62,7 +62,7 @@ public class StopWatchTimer
     private void recordSamples() {
         if (collector != null) {
             if (creator == null) {
-                creator = new StatsCreator(TName.ROOT);
+                creator = new MixedStatsHolderCreator(TName.ROOT);
             }
             creator.addSample(collector.buildAverageTimeSample());
             creator.addSample(collector.buildThroughputSample());

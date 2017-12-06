@@ -5,7 +5,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
-import com.fillumina.performance.executor.stats.StatsCreator;
+import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
@@ -63,7 +63,7 @@ public class MemStatsProducer
     public MixedStatsHolder get() {
         sampleProducer.clearAndAddAllTests(this);
 
-        StatsCreator sampleCollector = new StatsCreator(getName());
+        MixedStatsHolderCreator sampleCollector = new MixedStatsHolderCreator(getName());
         setUpTests();
         for (int i=0; i<samples; i++) {
             Map<StatsType, Sample> sample = sampleProducer.get();

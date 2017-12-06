@@ -1,11 +1,13 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.util.filter.ListFilter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -15,26 +17,66 @@ import org.junit.Test;
 public class StatsCreatorTest {
 
     @Test
-    public void shouldCreateMixedStats() {
-        StatsCreator statsCreator = new StatsCreator(TN.tname("first"));
+    public void shouldCreateStatsFromNoSamples() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
 
-        statsCreator.addSample(createSample(1, 10));
-        statsCreator.addSample(createSample(2, 20));
-        statsCreator.addSample(createSample(3, 30));
-        statsCreator.addSample(createSample(4, 40));
-        statsCreator.addSample(createSample(5, 50));
+        Stats stats = creator.createStats();
 
-        MixedStatsHolder holder =
-                statsCreator.getMixedAssertableHolder(ListFilter.identity());
-
-        Stats assertable = holder.getStatsHolder(MockStatsType.INSTANCE).getStats();
-
-        assertEquals(3.0, assertable.getMeasure("one").getMean(), 0);
-        assertEquals(30.0, assertable.getMeasure("two").getMean(), 0);
+        assertTrue(stats.isEmpty());
+        assertEquals(MockStatsType.INSTANCE, stats.getStatsType());
     }
 
-    private Sample createSample(double a, double b) {
-        return new Sample(MockStatsType.INSTANCE,
-                SampleCreator.createMap("one", a, "two", b));
+    @Test
+    public void shouldCreateStats() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
+
+        creator.addSample(SampleCreator.createSample("one", 10.0, "two", 20.0));
+        creator.addSample(SampleCreator.createSample("one", 10.1, "two", 19.8));
+        creator.addSample(SampleCreator.createSample("one", 9.88, "two", 20.2));
+        creator.addSample(SampleCreator.createSample("one", 9.79, "two", 19.9));
+        creator.addSample(SampleCreator.createSample("one", 10.2, "two", 20.1));
+
+        Stats stats = creator.createStats();
+
+        assertEquals(MockStatsType.INSTANCE, stats.getStatsType());
+
+        assertEquals(10.0, stats.getMeasure("one").getMean(), 0.1);
+        assertEquals(20.0, stats.getMeasure("two").getMean(), 0.1);
+
+        assertEquals(5, stats.getMeasure("one").getCount());
+    }
+
+
+    @Test
+    public void shouldCreateFilteredStats() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
+
+        creator.addSample(SampleCreator.createSample("one", 1, "two", 10));
+        creator.addSample(SampleCreator.createSample("one", -1, "two", -10));
+
+        ListFilter<Double> accumulatorFilter = new ListFilter<Double>() {
+            @Override
+            public <T> List<T> filter(List<T> list,
+                    Function<T, Double> extractor) {
+                List<T> result = new ArrayList<>();
+                for (T t : list) {
+                    if (extractor.apply(t) > 0) {
+                        result.add(t);
+                    }
+                }
+                return result;
+            }
+
+        };
+
+        Stats stats = creator.createStats(accumulatorFilter);
+
+        assertEquals(MockStatsType.INSTANCE, stats.getStatsType());
+
+        assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
+        assertEquals(10.0, stats.getMeasure("two").getMean(), 0);
+
+        assertEquals(1, stats.getMeasure("one").getCount());
+        assertEquals(1, stats.getMeasure("two").getCount());
     }
 }

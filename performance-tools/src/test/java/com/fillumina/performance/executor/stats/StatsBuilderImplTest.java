@@ -15,7 +15,7 @@ public class StatsBuilderImplTest {
 
     @Test
     public void shouldCreateSingleStats() {
-        StatsBuilder statsBuilder = createStatsBuilder("one", 1, 2, 3);
+        StatsCreator statsBuilder = createStatsBuilder("one", 1, 2, 3);
 
         Stats stats = statsBuilder.createStats(ListFilter.identity());
 
@@ -24,15 +24,15 @@ public class StatsBuilderImplTest {
 
     @Test
     public void shouldCreateSingleStatsFilteringData() {
-        StatsBuilder statsBuilder = createStatsBuilder("one", 1, 4, 4, 4);
+        StatsCreator statsBuilder = createStatsBuilder("one", 1, 4, 4, 4);
 
         Stats stats = statsBuilder.createStats(MostUsedFilter.instance());
 
         assertEquals(4, stats.getMeasure("one").getMean(), 0);
     }
 
-    private StatsBuilder createStatsBuilder(String name, double... values) {
-        StatsBuilder statsBuilder = new StatsBuilder(MockStatsType.INSTANCE);
+    private StatsCreator createStatsBuilder(String name, double... values) {
+        StatsCreator statsBuilder = new StatsCreator(MockStatsType.INSTANCE);
         for (double v : values) {
             statsBuilder.addSample(SampleCreator.createSample(name, v));
         }
