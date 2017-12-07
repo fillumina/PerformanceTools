@@ -56,7 +56,7 @@ public class ExtendedStats extends Stats {
     }
 
     @Override
-    public Measure getMeasure(CharSequence testName)
+    public DimensionalMeasure getMeasure(CharSequence testName)
             throws IllegalStateException {
         TName tname = TN.tname(testName);
         return extendedMeasure.get(tname);

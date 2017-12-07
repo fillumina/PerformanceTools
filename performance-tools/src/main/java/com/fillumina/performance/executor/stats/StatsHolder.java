@@ -126,7 +126,7 @@ public class StatsHolder extends Printable<StatsHolder>
     public StatsHolder(
             final StatsType type,
             final Stats stats) {
-        this(type, null, stats, null);
+        this(type, TN.EMPTY, stats, null);
     }
 
     public StatsHolder(
@@ -155,7 +155,7 @@ public class StatsHolder extends Printable<StatsHolder>
             final TName name,
             final Stats stats,
             final StringGenerator<Stats> formatter) {
-        this(type, new LinkedTree<>(name, stats), formatter);
+        this(type, stats == null ? null : new LinkedTree<>(name, stats), formatter);
     }
 
     private StatsHolder(
@@ -191,7 +191,7 @@ public class StatsHolder extends Printable<StatsHolder>
 
     /** @return true if no statistics available. */
     public boolean isEmpty() {
-        return tree.isNull();
+        return tree == null || tree.isNull();
     }
 
     /** @return the name of the test. */
@@ -308,7 +308,9 @@ public class StatsHolder extends Printable<StatsHolder>
     public ArrayMap<TName, Stats> getFlattenedAssertableMap() {
         ArrayMap<TName, Stats> map = new ArrayMap<>();
         traverseLeaves((TName name, Stats stats) -> {
-            map.put(name, stats);
+            if (name != null) {
+                map.put(name, stats);
+            }
         });
         return map;
     }

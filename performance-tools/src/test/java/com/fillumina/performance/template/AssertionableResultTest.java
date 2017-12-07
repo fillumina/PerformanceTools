@@ -20,24 +20,19 @@ import org.junit.Test;
  */
 public class AssertionableResultTest {
 
-    private static class StatsMock extends Stats {
-        private static final long serialVersionUID = 1L;
-        private final String name;
-
-        public StatsMock(String name) {
-            super(new StatsMockBuilder()
-                    .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
-            this.name = name;
-        }
+    private Stats createStats(String name) {
+        return new StatsMockBuilder()
+                .name(name)
+                .addTest("test").mean(10.0).stdev(2.0).endTest()
+                .buildWithCoincidentalValues().getFirstStatsHolder().getStats();
     }
 
     @Test
     public void shouldReturnTheGivenAssertHolder() {
-        final StatsMock assertable = new StatsMock("one");
+        final Stats stats = createStats("one");
         StatsHolder holder = new StatsHolder(
                 MockStatsType.INSTANCE,
-                assertable);
+                stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()
@@ -62,21 +57,19 @@ public class AssertionableResultTest {
 
         };
 
-        final StatsMock assertable = new StatsMock("one");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                assertable);
+        final Stats stats = createStats("one");
+        StatsHolder holder = new StatsHolder(MockStatsType.INSTANCE, stats);
 
-        AssertionableResult<?> aResult =
+        AssertionableResult<?> result =
                 AssertionableResult.builder()
                         .addAssertion(assertion)
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = aResult.getFailedAssertions();
+        Map<Assertable, List<Assertion>> map = result.getFailedAssertions();
 
         assertEquals(1, map.size());
-        assertEquals(assertion, map.get(assertable).get(0));
+        assertEquals(assertion, map.get(stats).get(0));
     }
 
     @Test
@@ -94,10 +87,10 @@ public class AssertionableResultTest {
 
         };
 
-        final StatsMock assertable = new StatsMock("one");
+        final Stats stats = createStats("one");
         StatsHolder holder = new StatsHolder(
                 MockStatsType.INSTANCE,
-                assertable);
+                stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()
@@ -126,18 +119,15 @@ public class AssertionableResultTest {
 
         };
 
-        final StatsMock assertable = new StatsMock("one");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                assertable);
+        final Stats stats = createStats("one");
+        StatsHolder holder = new StatsHolder(MockStatsType.INSTANCE, stats);
 
-        AssertionableResult<?> aResult =
-                AssertionableResult.builder()
+        AssertionableResult<?> result = AssertionableResult.builder()
                         .addAssertion(assertion)
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = aResult.getFailedAssertions();
+        Map<Assertable, List<Assertion>> map = result.getFailedAssertions();
 
         assertTrue(map.isEmpty());
     }
@@ -196,10 +186,10 @@ public class AssertionableResultTest {
 
         };
 
-        final StatsMock assertable = new StatsMock("one");
+        final Stats stats = createStats("one");
         StatsHolder holder = new StatsHolder(
                 MockStatsType.INSTANCE,
-                assertable);
+                stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()
@@ -215,8 +205,8 @@ public class AssertionableResultTest {
         assertEquals(2, map.size());
         assertEquals(notFoundAssertion,
                 map.get(AssertionableResult.UNCHECKED).get(0));
-        assertEquals(failingAssertion1, map.get(assertable).get(0));
-        assertEquals(failingAssertion2, map.get(assertable).get(1));
+        assertEquals(failingAssertion1, map.get(stats).get(0));
+        assertEquals(failingAssertion2, map.get(stats).get(1));
     }
 
 }

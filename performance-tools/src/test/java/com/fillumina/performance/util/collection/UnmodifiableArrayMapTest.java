@@ -74,7 +74,7 @@ public class UnmodifiableArrayMapTest {
 
     @Test
     public void shouldRelinkOnAdd() {
-        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>();
+        ArrayMap<String,Integer> map = new ArrayMap<>();
         ArrayMap<String,Integer> umap = map.unmodifiable();
         map
                 .add("one", 1)

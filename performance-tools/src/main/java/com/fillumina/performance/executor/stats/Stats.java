@@ -4,19 +4,15 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
+import com.fillumina.performance.util.collection.ArrayMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.Magnitude;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,33 +31,21 @@ public class Stats extends Printable<Stats>
         implements StatsTyped, Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
-
     private final StatsType type;
     private final BiggerMeasure refMeasure;
-    private final List<TName> names;
-    private final Map<TName, DimensionalMeasure> map;
+    private final ArrayMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
 
     private TukeyPrintable tukeyPrintable;
 
     /** Copy constructor. */
-    public Stats(Stats other) {
-        this(other.type, other.map);
-    }
-
-    public static Stats create(
-            Map<? extends CharSequence,? extends Measure> measures) {
-        Map<TName,DimensionalMeasure> map = new LinkedHashMap<>();
-        measures.forEach((CharSequence s, Measure m) ->
-                map.put(TN.tname(s),
-                        new DimensionalOnlineMeasure(Magnitude.UNIT, m)) );
-        return new Stats(StatsType.DEFAULT, map);
+    public Stats(Stats copy) {
+        this(copy.type, copy.map);
     }
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
         this.type = type;
-        this.map = Collections.unmodifiableMap(new LinkedHashMap<>(measures));
-        this.names = Collections.unmodifiableList(new ArrayList<>(measures.keySet()));
+        this.map = new ArrayMap<>(measures).unmodifiable();
         this.refMeasure = new BiggerMeasure(measures);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
@@ -72,14 +56,10 @@ public class Stats extends Printable<Stats>
                     "this: " + type.toString() +
                     " != other: " + other.type.toString());
         }
-        Map<TName,DimensionalMeasure> m = new LinkedHashMap<>();
+        Map<TName,DimensionalMeasure> m = new ArrayMap<>();
         m.putAll(getMeasureMap());
         m.putAll(other.getMeasureMap());
         return new Stats(other.type , m);
-    }
-
-    public Map<TName, DimensionalMeasure> getMeasureMap() {
-        return map;
     }
 
     @Override
@@ -87,15 +67,19 @@ public class Stats extends Printable<Stats>
         return type;
     }
 
+    public Map<TName, DimensionalMeasure> getMeasureMap() {
+        return map;
+    }
+
     @Override
-    public Measure getMeasure(CharSequence testName)
+    public DimensionalMeasure getMeasure(CharSequence testName)
             throws IllegalStateException {
         TName tname = TN.tname(testName);
-        Measure single = map.get(tname);
-        if (single == null) {
+        DimensionalMeasure m = map.get(tname);
+        if (m == null) {
             throw new MeasureNotFoundException(testName, map.keySet());
         }
-        return single;
+        return m;
     }
 
     @Override
@@ -105,7 +89,7 @@ public class Stats extends Printable<Stats>
 
     @Override
     public List<TName> getNames() {
-        return names;
+        return map.keyList();
     }
 
     public MeasureRatio getRatio(CharSequence testName1, CharSequence testName2,
@@ -131,13 +115,14 @@ public class Stats extends Printable<Stats>
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(CharSequence testName1, CharSequence testName2) {
+        List<TName> names = map.keyList();
         int idx1 = names.indexOf(TN.tname(testName1));
         int idx2 = names.indexOf(TN.tname(testName2));
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
-        int idx1 = names.indexOf(TN.tname(testName));
+        int idx1 = map.keyList().indexOf(TN.tname(testName));
         if (idx1 == -1) {
             return -1.0;
         }
@@ -146,7 +131,7 @@ public class Stats extends Printable<Stats>
 
     /**
      * @return the higher margin of error of the ratios of each measure
-     *         in the experiment confronted with the slower one. It's an
+     *         in the experiment confronted with the bigger one. It's an
      *         estimation of the accuracy of the experiment.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {

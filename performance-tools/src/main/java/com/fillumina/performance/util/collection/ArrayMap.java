@@ -3,7 +3,6 @@ package com.fillumina.performance.util.collection;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.AbstractSet;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -14,15 +13,29 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * It's a map loaded over an array.
- * It maintains insertion order, caches hash codes, can access its elements by
- * index randomly and is very fast to clone.
- * It's insertion and extraction times are both O(N) but can be fast for few
- * items because of locality.
- * {@link #keyList()} items are accessed with O(1).
- * It uses {@link #Cursor} which is faster than a standard iterator but is not
+ * Fast linked hash map implementation.
+ * <ul>
+ * <li>insertion, extraction and removal have O(1) complexity
+ * <li>increases and decreases its size automatically
+ * <li>maintains insertion order
+ * <li>caches hash codes
+ * <li>accesses its entries by index in O(1)
+ * <li>views its keys as a list
+ * <li>very fast to clone
+ * <li>uses fast Cursor iteration
+ * <li>doesn't accept null as key
+ * <li>manages its own unmodifiable version of itself
+ * <li>has copy constructor and clone constructor
+ * <li>improves locality of access by using arrays
+ * </ul>
+ * {@link #Cursor} is faster than a standard iterator but is not
  * compliant with {@link Map} specifications because every {@link Map.Entry}
  * returned is in fact the same object.
+ * <br>
+ * Avoid using {@link #entrySet()} because to be compliant with the specs
+ * it must create a new {@link Map.Entry} for each access.
+ * Use {@link #iterator()} or {@link #cursor()} instead wich return a
+ * {@link #Cursor}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -33,9 +46,9 @@ public class ArrayMap<K,V>
 
     private static final long serialVersionUID = 1L;
 
-    private Object[] array;
-    private int[] hashes;
-    private int size;
+    private Object[] array; // [key, value]
+    private int[] indexes;  // [index, hashcode]
+    private int size;       // actual size * 2
 
     private Set<Entry<K,V>> entrySet;
     private Set<K> keySet;
@@ -51,9 +64,37 @@ public class ArrayMap<K,V>
     public ArrayMap() {
     }
 
+    public ArrayMap(Map<? extends K, ? extends V> copy) {
+        putAll(copy);
+    }
+
+    public ArrayMap(ArrayMap<? extends K, ? extends V> clone) {
+        if (clone.array != null) {
+            this.array = clone.array.clone();
+            this.indexes = clone.indexes.clone();
+            this.size = clone.size;
+        }
+    }
+
+    public ArrayMap(int initialSize) {
+        if (initialSize < 0) {
+            throw new IllegalArgumentException(
+                    "initial size must be > 0, was " + initialSize);
+        }
+        int length = roundUpToPowerOf2(initialSize);
+        this.array = new Object[length];
+        this.indexes = new int[length];
+    }
+
+    private static int roundUpToPowerOf2(int number) {
+        // assert number >= 0 : "number must be non-negative";
+        return (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 2; //1;
+    }
+
+
     protected ArrayMap(Object[] array, int[] hashes, int size) {
         this.array = array;
-        this.hashes = hashes;
+        this.indexes = hashes;
         this.size = size;
     }
 
@@ -108,7 +149,7 @@ public class ArrayMap<K,V>
         private void relink() {
             if (super.array != ArrayMap.this.array) {
                 super.array = ArrayMap.this.array;
-                super.hashes = ArrayMap.this.hashes;
+                super.indexes = ArrayMap.this.indexes;
                 super.size = ArrayMap.this.size;
             }
         }
@@ -119,16 +160,29 @@ public class ArrayMap<K,V>
         }
 
         @Override
+        public V get(Object key) {
+            relink();
+            return super.get(key);
+        }
+
+        @Override
         public int size() {
             relink();
             return super.size();
         }
 
         @Override
-        protected int getIndexOf(Object key) {
+        public boolean containsValue(Object value) {
             relink();
-            return super.getIndexOf(key);
+            return super.containsValue(value);
         }
+
+        @Override
+        public boolean containsKey(Object key) {
+            relink();
+            return super.containsKey(key);
+        }
+
 
         @Override
         public Iterator<Entry<K, V>> iterator() {
@@ -142,7 +196,7 @@ public class ArrayMap<K,V>
         }
 
         @Override
-        protected void removeIndex(int index) {
+        public V remove(Object key) {
             throw new UnsupportedOperationException();
         }
 
@@ -161,7 +215,7 @@ public class ArrayMap<K,V>
             return this;
         }
         if (unmodifiableView == null) {
-            unmodifiableView = new UnmodifiableView(array, hashes, size);
+            unmodifiableView = new UnmodifiableView(array, indexes, size);
         }
         return unmodifiableView;
     }
@@ -169,9 +223,9 @@ public class ArrayMap<K,V>
     @Override
     public ArrayMap<K,V> clone() throws CloneNotSupportedException {
         if (array == null) {
-            return new ArrayMap<>(null, null, 0);
+            return new ArrayMap<>();
         }
-        return new ArrayMap<>(array.clone(), hashes, size);
+        return new ArrayMap<>(this);
     }
 
     @Override
@@ -192,83 +246,153 @@ public class ArrayMap<K,V>
 
     @Override
     public V put(K key, V value) {
-        int index = getIndexOf(key);
-        if (index != -1) {
-            @SuppressWarnings("unchecked")
-            V tmpValue = (V) array[index + 1];
-            array[index + 1] = value;
-            return tmpValue;
-        }
         if (array == null) {
             array = new Object[8];
-            hashes = new int[4];
-        } else if (array.length < size + 1) {
-            Object[] tmpArray = new Object[array.length << 1];
-            System.arraycopy(array, 0, tmpArray, 0, size);
-            array = tmpArray;
-            int[] tmpHashes = new int[array.length >> 1];
-            System.arraycopy(hashes, 0, tmpHashes, 0, hashes.length);
-            hashes = tmpHashes;
+            indexes = new int[8];
+        } else if (size > (indexes.length >> 1)) {
+            resize(indexes.length << 1);
         }
-        array[size] = key;
-        array[size + 1] = value;
-        hashes[size >> 1] = Objects.hashCode(key);
-        size += 2;
-        return null;
-    }
-
-    protected int getIndexOf(Object key) {
-        if (array == null) {
-            return -1;
-        }
+        int mask = getMask();
         int hashcode = key.hashCode();
-        for (int i=0,l=hashes.length; i<l; i++) {
-            if (hashcode == hashes[i]) {
-                @SuppressWarnings("unchecked")
-                K k = (K) array[i << 1];
-                if (Objects.equals(k, key)) {
-                    return i << 1;
+        int bucket = hashcode & mask;
+        while (true) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
+                // bucket free, use it
+                indexes[bucket] = hashcode;
+                indexes[bucket + 1] = size + 1; // points to value
+                array[size] = key;
+                array[size + 1] = value;
+                size += 2;
+                return null;
+            }
+            if (hashcode == indexes[bucket]) {
+                if (key.equals(array[pointer - 1])) {
+                    // bucket used, right key, set value
+                    @SuppressWarnings("unchecked")
+                    V oldValue = (V) array[pointer];
+                    array[pointer] = value;
+                    return oldValue;
                 }
             }
+            bucket = (bucket + 2) & mask;
         }
-        return -1;
+    }
+
+    private int getMask() {
+        return (indexes.length - 1) & (~1);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void resize(int newSize) {
+        ArrayMap<K,V> newMap = new ArrayMap<>(newSize);
+        for (int i=0; i<size; i+=2) {
+            newMap.put((K)array[i], (V)array[i+1]);
+        }
+        this.array = newMap.array;
+        this.indexes = newMap.indexes;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public V get(Object key) {
-        int index = getIndexOf(key);
-        if (index == -1) {
+        if (array == null || size == 0) {
             return null;
         }
-        return (V) array[index + 1];
+        int mask = getMask();
+        int hashcode = key.hashCode();
+        int bucket = hashcode & mask;
+        while (true) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
+                return null; // not found
+            }
+            if (hashcode == indexes[bucket]) {
+                if (key.equals(array[pointer - 1])) {
+                    return (V) array[pointer];
+                }
+            }
+            bucket = (bucket + 2) & mask;
+        }
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        if (array == null || size == 0) {
+            return false;
+        }
+        int mask = getMask();
+        int hashcode = key.hashCode();
+        int bucket = hashcode & mask;
+        while (true) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
+                return false; // not found
+            }
+            if (hashcode == indexes[bucket]) {
+                if (key.equals(array[pointer - 1])) {
+                    return true;
+                }
+            }
+            bucket = (bucket + 2) & mask;
+        }
     }
 
     @Override
     public V remove(Object key) {
-        int index = getIndexOf(key);
-        if (index == -1) {
+        if (array == null) {
             return null;
         }
-        @SuppressWarnings("unchecked")
-        V v = (V) array[index + 1];
-        removeIndex(index);
-        return v;
+        int mask = getMask();
+        int hashcode = key.hashCode();
+        int bucket = hashcode & mask;
+        while (true) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
+                return null; // not found
+            }
+            if (hashcode == indexes[bucket]) {
+                if (key.equals(array[pointer - 1])) {
+                    int index = pointer - 1;
+                    @SuppressWarnings("unchecked")
+                    V oldValue = (V) array[pointer];
+                    System.arraycopy(array, index + 2,
+                            array, index, array.length - index - 2);
+                    indexes[bucket + 1] = 0; // free the bucket
+
+                    // rolls subsequent buckets back if needed
+                    int b = bucket;
+                    while (true) {
+                        b = (b + 2) & mask;
+                        int p = indexes[b + 1];
+                        if (p == 0) {
+                            break;
+                        }
+                        int h = indexes[b];
+                        int w = h & mask; // where it want to be
+                        if (b != w && indexes[w + 1] == 0) {
+                            // relocate the bucket
+                            indexes[w] = indexes[b];
+                            indexes[w + 1] = indexes[b + 1];
+                            indexes[b + 1] = 0; // free the former bucket
+                        }
+                    }
+                    size -= 2;
+                    if (size < (indexes.length >> 2)) {
+                        resize(indexes.length >> 1);
+                    }
+                    return oldValue;
+                }
+            }
+            bucket = (bucket + 2) & mask;
+        }
     }
 
     protected void removeIndex(int index) {
         if (array == null || index < 0 || index > size) {
             throw new IllegalStateException();
         }
-        System.arraycopy(array, index + 2, array, index, array.length - index - 2);
-        int h = index >> 1;
-        System.arraycopy(hashes, h + 1, hashes, h, hashes.length - h - 1);
-        size-=2;
-    }
-
-    @Override
-    public boolean containsKey(Object key) {
-        return getIndexOf(key) != -1;
+        remove(array[index]);
     }
 
     @Override
@@ -293,11 +417,69 @@ public class ArrayMap<K,V>
 
     @Override
     public void clear() {
-        hashes = null;
+        indexes = null;
         array = null;
         size = 0;
     }
 
+    private class EntryImpl implements Map.Entry<K,V> {
+        private final K key;
+
+        public EntryImpl(K key) {
+            this.key = key;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return ArrayMap.this.get(key);
+        }
+
+        @Override
+        public V setValue(V value) {
+            return ArrayMap.this.put(key, value);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 11 * hash + Objects.hashCode(this.key);
+            hash = 11 * hash + Objects.hashCode(getValue());
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Entry<?,?> other = (Entry<?,?>) obj;
+            if (!Objects.equals(this.key, other.getKey())) {
+                return false;
+            }
+            if (!Objects.equals(getValue(), other.getValue())) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return key + " = " + Objects.toString(ArrayMap.this.get(key));
+        }
+    }
+
+    /** WARNING! this is a <b>mutable</b> object! */
     public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
         private int index = -2;
         private boolean removed;
@@ -306,6 +488,10 @@ public class ArrayMap<K,V>
 
         public Cursor(int index) {
             this.index = index;
+        }
+
+        private Entry<K,V> createEntry() {
+            return new EntryImpl(getKey());
         }
 
         public void setIndex(int index) {
@@ -338,7 +524,7 @@ public class ArrayMap<K,V>
         }
 
         @Override
-        public Entry<K, V> next() {
+        public Cursor next() {
             removed = false;
             index += 2;
             return this;
@@ -356,9 +542,7 @@ public class ArrayMap<K,V>
 
         @Override
         public int hashCode() {
-            int hash = 3;
-            hash = 29 * hash + this.index;
-            return hash;
+            return Objects.hash(getKey(), getValue());
         }
 
         @Override
@@ -372,18 +556,21 @@ public class ArrayMap<K,V>
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            final Cursor other = (Cursor) obj;
-            if (this.index != other.index) {
-                return false;
-            }
-            return true;
+            @SuppressWarnings("unchecked")
+            final Entry<K,V> other = (Entry<K,V>) obj;
+            return (!getKey().equals(other.getKey()) ||
+                    !getValue().equals(other.getValue()));
         }
 
         @Override
         public String toString() {
-            return "{" + Objects.toString(getKey()) + " = " +
-                    Objects.toString(getValue()) + "}";
+            return "" + index + ": " +
+                    getKey().toString() + " = " + Objects.toString(getValue());
         }
+    }
+
+    public Cursor cursor() {
+        return new Cursor();
     }
 
     @Override
@@ -392,7 +579,7 @@ public class ArrayMap<K,V>
     }
 
     private abstract class View<T> extends AbstractSet<T> {
-        abstract T select(Entry<K,V> entry);
+        abstract T select(Cursor entry);
 
         @Override
         public Iterator<T> iterator() {
@@ -438,15 +625,18 @@ public class ArrayMap<K,V>
     }
 
     private class EntrySet extends View<Entry<K,V>> {
-        @Override Entry<K, V> select(Entry<K, V> entry) { return entry; }
+        @Override
+        Entry<K, V> select(Cursor entry) {
+            return entry.createEntry();
+        }
     }
 
     private class KeySet extends View<K> {
-        @Override K select(Entry<K, V> entry) { return entry.getKey(); }
+        @Override K select(Cursor entry) { return entry.getKey(); }
     }
 
     private class Values extends View<V> {
-        @Override V select(Entry<K, V> entry) { return entry.getValue(); }
+        @Override V select(Cursor entry) { return entry.getValue(); }
     }
 
     public List<K> keyList() {
@@ -473,6 +663,10 @@ public class ArrayMap<K,V>
     }
 
     @Override
+    /**
+     * WARNING: using this set means that a new {@link Map.Entry} must be
+     * created at each access.
+     */
     public Set<Entry<K, V>> entrySet() {
         if (entrySet == null) {
             entrySet = new EntrySet();
@@ -483,29 +677,71 @@ public class ArrayMap<K,V>
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 31 * hash + Arrays.deepHashCode(this.array);
-        hash = 31 * hash + this.size;
+        for (int i=0; i<size; i+=2) {
+            hash = 31 * hash + array[i].hashCode(); // cannot be null
+            hash = 31 * hash + Objects.hashCode(array[i + 1]);
+        }
         return hash;
     }
 
+    /**
+     * Compares the specified object with this map for equality.  Returns
+     * <tt>true</tt> if the given object is also a map and the two maps
+     * represent the same mappings.  More formally, two maps <tt>m1</tt> and
+     * <tt>m2</tt> represent the same mappings if
+     * <tt>m1.entrySet().equals(m2.entrySet())</tt>.  This ensures that the
+     * <tt>equals</tt> method works properly across different implementations
+     * of the <tt>Map</tt> interface.
+     *
+     * @implSpec
+     * This implementation first checks if the specified object is this map;
+     * if so it returns <tt>true</tt>.  Then, it checks if the specified
+     * object is a map whose size is identical to the size of this map; if
+     * not, it returns <tt>false</tt>.  If so, it iterates over this map's
+     * <tt>entrySet</tt> collection, and checks that the specified map
+     * contains each mapping that this map contains.  If the specified map
+     * fails to contain such a mapping, <tt>false</tt> is returned.  If the
+     * iteration completes, <tt>true</tt> is returned.
+     * <br>
+     * Copied from {@link java.util.AbstractMap#equals(Object)}.
+     *
+     * @param object object to be compared for equality with this map
+     * @return <tt>true</tt> if the specified object is equal to this map
+     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
+    public boolean equals(Object object) {
+        if (object == this) {
             return true;
         }
-        if (obj == null) {
+
+        if (!(object instanceof Map)) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        Map<?,?> other = (Map<?,?>) object;
+        if (other.size() != size()) {
             return false;
         }
-        final ArrayMap<?, ?> other = (ArrayMap<?, ?>) obj;
-        if (this.size != other.size) {
+
+        try {
+            Iterator<Entry<K,V>> i = iterator();
+            while (i.hasNext()) {
+                Entry<K,V> e = i.next();
+                K key = e.getKey();
+                V value = e.getValue();
+                if (value == null) {
+                    if (!(other.get(key)==null && other.containsKey(key))) {
+                        return false;
+                    }
+                } else {
+                    if (!value.equals(other.get(key))) {
+                        return false;
+                    }
+                }
+            }
+        } catch (ClassCastException | NullPointerException unused) {
             return false;
         }
-        if (!Arrays.deepEquals(this.array, other.array)) {
-            return false;
-        }
+
         return true;
     }
 
