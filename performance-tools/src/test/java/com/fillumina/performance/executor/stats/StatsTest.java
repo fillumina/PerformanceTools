@@ -117,11 +117,11 @@ public class StatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(300).samples(100).endTest()
                 .addTest("second").mean(300).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithCoincidentalValues()
                 .getStatsHolder(MockStatsType.INSTANCE)
                 .getStats();
 
-        assertTrue(stats.toString(), stats.getAnova() < 0.9);
+        assertTrue(stats.toString(), stats.getAnova() < 0.6);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class StatsTest {
     }
 
     @Test
-    public void shouldJointTwoStats() {
+    public void shouldJoinTwoStats() {
         Stats a = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("one").mean(1.0).stdev(2.0).samples(33).endTest()

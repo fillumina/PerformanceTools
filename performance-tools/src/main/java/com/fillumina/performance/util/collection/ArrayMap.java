@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -17,7 +19,7 @@ import java.util.function.Function;
  * <ul>
  * <li>insertion and extraction have O(1) complexity
  * <li>gets its entries by index in O(1)
- * <li>removal has O(N) complexity
+ * <li>removal has O(N) complexity (linear)
  * <li>increases and decreases its size automatically
  * <li>maintains insertion order
  * <li>caches hash codes
@@ -29,13 +31,13 @@ import java.util.function.Function;
  * <li>has copy constructor and clone constructor
  * <li>improves locality of access by using arrays
  * </ul>
- * {@link #Cursor} is faster than a standard iterator but is not
+ * {@link #Cursor} is faster than a standard iterator but it is not
  * compliant with {@link Map} specifications because every {@link Map.Entry}
  * returned is in fact the same object.
  * <br>
  * Avoid using {@link #entrySet()} because to be compliant with the specs
  * it must create a new {@link Map.Entry} for each access.
- * Use {@link #iterator()} or {@link #cursor()} instead which return a
+ * Use map's {@link #iterator()} or {@link #cursor()} instead which return a
  * {@link #Cursor}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -84,7 +86,7 @@ public class ArrayMap<K,V>
         }
         int length = roundUpToPowerOf2(initialSize);
         this.array = new Object[length];
-        this.indexes = new int[length];
+        this.indexes = new int[length << 1];
     }
 
     private static int roundUpToPowerOf2(int number) {
@@ -118,10 +120,11 @@ public class ArrayMap<K,V>
 
     @SuppressWarnings("unchecked")
     public K getKeyAtIndex(int index) {
-        if (index >= size()) {
+        int idx = index << 1;
+        if (idx >= size) {
             throw new IndexOutOfBoundsException("size= " + size());
         }
-        return (K) array[index << 1];
+        return (K) array[idx];
     }
 
     @SuppressWarnings("unchecked")
@@ -229,9 +232,12 @@ public class ArrayMap<K,V>
         return new ArrayMap<>(this);
     }
 
-    public void ensureCapacity(int minCapacity) {
-        int newSize = roundUpToPowerOf2(minCapacity);
-        resize(newSize);
+    public void ensureCapacity(int requiredCapacity) {
+        int available = (array == null) ? 0 : ((array.length - size) >> 1);
+        if (requiredCapacity > available) {
+            int newSize = roundUpToPowerOf2((size >> 1) + requiredCapacity);
+            resize(newSize);
+        }
     }
 
     @Override
@@ -254,8 +260,8 @@ public class ArrayMap<K,V>
     public V put(K key, V value) {
         if (array == null) {
             array = new Object[8];
-            indexes = new int[8];
-        } else if (size > (indexes.length >> 1)) {
+            indexes = new int[16];
+        } else if (size == array.length) {
             resize(indexes.length << 1);
         }
         int mask = getMask();
@@ -324,8 +330,12 @@ public class ArrayMap<K,V>
 
     @Override
     public boolean containsKey(Object key) {
+        return getIndexOfKey(key) != -1;
+    }
+
+    public int getIndexOfKey(Object key) {
         if (array == null || size == 0) {
-            return false;
+            return -1;
         }
         int mask = getMask();
         int hashcode = key.hashCode();
@@ -333,11 +343,11 @@ public class ArrayMap<K,V>
         while (true) {
             int pointer = indexes[bucket + 1];
             if (pointer == 0) {
-                return false; // not found
+                return -1; // not found
             }
             if (hashcode == indexes[bucket]) {
                 if (key.equals(array[pointer - 1])) {
-                    return true;
+                    return (pointer - 1) >> 1;
                 }
             }
             bucket = (bucket + 2) & mask;
@@ -436,6 +446,7 @@ public class ArrayMap<K,V>
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
+        ensureCapacity(m.size());
         m.forEach((k,v) -> put(k,v));
     }
 
@@ -646,6 +657,17 @@ public class ArrayMap<K,V>
         public K get(int index) {
             return (K) array[index << 1];
         }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return indexOf(o); // there aren't repetitions (it's a key set)
+        }
+
+        /** Very fast: accesses index in O(1). */
+        @Override
+        public int indexOf(Object o) {
+            return ArrayMap.this.getIndexOfKey(o);
+        }
     }
 
     private class EntrySet extends View<Entry<K,V>> {
@@ -706,6 +728,24 @@ public class ArrayMap<K,V>
             hash = 31 * hash + Objects.hashCode(array[i + 1]);
         }
         return hash;
+    }
+
+    /** Overridden to use cursor instead of {@link #entrySet()}. */
+    @Override
+    public void forEach(BiConsumer<? super K, ? super V> action) {
+        for (Map.Entry<K, V> e : this) {
+            action.accept(e.getKey(), e.getValue());
+        }
+    }
+
+    /** Overridden to use cursor instead of {@link #entrySet()}. */
+    @Override
+    public void replaceAll(
+            BiFunction<? super K, ? super V, ? extends V> function) {
+        for (Map.Entry<K, V> e : this) {
+            V v = function.apply(e.getKey(), e.getValue());
+            e.setValue(v);
+        }
     }
 
     /**

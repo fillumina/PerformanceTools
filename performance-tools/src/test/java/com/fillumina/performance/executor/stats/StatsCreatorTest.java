@@ -54,6 +54,7 @@ public class StatsCreatorTest {
         creator.addSample(SampleCreator.createSample("one", 1, "two", 10));
         creator.addSample(SampleCreator.createSample("one", -1, "two", -10));
 
+        // filters negative values out
         ListFilter<Double> accumulatorFilter = new ListFilter<Double>() {
             @Override
             public <T> List<T> filter(List<T> list,

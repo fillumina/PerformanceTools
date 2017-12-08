@@ -15,7 +15,7 @@ import org.junit.Test;
 public class ExpressionSolverTest {
 
     @Test
-    public void shouldCreateAnExpression() {
+    public void shouldCreateAnExpressionUsingTNames() {
         StatsExpression<?> solver = new StatsExpression<>();
         solver.addExpression(TN.tname("first"))
                 .addTest(TN.tname("one")).multiplyBy(7)

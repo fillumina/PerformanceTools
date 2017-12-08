@@ -45,7 +45,7 @@ public class Stats extends Printable<Stats>
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
         this.type = type;
-        this.map = new ArrayMap<>(measures).unmodifiable();
+        this.map = new ArrayMap<>(measures).unmodifiable(); // clone constructor
         this.refMeasure = new BiggerMeasure(measures);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
@@ -115,14 +115,13 @@ public class Stats extends Printable<Stats>
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(CharSequence testName1, CharSequence testName2) {
-        List<TName> names = map.keyList();
-        int idx1 = names.indexOf(TN.tname(testName1));
-        int idx2 = names.indexOf(TN.tname(testName2));
+        int idx1 = map.getIndexOfKey(TN.tname(testName1));
+        int idx2 = map.getIndexOfKey(TN.tname(testName2));
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
-        int idx1 = map.keyList().indexOf(TN.tname(testName));
+        int idx1 = map.getIndexOfKey(TN.tname(testName));
         if (idx1 == -1) {
             return -1.0;
         }

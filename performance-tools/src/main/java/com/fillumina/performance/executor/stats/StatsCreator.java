@@ -10,7 +10,6 @@ import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -34,7 +33,7 @@ public class StatsCreator implements StatsTyped {
     public void addSample(Sample sample) {
         sample.getValuesMap().values().forEach((SampleValue v) -> {
             if (unit == null) {
-                unit = v.getQuantity().getUnit();
+                unit = v.getQuantity().getUnit().units().getBase();
             }
             List<Double> list = getValueList(v.getName());
             list.add(v.getQuantity().toBase());
@@ -47,13 +46,9 @@ public class StatsCreator implements StatsTyped {
 
     /**
      * Builds a {@link Stats} out of the collected samples.
-     *
-     * @param message       The message to addSample to the statistics
-     * @param confidence    The confidence used
-     * @return              The statistics computed over the collected samples
      */
     public Stats createStats(ListFilter<Double> filter) {
-        Map<TName, DimensionalMeasure> map = new ArrayMap<>();
+        ArrayMap<TName, DimensionalMeasure> map = new ArrayMap<>();
 
         valuesMap.forEach((TName name, List<Double> list) -> {
             List<Double> filtered = filter.filter(list);

@@ -176,4 +176,96 @@ public class ArrayMapTest extends AbstractMapTest {
         map.remove(b);
         assertTrue(map.isEmpty());
     }
+
+    @Test
+    public void shouldGetIndexOfKey() {
+        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+                .add("one", 1)
+                .add("two", 2)
+                .add("three", 3)
+                .add("four", 4);
+
+        assertEquals("one", map.getKeyAtIndex(map.getIndexOfKey("one")));
+        assertEquals("two", map.getKeyAtIndex(map.getIndexOfKey("two")));
+        assertEquals("three", map.getKeyAtIndex(map.getIndexOfKey("three")));
+        assertEquals("four", map.getKeyAtIndex(map.getIndexOfKey("four")));
+    }
+
+    @Test
+    public void shouldGetIndexOfList() {
+        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+                .add("one", 1)
+                .add("two", 2)
+                .add("three", 3)
+                .add("four", 4);
+
+        List<String> list = map.keyList();
+
+        assertEquals("one", list.get(list.indexOf("one")));
+        assertEquals("two", list.get(list.indexOf("two")));
+        assertEquals("three", list.get(list.indexOf("three")));
+        assertEquals("four", list.get(list.indexOf("four")));
+    }
+
+    @Test
+    public void shouldIncreaseItsSize() {
+        ArrayMap<String,Integer> map = new ArrayMap<>();
+        for (int i=0; i<128; i++) {
+            map.put("" + i, i);
+        }
+
+        assertEquals(128, map.size());
+
+        for (int i=0; i<128; i++) {
+            String key = "" + i;
+            assertEquals(i, map.get(key), 0);
+        }
+    }
+
+    @Test
+    public void shouldIterateWithForEach() {
+        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+                .add("one", 1)
+                .add("two", 2)
+                .add("three", 3)
+                .add("four", 4);
+
+        List<String> list = new ArrayList<>();
+        map.forEach( (k,v) -> list.add(map.get(k) + k) );
+
+        assertEquals(Arrays.asList("1one", "2two", "3three", "4four"), list);
+    }
+
+    @Test
+    public void shouldIterateWithForEachMaintainingOrder() {
+        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+                .add("one", 1)
+                .add("two", 2)
+                .add("three", 3)
+                .add("four", 4);
+
+        map.remove("two");
+        map.put("five", 5);
+
+        List<String> list = new ArrayList<>();
+        map.forEach( (k,v) -> list.add(map.get(k) + k) );
+
+        assertEquals(Arrays.asList("1one", "3three", "4four", "5five"), list);
+    }
+
+    @Test
+    public void shouldClearTheMapIfAllElementsAreRemoved() {
+        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+                .add("four", 4);
+
+        map.remove("four");
+        assertEquals(0, map.size());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldUnmodifiableEmptyMapBeUnmofiable() {
+        ArrayMap<String,Integer> map = new ArrayMap<>();
+
+        map.unmodifiable().put("one", 1);
+    }
 }
