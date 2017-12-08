@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -111,7 +111,7 @@ public class JMHSample_08_DeadCode {
 
     /**
      * The perspective or PerformanceTools is different from JMH in that if
-     * a test is evicted it is simply reported as such with an exception.
+ a executeWithoutOutput is evicted it is simply reported as such with an exception.
      * It is not trying to interfere with JVM mechanisms but only to
      * measure it.
      */
@@ -120,29 +120,29 @@ public class JMHSample_08_DeadCode {
 
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig()
                 .end()
                 .tests()
                     // these tests from the JMH class are evicted by JVM.
-                    // note that the return of 'right' test isn't managed by
+                    // note that the return of 'right' executeWithoutOutput isn't managed by
                     // PerformanceTools and so it fails like the others.
 
                     .addTest("baseline", () -> { test.baseline(); })
                     .addTest("wrong", () -> { test.measureWrong(); })
                     .addTest("right", () -> { test.measureRight(); })
 
-                    // This test use Sink.drain() method which is similar
+                    // This executeWithoutOutput use SafeSink.drain() method which is similar
                     // to JMH BlackHoles in avoiding eviction.
                     .addTest("volatile_fixed", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.log(x));
+                            SafeSink.drain(Math.log(x));
                         }
                     })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

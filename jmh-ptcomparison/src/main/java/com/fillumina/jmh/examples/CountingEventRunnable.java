@@ -8,27 +8,27 @@ import java.util.List;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class CountingEventTest implements Runnable {
+public class CountingEventRunnable implements Runnable {
     private long interval;
     private EventCounter counter;
     private CountingRunnable runnable;
 
-    public CountingEventTest setInterval(TimeSpan interval) {
+    public CountingEventRunnable setInterval(TimeSpan interval) {
         this.interval = interval.asNanos();
         return this;
     }
 
-    public CountingEventTest setEvents(int size) {
+    public CountingEventRunnable setEvents(int size) {
         counter = new EventCounter(size);
         return this;
     }
 
-    public CountingEventTest setEvents(String... eventNames) {
+    public CountingEventRunnable setEvents(String... eventNames) {
         counter = new EventCounter(eventNames);
         return this;
     }
 
-    public CountingEventTest setRunnable(CountingRunnable runnable) {
+    public CountingEventRunnable setRunnable(CountingRunnable runnable) {
         this.runnable = runnable;
         return this;
     }

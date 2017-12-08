@@ -80,7 +80,7 @@ public class JMHSample_06_FixtureLevel {
      * for measureWrong(). You can also prevent JMH for proceeding further by
      * requiring "fail on error".
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -123,19 +123,19 @@ public class JMHSample_06_FixtureLevel {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                     // requires only 1 execution of run()
                     .setSamples(1)
                     .setIterations(1)
                 .end()
                 .tests()
-                    .addSingleTest(new Runnable() {
-                        @com.fillumina.performance.annotation.SetUp
+                    .addTest(new Runnable() {
+                        @com.fillumina.performance.executor.annotation.SetUp
                         public void setup() {
                             checkSequenceAndIncrement(0);
                         }
 
-                        @com.fillumina.performance.annotation.BeforeSample
+                        @com.fillumina.performance.executor.annotation.BeforeSample
                         public void beforeSample() {
                             checkSequenceAndIncrement(1);
                         }
@@ -146,12 +146,12 @@ public class JMHSample_06_FixtureLevel {
                             checkSequenceAndIncrement(2);
                         }
 
-                        @com.fillumina.performance.annotation.AfterSample
+                        @com.fillumina.performance.executor.annotation.AfterSample
                         public void afterSample() {
                             checkSequenceAndIncrement(3);
                         }
 
-                        @com.fillumina.performance.annotation.TearDown
+                        @com.fillumina.performance.executor.annotation.TearDown
                         public void teardown() {
                             checkSequenceAndIncrement(4);
                         }
@@ -167,7 +167,7 @@ public class JMHSample_06_FixtureLevel {
                     })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
         if (sequenceHolder.getValue() != 5) {
             throw new AssertionError("some event not executed, v=" +

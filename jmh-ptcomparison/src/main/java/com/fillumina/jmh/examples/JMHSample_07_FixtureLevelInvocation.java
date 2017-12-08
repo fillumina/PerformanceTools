@@ -144,7 +144,7 @@ public class JMHSample_07_FixtureLevelInvocation {
      * You can see the cold scenario is running longer, because we pay for
      * thread wakeups.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -176,13 +176,13 @@ public class JMHSample_07_FixtureLevelInvocation {
      * States are declared using standard Java so there is no need for a
      * specific notation.
      * The JMH example uses a fixture for a state to be executed at each
-     * test invocation with {@link Level#Invocation}. This is not
-     * supported by PerformanceTools because it will introduce unacceptable
-     * inaccuracies in the timing (and even JMH recommends to use it only
-     * with tests lasting more than 1 ms). The solution is to add the
-     * operation in the test itself and (if it is constant time) evaluate
-     * it in another test and subtract its time. It's a convoluted method for
-     * sure but it's efficient and simple enough.
+ executeWithoutOutput invocation with {@link Level#Invocation}. This is not
+ supported by PerformanceTools because it will introduce unacceptable
+ inaccuracies in the timing (and even JMH recommends to use it only
+ with tests lasting more than 1 ms). The solution is to add the
+ operation in the executeWithoutOutput itself and (if it is constant time) evaluate
+ it in another executeWithoutOutput and subtract its time. It's a convoluted method for
+ sure but it's efficient and simple enough.
      */
     public static void main_pt(final String[] args) {
         JMHSample_07_FixtureLevelInvocation test =
@@ -203,8 +203,7 @@ public class JMHSample_07_FixtureLevelInvocation {
 
         PerformanceBuilder
             .config()
-                .speed()
-                    .operations().test("cold").subtract().test("lag").end()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("lag", new Runnable() {
@@ -244,7 +243,7 @@ public class JMHSample_07_FixtureLevelInvocation {
                     })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
         normalState.down();
         laggingState.down();

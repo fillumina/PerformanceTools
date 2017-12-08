@@ -30,8 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.math.BigInteger;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -79,7 +80,7 @@ public class JMHSample_27_Params {
      *
      * Note the performance is different with different parameters.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -114,22 +115,22 @@ public class JMHSample_27_Params {
     public static void main_pt(final String[] args) {
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                     .setIterations(1_000, 10_000, 100_000)
-                    .setTimeout(10, TimeUnit.MINUTES)
+                    .setStatsTimeout(IntervalUnit.MINUTES.quantity(10))
                 .end()
                 .tests()
                     .addTest("bench", new Runnable() {
                         // because it's different from jmh's @Param
-                        @com.fillumina.performance.annotation.Param
+                        @com.fillumina.performance.executor.annotation.Param
                         private int certainty;
 
-                        @com.fillumina.performance.annotation.Param
+                        @com.fillumina.performance.executor.annotation.Param
                         private int arg;
 
                         @Override
                         public void run() {
-                            Sink.drain(BigInteger.valueOf(arg)
+                            SafeSink.drain(BigInteger.valueOf(arg)
                                     .isProbablePrime(certainty));
                         }
                     })
@@ -141,7 +142,7 @@ public class JMHSample_27_Params {
                     .end() // TODO why 2 end()?
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
     }
 }

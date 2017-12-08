@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -66,7 +66,7 @@ public class JMHSample_28_BlackholeHelpers {
      * JMH infrastructure objects, like Control.
      *
      * Below is the variant of {@link org.openjdk.jmh.samples.JMHSample_08_DeadCode}
-     * test, but wrapped in the anonymous classes.
+ executeWithoutOutput, but wrapped in the anonymous classes.
      */
 
     public interface Worker {
@@ -129,7 +129,7 @@ public class JMHSample_28_BlackholeHelpers {
      * You will see measureWrong() running on-par with baseline().
      * Both measureRight() are measuring twice the baseline, so the logs are intact.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -154,7 +154,7 @@ public class JMHSample_28_BlackholeHelpers {
     }
 
     /**
-     * The {@link Blackhole}'s PerformanceTools equivalent, {@link Sink}, can
+     * The {@link Blackhole}'s PerformanceTools equivalent, {@link SafeSink}, can
      * be used everywhere.
      */
     public static void main_pt(final String[] args) {
@@ -163,19 +163,19 @@ public class JMHSample_28_BlackholeHelpers {
 
             @Override
             public void work() {
-                // Sink can be used anywhere
-                Sink.drain(Math.log(x));
+                // SafeSink can be used anywhere
+                SafeSink.drain(Math.log(x));
             }
         };
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("bench", () -> { right.work(); } )
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

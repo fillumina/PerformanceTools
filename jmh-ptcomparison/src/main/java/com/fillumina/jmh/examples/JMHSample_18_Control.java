@@ -53,7 +53,7 @@ public class JMHSample_18_Control {
      */
 
     /*
-     * In this example, we want to estimate the ping-pong speed for the simple
+     * In this example, we want to estimate the ping-pong speedConfig for the simple
      * AtomicBoolean. Unfortunately, doing that in naive manner will livelock
      * one of the threads, because the executions of ping/pong are not paired
      * perfectly. We need the escape hatch to terminate the loop if threads
@@ -81,7 +81,7 @@ public class JMHSample_18_Control {
     /*
      * ============================== HOW TO RUN THIS TEST: ====================================
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -115,10 +115,10 @@ public class JMHSample_18_Control {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
-                    .addSingleTest(new ParallelTest()
+                    .addTest(new ParallelTest()
                         .addTask("ping", 1, () -> {
                             while(!flag.compareAndSet(false, true)) {}
                         })
@@ -127,6 +127,6 @@ public class JMHSample_18_Control {
                         }))
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

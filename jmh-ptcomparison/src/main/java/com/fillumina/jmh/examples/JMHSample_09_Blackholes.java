@@ -31,7 +31,7 @@
 package com.fillumina.jmh.examples;
 
 import static com.fillumina.jmh.examples.JMHSample_08_DeadCode.main_jhm;
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -110,7 +110,7 @@ public class JMHSample_09_Blackholes {
      * You will see measureWrong() running on-par with baseline().
      * Both measureRight() are measuring twice the baseline, so the logs are intact.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -140,11 +140,11 @@ public class JMHSample_09_Blackholes {
 
     /**
      * To be sure that a result is consumed and the code is thus not evicted
-     * PerformanceTools uses the same mechanism as JMH: a consuming class
-     * named Sink. Sink is created to be as light and effective as
-     * possible (consider that its execution time is necessarily accounted in
-     * the test total time).
-     * <p>
+ PerformanceTools uses the same mechanism as JMH: a consuming class
+ named SafeSink. SafeSink is created to be as light and effective as
+ possible (consider that its execution time is necessarily accounted in
+ the executeWithoutOutput total time).
+ <p>
      * It's worth noting that {@link Blackhole#consume(double)} methods
      * read from a volatile variable which might impact the performances
      * of a multi-threaded task.
@@ -154,7 +154,7 @@ public class JMHSample_09_Blackholes {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("cos", new Runnable() {
@@ -162,7 +162,7 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x));
+                            SafeSink.drain(Math.cos(x));
                         }
                     })
                     .addTest("sin + cos", new Runnable() {
@@ -170,7 +170,7 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x) + Math.sin(x));
+                            SafeSink.drain(Math.cos(x) + Math.sin(x));
                         }
                     })
                     .addTest("sin & cos", new Runnable() {
@@ -178,12 +178,12 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x));
-                            Sink.drain(Math.sin(x));
+                            SafeSink.drain(Math.cos(x));
+                            SafeSink.drain(Math.sin(x));
                         }
                     })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

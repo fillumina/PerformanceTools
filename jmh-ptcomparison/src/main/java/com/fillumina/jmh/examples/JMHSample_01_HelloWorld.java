@@ -31,7 +31,6 @@
 package com.fillumina.jmh.examples;
 
 import com.fillumina.performance.template.PerformanceBuilder;
-import com.fillumina.performance.time.stats.TimeStatsType;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -109,20 +108,18 @@ public class JMHSample_01_HelloWorld {
     }
 
     /**
-     * Running and empty test means that it will be
-     * probably evicted by the JVM. This is correctly detected
+     * Running and empty executeWithoutOutput means that it will be
+ probably evicted by the JVM. This is correctly detected
      * and reported by throwing a {@link InvalidTestException}.
      */
     public static void main_pt(final String[] args) {
         PerformanceBuilder
             .config()
-                .speed()
-                    .setTestMode(TimeStatsType.Throughput)
-                .end()
+                .speedConfig().end()
                 .tests()
                     .addTest("empty", () -> {})
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

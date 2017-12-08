@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -175,7 +175,7 @@ public class JMHSample_34_SafeLooping {
      * linearity, and otherwise much faster than both measureRight_*. You can also see measureRight_2
      * is marginally faster than measureRight_1.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -207,18 +207,18 @@ public class JMHSample_34_SafeLooping {
 
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig()
                         .setIterations(100_000)
                     .end()
                     .tests()
                         .addTest("10", () -> {
                             for (int x : test.xs) {
-                                Sink.drain(Math.sin(x));
+                                SafeSink.drain(Math.sin(x));
                             }
                         })
                     .end()
                 .end()
-                .exec();
+                .executeWithFullOutput();
 
     }
 }

@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
@@ -229,7 +229,7 @@ public class JMHSample_22_FalseSharing {
      *
      * Note the slowdowns.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -269,42 +269,42 @@ public class JMHSample_22_FalseSharing {
 
         PerformanceBuilder
             .config()
-                .speed().setMultiThreading(true)
+                .speedConfig().setMultiThreading(true)
                 .end()
                 .tests()
                     .addTest("baseline", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            Sink.drain(test.reader(baseline));
+                            SafeSink.drain(test.reader(baseline));
                         })
                         .addTask("writer", 1, () -> {test.writer(baseline); }))
 
                     .addTest("padded", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            Sink.drain(test.reader(padded));
+                            SafeSink.drain(test.reader(padded));
                         })
                         .addTask("writer", 1, () -> {test.writer(padded); }))
 
                     .addTest("hierarchy", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            Sink.drain(test.reader(hierarchy));
+                            SafeSink.drain(test.reader(hierarchy));
                         })
                         .addTask("writer", 1, () -> {test.writer(hierarchy); }))
 
                     .addTest("contended", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            Sink.drain(test.reader(contended));
+                            SafeSink.drain(test.reader(contended));
                         })
                         .addTask("writer", 1, () -> {test.writer(contended); }))
 
                     .addTest("sparse", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            Sink.drain(test.reader(sparse));
+                            SafeSink.drain(test.reader(sparse));
                         })
                         .addTask("writer", 1, () -> {test.writer(sparse); }))
 
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
     }
 }

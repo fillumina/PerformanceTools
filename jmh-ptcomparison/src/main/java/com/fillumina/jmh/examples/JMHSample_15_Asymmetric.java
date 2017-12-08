@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
@@ -56,9 +56,9 @@ public class JMHSample_15_Asymmetric {
 
     /*
      * So far all the tests were symmetric: the same code was executed in all the threads.
-     * At times, you need the asymmetric test. JMH provides this with the notion of @Group,
+     * At times, you need the asymmetric executeWithoutOutput. JMH provides this with the notion of @Group,
      * which can bind several methods together, and all the threads are distributed among
-     * the test methods.
+     * the executeWithoutOutput methods.
      *
      * Each execution group contains of one or more threads. Each thread within a particular
      * execution group executes one of @Group-annotated @Benchmark methods. Multiple execution
@@ -73,7 +73,7 @@ public class JMHSample_15_Asymmetric {
      * Putting this all together, the example below means:
      *  a) define the execution group "g", with 3 threads executing inc(), and 1 thread
      *     executing get(), 4 threads per group in total;
-     *  b) if we run this test case with 4 threads, then we will have a single execution
+     *  b) if we run this executeWithoutOutput case with 4 threads, then we will have a single execution
      *     group. Generally, running with 4*N threads will create N execution groups, etc.;
      *  c) each execution group has one @State instance to share: that is, execution groups
      *     share the counter within the group, but not across the groups.
@@ -105,7 +105,7 @@ public class JMHSample_15_Asymmetric {
      *
      * You will have the distinct metrics for inc() and get() from this run.
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -134,7 +134,7 @@ public class JMHSample_15_Asymmetric {
     }
 
     /**
-     * PT provides a simple way to define groups within a test
+     * PT provides a simple way to define groups within a executeWithoutOutput
      * @param args
      */
     public static void main_pt(final String[] args) {
@@ -144,16 +144,16 @@ public class JMHSample_15_Asymmetric {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
-                    .addSingleTest(new ParallelTest()
-                        .addTask("inc", 3, () -> { Sink.drain(test.inc()); })
-                        .addTask("get", 1, () -> { Sink.drain(test.get()); }))
+                    .addTest(new ParallelTest()
+                        .addTask("inc", 3, () -> { SafeSink.drain(test.inc()); })
+                        .addTask("get", 1, () -> { SafeSink.drain(test.get()); }))
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
-        Sink.drain(test.counter.get());
+        SafeSink.drain(test.counter.get());
     }
 }

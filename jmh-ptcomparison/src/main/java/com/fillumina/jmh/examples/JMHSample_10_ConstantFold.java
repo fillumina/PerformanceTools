@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import static com.fillumina.performance.infrastructure.Sink.drain;
+import static com.fillumina.performance.executor.test.SafeSink.drain;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -131,10 +131,10 @@ public class JMHSample_10_ConstantFold {
 
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig()
                     .end()
                 .tests()
-                    // this test is optimized by JVM
+                    // this executeWithoutOutput is optimized by JVM
                     .addTest("folded", new Runnable() {
                         private final double x = Math.PI;
 
@@ -153,7 +153,7 @@ public class JMHSample_10_ConstantFold {
                     })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 
 }

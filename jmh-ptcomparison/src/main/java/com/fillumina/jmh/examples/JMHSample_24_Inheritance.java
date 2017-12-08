@@ -30,9 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
-import com.fillumina.performance.time.stats.TimeStatsType;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -113,7 +112,7 @@ public class JMHSample_24_Inheritance {
     /*
      * ============================== HOW TO RUN THIS TEST: ====================================
      *
-     * You can run this test, and observe the three distinct benchmarks running the squares
+     * You can run this executeWithoutOutput, and observe the three distinct benchmarks running the squares
      * of Math.log, Math.sin, and Math.cos, accordingly.
      *
      * a) Via the command line:
@@ -140,8 +139,8 @@ public class JMHSample_24_Inheritance {
 
     /**
      * There is no problem in using inheritance in tests at all.
-     * Unfortunately the unadapted test didn't work because it used the
-     * {@link AbstractBenchmark#x} field which was not volatile provoking
+     * Unfortunately the unadapted executeWithoutOutput didn't work because it used the
+ {@link AbstractBenchmark#x} field which was not volatile provoking
      * the folding of the code.
      */
     public static void main_pt(final String[] args) {
@@ -156,16 +155,15 @@ public class JMHSample_24_Inheritance {
 
         PerformanceBuilder
             .config()
-                .speed()
-                    .setTestMode(TimeStatsType.AverageTime)
+                .speedConfig()
                 .end()
                 .tests()
-                    .addTest("log", () -> { Sink.drain(log.bench()); })
-                    .addTest("sin", () -> { Sink.drain(sin.bench()); })
-                    .addTest("cos", () -> { Sink.drain(cos.bench()); })
+                    .addTest("log", () -> { SafeSink.drain(log.bench()); })
+                    .addTest("sin", () -> { SafeSink.drain(sin.bench()); })
+                    .addTest("cos", () -> { SafeSink.drain(cos.bench()); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
     }
 }

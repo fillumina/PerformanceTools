@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -44,7 +44,7 @@ public class JMHSample_03_States {
 
     /*
      * Most of the time, you need to maintain some state while the benchmark is
-     * running. Since JMH is heavily used to build concurrent benchmarks, we
+     * running. Since JMH is heavily used to buildConfiguration concurrent benchmarks, we
      * opted for an explicit notion of state-bearing objects.
      *
      * Below are two state objects. Their class names are not essential, it
@@ -183,12 +183,12 @@ public class JMHSample_03_States {
 
         PerformanceBuilder
                 .config()
-                    .speed()
+                    .speedConfig()
                         .setMultiThreading(true)
                     .end()
                 .tests()
                     .addTest("synchronized", () -> {
-                            Sink.drain(safelyShared.increment());
+                            SafeSink.drain(safelyShared.increment());
                         })
                     .addTest("unsafe", new Runnable() {
                             /**
@@ -198,15 +198,15 @@ public class JMHSample_03_States {
                             private final State shared = new State();
                             @Override
                             public void run() {
-                                Sink.drain(shared.increment());
+                                SafeSink.drain(shared.increment());
                             }
                         })
                     .addTest("thread local", () -> {
-                            Sink.drain(threadLocal.get().increment());
+                            SafeSink.drain(threadLocal.get().increment());
                         })
                     .end()
                 .end()
-            .exec();
+            .executeWithFullOutput();
     }
 
 }

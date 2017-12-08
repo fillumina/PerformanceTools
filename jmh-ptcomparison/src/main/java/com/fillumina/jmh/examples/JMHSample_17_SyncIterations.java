@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -99,7 +99,7 @@ public class JMHSample_17_SyncIterations {
      *
      * Say, $CPU is the number of CPUs on your machine.
      *
-     * You can run this test with:
+     * You can run this executeWithoutOutput with:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -146,15 +146,15 @@ public class JMHSample_17_SyncIterations {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                     .setMillisecondsPerSample(500)
                     .setWorkerNumber(workers)
                     .setConcurrencyLevel(workers)
                 .end()
                 .tests()
-                    .addSingleTest(() -> { Sink.drain(test.test()); })
+                    .addTest(() -> { SafeSink.drain(test.test()); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 }

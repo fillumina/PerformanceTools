@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
+import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -203,25 +203,25 @@ public class JMHSample_12_Forking {
      */
     public static void main_pt_both(final String[] args) {
         final JMHSample_12_Forking test = new JMHSample_12_Forking();
-        final Runnable r1 = () -> { Sink.drain(test.measure(test.c1)); };
-        final Runnable r2 = () -> { Sink.drain(test.measure(test.c2)); };
+        final Runnable r1 = () -> { SafeSink.drain(test.measure(test.c1)); };
+        final Runnable r2 = () -> { SafeSink.drain(test.measure(test.c2)); };
 
         System.out.println("C1 & C2");
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("c1", r1)
                     .addTest("c2", r2)
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
         // this check make c1 and c2 them not evictable
-//        Sink.drain(test.c1.inc());
-//        Sink.drain(test.c2.inc());
+//        SafeSink.drain(executeWithoutOutput.c1.inc());
+//        SafeSink.drain(executeWithoutOutput.c2.inc());
     }
 
     /**
@@ -234,27 +234,27 @@ public class JMHSample_12_Forking {
         System.out.println("C1");
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
-                    .addTest("c1", () -> { Sink.drain(test.measure(test.c1)); })
+                    .addTest("c1", () -> { SafeSink.drain(test.measure(test.c1)); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
         System.out.println("C2");
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
-                    .addTest("c2", () -> { Sink.drain(test.measure(test.c2)); })
+                    .addTest("c2", () -> { SafeSink.drain(test.measure(test.c2)); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
 
         // this check make c1 and c2 them not evictable
-        Sink.drain(test.c1.inc());
-        Sink.drain(test.c2.inc());
+        SafeSink.drain(test.c1.inc());
+        SafeSink.drain(test.c2.inc());
     }
 }

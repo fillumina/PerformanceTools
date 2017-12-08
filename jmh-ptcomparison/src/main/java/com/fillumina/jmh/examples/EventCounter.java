@@ -1,14 +1,12 @@
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.time.sample.IterationTime;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.AbsoluteUnit;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.ThroughputUnit;
 import com.fillumina.performance.util.unit.Unit;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,16 +42,16 @@ public class EventCounter {
             return measure;
         }
 
-        void reset(long now) {
-            lastAccess = now;
+        void reset() {
+            lastAccess = System.nanoTime();
             measure.clear();
         }
 
         void ping() {
             long now = System.nanoTime();
             long elapsed = now - lastAccess;
-            measure.add(elapsed);
-            lastAccess = now;
+            measure.addSample(elapsed);
+            lastAccess = System.nanoTime();
         }
 
         @Override
@@ -63,8 +61,6 @@ public class EventCounter {
     }
 
     private final EventImpl[] events;
-    private IterationTime iterationTime;
-
 
     public EventCounter(int size) {
         this.events = new EventImpl[size];
@@ -85,9 +81,8 @@ public class EventCounter {
     }
 
     public void reset() {
-        long now = System.nanoTime();
         for (EventImpl e : events) {
-            e.reset(now);
+            e.reset();
         }
     }
 
@@ -99,20 +94,7 @@ public class EventCounter {
         return Arrays.asList(events);
     }
 
-    public EventCounter add(IterationTime iterationTime) {
-        this.iterationTime = iterationTime;
-        return this;
-    }
-
     public void appendTo(Appendable appendable) {
-        if (iterationTime != null) {
-            try {
-                appendable.append(
-                        iterationTime.toString() + System.lineSeparator());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
         double[] means = new double[events.length];
         double[] throughput = new double[events.length];
         int index = 0;
@@ -122,9 +104,9 @@ public class EventCounter {
             throughput[index] = 1E9/mean;
             index++;
         }
-        Unit meanUnit = AverageTimeUnit.UNITS
+        Unit<?> meanUnit = AverageTimeUnit.UNITS
                 .calculateAppropriatedUnitFrom(means);
-        Unit throughputUnit = AbsoluteUnit.UNITS
+        Unit<?> throughputUnit = ThroughputUnit.UNITS
                 .calculateAppropriatedUnitFrom(throughput);
 
         TableFormatter table = new TableFormatter();
@@ -134,7 +116,6 @@ public class EventCounter {
                 .cell("count")
                 .cell("speed").span(4)
                 .cell("throughput").span(4)
-                .cellIf(iterationTime != null, "ratio")
                 .endl();
         for (int i=0; i<events.length; i++) {
             EventImpl e = events[i];
@@ -153,11 +134,6 @@ public class EventCounter {
                     .cell("+/-")
                     .cell(toString(throughputUnit.convertFromBase(1E9/moe)))
                     .cell(throughputUnit.toString() + "op/s   ");
-            if (iterationTime != null) {
-                double ratio =
-                        1.0 * m.getCount() / iterationTime.getIterations();
-                table.cell(Ratio.decimal(ratio).toString());
-            }
             table.endl();
         }
         table.appendToCatchingIOException(appendable);

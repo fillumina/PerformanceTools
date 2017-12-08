@@ -90,20 +90,20 @@ public class JMHSample_04_DefaultState {
     }
 
     /**
-     * The {@link Runnable} test can access resources according to normal
-     * java behaviors. There is no need for special notations.
+     * The {@link Runnable} executeWithoutOutput can access resources according to normal
+ java behaviors. There is no need for special notations.
      */
     public static void main_pt(final String[] args) {
         final JMHSample_04_DefaultState test = new JMHSample_04_DefaultState();
 
         PerformanceBuilder
             .config()
-                .speed().end()
+                .speedConfig().end()
                 .tests()
-                    .addSingleTest(() -> { test.measure(); })
+                    .addTest(() -> { test.measure(); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 
 }

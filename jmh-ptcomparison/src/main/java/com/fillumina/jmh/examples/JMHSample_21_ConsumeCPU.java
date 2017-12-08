@@ -30,10 +30,10 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.infrastructure.CpuBurner;
-import com.fillumina.performance.infrastructure.DoubleLfsrRunnable;
-import com.fillumina.performance.infrastructure.LfsrRunnable;
-import com.fillumina.performance.infrastructure.RndRunnable;
+import com.fillumina.performance.util.CpuBurner;
+import com.fillumina.performance.executor.test.DoubleLfsrRunnable;
+import com.fillumina.performance.executor.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -51,11 +51,11 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 public class JMHSample_21_ConsumeCPU {
 
     /*
-     * At times you require the test to burn some of the cycles doing nothing.
+     * At times you require the executeWithoutOutput to burn some of the cycles doing nothing.
      * In many cases, you *do* want to burn the cycles instead of waiting.
      *
      * For these occasions, we have the infrastructure support. Blackholes
-     * can not only consume the values, but also the time! Run this test
+     * can not only consume the values, but also the time! Run this executeWithoutOutput
      * to get familiar with this part of JMH.
      *
      * (Note we use static method because most of the use cases are deep
@@ -128,7 +128,7 @@ public class JMHSample_21_ConsumeCPU {
      * Note the single token is just a few cycles, and the more tokens
      * you request, then more work is spent (almost linearly)
      *
-     * You can run this test:
+     * You can run this executeWithoutOutput:
      *
      * a) Via the command line:
      *    $ mvn clean install
@@ -159,14 +159,14 @@ public class JMHSample_21_ConsumeCPU {
      * To linearly consume CPU cycles PerformanceTools has several
      * {@link Runnable} available (nothing forbid to add new ones of course):
      * <ul>
-     * <li>{@link com.fillumina.performance.infrastructure.LfsrRunnable}
+     * <li>{@link com.fillumina.performance.executor.test.LfsrRunnable}
      * implements the LFSR algorithm which is stable and constant time;
-     * <li>{@link com.fillumina.performance.infrastructure.DoubleLfsrRunnable}
+     * <li>{@link com.fillumina.performance.executor.test.DoubleLfsrRunnable}
      * implements two consecutive calls to LFSR algorithm. it is twice slower
      * than {@link LfsrRunnable} (use for accuracy tests).
-     * <li>{@link com.fillumina.performance.infrastructure.CpuBurner}
+     * <li>{@link com.fillumina.performance.util.CpuBurner}
      * repeat the LFSR algorith the given number of times.
-     * <li>{@link com.fillumina.performance.infrastructure.RndRunnable}
+     * <li>{@link com.fillumina.performance.executor.test.RndRunnable}
      * another pseudo random algorithm slightly slower than LFSR.
      * </ul>
      * All those algorithm use no extra memory and are quite stable.
@@ -176,7 +176,7 @@ public class JMHSample_21_ConsumeCPU {
 
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("consume0", () -> { test.consume_0000(); })
@@ -193,13 +193,13 @@ public class JMHSample_21_ConsumeCPU {
                     .addTest("consume1024", () -> { test.consume_1024(); })
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 
     public static void main_pt_own(final String[] args) {
         PerformanceBuilder
             .config()
-                .speed()
+                .speedConfig()
                 .end()
                 .tests()
                     .addTest("single lfsr", new LfsrRunnable())
@@ -213,7 +213,7 @@ public class JMHSample_21_ConsumeCPU {
                     .addTest("xorshift rnd", new RndRunnable() )
                 .end()
             .end()
-            .exec();
+            .executeWithFullOutput();
     }
 
 }
