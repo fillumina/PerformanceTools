@@ -120,4 +120,60 @@ public class ArrayMapTest extends AbstractMapTest {
 
         assertEquals(copyBefore, copyAfter);
     }
+
+    private static class SameHash {
+        @Override public int hashCode() { return 0; }
+    }
+
+    @Test
+    public void shouldPutAndGetSameHash() {
+        SameHash a = new SameHash();
+        SameHash b = new SameHash();
+        SameHash c = new SameHash();
+        SameHash d = new SameHash();
+
+        ArrayMap<SameHash,Character> map = new ArrayMap<>();
+        map.put(a, 'a');
+        map.put(b, 'b');
+        map.put(c, 'c');
+        map.put(d, 'd');
+
+        assertEquals(4, map.size());
+        assertEquals(Character.valueOf('a'), map.get(a));
+        assertEquals(Character.valueOf('b'), map.get(b));
+        assertEquals(Character.valueOf('c'), map.get(c));
+        assertEquals(Character.valueOf('d'), map.get(d));
+    }
+
+    @Test
+    public void shouldRemoveSameHash() {
+        SameHash a = new SameHash();
+        SameHash b = new SameHash();
+        SameHash c = new SameHash();
+        SameHash d = new SameHash();
+
+        ArrayMap<SameHash,Character> map = new ArrayMap<>();
+        map.put(a, 'a');
+        map.put(b, 'b');
+        map.put(c, 'c');
+        map.put(d, 'd');
+
+        map.remove(a);
+        assertEquals(3, map.size());
+        assertEquals(Character.valueOf('b'), map.get(b));
+        assertEquals(Character.valueOf('c'), map.get(c));
+        assertEquals(Character.valueOf('d'), map.get(d));
+
+        map.remove(c);
+        assertEquals(2, map.size());
+        assertEquals(Character.valueOf('b'), map.get(b));
+        assertEquals(Character.valueOf('d'), map.get(d));
+
+        map.remove(d);
+        assertEquals(1, map.size());
+        assertEquals(Character.valueOf('b'), map.get(b));
+
+        map.remove(b);
+        assertTrue(map.isEmpty());
+    }
 }

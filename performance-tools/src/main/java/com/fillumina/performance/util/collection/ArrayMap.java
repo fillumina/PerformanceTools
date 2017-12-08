@@ -15,11 +15,12 @@ import java.util.function.Function;
 /**
  * Fast linked hash map implementation.
  * <ul>
- * <li>insertion, extraction and removal have O(1) complexity
+ * <li>insertion and extraction have O(1) complexity
+ * <li>gets its entries by index in O(1)
+ * <li>removal has O(N) complexity
  * <li>increases and decreases its size automatically
  * <li>maintains insertion order
  * <li>caches hash codes
- * <li>accesses its entries by index in O(1)
  * <li>views its keys as a list
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
@@ -34,7 +35,7 @@ import java.util.function.Function;
  * <br>
  * Avoid using {@link #entrySet()} because to be compliant with the specs
  * it must create a new {@link Map.Entry} for each access.
- * Use {@link #iterator()} or {@link #cursor()} instead wich return a
+ * Use {@link #iterator()} or {@link #cursor()} instead which return a
  * {@link #Cursor}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -228,6 +229,11 @@ public class ArrayMap<K,V>
         return new ArrayMap<>(this);
     }
 
+    public void ensureCapacity(int minCapacity) {
+        int newSize = roundUpToPowerOf2(minCapacity);
+        resize(newSize);
+    }
+
     @Override
     public int size() {
         return size >> 1;
@@ -356,9 +362,24 @@ public class ArrayMap<K,V>
                     int index = pointer - 1;
                     @SuppressWarnings("unchecked")
                     V oldValue = (V) array[pointer];
+
+                    // shift the array list from index back by 2
                     System.arraycopy(array, index + 2,
                             array, index, array.length - index - 2);
-                    indexes[bucket + 1] = 0; // free the bucket
+                    // clear last positions to let GC do its work
+                    array[array.length - 1] = null;
+                    array[array.length - 2] = null;
+
+                    // free the bucket
+                    indexes[bucket + 1] = 0;
+
+                    // adjusts indexes (O(N))
+                    for (int i=1,l=indexes.length; i<l; i+=2) {
+                        int idx = indexes[i];
+                        if (idx > index) {
+                            indexes[i] = idx - 2;
+                        }
+                    }
 
                     // rolls subsequent buckets back if needed
                     int b = bucket;
@@ -370,7 +391,10 @@ public class ArrayMap<K,V>
                         }
                         int h = indexes[b];
                         int w = h & mask; // where it want to be
-                        if (b != w && indexes[w + 1] == 0) {
+                        while (indexes[w + 1] != 0) {
+                            w = (w + 2) & mask;
+                        }
+                        if (b != w) {
                             // relocate the bucket
                             indexes[w] = indexes[b];
                             indexes[w + 1] = indexes[b + 1];

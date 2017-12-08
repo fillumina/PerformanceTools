@@ -26,10 +26,10 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OLDArrayMap<K,V>
+public class LinearArrayMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
 
-    public static final OLDArrayMap<?,?> EMPTY = new OLDArrayMap<>().unmodifiable();
+    public static final LinearArrayMap<?,?> EMPTY = new LinearArrayMap<>().unmodifiable();
 
     private static final long serialVersionUID = 1L;
 
@@ -44,34 +44,34 @@ public class OLDArrayMap<K,V>
     private UnmodifiableView unmodifiableView;
 
     @SuppressWarnings("unchecked")
-    public static <K,V> OLDArrayMap<K,V> emtpy() {
-        return (OLDArrayMap<K, V>) EMPTY;
+    public static <K,V> LinearArrayMap<K,V> emtpy() {
+        return (LinearArrayMap<K, V>) EMPTY;
     }
 
-    public OLDArrayMap() {
+    public LinearArrayMap() {
     }
 
-    public OLDArrayMap(Map<? extends K, ? extends V> copy) {
+    public LinearArrayMap(Map<? extends K, ? extends V> copy) {
         putAll(copy);
     }
 
-    protected OLDArrayMap(Object[] array, int[] hashes, int size) {
+    protected LinearArrayMap(Object[] array, int[] hashes, int size) {
         this.array = array;
         this.hashes = hashes;
         this.size = size;
     }
 
     @SuppressWarnings("unchecked")
-    public static <K,V> OLDArrayMap<K,V> create(Object... objects) {
-        final OLDArrayMap<K,V> map = new OLDArrayMap<>();
+    public static <K,V> LinearArrayMap<K,V> create(Object... objects) {
+        final LinearArrayMap<K,V> map = new LinearArrayMap<>();
         for (int i=0; i<objects.length; i+=2) {
             map.put((K) objects[i], (V) objects[i+1]);
         }
         return map;
     }
 
-    public <W> OLDArrayMap<K,W> transform(Function<V,W> converter) {
-        OLDArrayMap<K,W> map = new OLDArrayMap<>();
+    public <W> LinearArrayMap<K,W> transform(Function<V,W> converter) {
+        LinearArrayMap<K,W> map = new LinearArrayMap<>();
         for (Map.Entry<K,V> t : this) {
             map.put(t.getKey(), converter.apply(t.getValue()));
         }
@@ -102,7 +102,7 @@ public class OLDArrayMap<K,V>
         return new Cursor(index << 1);
     }
 
-    public class UnmodifiableView extends OLDArrayMap<K,V> {
+    public class UnmodifiableView extends LinearArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
         private UnmodifiableView(Object[] array, int[] hashes, int size) {
@@ -110,10 +110,10 @@ public class OLDArrayMap<K,V>
         }
 
         private void relink() {
-            if (super.array != OLDArrayMap.this.array) {
-                super.array = OLDArrayMap.this.array;
-                super.hashes = OLDArrayMap.this.hashes;
-                super.size = OLDArrayMap.this.size;
+            if (super.array != LinearArrayMap.this.array) {
+                super.array = LinearArrayMap.this.array;
+                super.hashes = LinearArrayMap.this.hashes;
+                super.size = LinearArrayMap.this.size;
             }
         }
 
@@ -160,7 +160,7 @@ public class OLDArrayMap<K,V>
         return false;
     }
 
-    public OLDArrayMap<K,V> unmodifiable() {
+    public LinearArrayMap<K,V> unmodifiable() {
         if (isUnmodifiable()) {
             return this;
         }
@@ -171,11 +171,11 @@ public class OLDArrayMap<K,V>
     }
 
     @Override
-    public OLDArrayMap<K,V> clone() throws CloneNotSupportedException {
+    public LinearArrayMap<K,V> clone() throws CloneNotSupportedException {
         if (array == null) {
-            return new OLDArrayMap<>(null, null, 0);
+            return new LinearArrayMap<>(null, null, 0);
         }
-        return new OLDArrayMap<>(array.clone(), hashes, size);
+        return new LinearArrayMap<>(array.clone(), hashes, size);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class OLDArrayMap<K,V>
     }
 
     /** Useful with fluid interface initializations. */
-    public OLDArrayMap<K,V> add(K key, V value) {
+    public LinearArrayMap<K,V> add(K key, V value) {
         put(key, value);
         return this;
     }
@@ -403,7 +403,7 @@ public class OLDArrayMap<K,V>
             return new Iterator<T>() {
                 // so that UnmodifiableView can detect cursor calling
                 @SuppressWarnings("unchecked")
-                private final Cursor cursor = (Cursor) OLDArrayMap.this.iterator();
+                private final Cursor cursor = (Cursor) LinearArrayMap.this.iterator();
 
                 @Override
                 public boolean hasNext() {
@@ -503,7 +503,7 @@ public class OLDArrayMap<K,V>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OLDArrayMap<?, ?> other = (OLDArrayMap<?, ?>) obj;
+        final LinearArrayMap<?, ?> other = (LinearArrayMap<?, ?>) obj;
         if (this.size != other.size) {
             return false;
         }
