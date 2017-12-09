@@ -15,6 +15,54 @@ public enum IntervalUnit implements Unit<IntervalUnit> {
 
     public static final Units<IntervalUnit> UNITS = new Units<>(values());
 
+    public static Builder quantity() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private double value;
+
+        public Builder ns(double v) {
+            value += v * NANOSECONDS.getFactor();
+            return this;
+        }
+
+        public Builder us(double v) {
+            value += v * MICROSECONDS.getFactor();
+            return this;
+        }
+
+        public Builder ms(double v) {
+            value += v * MILLISECONDS.getFactor();
+            return this;
+        }
+
+        public Builder s(double v) {
+            value += v * SECONDS.getFactor();
+            return this;
+        }
+
+        public Builder m(double v) {
+            value += v * MINUTES.getFactor();
+            return this;
+        }
+
+        public Builder h(double v) {
+            value += v * HOURS.getFactor();
+            return this;
+        }
+
+        public Builder d(double v) {
+            value += v * DAYS.getFactor();
+            return this;
+        }
+
+        public Quantity<IntervalUnit> get() {
+            return new Quantity<>(value, NANOSECONDS);
+        }
+    }
+
+
     private final double factor;
     private final String symbol;
 

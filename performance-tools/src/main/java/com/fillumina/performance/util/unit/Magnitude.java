@@ -26,6 +26,103 @@ public enum Magnitude implements Unit<Magnitude> {
 
     public static final Units<Magnitude> UNITS = new Units<>(values());
 
+    public static Builder quantity() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private double value;
+
+        public Builder y(double v) {
+            value += v * YOCTO.getFactor();
+            return this;
+        }
+
+        public Builder z(double v) {
+            value += v * ZEPTO.getFactor();
+            return this;
+        }
+
+        public Builder a(double v) {
+            value += v * ATTO.getFactor();
+            return this;
+        }
+
+        public Builder f(double v) {
+            value += v * FEMTO.getFactor();
+            return this;
+        }
+
+        public Builder p(double v) {
+            value += v * PICO.getFactor();
+            return this;
+        }
+
+        public Builder n(double v) {
+            value += v * NANO.getFactor();
+            return this;
+        }
+
+        public Builder mc(double v) {
+            value += v * MICRO.getFactor();
+            return this;
+        }
+
+        public Builder m(double v) {
+            value += v * MILLI.getFactor();
+            return this;
+        }
+
+        public Builder u(double v) {
+            value += v * UNIT.getFactor();
+            return this;
+        }
+
+        public Builder K(double v) {
+            value += v * KILO.getFactor();
+            return this;
+        }
+
+        public Builder M(double v) {
+            value += v * MEGA.getFactor();
+            return this;
+        }
+
+        public Builder G(double v) {
+            value += v * GIGA.getFactor();
+            return this;
+        }
+
+        public Builder T(double v) {
+            value += v * TERA.getFactor();
+            return this;
+        }
+
+        public Builder P(double v) {
+            value += v * PETA.getFactor();
+            return this;
+        }
+
+        public Builder E(double v) {
+            value += v * EXA.getFactor();
+            return this;
+        }
+
+        public Builder Z(double v) {
+            value += v * ZETTA.getFactor();
+            return this;
+        }
+
+        public Builder Y(double v) {
+            value += v * YOTTA.getFactor();
+            return this;
+        }
+
+        public Quantity<Magnitude> get() {
+            return new Quantity<>(value, UNIT);
+        }
+    }
+
     @Override
     public Units<Magnitude> units() {
         return UNITS;

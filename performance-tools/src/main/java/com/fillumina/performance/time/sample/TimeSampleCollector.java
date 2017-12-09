@@ -60,7 +60,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
     @Override
     public Sample buildThroughputSample() {
         TNameMap<SampleValue> map = createMap("throughput",
-                ThroughputUnit.UNIT,
+                ThroughputUnit.OP,
                 ita -> 1E9 * ita.getIterations() / ita.getTimeNs());
         return new Sample(TimeStatsType.THROUGHPUT, map);
     }

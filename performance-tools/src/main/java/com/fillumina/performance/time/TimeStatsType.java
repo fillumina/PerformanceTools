@@ -1,6 +1,5 @@
 package com.fillumina.performance.time;
 
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 
 /**

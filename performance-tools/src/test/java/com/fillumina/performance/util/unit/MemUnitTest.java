@@ -54,7 +54,7 @@ public class MemUnitTest {
 
     @Test
     public void shouldFindTheRightUnit() {
-        Unit dimension = MemUnit.UNITS.calculateAppropriatedUnit(12.23E6);
+        Unit<?> dimension = MemUnit.UNITS.calculateAppropriatedUnit(12.23E6);
         assertEquals(MemUnit.MiB, dimension);
     }
 
@@ -91,5 +91,13 @@ public class MemUnitTest {
     public void shouldFormatFromGivenUnit() {
         assertEquals("0.1150 GiB",
                 Units.toString(0.123456789E9, 4, MemUnit.GiB));
+    }
+
+    @Test
+    public void shouldUseQuantityBuilder() {
+        Quantity<MemUnit> q = MemUnit.quantity().T(2).G(100).get();
+        // is counted in base 2
+        assertEquals(2.097, q.as(MemUnit.TiB), 0.1);
+        assertEquals(2048 + 100, q.as(MemUnit.GiB), 0);
     }
 }

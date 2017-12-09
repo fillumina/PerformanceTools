@@ -5,15 +5,18 @@ package com.fillumina.performance.util.unit;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public enum ThroughputUnit implements Unit<ThroughputUnit> {
-    UNIT(1.0, "op/s"),
-    KILO(1E3, "Kop/s"),
-    MEGA(1E6, "Mop/s"),
-    GIGA(1E9, "Gop/s"),
-    TERA(1E12, "Top/s"),
-    PETA(1E15, "Pop/s"),
-    EXA(1E18, "Eop/s"),
-    ZETTA(1E21, "Zop/s"),
-    YOTTA(1E24, "Yop/s");
+    OPDAY(1.0/(24.0 * 60.0 * 60.0), "op/d"),
+    OPHOUR(1.0/(60.0 * 60.0), "op/h"),
+    OPMIN(1.0/60.0, "op/m"),
+    OP(1.0, "op/s"),
+    KILOOP(1E3, "Kop/s"),
+    MEGAOP(1E6, "Mop/s"),
+    GIGAOP(1E9, "Gop/s"),
+    TERAOP(1E12, "Top/s"),
+    PETAOP(1E15, "Pop/s"),
+    EXAOP(1E18, "Eop/s"),
+    ZETTAOP(1E21, "Zop/s"),
+    YOTTAOP(1E24, "Yop/s");
 
     public static final Units<ThroughputUnit> UNITS = new Units<>(values());
 
