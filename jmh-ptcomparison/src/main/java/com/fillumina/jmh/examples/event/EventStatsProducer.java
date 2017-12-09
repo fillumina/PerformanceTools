@@ -1,6 +1,6 @@
-package com.fillumina.jmh.examples;
+package com.fillumina.jmh.examples.event;
 
-import com.fillumina.jmh.examples.EventCounter.Event;
+import com.fillumina.jmh.examples.event.EventCounter.Event;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;

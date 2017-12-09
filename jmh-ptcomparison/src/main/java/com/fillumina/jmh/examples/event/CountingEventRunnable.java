@@ -1,6 +1,6 @@
-package com.fillumina.jmh.examples;
+package com.fillumina.jmh.examples.event;
 
-import com.fillumina.jmh.examples.EventCounter.Event;
+import com.fillumina.jmh.examples.event.EventCounter.Event;
 import com.fillumina.performance.util.TimeSpan;
 import java.util.List;
 

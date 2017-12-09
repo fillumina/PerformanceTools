@@ -1,4 +1,4 @@
-package com.fillumina.jmh.examples;
+package com.fillumina.jmh.examples.event;
 
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -43,8 +43,8 @@ public class EventCounter {
         }
 
         void reset() {
-            lastAccess = System.nanoTime();
             measure.clear();
+            lastAccess = System.nanoTime();
         }
 
         void ping() {

@@ -1,4 +1,4 @@
-package com.fillumina.jmh.examples;
+package com.fillumina.jmh.examples.event;
 
 /**
  *

@@ -30,6 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.jmh.examples.event.CountingEventRunnable;
+import com.fillumina.jmh.examples.event.EventStatsProducer;
 import com.fillumina.performance.util.TimeSpan;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.AuxCounters;
