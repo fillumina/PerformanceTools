@@ -2,6 +2,7 @@ package com.fillumina.performance.util;
 
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class CpuBurnerTest {
                 .config()
                     .speedConfig().end()
                     .tests()
-                        .addTest(() -> {CpuBurner.burn((long)1E9);})
+                        .addTest(() -> CpuBurner.burn((long)1E9) )
                     .end()
                 .end()
                 .executeWithFullOutput();
@@ -31,7 +32,7 @@ public class CpuBurnerTest {
                 .config()
                     .speedConfig().end()
                     .tests()
-                        .addTest(() -> {CpuBurner.burnMillis(3);})
+                        .addTest(() -> CpuBurner.burnMillis(3) )
                     .end()
                 .end()
                 .executeWithFullOutput();
@@ -56,11 +57,11 @@ public class CpuBurnerTest {
 
     @Test
     public void shouldCpuBurnMillisBeAccurate() {
-        double averageTimeNs = PerformanceBuilder
+        double averageTimeMillis = PerformanceBuilder
                 .config()
                     .speedConfig().end()
                     .tests()
-                        .addTest(() -> {CpuBurner.burnMillis(3);})
+                        .addTest(() -> CpuBurner.burnMillis(3) )
                     .end()
                 .end()
                 .executeWithoutOutput()
@@ -68,9 +69,10 @@ public class CpuBurnerTest {
                 .getStatsHolder()
                 .getStats()
                 .getFirstMeasure()
+                .in(AverageTimeUnit.MILLISECONDS)
                 .getMean();
 
-        assertEquals(3.0, averageTimeNs / 1E6, 0.02);
+        assertEquals(3.0, averageTimeMillis, 0.02);
     }
 
     private double measure(int cycles) {
@@ -78,7 +80,7 @@ public class CpuBurnerTest {
                 .config()
                     .speedConfig().end()
                     .tests()
-                        .addTest(() -> {CpuBurner.burn(cycles);})
+                        .addTest(() -> CpuBurner.burn(cycles) )
                     .end()
                 .end()
                 .executeWithoutOutput()

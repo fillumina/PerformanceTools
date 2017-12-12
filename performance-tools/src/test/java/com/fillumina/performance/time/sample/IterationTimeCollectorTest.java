@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class IterationTimeCollectorTest {
 
         assertEquals(sample.toString(),
                 (100.0 / 5.0 + 100.0 / 5.0) / 2.0,
-                value.getQuantity().toBase(), 0);
+                value.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
     }
 
     @Test
@@ -41,7 +42,7 @@ public class IterationTimeCollectorTest {
 
         assertEquals(sample.toString(),
                 100.0 / 5.0,
-                value.getQuantity().toBase(), 0);
+                value.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
     }
 
     @Test
@@ -55,7 +56,7 @@ public class IterationTimeCollectorTest {
 
         assertEquals(sample.toString(),
                 (100.0 / 5.0 + 200.0 / 10.0) / 2.0,
-                value.getQuantity().toBase(), 0);
+                value.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
     }
 
     @Test
@@ -69,12 +70,12 @@ public class IterationTimeCollectorTest {
         SampleValue one = sample.getValuesMap().get(ONE);
         assertEquals(sample.toString(),
                 100.0 / 5.0,
-                one.getQuantity().toBase(), 0);
+                one.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
 
         SampleValue two = sample.getValuesMap().get(TWO);
         assertEquals(sample.toString(),
                 200.0 / 20.0,
-                two.getQuantity().toBase(), 0);
+                two.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
     }
 
 }

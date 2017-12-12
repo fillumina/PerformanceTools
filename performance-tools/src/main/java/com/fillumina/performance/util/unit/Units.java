@@ -13,7 +13,11 @@ public class Units<U extends Unit<U>> {
     private final U[] values;
     private final U base;
 
+    /** @param units must be ordered from the lesser factor to the bigger. */
     public Units(U[] units) {
+        assertUnitFactorPresent(units);
+        assertAscendingFactorOrder(units);
+
         this.values = units;
         for (U u : units) {
             if (u.getFactor() == 1.0) {
@@ -24,6 +28,24 @@ public class Units<U extends Unit<U>> {
         throw new RuntimeException("no unit with factor = 1 found as base");
     }
 
+    private void assertAscendingFactorOrder(U[] units) {
+        for (int i=1; i<units.length; i++) {
+            if (units[i-1].getFactor() >= units[i].getFactor()) {
+                throw new RuntimeException(
+                        "wrong unit order (must be order ascending by factor)");
+            }
+        }
+    }
+
+    private void assertUnitFactorPresent(U[] units) {
+        for (int i=0; i<units.length; i++) {
+            if (units[i].getFactor() == 1.0) {
+                return;
+            }
+        }
+        throw new RuntimeException("unit factor not present");
+    }
+
     public U minUnit(U a, U b) {
         return indexOfUnit(a) < indexOfUnit(b) ? a : b;
     }
@@ -32,6 +54,10 @@ public class Units<U extends Unit<U>> {
         return indexOfUnit(a) > indexOfUnit(b) ? a : b;
     }
 
+    /**
+     * @param values expressed in base unit (the one with factor = 1.0)
+     * @return the most closed {@link Unit} scale.
+     */
     public U calculateAppropriatedUnitFrom(final double... values) {
         double min = min(values);
         U minUnit = calculateAppropriatedUnit(min);
@@ -51,6 +77,25 @@ public class Units<U extends Unit<U>> {
         return getUnitAtIndex(avgUnitIndex);
     }
 
+    /**
+     * @param value expressed in base unit (the one with factor = 1.0)
+     * @return the most closed {@link Unit} scale.
+     */
+    public U calculateAppropriatedUnit(double value) {
+        U u;
+        U v = values[0];
+        double c;
+        for (int i=1,l=values.length; i<l; i++) {
+            u = v;
+            v = values[i];
+            c = v.convertFromBase(value);
+            if (c < 1) {
+                return u;
+            }
+        }
+        return v;
+    }
+
     private U getUnitAtIndex(int index) {
         return values[index];
     }
@@ -62,24 +107,6 @@ public class Units<U extends Unit<U>> {
             }
         }
         return -1;
-    }
-
-    /**
-     * @return the most closed {@link Unit} scale.
-     */
-    public U calculateAppropriatedUnit(double value) {
-        U u;
-        U v = values[0];
-        double c;
-        for (int i=1,l = values.length; i<l; i++) {
-            u = v;
-            v = values[i];
-            c = v.convertFromBase(value);
-            if (c < 1) {
-                return u;
-            }
-        }
-        return v;
     }
 
     private static double min(final double[] values) {

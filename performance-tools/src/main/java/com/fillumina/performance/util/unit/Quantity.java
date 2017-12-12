@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Quantity<U extends Unit<U>>
         implements Comparable<Quantity<U>>, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private final double value;
     private final U unit;
 
@@ -34,7 +34,7 @@ public class Quantity<U extends Unit<U>>
         return unit;
     }
 
-    public double as(U targetUnit) {
+    public double as(Unit<?> targetUnit) {
         return targetUnit.convert(value, unit);
     }
 
@@ -118,6 +118,6 @@ public class Quantity<U extends Unit<U>>
 
     @Override
     public String toString() {
-        return unit.units().toPrettyString(toBase());
+        return unit.units().toString(toBase());
     }
 }

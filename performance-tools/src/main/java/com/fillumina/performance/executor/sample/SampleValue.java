@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class SampleValue implements TNamed, Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private final TName name;
     private final Quantity<?> quantity;
 
@@ -37,11 +37,11 @@ public class SampleValue implements TNamed, Serializable {
     }
 
     public String toCsv() {
-        return name.toString() + ", " + quantity.toBase();
+        return name.toString() + ", " + quantity.getValue();
     }
 
     public String toStringValue() {
-        return String.format("%.2f", quantity.toBase());
+        return quantity.toString();
     }
 
     @Override

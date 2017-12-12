@@ -124,10 +124,11 @@ public class MultiMeasureSignificance {
     public double tukeyKramerHsdPValue(int idx1, int idx2) {
         double q = tukeyKramerHsdQStat(idx1, idx2);
         if (totalNumberOfSamples - measuresCount <= 2) {
-            throw new IllegalArgumentException(
-                    "totalNumberOfSamples - measuresCount must be > 2 : " +
-                    "totalNumberOfSamples = " + totalNumberOfSamples +
-                    ", measureCount = " + measuresCount);
+            return -1;
+//            throw new IllegalArgumentException(
+//                    "totalNumberOfSamples - measuresCount must be > 2 : " +
+//                    "totalNumberOfSamples = " + totalNumberOfSamples +
+//                    ", measureCount = " + measuresCount);
         }
         return Qsturng.pStudentRange(q, measuresCount,
                 totalNumberOfSamples - measuresCount);

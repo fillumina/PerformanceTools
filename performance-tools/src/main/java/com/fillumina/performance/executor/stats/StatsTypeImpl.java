@@ -17,6 +17,11 @@ public class StatsTypeImpl implements StatsType, Serializable {
     }
 
     @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
     public int hashCode() {
         int hash = 3;
         hash = 59 * hash + Objects.hashCode(this.name);

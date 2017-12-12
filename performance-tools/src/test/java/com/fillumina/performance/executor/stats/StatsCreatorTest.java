@@ -3,6 +3,7 @@ package com.fillumina.performance.executor.stats;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -40,8 +41,12 @@ public class StatsCreatorTest {
 
         assertEquals(MockStatsType.INSTANCE, stats.getStatsType());
 
-        assertEquals(10.0, stats.getMeasure("one").getMean(), 0.1);
-        assertEquals(20.0, stats.getMeasure("two").getMean(), 0.1);
+        assertEquals(10.0,
+                stats.getMeasure("one").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-2);
+        assertEquals(20.0,
+                stats.getMeasure("two").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-2);
 
         assertEquals(5, stats.getMeasure("one").getCount());
     }
@@ -74,8 +79,12 @@ public class StatsCreatorTest {
 
         assertEquals(MockStatsType.INSTANCE, stats.getStatsType());
 
-        assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
-        assertEquals(10.0, stats.getMeasure("two").getMean(), 0);
+        assertEquals(1.0,
+                stats.getMeasure("one").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-3);
+        assertEquals(10.0,
+                stats.getMeasure("two").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-3);
 
         assertEquals(1, stats.getMeasure("one").getCount());
         assertEquals(1, stats.getMeasure("two").getCount());

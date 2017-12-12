@@ -73,6 +73,11 @@ public class Stats extends Printable<Stats>
     }
 
     @Override
+    public DimensionalMeasure getFirstMeasure() {
+        return map.values().iterator().next();
+    }
+
+    @Override
     public DimensionalMeasure getMeasure(CharSequence testName)
             throws IllegalStateException {
         TName tname = TN.tname(testName);

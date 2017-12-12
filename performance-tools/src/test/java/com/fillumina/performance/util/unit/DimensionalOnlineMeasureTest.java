@@ -11,17 +11,17 @@ public class DimensionalOnlineMeasureTest {
 
     @Test
     public void shouldUseMsToPrint() {
-        assertEquals("123.000 +/- 1.132 (3 samples) ms/op",
-                new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
-                        .toString(AverageTimeUnit.MILLISECONDS)
+        assertEquals("123.000 +/- 1.132 (3 samples) m",
+                new DimensionalOnlineMeasure(0.123, 0.124, 0.122)
+                        .toString(Magnitude.MILLI)
             );
     }
 
     @Test
     public void shouldUseSecToPrint() {
-        assertEquals("0.123 +/- 0.001 (3 samples) s/op",
-                new DimensionalOnlineMeasure(12.3E7, 12.4E7, 12.2E7)
-                        .toString(AverageTimeUnit.SECONDS)
+        assertEquals("0.123 +/- 0.001 (3 samples) ",
+                new DimensionalOnlineMeasure(0.123, 0.124, 0.122)
+                        .toString(Magnitude.UNIT)
             );
     }
 }

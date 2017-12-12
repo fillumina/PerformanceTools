@@ -58,7 +58,7 @@ public enum IntervalUnit implements Unit<IntervalUnit> {
         }
 
         public Quantity<IntervalUnit> get() {
-            return new Quantity<>(value, NANOSECONDS);
+            return new Quantity<>(value, UNITS.getBase());
         }
     }
 

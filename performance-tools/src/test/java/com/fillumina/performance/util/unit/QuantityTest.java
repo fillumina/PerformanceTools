@@ -148,8 +148,8 @@ public class QuantityTest {
         Quantity<IntervalUnit> min10 = new Quantity<>(10, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
 
-        assertEquals("10 m", min10.toString());
-        assertEquals("1 m", sec60.toString());
+        assertEquals("10.0000 m", min10.toString());
+        assertEquals("1.0000 m", sec60.toString());
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Map;
@@ -58,13 +59,13 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
 
         double single = timeMap
                         .get(TN.tname("alpha","single"))
-                        .getQuantity().toBase();
+                        .getQuantity().as(AverageTimeUnit.NANOSECONDS);
         double parallel = timeMap
                         .get(TN.tname("alpha", "parallel"))
-                        .getQuantity().toBase();
+                        .getQuantity().as(AverageTimeUnit.NANOSECONDS);
         double thread = timeMap
                         .get(TN.tname("alpha", "0"))
-                        .getQuantity().toBase();
+                        .getQuantity().as(AverageTimeUnit.NANOSECONDS);
 
         assertTrue(sample.toString(), thread < single);
         assertTrue(sample.toString(), thread < parallel);

@@ -27,7 +27,7 @@ public class BiggerMeasureTest {
 
         assertEquals(2, bigger.getIndex());
         assertEquals("three", bigger.getName().toString());
-        assertEquals(30.0, bigger.getMeasure().getMean(), 0.1);
+        assertEquals(30E-9, bigger.getMeasure().getMean(), 1E-10);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class BiggerMeasureTest {
 
         assertEquals(0, bigger.getIndex());
         assertEquals("one", bigger.getName().toString());
-        assertEquals(10.0, bigger.getMeasure().getMean(), 0.1);
+        assertEquals(10E-9, bigger.getMeasure().getMean(), 1E-11);
     }
 
 }

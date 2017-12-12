@@ -28,7 +28,8 @@ public class TimeSampleCollector implements TimeSampleBuilder {
     }
 
     public TimeSampleCollector add(final TName name,
-            final long elapsed, final int iterations) {
+            final long elapsed,
+            final int iterations) {
         IterationTimeAccumulator acc = timeMap.get(name);
         if (acc == null) {
             acc = new IterationTimeAccumulator();

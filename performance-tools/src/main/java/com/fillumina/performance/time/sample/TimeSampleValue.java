@@ -48,8 +48,7 @@ public class TimeSampleValue extends SampleValue implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + " " + type.toString() +
-                " (ns=" + timeNs + ", it=" + iterations + ")";
+        return super.toString() + " (ns=" + timeNs + ", it=" + iterations + ")";
     }
 }
 

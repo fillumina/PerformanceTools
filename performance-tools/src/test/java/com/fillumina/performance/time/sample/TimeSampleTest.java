@@ -20,7 +20,7 @@ import org.junit.Test;
  */
 public class TimeSampleTest {
     private static final IntervalUnit UNIT = IntervalUnit.MILLISECONDS;
-    private static final double SCALE = 1E6;
+    private static final double SCALE = 1E-3;
 
     private static final int ELAPSED_TWO = 2_500;
     private static final int ELAPSED_ONE = 10_000;

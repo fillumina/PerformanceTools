@@ -16,8 +16,20 @@ public abstract class DimensionalMeasure extends Measure {
         return toStringForConfidence(Ratio.P_95, unit);
     }
 
+    public Measure in(Unit<?> unit) {
+        if (!getUnit().isSameType(unit)) {
+            throw new RuntimeException("type mismatch: " +
+                    getUnit().toString() + " vs " + unit.toString());
+        }
+        return multiplyBy(getUnit().getFactor() / unit.getFactor());
+    }
+
     public String toStringForConfidenceWitoutSamples(Ratio confidence,
             Unit<?> unit) {
+        if (!getUnit().isSameType(unit)) {
+            throw new RuntimeException("type mismatch: " +
+                    getUnit().toString() + " vs " + unit.toString());
+        }
         double mean = unit.convert(getMean(), getUnit());
         double moe = unit.convert(getMarginOfError(confidence), getUnit());
         return String.format(Locale.US, "%.3f +/- %.3f %s",
@@ -25,6 +37,10 @@ public abstract class DimensionalMeasure extends Measure {
     }
 
     public String toStringForConfidence(Ratio confidence, Unit<?> unit) {
+        if (!getUnit().isSameType(unit)) {
+            throw new RuntimeException("type mismatch: " +
+                    getUnit().toString() + " " + unit.toString());
+        }
         double mean = unit.convert(getMean(), getUnit());
         double moe = unit.convert(getMarginOfError(confidence), getUnit());
         return String.format(Locale.US, "%.3f +/- %.3f (%d samples) %s",

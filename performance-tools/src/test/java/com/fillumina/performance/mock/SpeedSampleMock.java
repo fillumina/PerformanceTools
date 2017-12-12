@@ -61,7 +61,8 @@ public class SpeedSampleMock {
             TimeSampleCollector collector = new TimeSampleCollector();
             for (TestSample ts : list) {
                 collector.add(ts.name,
-                        ts.timeNs * ts.iterations, (int)ts.iterations);
+                        ts.timeNs * ts.iterations,
+                        (int)ts.iterations);
             }
             return collector;
         }

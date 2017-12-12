@@ -10,6 +10,7 @@ import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.*;
@@ -82,10 +83,10 @@ public class DefaultPerformanceTimerTest {
                 .buildAverageTimeSample();
 
         SampleValue value1 = sample.getValuesMap().get(ONE);
-        assertEquals(123, value1.getQuantity().toBase(), 0);
+        assertEquals(123, value1.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
 
         SampleValue value2 = sample.getValuesMap().get("two");
-        assertEquals(456, value2.getQuantity().toBase(), 0);
+        assertEquals(456, value2.getQuantity().as(AverageTimeUnit.NANOSECONDS), 1E-9);
     }
 
     @Test

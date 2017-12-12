@@ -5,6 +5,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -30,8 +31,12 @@ public class MixedStatsHolderCreatorTest {
 
         Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
-        assertEquals(3.0, stats.getMeasure("one").getMean(), 0);
-        assertEquals(30.0, stats.getMeasure("two").getMean(), 0);
+        assertEquals(3.0,
+                stats.getMeasure("one").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-3);
+        assertEquals(30.0,
+                stats.getMeasure("two").in(IntervalUnit.NANOSECONDS).getMean(),
+                1E-3);
     }
 
     private Sample createSample(double a, double b) {
@@ -73,11 +78,19 @@ public class MixedStatsHolderCreatorTest {
                 creator.getMixedAssertableHolder(ListFilter.identity());
 
         Stats stats1 = holder.getStatsHolder(type1).getStats();
-        assertEquals(10.0, stats1.getMeasure("one").getMean(), 0.1);
-        assertEquals(20.0, stats1.getMeasure("two").getMean(), 0.1);
+        assertEquals(10.0,
+                stats1.getMeasure("one").in(IntervalUnit.NANOSECONDS).getMean(),
+                0.1);
+        assertEquals(20.0,
+                stats1.getMeasure("two").in(IntervalUnit.NANOSECONDS).getMean(),
+                0.1);
 
         Stats stats2 = holder.getStatsHolder(type2).getStats();
-        assertEquals(30.0, stats2.getMeasure("one").getMean(), 0.1);
-        assertEquals(40.0, stats2.getMeasure("two").getMean(), 0.1);
+        assertEquals(30.0,
+                stats2.getMeasure("one").in(IntervalUnit.NANOSECONDS).getMean(),
+                0.1);
+        assertEquals(40.0,
+                stats2.getMeasure("two").in(IntervalUnit.NANOSECONDS).getMean(),
+                0.1);
     }
 }

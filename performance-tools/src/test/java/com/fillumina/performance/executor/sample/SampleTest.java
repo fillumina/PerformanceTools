@@ -127,7 +127,7 @@ public class SampleTest {
 
         Sample sample =new Sample(MockStatsType.INSTANCE, map);
 
-        assertEquals("Mock Stats, one, 1.2E7, two, 1.7E7, three, 2.0E7",
+        assertEquals("Mock Stats, one, 12.0, two, 17.0, three, 20.0",
                 sample.toCsv());
     }
 
@@ -147,7 +147,7 @@ public class SampleTest {
 
         Sample sample =new Sample(MockStatsType.INSTANCE, map);
 
-        assertEquals("Mock Stats{one=12 ms, two=17 ms, three=20 ms}",
+        assertEquals("Mock Stats{one=12.0000 ms, two=17.0000 ms, three=20.0000 ms}",
                 sample.toString());
     }
 }
