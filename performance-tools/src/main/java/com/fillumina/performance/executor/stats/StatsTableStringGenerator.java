@@ -165,8 +165,9 @@ public final class StatsTableStringGenerator
                 stats.getMeasureMap().entrySet()) {
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
-            final double stdev =
-                    unit.convertFromBase(measure.getUnbiasedStandardDeviation());
+            final double stdev = unit.convert(
+                    measure.getUnbiasedStandardDeviation(),
+                    measure.getUnit());
 
             createTableLine(performanceTable, index, name, measure, stats, stdev,
                     unit, confidence);
@@ -199,7 +200,7 @@ public final class StatsTableStringGenerator
         Units<?> units = Magnitude.UNIT.units();
         for (DimensionalMeasure measure : testMap.values()) {
             units = measure.getUnit().units();
-            times[counter] = measure.getMean();
+            times[counter] = measure.getUnit().convertToBase(measure.getMean());
             counter++;
         }
         return units.calculateAppropriatedUnitFrom(times);

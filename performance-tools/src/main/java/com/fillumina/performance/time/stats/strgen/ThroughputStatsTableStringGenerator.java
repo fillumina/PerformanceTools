@@ -81,7 +81,7 @@ public final class ThroughputStatsTableStringGenerator
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                 .cell(measure.getFractionalUncertainty(confidence))
-                .cell(throughputToaverageTime(
+                .cell(throughputToAverageTime(
                         measure.getConfidenceInterval(confidence)))
                 .cell(measure.getCount())
                 .cell(tukeyHsdStr)

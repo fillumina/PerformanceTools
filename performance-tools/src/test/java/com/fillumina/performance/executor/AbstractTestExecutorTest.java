@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor;
 
 import static com.fillumina.performance.executor.AbstractTestExecutor.UNNAMED_TEST_PREFIX;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ public class AbstractTestExecutorTest {
 
         @Override
         public List<Integer> get() {
-            ArrayMap<TName,Integer> map = getTests();
+            IndexedArrayMap<TName,Integer> map = getTests();
             List<Integer> list = new ArrayList<>(map.size());
             map.forEach((name, i) -> {
                 dispatchToConsumers(name + "_" + i);
@@ -120,7 +120,7 @@ public class AbstractTestExecutorTest {
 
     @Test
     public void shouldGetTests() {
-        ArrayMap<TName, Integer> tests = executor
+        IndexedArrayMap<TName, Integer> tests = executor
                 .addTest("one", 1)
                 .addTest("two", 2)
                 .addTest("three", 3)

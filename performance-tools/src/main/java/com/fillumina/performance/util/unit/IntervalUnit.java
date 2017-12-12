@@ -5,13 +5,13 @@ package com.fillumina.performance.util.unit;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public enum IntervalUnit implements Unit<IntervalUnit> {
-    NANOSECONDS(1.0, "ns"),
-    MICROSECONDS(1_000.0, "us"),
-    MILLISECONDS(1_000_000.0, "ms"),
-    SECONDS(1_000_000_000.0, "s"),
-    MINUTES(1_000_000_000.0 * 60.0, "m"),
-    HOURS(1_000_000_000.0 * 60.0 * 60.0, "h"),
-    DAYS(1_000_000_000.0 * 60.0 * 60.0 * 24.0, "d");
+    NANOSECONDS(1E-9, "ns"),
+    MICROSECONDS(1E-6, "us"),
+    MILLISECONDS(1E-3, "ms"),
+    SECONDS(1.0, "s"),
+    MINUTES(60.0, "m"),
+    HOURS(60.0 * 60.0, "h"),
+    DAYS(60.0 * 60.0 * 24.0, "d");
 
     public static final Units<IntervalUnit> UNITS = new Units<>(values());
 

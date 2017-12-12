@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.collection.UnmodifiableTree;
@@ -118,11 +118,17 @@ public class StatsHolder extends Printable<StatsHolder>
     public static Builder builder(
             StatsType type,
             TName name,
-            Stats assertable,
+            Stats stats,
             StringGenerator<Stats> stringGenerator) {
-        return new Builder(type, TN.notNull(name), assertable, stringGenerator);
+        return new Builder(type, TN.notNull(name), stats, stringGenerator);
     }
 
+    public StatsHolder(
+            final Stats stats) {
+        this(stats.getStatsType(), TN.EMPTY, stats, null);
+    }
+
+    // TODO remove type, is taken from Stats directly
     public StatsHolder(
             final StatsType type,
             final Stats stats) {
@@ -229,7 +235,7 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     private interface LeafVisitor<T extends Assertable> {
-        void visitLeaf(TName name, T assertable);
+        void visitLeaf(TName name, T stats);
     }
 
     /**
@@ -254,8 +260,8 @@ public class StatsHolder extends Printable<StatsHolder>
      */
     public StatsHolder use(Consumer<Stats> consumer) {
         if (consumer != null) {
-            traverseLeaves((TName name, Stats assertable) -> {
-                consumer.accept(assertable);
+            traverseLeaves((TName name, Stats stats) -> {
+                consumer.accept(stats);
             });
         }
         return this;
@@ -269,8 +275,8 @@ public class StatsHolder extends Printable<StatsHolder>
 
     public StatsHolder check(Assertion assertion) {
         if (assertion != null) {
-            traverseLeaves((TName name, Stats assertable) -> {
-                assertion.accept(assertable);
+            traverseLeaves((TName name, Stats stats) -> {
+                assertion.accept(stats);
             });
         }
         return this;
@@ -290,10 +296,10 @@ public class StatsHolder extends Printable<StatsHolder>
         if (appendable != null) {
             final AppendableWrapperSentinel wrapped =
                     new AppendableWrapperSentinel(appendable);
-            traverseLeaves((TName name, Stats assertable) -> {
+            traverseLeaves((TName name, Stats stats) -> {
                 try {
                     wrapped.setUnmodified();
-                    assertion.appendToCatchingException(wrapped, assertable);
+                    assertion.appendToCatchingException(wrapped, stats);
                     if (wrapped.isModified()) {
                         appendable.append(System.lineSeparator());
                     }
@@ -305,8 +311,8 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    public ArrayMap<TName, Stats> getFlattenedAssertableMap() {
-        ArrayMap<TName, Stats> map = new ArrayMap<>();
+    public IndexedArrayMap<TName, Stats> getFlattenedAssertableMap() {
+        IndexedArrayMap<TName, Stats> map = new IndexedArrayMap<>();
         traverseLeaves((TName name, Stats stats) -> {
             if (name != null) {
                 map.put(name, stats);
@@ -349,10 +355,10 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     @Override
-    public StatsHolder appendTo(final Appendable appendable) {
-        if (appendable != null) {
+    public StatsHolder appendTo(final Appendable stats) {
+        if (stats != null) {
             try {
-                appendTo(appendable, tree);
+                appendTo(stats, tree);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -378,12 +384,12 @@ public class StatsHolder extends Printable<StatsHolder>
         }
     }
 
-    private void appendLeafTo(Appendable appendable, Stats assertable)
+    private void appendLeafTo(Appendable appendable, Stats stats)
             throws IOException {
         if (formatter != null) {
-            formatter.appendToCatchingException(appendable, assertable);
+            formatter.appendToCatchingException(appendable, stats);
         } else {
-            appendable.append(Objects.toString(assertable))
+            appendable.append(Objects.toString(stats))
                     .append(System.lineSeparator());
         }
     }

@@ -1,9 +1,11 @@
 package com.fillumina.performance.util.collection;
 
 import java.io.Serializable;
+import java.util.AbstractList;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -14,10 +16,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Fast hash map implementation.
+ * Fast linked hash map implementation.
  * <ul>
- * <li>insertion, extraction and removal have O(1) complexity
+ * <li>insertion and extraction have O(1) complexity
+ * <li>gets its entries by index in O(1)
+ * <li>removal has O(N) complexity (linear)
  * <li>increases and decreases its size automatically
+ * <li>maintains insertion order
+ * <li>caches hash codes
+ * <li>views its keys as a random access list
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
  * <li>doesn't accept null as key
@@ -36,48 +43,52 @@ import java.util.function.Supplier;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ArrayMap<K,V>
+public class IndexedArrayMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
 
-    public static final ArrayMap<?,?> EMPTY =
-            new ArrayMap<>().unmodifiable();
+    public static final IndexedArrayMap<?,?> EMPTY =
+            new IndexedArrayMap<>().unmodifiable();
 
     private static final long serialVersionUID = 1L;
 
     private Object[] array; // [key, value]
-    private int size;       // actual size
+    private int[] indexes;  // [index, hashcode]
+    private int size;       // actual size * 2
 
     private Set<Entry<K,V>> entrySet;
     private Set<K> keySet;
     private Collection<V> values;
+    private List<K> keyList;
     private UnmodifiableView unmodifiableView;
 
     @SuppressWarnings("unchecked")
-    public static <K,V> ArrayMap<K,V> emtpy() {
-        return (ArrayMap<K, V>) EMPTY;
+    public static <K,V> IndexedArrayMap<K,V> emtpy() {
+        return (IndexedArrayMap<K, V>) EMPTY;
     }
 
-    public ArrayMap() {
+    public IndexedArrayMap() {
     }
 
-    public ArrayMap(Map<? extends K, ? extends V> copy) {
+    public IndexedArrayMap(Map<? extends K, ? extends V> copy) {
         putAll(copy);
     }
 
-    public ArrayMap(ArrayMap<? extends K, ? extends V> clone) {
+    public IndexedArrayMap(IndexedArrayMap<? extends K, ? extends V> clone) {
         if (clone.array != null) {
             this.array = clone.array.clone();
+            this.indexes = clone.indexes.clone();
             this.size = clone.size;
         }
     }
 
-    public ArrayMap(int initialSize) {
+    public IndexedArrayMap(int initialSize) {
         if (initialSize < 0) {
             throw new IllegalArgumentException(
                     "initial size must be > 0, was " + initialSize);
         }
         int length = roundUpToPowerOf2(initialSize);
-        this.array = new Object[length << 2];
+        this.array = new Object[length];
+        this.indexes = new int[length << 1];
     }
 
     private static int roundUpToPowerOf2(int number) {
@@ -86,26 +97,44 @@ public class ArrayMap<K,V>
     }
 
 
-    protected ArrayMap(Object[] array, int size) {
+    protected IndexedArrayMap(Object[] array, int[] hashes, int size) {
         this.array = array;
+        this.indexes = hashes;
         this.size = size;
     }
 
     @SuppressWarnings("unchecked")
-    public static <K,V> ArrayMap<K,V> create(Object... objects) {
-        final ArrayMap<K,V> map = new ArrayMap<>();
+    public static <K,V> IndexedArrayMap<K,V> create(Object... objects) {
+        final IndexedArrayMap<K,V> map = new IndexedArrayMap<>();
         for (int i=0; i<objects.length; i+=2) {
             map.put((K) objects[i], (V) objects[i+1]);
         }
         return map;
     }
 
-    public <W> ArrayMap<K,W> transform(Function<V,W> converter) {
-        ArrayMap<K,W> map = new ArrayMap<>();
+    public <W> IndexedArrayMap<K,W> transform(Function<V,W> converter) {
+        IndexedArrayMap<K,W> map = new IndexedArrayMap<>();
         for (Map.Entry<K,V> t : this) {
             map.put(t.getKey(), converter.apply(t.getValue()));
         }
         return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    public K getKeyAtIndex(int index) {
+        int idx = index << 1;
+        if (idx >= size) {
+            throw new IndexOutOfBoundsException("size= " + size());
+        }
+        return (K) array[idx];
+    }
+
+    @SuppressWarnings("unchecked")
+    public V getValueAtIndex(int index) {
+        if (index >= size()) {
+            throw new IndexOutOfBoundsException("size= " + size());
+        }
+        return (V) array[(index << 1) + 1];
     }
 
     /**
@@ -117,29 +146,32 @@ public class ArrayMap<K,V>
         return Objects.equals(a, b);
     }
 
-    public class UnmodifiableView extends ArrayMap<K,V> {
+    public Entry<K,V> getEntryAtIndex(int index) {
+        return new Cursor(index << 1);
+    }
+
+    public Cursor getCursorAtIndex(int index) {
+        return new Cursor(index << 1);
+    }
+
+    public class UnmodifiableView extends IndexedArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
-        private UnmodifiableView(Object[] array, int size) {
-            super(array, size);
+        private UnmodifiableView(Object[] array, int[] hashes, int size) {
+            super(array, hashes, size);
         }
 
         private void relink() {
-            if (super.array != ArrayMap.this.array) {
-                super.array = ArrayMap.this.array;
-                super.size = ArrayMap.this.size;
+            if (super.array != IndexedArrayMap.this.array) {
+                super.array = IndexedArrayMap.this.array;
+                super.indexes = IndexedArrayMap.this.indexes;
+                super.size = IndexedArrayMap.this.size;
             }
         }
 
         @Override
         public boolean isUnmodifiable() {
             return true;
-        }
-
-        @Override
-        public void replaceAll(
-                BiFunction<? super K, ? super V, ? extends V> function) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -153,13 +185,8 @@ public class ArrayMap<K,V>
         }
 
         @Override
-        public ArrayMap<K, V> clone() throws CloneNotSupportedException {
+        public IndexedArrayMap<K, V> clone() throws CloneNotSupportedException {
             return this;
-        }
-
-        @Override
-        public <W> ArrayMap<K, W> transform(Function<V, W> converter) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -212,35 +239,35 @@ public class ArrayMap<K,V>
         return false;
     }
 
-    public ArrayMap<K,V> unmodifiable() {
+    public IndexedArrayMap<K,V> unmodifiable() {
         if (isUnmodifiable()) {
             return this;
         }
         if (unmodifiableView == null) {
-            unmodifiableView = new UnmodifiableView(array, size);
+            unmodifiableView = new UnmodifiableView(array, indexes, size);
         }
         return unmodifiableView;
     }
 
     @Override
-    public ArrayMap<K,V> clone() throws CloneNotSupportedException {
+    public IndexedArrayMap<K,V> clone() throws CloneNotSupportedException {
         if (array == null) {
-            return new ArrayMap<>();
+            return new IndexedArrayMap<>();
         }
-        return new ArrayMap<>(this);
+        return new IndexedArrayMap<>(this);
     }
 
     public void ensureCapacity(int requiredCapacity) {
-        int available = (array == null) ? 0 : ((array.length >> 2) - size);
+        int available = (array == null) ? 0 : ((array.length - size) >> 1);
         if (requiredCapacity > available) {
-            int newSize = roundUpToPowerOf2(size + requiredCapacity);
+            int newSize = roundUpToPowerOf2((size >> 1) + requiredCapacity);
             resize(newSize);
         }
     }
 
     @Override
     public int size() {
-        return size;
+        return size >> 1;
     }
 
     @Override
@@ -249,7 +276,7 @@ public class ArrayMap<K,V>
     }
 
     /** Useful with fluid interface initializations. */
-    public ArrayMap<K,V> add(K key, V value) {
+    public IndexedArrayMap<K,V> add(K key, V value) {
         put(key, value);
         return this;
     }
@@ -257,50 +284,50 @@ public class ArrayMap<K,V>
     @Override
     public V put(K key, V value) {
         if (array == null) {
-            array = new Object[16];
-        } else if (size == (array.length >> 1)) {
-            resize(array.length << 1);
+            array = new Object[8];
+            indexes = new int[16];
+        } else if (size == array.length) {
+            resize(indexes.length << 1);
         }
         int mask = getMask();
         int hashcode = key.hashCode();
         int bucket = hashcode & mask;
         while (true) {
-            Object k = array[bucket];
-            if (k == null) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
                 // bucket free, use it
-                array[bucket] = key;
-                array[bucket + 1] = value;
-                size++;
+                indexes[bucket] = hashcode;
+                indexes[bucket + 1] = size + 1; // points to value
+                array[size] = key;
+                array[size + 1] = value;
+                size += 2;
                 return null;
             }
-            if (equals(key, k)) {
-                // bucket used, right key, set value
-                @SuppressWarnings("unchecked")
-                V oldValue = (V) array[bucket + 1];
-                array[bucket + 1] = value;
-                return oldValue;
+            if (hashcode == indexes[bucket]) {
+                if (equals(key, array[pointer - 1])) {
+                    // bucket used, right key, set value
+                    @SuppressWarnings("unchecked")
+                    V oldValue = (V) array[pointer];
+                    array[pointer] = value;
+                    return oldValue;
+                }
             }
             bucket = (bucket + 2) & mask;
         }
     }
 
     private int getMask() {
-        return (array.length - 1) & (~1);
+        return (indexes.length - 1) & (~1);
     }
 
     @SuppressWarnings("unchecked")
     private void resize(int newSize) {
-        if (array == null) {
-            array = new Object[newSize << 2];
-        }
-        ArrayMap<K,V> newMap = new ArrayMap<>(newSize);
-        for (int i=0,l=array.length; i<l; i+=2) {
-            K k = (K) array[i];
-            if (k != null) {
-                newMap.put(k, (V)array[i+1]);
-            }
+        IndexedArrayMap<K,V> newMap = new IndexedArrayMap<>(newSize);
+        for (int i=0; i<size; i+=2) {
+            newMap.put((K)array[i], (V)array[i+1]);
         }
         this.array = newMap.array;
+        this.indexes = newMap.indexes;
     }
 
     @Override
@@ -313,12 +340,14 @@ public class ArrayMap<K,V>
         int hashcode = key.hashCode();
         int bucket = hashcode & mask;
         while (true) {
-            Object k = array[bucket];
-            if (k == null) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
                 return null; // not found
             }
-            if (equals(key, k)) {
-                return (V) array[bucket + 1];
+            if (hashcode == indexes[bucket]) {
+                if (equals(key, array[pointer - 1])) {
+                    return (V) array[pointer];
+                }
             }
             bucket = (bucket + 2) & mask;
         }
@@ -335,7 +364,28 @@ public class ArrayMap<K,V>
 
     @Override
     public boolean containsKey(Object key) {
-        return get(key) != null;
+        return getIndexOfKey(key) != -1;
+    }
+
+    public int getIndexOfKey(Object key) {
+        if (array == null || size == 0) {
+            return -1;
+        }
+        int mask = getMask();
+        int hashcode = key.hashCode();
+        int bucket = hashcode & mask;
+        while (true) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
+                return -1; // not found
+            }
+            if (hashcode == indexes[bucket]) {
+                if (equals(key, array[pointer - 1])) {
+                    return (pointer - 1) >> 1;
+                }
+            }
+            bucket = (bucket + 2) & mask;
+        }
     }
 
     @Override
@@ -347,44 +397,60 @@ public class ArrayMap<K,V>
         int hashcode = key.hashCode();
         int bucket = hashcode & mask;
         while (true) {
-            Object k = array[bucket];
-            if (k == null) {
+            int pointer = indexes[bucket + 1];
+            if (pointer == 0) {
                 return null; // not found
             }
-            if (equals(key, k)) {
-                @SuppressWarnings("unchecked")
-                V oldValue = (V) array[bucket + 1];
-                array[bucket + 1] = null;
-                array[bucket] = null;
+            if (hashcode == indexes[bucket]) {
+                if (equals(key, array[pointer - 1])) {
+                    int index = pointer - 1;
+                    @SuppressWarnings("unchecked")
+                    V oldValue = (V) array[pointer];
 
-                // reposition subsequent buckets
-                while (true) {
-                    bucket = (bucket + 2) & mask;
-                    k = array[bucket];
-                    if (k == null) {
-                        break;
-                    }
-                    int h = k.hashCode();
-                    int w = h & mask; // where it want to be
-                    if (w != bucket) {
-                        while (true) {
-                            if (array[w] == null) {
-                                array[w] = array[bucket];
-                                array[bucket] = null;
-                                array[w + 1] = array[bucket + 1];
-                                array[bucket + 1] = null;
-                                break;
-                            }
-                            w = (w + 2) & mask;
+                    // shift the array list from index back by 2
+                    System.arraycopy(array, index + 2,
+                            array, index, array.length - index - 2);
+                    // clear last positions to let GC do its work
+                    array[array.length - 1] = null;
+                    array[array.length - 2] = null;
+
+                    // free the bucket
+                    indexes[bucket + 1] = 0;
+
+                    // adjusts indexes (O(N))
+                    for (int i=1,l=indexes.length; i<l; i+=2) {
+                        int idx = indexes[i];
+                        if (idx > index) {
+                            indexes[i] = idx - 2;
                         }
                     }
-                }
 
-                size--;
-                if (size < (array.length >> 3)) {
-                    resize(array.length >> 3);
+                    // rolls subsequent buckets back if needed
+                    int b = bucket;
+                    while (true) {
+                        b = (b + 2) & mask;
+                        int p = indexes[b + 1];
+                        if (p == 0) {
+                            break;
+                        }
+                        int h = indexes[b];
+                        int w = h & mask; // where it want to be
+                        if (b != w) {
+                            while (indexes[w + 1] != 0) {
+                                w = (w + 2) & mask;
+                            }
+                            // relocate the bucket
+                            indexes[w] = indexes[b];
+                            indexes[w + 1] = indexes[b + 1];
+                            indexes[b + 1] = 0; // free the former bucket
+                        }
+                    }
+                    size -= 2;
+                    if (size < (indexes.length >> 2)) {
+                        resize(indexes.length >> 1);
+                    }
+                    return oldValue;
                 }
-                return oldValue;
             }
             bucket = (bucket + 2) & mask;
         }
@@ -402,10 +468,10 @@ public class ArrayMap<K,V>
         if (array == null) {
             return false;
         }
-        for (int i=1,l=array.length; i<l; i+=2) {
+        for (int i=1,l=size; i<l; i+=2) {
             @SuppressWarnings("unchecked")
             V v = (V) array[i];
-            if (array[i-1] != null && equals(value, v)) {
+            if (equals(value, v)) {
                 return true;
             }
         }
@@ -420,6 +486,7 @@ public class ArrayMap<K,V>
 
     @Override
     public void clear() {
+        indexes = null;
         array = null;
         size = 0;
     }
@@ -438,12 +505,12 @@ public class ArrayMap<K,V>
 
         @Override
         public V getValue() {
-            return ArrayMap.this.get(key);
+            return IndexedArrayMap.this.get(key);
         }
 
         @Override
         public V setValue(V value) {
-            return ArrayMap.this.put(key, value);
+            return IndexedArrayMap.this.put(key, value);
         }
 
         @Override
@@ -477,18 +544,27 @@ public class ArrayMap<K,V>
 
         @Override
         public String toString() {
-            return key + " = " + Objects.toString(ArrayMap.this.get(key));
+            return key + " = " + Objects.toString(IndexedArrayMap.this.get(key));
         }
     }
 
     /** WARNING! this is a <b>mutable</b> object! */
     public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
         private int index = -2;
-        private int next = getNext();
         private boolean removed;
+
+        public Cursor() {}
+
+        public Cursor(int index) {
+            this.index = index;
+        }
 
         private Entry<K,V> createEntry() {
             return new EntryImpl(getKey());
+        }
+
+        public void setIndex(int index) {
+            this.index = (index << 1);
         }
 
         @Override
@@ -513,43 +589,24 @@ public class ArrayMap<K,V>
 
         @Override
         public boolean hasNext() {
-            return next != -1;
+            return index < size - 2;
         }
 
         @Override
         public Cursor next() {
-            index = next;
             removed = false;
-            next = getNext();
+            index += 2;
             return this;
-        }
-
-        private int getNext() {
-            if (array == null) {
-                return -1;
-            }
-            for(int i=index+2,l=array.length; i<l; i+=2) {
-                if (array[i] != null) {
-                    return i;
-                }
-            }
-            return -1;
         }
 
         @Override
         public void remove() {
-            if (array == null || index < 0) {
+            if (removed) {
                 throw new IllegalStateException();
             }
-            @SuppressWarnings("unchecked")
-            K k = (K) array[index];
-            if (removed || k == null) {
-                throw new IllegalStateException();
-            }
-            ArrayMap.this.remove(k);
-            removed = true;
+            removeIndex(index);
             index -= 2;
-            next = getNext();
+            removed = true;
         }
 
         @Override
@@ -598,7 +655,7 @@ public class ArrayMap<K,V>
             return new Iterator<T>() {
                 // so that UnmodifiableView can detect cursor calling
                 @SuppressWarnings("unchecked")
-                private final Cursor cursor = (Cursor) ArrayMap.this.iterator();
+                private final Cursor cursor = (Cursor) IndexedArrayMap.this.iterator();
 
                 @Override
                 public boolean hasNext() {
@@ -619,7 +676,31 @@ public class ArrayMap<K,V>
 
         @Override
         public int size() {
-            return size;
+            return size >> 1;
+        }
+    }
+
+    private class UnmodifiableKeyList extends AbstractList<K> {
+        @Override
+        public int size() {
+            return size >> 1;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public K get(int index) {
+            return (K) array[index << 1];
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return indexOf(o); // there aren't repetitions (it's a key set)
+        }
+
+        /** Very fast: accesses index in O(1). */
+        @Override
+        public int indexOf(Object o) {
+            return IndexedArrayMap.this.getIndexOfKey(o);
         }
     }
 
@@ -638,6 +719,13 @@ public class ArrayMap<K,V>
         @Override V select(Cursor entry) { return entry.getValue(); }
     }
 
+    public List<K> keyList() {
+        if (keyList == null) {
+            keyList = new UnmodifiableKeyList();
+        }
+        return keyList;
+    }
+
     @Override
     public Set<K> keySet() {
         if (keySet == null) {
@@ -654,11 +742,11 @@ public class ArrayMap<K,V>
         return values;
     }
 
-    @Override
     /**
      * WARNING: using this set means that a new {@link Map.Entry} must be
      * created at each access.
      */
+    @Override
     public Set<Entry<K, V>> entrySet() {
         if (entrySet == null) {
             entrySet = new EntrySet();
@@ -670,12 +758,8 @@ public class ArrayMap<K,V>
     public int hashCode() {
         int hash = 3;
         for (int i=0; i<size; i+=2) {
-            @SuppressWarnings("unchecked")
-            K k = (K)array[i];
-            if (k != null) {
-                hash = 31 * hash + array[i].hashCode();
-                hash = 31 * hash + Objects.hashCode(array[i + 1]);
-            }
+            hash = 31 * hash + array[i].hashCode(); // cannot be null
+            hash = 31 * hash + Objects.hashCode(array[i + 1]);
         }
         return hash;
     }
@@ -736,7 +820,7 @@ public class ArrayMap<K,V>
             return false;
         }
 
-//        try {
+        try {
             Iterator<Entry<K,V>> i = iterator();
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
@@ -752,9 +836,9 @@ public class ArrayMap<K,V>
                     }
                 }
             }
-//        } catch (ClassCastException | NullPointerException unused) {
-//            return false;
-//        }
+        } catch (ClassCastException | NullPointerException unused) {
+            return false;
+        }
 
         return true;
     }

@@ -71,7 +71,7 @@ public class ThroughputStatsParallelTableStringGenerator
                         .toStringForConfidenceWitoutSamples(confidence, unit))
                 .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
                 .cell(fractionalUncertainty)
-                .cell(throughputToaverageTime(
+                .cell(throughputToAverageTime(
                         measure.getConfidenceInterval(confidence)))
                 .cell(measure.getCount())
                 .endl();

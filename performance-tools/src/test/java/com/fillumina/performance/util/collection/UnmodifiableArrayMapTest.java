@@ -15,11 +15,11 @@ import org.junit.Test;
  */
 public class UnmodifiableArrayMapTest {
 
-    private ArrayMap<String,Integer> uMap;
+    private IndexedArrayMap<String,Integer> uMap;
 
     @Before
     public void init() {
-        uMap = new ArrayMap<String,Integer>()
+        uMap = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -74,8 +74,8 @@ public class UnmodifiableArrayMapTest {
 
     @Test
     public void shouldRelinkOnAdd() {
-        ArrayMap<String,Integer> map = new ArrayMap<>();
-        ArrayMap<String,Integer> umap = map.unmodifiable();
+        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<>();
+        IndexedArrayMap<String,Integer> umap = map.unmodifiable();
         map
                 .add("one", 1)
                 .add("two", 2)
@@ -90,12 +90,12 @@ public class UnmodifiableArrayMapTest {
 
     @Test
     public void shouldRelinkOnClear() {
-        ArrayMap<String,Integer> map = new ArrayMap<String,Integer>()
+        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
                 .add("four", 4);
-        ArrayMap<String,Integer> umap = map.unmodifiable();
+        IndexedArrayMap<String,Integer> umap = map.unmodifiable();
 
         assertEquals(3, umap.get("three"), 0);
         Set<String> set = umap.keySet();

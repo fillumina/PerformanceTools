@@ -18,15 +18,15 @@ public abstract class DimensionalMeasure extends Measure {
 
     public String toStringForConfidenceWitoutSamples(Ratio confidence,
             Unit<?> unit) {
-        double mean = unit.convertFromBase(getMean());
-        double moe = unit.convertFromBase(getMarginOfError(confidence));
+        double mean = unit.convert(getMean(), getUnit());
+        double moe = unit.convert(getMarginOfError(confidence), getUnit());
         return String.format(Locale.US, "%.3f +/- %.3f %s",
             mean, moe, unit);
     }
 
     public String toStringForConfidence(Ratio confidence, Unit<?> unit) {
-        double mean = unit.convertFromBase(getMean());
-        double moe = unit.convertFromBase(getMarginOfError(confidence));
+        double mean = unit.convert(getMean(), getUnit());
+        double moe = unit.convert(getMarginOfError(confidence), getUnit());
         return String.format(Locale.US, "%.3f +/- %.3f (%d samples) %s",
             mean, moe, getCount(), unit);
     }

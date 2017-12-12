@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
@@ -33,7 +33,7 @@ public class Stats extends Printable<Stats>
 
     private final StatsType type;
     private final BiggerMeasure refMeasure;
-    private final ArrayMap<TName, DimensionalMeasure> map;
+    private final IndexedArrayMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
 
     private TukeyPrintable tukeyPrintable;
@@ -45,7 +45,8 @@ public class Stats extends Printable<Stats>
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
         this.type = type;
-        this.map = new ArrayMap<>(measures).unmodifiable(); // clone constructor
+        // clone constructor
+        this.map = new IndexedArrayMap<>(measures).unmodifiable();
         this.refMeasure = new BiggerMeasure(measures);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
@@ -56,7 +57,7 @@ public class Stats extends Printable<Stats>
                     "this: " + type.toString() +
                     " != other: " + other.type.toString());
         }
-        Map<TName,DimensionalMeasure> m = new ArrayMap<>();
+        Map<TName,DimensionalMeasure> m = new IndexedArrayMap<>();
         m.putAll(getMeasureMap());
         m.putAll(other.getMeasureMap());
         return new Stats(other.type , m);

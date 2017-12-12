@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.Collections;
@@ -109,7 +109,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     private final Map<StatsType, StatsHolder> uMap;
 
     public MixedStatsHolder(StatsHolder... stats) {
-        this(new ArrayMap<>());
+        this(new IndexedArrayMap<>());
         for (StatsHolder s : stats) {
             s.setCaller(this);
             map.put(s.getStatsType(), s);
@@ -150,7 +150,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     public MixedStatsHolder appendTo(final Appendable appendable) {
         if (appendable != null) {
             boolean first = true;
-            for (StatsHolder ah : map.values()) {
+            for (StatsHolder holder : map.values()) {
                 if (first) {
                     first = false;
                 } else {
@@ -160,7 +160,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
                         throw new RuntimeException(ex);
                     }
                 }
-                ah.appendTo(appendable);
+                holder.appendTo(appendable);
             }
         }
         return this;

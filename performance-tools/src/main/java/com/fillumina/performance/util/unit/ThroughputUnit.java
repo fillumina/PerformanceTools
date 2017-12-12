@@ -11,7 +11,7 @@ public enum ThroughputUnit implements Unit<ThroughputUnit> {
     OP(1.0, "op/s"),
     KILOOP(1E3, "Kop/s"),
     MEGAOP(1E6, "Mop/s"),
-    GIGAOP(1E9, "Gop/s"),
+    GIGAOP(1E9, "Gop/s"), // or OP/ns = 1E9 OP/s
     TERAOP(1E12, "Top/s"),
     PETAOP(1E15, "Pop/s"),
     EXAOP(1E18, "Eop/s"),

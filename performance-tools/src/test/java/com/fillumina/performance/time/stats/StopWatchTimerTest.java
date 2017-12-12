@@ -4,6 +4,7 @@ import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.TimeStatsType;
+import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -18,11 +19,11 @@ import org.junit.Test;
  */
 public class StopWatchTimerTest {
     private static final int ITERATIONS = 100;
-    private static final String START = "START";
-    private static final String ONE = "ONE";
-    private static final String TWO = "TWO";
-    private static final String REPEATING = "REPEATING";
-    private static final String THREE = "THREE";
+    private static final String START = "start";
+    private static final String ONE = "one";
+    private static final String TWO = "two";
+    private static final String REPEATING = "repeating";
+    private static final String THREE = "three";
 
     private Appendable printout;
 
@@ -38,7 +39,7 @@ public class StopWatchTimerTest {
     void process() {
         timer.start();
 
-        timer.section(START);
+        //timer.section(START);
 
         stepOne();
         timer.section(ONE);
@@ -73,14 +74,13 @@ public class StopWatchTimerTest {
 
     @Test
     public void shouldReturnValidResults() {
-        for (int i=0; i<ITERATIONS; i++) {
-            process();
-        }
+        Looper.loop(ITERATIONS, () -> process() );
+
         timer.getPerformances()
-                .getStatsHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
+                .getStatsHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
-                    .assertPercentage(START).sameAs(0)
+                    //.assertPercentage(START).sameAs(0)
                     .assertPercentage(ONE).sameAs(20)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(REPEATING).sameAs(10)

@@ -1,12 +1,17 @@
 package com.fillumina.performance.util.unit;
 
+import java.io.Serializable;
+
 /**
  * A value with its dimension.
  * Immutable class.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class Quantity<U extends Unit<U>> implements Comparable<Quantity<U>> {
+public class Quantity<U extends Unit<U>>
+        implements Comparable<Quantity<U>>, Serializable {
+    private static final long serialVersionUID = 1L;
+    
     private final double value;
     private final U unit;
 

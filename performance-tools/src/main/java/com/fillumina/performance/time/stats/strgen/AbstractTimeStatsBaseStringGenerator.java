@@ -9,6 +9,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.ThroughputUnit;
 import com.fillumina.performance.util.unit.Unit;
 import com.fillumina.performance.util.unit.Units;
@@ -48,7 +49,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator
         final Map<TName, DimensionalMeasure> testMap = stats.getMeasureMap();
         double[] times = new double[testMap.size()];
         int counter = 0;
-        Units<?> units = null;
+        Units<?> units = Magnitude.UNITS;
         for (DimensionalMeasure measure : testMap.values()) {
             units = measure.getUnit().units();
             times[counter] = measure.getMean();
@@ -73,7 +74,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator
                 .append(System.lineSeparator());
     }
 
-    static String throughputToaverageTime(ConfidenceInterval ci) {
+    static String throughputToAverageTime(ConfidenceInterval ci) {
         double freq = 1E9 / ci.getValue();
         double error = freq *
                 ((ci.getUpperBound() - ci.getValue()) / ci.getValue());

@@ -20,8 +20,8 @@ public interface Unit<U extends Unit<U>> {
      * Converts a value expressed as the given units into the
      * current unit of measure.
      */
-    default double convert(double value, U unit) {
-        return value / unit.convertFromBase(1.0) / getFactor();
+    default double convert(double value, Unit<?> unit) {
+        return value / (unit.convertFromBase(1.0) * getFactor());
     }
 
     /** Converts from the base unit. */

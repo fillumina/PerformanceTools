@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Map.Entry;
@@ -41,11 +41,11 @@ public class SequencedTestProducer
         assertTestsPresent();
 
         //      test name,          options
-        ArrayMap<TName, ArrayMap<TName, Runnable>> sequencedTestMap =
-                new ArrayMap<>();
+        IndexedArrayMap<TName, IndexedArrayMap<TName, Runnable>> sequencedTestMap =
+                new IndexedArrayMap<>();
 
         getTests().forEach((TName testName, Runnable runnable) -> {
-            ArrayMap<TName, Runnable> runnableList =
+            IndexedArrayMap<TName, Runnable> runnableList =
                     ParameterHelper.createParameterizedRunnable(
                             runnable, sequences, Sequence.class);
 
@@ -62,7 +62,7 @@ public class SequencedTestProducer
         for (int i=0; i<sequenceSize; i++) {
             final int index = i;
             producer.clearTests();
-            sequencedTestMap.forEach((TName testName, ArrayMap<TName, Runnable> map) -> {
+            sequencedTestMap.forEach((TName testName, IndexedArrayMap<TName, Runnable> map) -> {
                 final Entry<TName, Runnable> paramTestEntry =
                         map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();

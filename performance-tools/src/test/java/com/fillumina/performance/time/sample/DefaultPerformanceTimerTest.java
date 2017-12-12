@@ -8,7 +8,7 @@ import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -62,7 +62,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
-                            ArrayMap<TName, Runnable> tests,
+                            IndexedArrayMap<TName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
@@ -95,7 +95,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                         @Override
                         public TimeSampleBuilder executeIterations(
-                                ArrayMap<TName, Runnable> tests,
+                                IndexedArrayMap<TName, Runnable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return SpeedSampleMock.builder()
@@ -127,7 +127,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
-                            ArrayMap<TName, Runnable> tests,
+                            IndexedArrayMap<TName, Runnable> tests,
                             int[] iterations) {
                         return sample;
                     }

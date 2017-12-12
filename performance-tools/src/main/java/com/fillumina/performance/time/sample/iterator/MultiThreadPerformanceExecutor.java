@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.ValueAssertion;
-import com.fillumina.performance.util.collection.ArrayMap;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -80,7 +80,7 @@ public class MultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final ArrayMap<TName, Runnable> tests,
+            final IndexedArrayMap<TName, Runnable> tests,
             final int[] iterations) {
         final TimeSampleCollector timeCollector =
                 new TimeSampleCollector();

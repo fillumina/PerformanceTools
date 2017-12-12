@@ -1,9 +1,12 @@
 package com.fillumina.performance.util.collection;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -36,13 +39,11 @@ public abstract class AbstractMapTest {
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
-        assertEquals("one", it.next().getKey());
+        while(! "one".equals(it.next().getKey()) ) {}
 
         it.remove();
 
         assertFalse(map.containsKey("one"));
-
-        assertEquals("two", it.next().getKey());
     }
 
     @Test(timeout=300)
@@ -51,14 +52,8 @@ public abstract class AbstractMapTest {
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
-        assertEquals("one", it.next().getKey());
-        assertEquals("two", it.next().getKey());
+        while(! "three".equals(it.next().getKey()) ) {}
 
-        it.remove();
-
-        assertFalse(map.containsKey("two"));
-
-        assertEquals("three", it.next().getKey());
         it.remove();
 
         assertFalse(map.containsKey("three"));
@@ -70,17 +65,11 @@ public abstract class AbstractMapTest {
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
-        assertEquals("one", it.next().getKey());
-        assertEquals("two", it.next().getKey());
-        assertEquals("three", it.next().getKey());
-        assertEquals("four", it.next().getKey());
-        assertEquals("five", it.next().getKey());
+        while(! "five".equals(it.next().getKey()) ) {}
 
         it.remove();
 
         assertFalse(map.containsKey("five"));
-
-        assertEquals(4, map.size(), 0);
     }
 
     @Test(expected=IllegalStateException.class, timeout=300)
@@ -89,8 +78,8 @@ public abstract class AbstractMapTest {
 
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
-        assertEquals("one", it.next().getKey());
-        assertEquals("two", it.next().getKey());
+        it.next();
+        it.next();
 
         it.remove();
         it.remove(); // should throw exception
@@ -143,29 +132,46 @@ public abstract class AbstractMapTest {
         map.put("three", 3);
         map.put("four", 4);
 
+        List<String> keys = new ArrayList<>(
+                Arrays.asList("one", "two", "three", "four"));
+        List<Integer> values = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+
+        int index;
+        Entry<String,Integer> entry;
+
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
         assertTrue(it.hasNext());
-        Entry<String,Integer> entry = it.next();
-        assertEquals("one", entry.getKey());
-        assertEquals(1, entry.getValue(), 0);
+        entry = it.next();
+        index = keys.indexOf(entry.getKey());
+        assertEquals(entry.getValue(), values.get(index), 0);
+        keys.remove(index);
+        values.remove(index);
 
         assertTrue(it.hasNext());
         entry = it.next();
-        assertEquals("two", entry.getKey());
-        assertEquals(2, entry.getValue(), 0);
+        index = keys.indexOf(entry.getKey());
+        assertEquals(entry.getValue(), values.get(index), 0);
+        keys.remove(index);
+        values.remove(index);
 
         assertTrue(it.hasNext());
         entry = it.next();
-        assertEquals("three", entry.getKey());
-        assertEquals(3, entry.getValue(), 0);
+        index = keys.indexOf(entry.getKey());
+        assertEquals(entry.getValue(), values.get(index), 0);
+        keys.remove(index);
+        values.remove(index);
 
         assertTrue(it.hasNext());
         entry = it.next();
-        assertEquals("four", entry.getKey());
-        assertEquals(4, entry.getValue(), 0);
+        index = keys.indexOf(entry.getKey());
+        assertEquals(entry.getValue(), values.get(index), 0);
+        keys.remove(index);
+        values.remove(index);
 
         assertFalse(it.hasNext());
+        assertTrue(values.isEmpty());
+        assertTrue(keys.isEmpty());
     }
 
     @Test(timeout=300)
@@ -179,15 +185,13 @@ public abstract class AbstractMapTest {
         Iterator<Entry<String,Integer>> it = map.entrySet().iterator();
 
         assertTrue(it.hasNext());
-        Entry<String,Integer> entry = it.next();
-        assertEquals("one", entry.getKey());
-        assertEquals(1, entry.getValue(), 0);
+        String removedKey = it.next().getKey();
 
         assertTrue(it.hasNext());
 
         it.remove();
 
-        assertFalse(map.containsKey("one"));
+        assertFalse(map.containsKey(removedKey));
     }
 
     @Test(timeout=300)
@@ -421,16 +425,16 @@ public abstract class AbstractMapTest {
 
     @Test(timeout=300)
     public void shouldHashCodeBeEquals() {
-        Map<String,Integer> map1 = createMap();
-        Map<String,Integer> map2 = createMap();
+        Map<String,Integer> map1 = populateMap();
+        Map<String,Integer> map2 = populateMap();
 
         assertEquals(map1.hashCode(), map2.hashCode(), 0);
     }
 
     @Test(timeout=300)
     public void shouldBeEquals() {
-        Map<String,Integer> map1 = createMap();
-        Map<String,Integer> map2 = createMap();
+        Map<String,Integer> map1 = populateMap();
+        Map<String,Integer> map2 = populateMap();
 
         assertTrue(map1.equals(map2));
         assertTrue(map2.equals(map1));

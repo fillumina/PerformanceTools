@@ -11,9 +11,17 @@ import java.util.Locale;
 public class Units<U extends Unit<U>> {
 
     private final U[] values;
+    private final U base;
 
     public Units(U[] units) {
         this.values = units;
+        for (U u : units) {
+            if (u.getFactor() == 1.0) {
+                base = u;
+                return;
+            }
+        }
+        throw new RuntimeException("no unit with factor = 1 found as base");
     }
 
     public U minUnit(U a, U b) {
@@ -25,18 +33,45 @@ public class Units<U extends Unit<U>> {
     }
 
     public U calculateAppropriatedUnitFrom(final double... values) {
-        return calculateAppropriatedUnit(min(values));
+        double min = min(values);
+        U minUnit = calculateAppropriatedUnit(min);
+        int minIndex = indexOf(minUnit);
+        double max = max(values);
+        U maxUnit = calculateAppropriatedUnit(max);
+        int maxIndex = indexOf(maxUnit);
+
+        int avgUnitIndex =
+                (int) Math.floor(minIndex + 1.0 * (maxIndex - minIndex) / 2.0);
+        U r = getUnitAtIndex(avgUnitIndex);
+        while (avgUnitIndex > 0 && r.convertFromBase(min) < 0.1) {
+            avgUnitIndex--;
+            r = getUnitAtIndex(avgUnitIndex);
+        }
+
+        return getUnitAtIndex(avgUnitIndex);
+    }
+
+    private U getUnitAtIndex(int index) {
+        return values[index];
+    }
+
+    private int indexOf(U u) {
+        for (int i=0; i<values.length; i++) {
+            if (u == values[i]) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /**
      * @return the most closed {@link Unit} scale.
      */
     public U calculateAppropriatedUnit(double value) {
-        final int l = values.length;
         U u;
         U v = values[0];
         double c;
-        for (int i=1; i<l; i++) {
+        for (int i=1,l = values.length; i<l; i++) {
             u = v;
             v = values[i];
             c = v.convertFromBase(value);
@@ -57,8 +92,18 @@ public class Units<U extends Unit<U>> {
         return min;
     }
 
+    private static double max(final double[] values) {
+        double max = Double.NEGATIVE_INFINITY;
+        for (double v : values) {
+            if (v > max) {
+                max = v;
+            }
+        }
+        return max;
+    }
+
     public U getBase() {
-        return values[0];
+        return base;
     }
 
     public int indexOfUnit(U unit) {

@@ -82,8 +82,8 @@ public abstract class AbstractTimeStatsTableStringGenerator
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
 
-            double stdev =
-                    unit.convertFromBase(measure.getUnbiasedStandardDeviation());
+            double stdev = unit.convert(
+                    measure.getUnbiasedStandardDeviation(), measure.getUnit());
 
             createTableLine(performanceTable, index, name, measure, stats, stdev,
                     unit, confidence);
