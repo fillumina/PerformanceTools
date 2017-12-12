@@ -30,9 +30,9 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.jmh.examples.event.CountingEventRunnable;
-import com.fillumina.jmh.examples.event.EventStatsProducer;
-import com.fillumina.performance.util.TimeSpan;
+import com.fillumina.performance.time.stats.EventFrequency;
+import com.fillumina.performance.util.Looper;
+import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.AuxCounters;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -137,31 +137,30 @@ public class JMHSample_23_AuxCounters {
 
     public static void main_pt(final String[] args) {
 
-        new EventStatsProducer()
-                .addTest("seti", new CountingEventRunnable()
-                        .setInterval(TimeSpan.set().sec(10))
-                        .setEvents("wow")
-                        .setRunnable(counter -> {
-                            float random = (float) Math.random();
-                            float wowSignal = (float) Math.PI / 4;
-                            if (random == wowSignal) {
-                                // WOW, that's unusual.
-                                counter.event(0);
-                            } else {
-                                //seti.event(1);
-                            }
-                        }))
-                .addTest("split", new CountingEventRunnable()
-                        .setInterval(TimeSpan.set().sec(5))
-                        .setEvents("one", "two")
-                        .setRunnable(counter -> {
-                            if (Math.random() < 0.1) {
-                                counter.event(0);
-                            } else {
-                                counter.event(1);
-                            }
-                        }))
-                .execute()
-                .print();
+        // these are two ways of doing the same thing
+
+        EventFrequency ef = new EventFrequency();
+        Looper.loop(IntervalUnit.SECONDS.quantity(10),
+                () -> {
+                    float random = (float) Math.random();
+                    float wowSignal = (float) Math.PI / 4;
+                    if (random == wowSignal) {
+                        // WOW, that's unusual.
+                        ef.fire("wow");
+                    }
+                });
+        ef.getPerformances().print();
+
+        new EventFrequency("one", "two", "total")
+            .loop(IntervalUnit.SECONDS.quantity(5),
+                (event) -> {
+                    if (Math.random() < 0.1) {
+                        event.fire("one");
+                    } else {
+                        event.fire("two");
+                    }
+                    event.fire("total");
+                })
+            .print();
     }
 }
