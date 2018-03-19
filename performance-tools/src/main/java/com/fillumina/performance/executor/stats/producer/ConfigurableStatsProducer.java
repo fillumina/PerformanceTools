@@ -4,8 +4,8 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTypedMap;
@@ -103,10 +103,12 @@ public class ConfigurableStatsProducer
         int getExpectedNumberOfSamples();
 
         /**
-         * @return true to continue taking samples
-         *          (even past the expected number).
+         * @return an estimation of the error toward the enough samples
+         *         collected condition.
+         *         Should approximately be a monotone decreasing sequence
+         *         ending with 0.0 (which means to stop taking samples).
          */
-        boolean continueTakingSamples(SampleProgressionStatus status);
+        double errorToStopTakingSamplesCondition(SampleProgressionStatus status);
 
         /**
          * Repeat the test completely (used when warmup or if
@@ -198,6 +200,7 @@ public class ConfigurableStatsProducer
             GarbageCollectorExecutor
                     .performGarbageCollection(garbageCollectorMillis);
 
+            double error;
             int sampleCounter = 0;
             SampleProgressionStatus status;
             setUpTests();
@@ -223,13 +226,15 @@ public class ConfigurableStatsProducer
                         mixedHolder,
                         coolerTime,
                         strategy.getStatusMessage());
-                notifySampleListeners(status);
+                error = strategy.errorToStopTakingSamplesCondition(status);
+                status.setError(error);
 
+                notifySampleListeners(status);
 
                 if (isTimeout(start)) {
                     throwTimeoutException(status);
                 }
-            } while (strategy.continueTakingSamples(status));
+            } while (error != 0);
             tearDownTests();
 
             statsMap = getAllAssertables(mixedHolder);

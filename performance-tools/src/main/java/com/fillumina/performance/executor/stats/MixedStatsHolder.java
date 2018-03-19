@@ -5,7 +5,6 @@ import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -19,8 +18,7 @@ import java.util.Set;
 public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
     public static final MixedStatsHolder EMPTY =
-            new MixedStatsHolder(
-                    Collections.<StatsType, StatsHolder>emptyMap());
+            new MixedStatsHolder(IndexedArrayMap.<StatsType, StatsHolder>emtpy());
 
     public static class Builder {
         private final MixedStatsHolder mixedHolder =
@@ -86,7 +84,8 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         }
 
         public MixedStatsHolder join() {
-            Map<StatsType, StatsHolder> statsHolderMap = new LinkedHashMap<>();
+            IndexedArrayMap<StatsType, StatsHolder> statsHolderMap =
+                    new IndexedArrayMap<>();
             for (Map.Entry<StatsType,
                     StatsHolder.Builder> entry: map.entrySet()) {
                 StatsType type = entry.getKey();
@@ -105,8 +104,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         return new Joiner(name);
     }
 
-    private final Map<StatsType, StatsHolder> map;
-    private final Map<StatsType, StatsHolder> uMap;
+    private final IndexedArrayMap<StatsType, StatsHolder> map;
 
     public MixedStatsHolder(StatsHolder... stats) {
         this(new IndexedArrayMap<>());
@@ -116,9 +114,8 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         }
     }
 
-    private MixedStatsHolder(Map<StatsType, StatsHolder> map) {
+    private MixedStatsHolder(IndexedArrayMap<StatsType, StatsHolder> map) {
         this.map = map;
-        this.uMap = Collections.unmodifiableMap(map);
     }
 
     public boolean isEmpty() {
@@ -126,11 +123,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     }
 
     public Set<StatsType> getTypes() {
-        return uMap.keySet();
+        return map.unmodifiable().keySet();
     }
 
     public Map<StatsType, StatsHolder> getStatsMap() {
-        return uMap;
+        return map.unmodifiable();
     }
 
     /** Use this when there is only one statistic available. */

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
 
 /**
  * Contains trees of immutable strings each forming a path.
@@ -44,7 +43,6 @@ public class TName extends AbstractList<String>
     private final TName parent;
     private final int level;
     private final String lastName;
-    private final int hashCode;
     private final String fullName;
     private ArrayList<WeakReference<TName>> children;
 
@@ -52,7 +50,6 @@ public class TName extends AbstractList<String>
         this.parent = parent;
         this.lastName = lastName;
         this.level = parent == null ? 0 : parent.size() + 1;
-        this.hashCode = innerHashCode(parent, lastName);
         this.fullName = toStringWithSeparator(SEPARATOR);
     }
 
@@ -230,31 +227,6 @@ public class TName extends AbstractList<String>
         return prefix;
     }
 
-    private static int innerHashCode(TName parent, String lastName) {
-        return (parent != null ? parent.hashCode * (59 * 7) : 0) +
-                lastName != null ? Objects.hashCode(lastName) : 57;
-    }
-
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final TName other = (TName) obj;
-        return parent == other.parent && lastName.equals(other.lastName);
-    }
-
     public String toStringWithSeparator(String separator) {
         return toStringWithSeparatorFromIndex(separator, 0);
     }
@@ -272,11 +244,6 @@ public class TName extends AbstractList<String>
             i++;
         }
         return buf.toString();
-    }
-
-    @Override
-    public String toString() {
-        return fullName;
     }
 
     @Override
@@ -405,5 +372,32 @@ public class TName extends AbstractList<String>
     @Override
     public CharSequence subSequence(int start, int end) {
         return fullName.subSequence(start, end);
+    }
+
+    @Override
+    public int hashCode() {
+        // this is by design so TName can be hash compatible with their
+        // string representations (i.e. in maps, especially if size = 1)
+        return fullName.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TName other = (TName) obj;
+        return parent == other.parent && lastName.equals(other.lastName);
+    }
+
+    @Override
+    public String toString() {
+        return fullName;
     }
 }

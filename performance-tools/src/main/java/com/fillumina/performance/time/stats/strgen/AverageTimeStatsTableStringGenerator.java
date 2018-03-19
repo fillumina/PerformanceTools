@@ -52,7 +52,6 @@ public final class AverageTimeStatsTableStringGenerator
                 .cell("average time")
                 .cell("stdev")
                 .cell("uncertainty")
-                .cell("throughput")
                 .cell("smpl")
                 .cell("TukeyHSD")
                 .endl();
@@ -82,8 +81,6 @@ public final class AverageTimeStatsTableStringGenerator
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                 .cell(measure.getFractionalUncertainty(confidence))
-                .cell(averageTimeToThroghput(
-                        measure.getConfidenceInterval(confidence)))
                 .cell(measure.getCount())
                 .cell(tukeyHsdStr)
                 .endl();

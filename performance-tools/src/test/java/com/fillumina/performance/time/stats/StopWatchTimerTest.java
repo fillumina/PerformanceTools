@@ -107,7 +107,7 @@ public class StopWatchTimerTest {
         }
         Map<TName, DimensionalMeasure> map = Telemetry.stopAndGetStats()
                 .getStatsHolder(TimeStatsType.AVERAGE)
-                .check(Assertions.withTolerance(Ratio.percentage(8))
+                .check(Assertions.withTolerance(Ratio.percentage(10))
                     .assertPercentage(START).sameAs(0)
                     .assertPercentage(TWO).sameAs(10)
                     .assertPercentage(THREE).sameAs(100))

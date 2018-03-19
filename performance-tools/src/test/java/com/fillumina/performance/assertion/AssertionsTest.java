@@ -1,7 +1,7 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.Test;
 public class AssertionsTest {
 
     @Test
-    public void shouldCreateWithTolerance() {
+    public void shouldCreateWithGivenTolerance() {
         Ratio tolerance = Ratio.percentage(77);
         Assertions assertion =
                 Assertions.withTolerance(tolerance);

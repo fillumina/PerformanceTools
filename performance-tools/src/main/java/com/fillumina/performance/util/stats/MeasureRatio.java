@@ -26,6 +26,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
     private final double marginOfError;
     private final Ratio confidence;
 
+    /** Warning! creating this object might be computationally expensive! */
     public MeasureRatio(Measure a, Measure b, Ratio confidence) {
         this(a.getMean(), a.getVariance(), a.getCount(),
                 b.getMean(), b.getVariance(), b.getCount(),
@@ -39,8 +40,9 @@ public class MeasureRatio extends AbstractConfidenceInterval
         Objects.requireNonNull(confidence, "confidence cannot be null");
         this.confidence = confidence;
         count = countA + countB;
-        double g = StatFunctions.student(confidence.getDecimal(), count - 2) *
-                sem(varB, countB) / meanB;
+        final double student =
+                StudentFunction.student(confidence.getDecimal(), count - 2);
+        double g = student * sem(varB, countB) / meanB;
         g *= g;
         valid = g < 1;
         if (!valid) {
@@ -55,8 +57,7 @@ public class MeasureRatio extends AbstractConfidenceInterval
         standardError = ratio * Math.sqrt(
                 ((1 - g) * (semA * semA) / (meanA * meanA) +
                 (semB * semB) / (meanB * meanB)));
-        marginOfError = standardError *
-                StatFunctions.student(confidence.getDecimal(), count - 2);
+        marginOfError = standardError * student;
     }
 
     public MeasureRatio(Measure statA, Ratio confidence) {

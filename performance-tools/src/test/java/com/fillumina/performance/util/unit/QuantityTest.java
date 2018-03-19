@@ -3,6 +3,7 @@ package com.fillumina.performance.util.unit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -13,13 +14,14 @@ import org.junit.Test;
 public class QuantityTest {
 
     @Test
-    public void shouldAssingAnUnkownTypeOfQuantity() {
+    public void shouldAssingAnUnkownUnitToQuantity() {
         Unit<?> unit = MemUnit.KiB;
         Quantity<?> q = Quantity.from(12.3, unit);
+        assertNotNull(q);
     }
 
     @Test
-    public void shouldRecordADimensionAndReturnIt() {
+    public void shouldSetADimensionAndReturnIt() {
         Quantity<IntervalUnit> time = new Quantity<>(10, IntervalUnit.MINUTES);
         assertEquals(10, time.getValue(), 0);
         assertEquals(IntervalUnit.MINUTES, time.getUnit());
@@ -30,6 +32,12 @@ public class QuantityTest {
         Quantity<IntervalUnit> time = new Quantity<>(10, IntervalUnit.MINUTES);
         double result = time.as(IntervalUnit.SECONDS);
         assertEquals(600, result, 0);
+    }
+
+    @Test(expected = MismatchedUnitRuntimeException.class)
+    public void shouldNotConvertToDifferentUnit() {
+        Quantity<IntervalUnit> time = new Quantity<>(10, IntervalUnit.MINUTES);
+        double result = time.as(StrangeUnit.TREES);
     }
 
     @Test
@@ -64,7 +72,7 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldBeEqualsTo() {
+    public void shouldBeEqualTo() {
         Quantity<IntervalUnit> min10 = new Quantity<>(10, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> min1 = new Quantity<>(1, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
@@ -78,7 +86,7 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldBeEqualsIfSameConstructor() {
+    public void shouldBeEqualIfSameConstructor() {
         Quantity<IntervalUnit> a = new Quantity<>(10, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> b = new Quantity<>(10, IntervalUnit.MINUTES);
 
@@ -86,7 +94,15 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldBeEqualsIfSameValue() {
+    public void shouldNotBeEqualIfDifferentUnit() {
+        Quantity<IntervalUnit> a = new Quantity<>(10, IntervalUnit.MINUTES);
+        Quantity<StrangeUnit> b = new Quantity<>(600, StrangeUnit.SHOES);
+
+        assertNotEquals(a, b);
+    }
+
+    @Test
+    public void shouldBeEqualIfSameValue() {
         Quantity<IntervalUnit> a = new Quantity<>(10, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> b = new Quantity<>(600, IntervalUnit.SECONDS);
 
@@ -94,7 +110,7 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldBeEqualsIfSameValueMagnitude() {
+    public void shouldBeEqualIfSameValueMagnitude() {
         Quantity<Magnitude> a = new Quantity<>(0.006240, Magnitude.KILO);
         Quantity<Magnitude> b = new Quantity<>(6240, Magnitude.MILLI);
 
@@ -102,7 +118,7 @@ public class QuantityTest {
     }
 
     @Test
-    public void shouldNOTBeEqualsIfSameValueMagnitude() {
+    public void shouldNOTBeEqualIfSameValueMagnitude() {
         Quantity<Magnitude> a = new Quantity<>(0.006240001, Magnitude.KILO);
         Quantity<Magnitude> b = new Quantity<>(6240, Magnitude.MILLI);
 
@@ -114,7 +130,7 @@ public class QuantityTest {
         Quantity<IntervalUnit> min1 = new Quantity<>(1, IntervalUnit.MINUTES);
         Quantity<IntervalUnit> sec25 = new Quantity<>(25, IntervalUnit.SECONDS);
 
-        Quantity<IntervalUnit> sum = min1.add(sec25);
+        Quantity<IntervalUnit> sum = min1.sum(sec25);
         assertEquals(new Quantity<>(85, IntervalUnit.SECONDS), sum);
     }
 
@@ -149,7 +165,8 @@ public class QuantityTest {
         Quantity<IntervalUnit> sec60 = new Quantity<>(60, IntervalUnit.SECONDS);
 
         assertEquals("10.0000 m", min10.toString());
-        assertEquals("1.0000 m", sec60.toString());
+        assertEquals("60.0000 s", sec60.toString());
+        assertEquals("1.00 m", sec60.toBestString());
     }
 
     @Test

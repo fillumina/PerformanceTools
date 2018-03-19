@@ -5,7 +5,6 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.tname.TNameMap;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Objects;
@@ -19,36 +18,37 @@ public class SampleCreator {
 
     /** @param array couples of (String name,double value) */
     public static Sample createSample(Object... array) {
-        return createSample(MockStatsType.INSTANCE, array);
+        return createSample(MockStatsType.INSTANCE, Magnitude.UNIT, array);
     }
 
     /** @param array couples of (String name,double value) */
-    public static Sample createSample(StatsType type, Object... array) {
-        TNameMap<SampleValue> map = createMap(array);
+    public static Sample createSample(StatsType type, Unit<?> unit,
+            Object... array) {
+        TNameMap<SampleValue> map = createMap(unit, array);
         return new Sample(type, map);
     }
 
-    public static TNameMap<SampleValue> createMap(Object... array)
+    public static TNameMap<SampleValue> createMap(Unit<?> unit, Object... array)
             throws NumberFormatException {
         TNameMap<SampleValue> map = new TNameMap<>();
         for (int i=0,l=array.length; i<l; i+=2) {
             String name = (String) array[i];
             double value = Double.valueOf(Objects.toString(array[i+1]));
             SampleValue sampleValue = new SampleValue(
-                    TN.tname(name), value, IntervalUnit.NANOSECONDS);
+                    TN.tname(name), value, unit);
             map.add(sampleValue);
         }
         return map;
     }
 
-    public static Builder builder() {
-        return new Builder(Magnitude.UNIT,
+    public static Builder builder(Unit<?> unit) {
+        return new Builder(unit,
                 map -> new Sample(MockStatsType.INSTANCE, map));
     }
 
-    public static Builder builder(
+    public static Builder builder(Unit<?> unit,
             Function<TNameMap<SampleValue>,Sample> sampleCreator) {
-        return new Builder(Magnitude.UNIT, sampleCreator);
+        return new Builder(unit, sampleCreator);
     }
 
     public static class Builder {

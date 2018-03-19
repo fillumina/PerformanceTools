@@ -43,7 +43,7 @@ public abstract class
         }
         DimensionalMeasure measure =
                 stats.getMeasureMap().values().iterator().next();
-        final Unit<?> unit = calculateUnit(stats);
+        final Unit<?> unit = measure.getUnit();
         final double stdev =
                 unit.convertFromBase(measure.getUnbiasedStandardDeviation());
         TableFormatter performanceTable = new TableFormatter("  ");

@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -55,8 +56,10 @@ public class ExpressionSolverTest {
                 .addTest(TN.tname("one")).mean(10.0).endTest()
                 .addTest(TN.tname("two")).mean(20.0).endTest()
                 .addTest(TN.tname("three", "four")).mean(30.0).endTest()
-                .buildWithCoincidentalValues()
-                .getFirstStatsHolder().getStats();
+                .buildWithCoincidentalValues(Magnitude.UNIT)
+                .getFirstStatsHolder()
+                .getStats()
+                .as(Magnitude.UNIT);
 
         StatsExpression<?> expression = new StatsExpression<>();
         expression.addExpression(TN.tname("first"))

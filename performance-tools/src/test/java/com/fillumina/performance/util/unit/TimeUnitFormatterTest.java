@@ -54,8 +54,7 @@ public class TimeUnitFormatterTest {
 
     private void assertTimeUnit(final AverageTimeUnit expected,
             double... values) {
-        Unit<?> result = AverageTimeUnit.UNITS
-                .calculateAppropriatedUnitFrom(values);
+        Unit<?> result = AverageTimeUnit.SECONDS.bestUnit(values);
         assertEquals(" values: " + Arrays.toString(values),
                 expected, result);
     }

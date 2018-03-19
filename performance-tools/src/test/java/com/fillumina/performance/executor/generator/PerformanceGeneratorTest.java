@@ -11,6 +11,7 @@ import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class PerformanceGeneratorTest {
                     .mean(10.0)
                     .stdev(1.2)
                 .endTest()
-                .buildWithSyntheticNormalValues());
+                .buildWithSyntheticNormalValues(Magnitude.UNIT));
         TestConfiguration<?> testConfig = new TestConfiguration<>()
                 .addTest("a", () -> {});
 
@@ -38,7 +39,10 @@ public class PerformanceGeneratorTest {
                 .executeSingleTest(testConfig, prodConf);
 
         // holder.print();
-        Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE).getStats();
+        Stats stats = holder
+                .getStatsHolder(MockStatsType.INSTANCE)
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertEquals(10.0, stats.getMeasure(TN.tname("a")).getMean(), 0.1);
         assertEquals(33, stats.getMeasure(TN.tname("a")).getCount(), 0);
@@ -59,7 +63,8 @@ public class PerformanceGeneratorTest {
                     .mean(20.0)
                     .stdev(1.2)
                 .endTest()
-                .buildWithSyntheticNormalValues());
+                .buildWithSyntheticNormalValues(Magnitude.UNIT));
+
         TestConfiguration<?> testConfig = new TestConfiguration<>()
                 .parameters()
                     .name("param")
@@ -77,7 +82,7 @@ public class PerformanceGeneratorTest {
                 .executeSingleTest(testConfig, prodConf);
 
         StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
-        Stats stats = aHolder.getStats(TN.tname("a"));
+        Stats stats = aHolder.getStats(TN.tname("a")).as(Magnitude.UNIT);
 
         assertEquals(10.0, stats.getMeasure(a1).getMean(), 0.1);
         assertEquals(33, stats.getMeasure(a1).getCount(), 0);
@@ -99,7 +104,7 @@ public class PerformanceGeneratorTest {
                     .mean(20.0)
                     .stdev(1.2)
                 .endTest()
-                .buildWithSyntheticNormalValues())
+                .buildWithSyntheticNormalValues(Magnitude.UNIT))
             .samples(33);
 
         TestConfiguration<?> testConfig = new TestConfiguration<>()
@@ -120,11 +125,11 @@ public class PerformanceGeneratorTest {
 
         StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
 
-        Stats stats1 = aHolder.getStats(TN.tname("one"));
+        Stats stats1 = aHolder.getStats(TN.tname("one")).as(Magnitude.UNIT);
         assertEquals(10.0, stats1.getMeasure(TN.tname("one","a")).getMean(), 1);
         assertEquals(33, stats1.getMeasure(TN.tname("one","a")).getCount(), 0);
 
-        Stats stats2 = aHolder.getStats(TN.tname("two"));
+        Stats stats2 = aHolder.getStats(TN.tname("two")).as(Magnitude.UNIT);
         assertEquals(20.0, stats2.getMeasure(TN.tname("two","a")).getMean(), 1);
         assertEquals(33, stats2.getMeasure(TN.tname("two","a")).getCount(), 0);
     }
@@ -154,9 +159,10 @@ public class PerformanceGeneratorTest {
             return new StatsMockBuilder(type).addTest(TN.tname(name))
                     .mean(mean)
                     .endTest()
-                    .buildWithSyntheticNormalValues()
+                    .buildWithSyntheticNormalValues(Magnitude.UNIT)
                     .getStatsHolder(type)
-                    .getStats();
+                    .getStats()
+                    .as(Magnitude.UNIT);
         }
 
         @Override
@@ -176,7 +182,7 @@ public class PerformanceGeneratorTest {
                     .mean(10.0)
                     .stdev(1.2)
                 .endTest()
-                .buildWithSyntheticNormalValues());
+                .buildWithSyntheticNormalValues(Magnitude.UNIT));
 
         ProducerConfiguration prodConfB = new ProducerConfigurationImpl(
             new SampleProducerMockBuilder(TYPE_B)
@@ -185,7 +191,7 @@ public class PerformanceGeneratorTest {
                     .mean(20.0)
                     .stdev(1.2)
                 .endTest()
-                .buildWithSyntheticNormalValues());
+                .buildWithSyntheticNormalValues(Magnitude.UNIT));
 
         TestConfiguration<?> testConfig = new TestConfiguration<>()
                 .addTest("a", () -> {});
@@ -196,10 +202,10 @@ public class PerformanceGeneratorTest {
 
 //        holder.print();
 
-        Stats statsA = holder.getStatsHolder(TYPE_A).getStats();
+        Stats statsA = holder.getStatsHolder(TYPE_A).getStats().as(Magnitude.UNIT);
         assertEquals(10.0, statsA.getMeasure(TN.tname("a")).getMean(), 0.1);
 
-        Stats statsB = holder.getStatsHolder(TYPE_B).getStats();
+        Stats statsB = holder.getStatsHolder(TYPE_B).getStats().as(Magnitude.UNIT);
         assertEquals(20.0, statsB.getMeasure(TN.tname("a")).getMean(), 0.1);
     }
 

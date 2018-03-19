@@ -5,6 +5,10 @@ import java.util.Collection;
 
 /**
  * Contains named measurements that can be checked by {@link Assertion}s.
+ * <p>
+ * It's a collection of measures relative to similar experiments
+ * (i.e. same test code on different algorithms) that will be
+ * analyzed to produce comparative statistically accurate results.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

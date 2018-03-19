@@ -9,12 +9,14 @@ import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
-import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.LinearEtaEstimator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.MemUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
 
 /**
@@ -26,7 +28,7 @@ public class ConsoleMemProgressionListener
             SampleProgressionStatusListener,
             StatsProgressionStatusListener {
 
-    private final StopWatch stopWatch = new StopWatch();
+    private final LinearEtaEstimator eta = new LinearEtaEstimator();
     private final Verbosity verbosity;
     private final Ratio confidence;
     private final String memTestType;
@@ -46,7 +48,6 @@ public class ConsoleMemProgressionListener
         TName name = status.getName();
         Collection<? extends Stats> stats = status.getStats();
 
-        stopWatch.reset();
         if (FixedSamplesAndIterationsStrategy.WARMUP_STATUS.equals(statusMessage) ||
                 Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
@@ -67,7 +68,7 @@ public class ConsoleMemProgressionListener
             return;
         }
         StringBuilder buf = new StringBuilder();
-        long estimated = 0;
+        Quantity<IntervalUnit> error = LinearEtaEstimator.ZERO;
         int sample = status.getExecutedSamples();
         int totalSamples = status.getTotalSamples();
         TName testName = status.getLastStats().getFirstStatsHolder().getName();
@@ -81,17 +82,17 @@ public class ConsoleMemProgressionListener
                     .append(testName.toString())
                     .append("' :")
                     .append(System.lineSeparator());
-            stopWatch.start();
+            eta.start();
         } else {
-            estimated = (stopWatch.stop() / sample) * (totalSamples - sample);
+            error = eta.getEta(status.getError());
         }
         String totalSamplesStr = Integer.toString(totalSamples);
         String sampleStr = Integer.toString(sample);
         String etc;
-        if (estimated == 0) {
+        if (error == LinearEtaEstimator.ZERO) {
             etc = " --";
         } else {
-            etc = IntervalUnit.UNITS.toPrettyString(estimated, 2);
+            etc = error.toPrettyString(1);
         }
         buf.append(TableFormatter.repeat(' ',
                 totalSamplesStr.length() - sampleStr.length()))
@@ -103,7 +104,7 @@ public class ConsoleMemProgressionListener
         CsvFormatter cf = new CsvFormatter();
         for (Sample s : status.getSamples().values()) {
             for (SampleValue sv : s.getValuesMap().values()) {
-                cf.append(Math.round(sv.getQuantity().toBase()));
+                cf.append(Math.round(sv.getQuantity().as(MemUnit.B)));
             }
         }
         buf.append(cf.toString());

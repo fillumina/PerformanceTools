@@ -49,7 +49,6 @@ public class ThroughputStatsParallelTableStringGenerator
                 .cell("throughput")
                 .cell("stdev")
                 .cell("uncertainty")
-                .cell("average time")
                 .cell("smpl")
                 .cell("iter")
                 .endl();
@@ -71,8 +70,6 @@ public class ThroughputStatsParallelTableStringGenerator
                         .toStringForConfidenceWitoutSamples(confidence, unit))
                 .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
                 .cell(fractionalUncertainty)
-                .cell(throughputToAverageTime(
-                        measure.getConfidenceInterval(confidence)))
                 .cell(measure.getCount())
                 .endl();
     }

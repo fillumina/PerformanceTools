@@ -49,7 +49,6 @@ public class AverageTimeStatsParallelTableStringGenerator
                 .cell("average time")
                 .cell("stdev")
                 .cell("uncertainty")
-                .cell("frequency")
                 .cell("smpl")
                 .cell("iter")
                 .endl();
@@ -71,8 +70,6 @@ public class AverageTimeStatsParallelTableStringGenerator
                         .toStringForConfidenceWitoutSamples(confidence, unit))
                 .cell(String.format(Locale.US,"%.6f %s", stdev, unit))
                 .cell(fractionalUncertainty)
-                .cell(averageTimeToThroghput(
-                        elapsed.getConfidenceInterval(confidence)))
                 .cell(elapsed.getCount())
                 .endl();
     }

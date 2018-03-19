@@ -1,18 +1,20 @@
 package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.util.collection.AbstractMapListWrapper;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TNameMap<T extends TNamed>
-        extends AbstractMapListWrapper<TNameMap<T>, TName, T> {
+        extends IndexedArrayMap<TName, T> {
     private static final long serialVersionUID = 1L;
 
     public TNameMap() {
+        super();
     }
 
     public TNameMap(int size) {
@@ -24,34 +26,32 @@ public class TNameMap<T extends TNamed>
     }
 
     private TNameMap(List<T> list) {
-        super(list);
+        super();
+        list.forEach( t -> add(t) );
     }
 
     @Override
-    protected TName getKeyFromValue(T value) {
-        return value.getName();
+    public IndexedArrayMap<TName, T> unmodifiable() {
+        return new IndexedArrayMap.UnmodifiableView<>(this);
     }
 
     @Override
-    protected TNameMap<T> createNew(List<T> list) {
-        return new TNameMap<>(list);
+    public boolean equals(Object a, Object b) {
+        return a == b || Objects.toString(a).equals(Objects.toString(b));
     }
 
-    /** Search by string equality. */
-    public T get(CharSequence key) {
-        String s = key.toString();
-        Iterator<Entry<TName,T>> it = iterator();
-        while (it.hasNext()) {
-            Entry<TName,T> e = it.next();
-            if ( s.equals(e.getKey().toString()) ) {
-                return e.getValue();
-            }
-        }
-        return null;
+    public TNameMap<T> add(T t) {
+        put(t.getName(), t);
+        return this;
     }
 
+    public T put(T t) {
+        return put(t.getName(), t);
+    }
+
+    /** Much slower, it must perform a linear search. */
     public T get(String... key) {
-        Iterator<Entry<TName,T>> it = iterator();
+        Iterator<Entry<TName,T>> it = cursor();
         while (it.hasNext()) {
             Entry<TName,T> e = it.next();
             if (equals(e.getKey(), key)) {

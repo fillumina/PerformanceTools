@@ -209,6 +209,7 @@ class StatFunctions {
         return z
     }
      */
+    // WARNING: very computationally expensive!
     public static double statCom(double q, double i, double j, double b) {
         double zz = 1;
         double z = zz;

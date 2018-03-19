@@ -10,13 +10,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Fast hash map implementation.
  * <ul>
  * <li>insertion, extraction and removal have O(1) complexity
+ * <li>worst case (hash clashing) insertion, extraction and removal O(N)
  * <li>increases and decreases its size automatically
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
@@ -24,13 +24,15 @@ import java.util.function.Supplier;
  * <li>manages its own unmodifiable version of itself
  * <li>has copy constructor and clone constructor
  * <li>improves locality of access by using arrays
+ * <li>use less memory by avoiding creating Entry objects
  * </ul>
  * {@link #Cursor} is faster than a standard iterator but it is not
  * compliant with {@link Map} specifications because every {@link Map.Entry}
  * returned is in fact the same object.
  * <br>
- * Avoid using {@link #entrySet()} because to be compliant with the specs
- * it must create a new {@link Map.Entry} for each access.
+ * NOTICE:
+ * Avoid using {@link #entrySet()} because to be compliant with the {@link Map}
+ * specs it must create a new {@link Map.Entry} at each entry access.
  * Use map's {@link #iterator()} or {@link #cursor()} instead which return a
  * {@link #Cursor}.
  *
@@ -100,14 +102,6 @@ public class ArrayMap<K,V>
         return map;
     }
 
-    public <W> ArrayMap<K,W> transform(Function<V,W> converter) {
-        ArrayMap<K,W> map = new ArrayMap<>();
-        for (Map.Entry<K,V> t : this) {
-            map.put(t.getKey(), converter.apply(t.getValue()));
-        }
-        return map;
-    }
-
     /**
      * Override if you need a different equals().
      * @param a the given object
@@ -117,18 +111,14 @@ public class ArrayMap<K,V>
         return Objects.equals(a, b);
     }
 
-    public class UnmodifiableView extends ArrayMap<K,V> {
+    public static class UnmodifiableView<K,V> extends ArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
-        private UnmodifiableView(Object[] array, int size) {
-            super(array, size);
-        }
+        private ArrayMap<K,V> delegate;
 
-        private void relink() {
-            if (super.array != ArrayMap.this.array) {
-                super.array = ArrayMap.this.array;
-                super.size = ArrayMap.this.size;
-            }
+        private UnmodifiableView(ArrayMap<K,V> delegate) {
+            super();
+            this.delegate = delegate;
         }
 
         @Override
@@ -158,38 +148,28 @@ public class ArrayMap<K,V>
         }
 
         @Override
-        public <W> ArrayMap<K, W> transform(Function<V, W> converter) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public V get(Object key) {
-            relink();
-            return super.get(key);
+            return delegate.get(key);
         }
 
         @Override
         public int size() {
-            relink();
-            return super.size();
+            return delegate.size();
         }
 
         @Override
         public boolean containsValue(Object value) {
-            relink();
-            return super.containsValue(value);
+            return delegate.containsValue(value);
         }
 
         @Override
         public boolean containsKey(Object key) {
-            relink();
-            return super.containsKey(key);
+            return delegate.containsKey(key);
         }
 
         @Override
         public Iterator<Entry<K, V>> iterator() {
-            relink();
-            return super.iterator();
+            return delegate.iterator();
         }
 
         @Override
@@ -217,7 +197,7 @@ public class ArrayMap<K,V>
             return this;
         }
         if (unmodifiableView == null) {
-            unmodifiableView = new UnmodifiableView(array, size);
+            unmodifiableView = new UnmodifiableView<>(this);
         }
         return unmodifiableView;
     }

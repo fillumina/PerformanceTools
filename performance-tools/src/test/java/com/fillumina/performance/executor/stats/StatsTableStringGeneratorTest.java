@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
+import com.fillumina.performance.util.unit.Magnitude;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
@@ -29,9 +30,10 @@ public class StatsTableStringGeneratorTest {
                     .stdev(2.3)
                     .samples(33)
                 .endTest()
-                .buildWithSyntheticNormalValues()
+                .buildWithSyntheticNormalValues(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);
         assertNotNull(str);
@@ -54,9 +56,10 @@ public class StatsTableStringGeneratorTest {
                     .stdev(4.3)
                     .samples(100)
                 .endTest()
-                .buildWithSyntheticNormalValues()
+                .buildWithSyntheticNormalValues(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         String str = StatsTableStringGenerator.INSTANCE.toString(stats);
         assertNotNull(str);

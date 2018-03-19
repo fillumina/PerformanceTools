@@ -11,14 +11,17 @@ import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.QuantityList;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * Statistics about the experiment.
+ * An {@link Assertable} representing the Statistics about an experiment.
  * In addition of the usual statistics it calculates ANOVA and performs the
  * Tukey HSD post-hoc test on all experiment pairs so to assess the data
  * collected as statistically significant.
@@ -31,10 +34,15 @@ public class Stats extends Printable<Stats>
         implements StatsTyped, Assertable, Serializable {
     private static final long serialVersionUID = 1L;
 
+    /** Different type of statistics shouldn't be matched. */
     private final StatsType type;
+
+    /** The results are presented in relation with the bigger value. */
     private final BiggerMeasure refMeasure;
+
     private final IndexedArrayMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
+    private final Unit<?> unit;
 
     private TukeyPrintable tukeyPrintable;
 
@@ -44,11 +52,21 @@ public class Stats extends Printable<Stats>
     }
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
+        this(type, measures, getArmonizedUnit(measures.values()) );
+    }
+
+    public Stats(StatsType type,
+            Map<TName,DimensionalMeasure> measures,
+            Unit<?> unit) {
         this.type = type;
-        // clone constructor
-        this.map = new IndexedArrayMap<>(measures).unmodifiable();
+        this.unit = getArmonizedUnit(measures.values());
+        this.map = createMap(measures, unit);
         this.refMeasure = new BiggerMeasure(measures);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
+    }
+
+    public Stats as(Unit<?> unit) {
+        return new Stats(type, map, unit);
     }
 
     public Stats join(Stats other) {
@@ -66,6 +84,20 @@ public class Stats extends Printable<Stats>
     @Override
     public StatsType getStatsType() {
         return type;
+    }
+
+    public Unit<?> getUnit() {
+        return unit;
+    }
+
+    private IndexedArrayMap<TName, DimensionalMeasure> createMap(
+            Map<TName,DimensionalMeasure> measures, Unit<?> unit) {
+        IndexedArrayMap<TName,DimensionalMeasure> m =
+                new IndexedArrayMap<>(measures.size());
+        measures.forEach((TName n, DimensionalMeasure d) -> {
+            m.put(n, d.in(unit));
+        });
+        return m.unmodifiable();
     }
 
     public Map<TName, DimensionalMeasure> getMeasureMap() {
@@ -196,6 +228,14 @@ public class Stats extends Printable<Stats>
         return refMeasure.getName();
     }
 
+    private static Unit<?> getArmonizedUnit(
+            Collection<DimensionalMeasure> measures) {
+        QuantityList.Builder builder = QuantityList.builder();
+        measures.forEach( (DimensionalMeasure dm) ->
+            builder.add(dm.getMean(), dm.getUnit()) );
+        return builder.build().getUnit();
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -238,6 +278,7 @@ public class Stats extends Printable<Stats>
         return tukeyPrintable;
     }
 
+    // TODO don't think it is a good idea
     private static class TukeyPrintable extends Printable<TukeyPrintable> {
         private final Stats stats;
 

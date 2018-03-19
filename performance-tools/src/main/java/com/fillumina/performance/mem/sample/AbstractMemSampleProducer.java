@@ -54,7 +54,7 @@ public abstract class AbstractMemSampleProducer
             }
             double memory = mem * 1.0 / it;
 
-            map.put(new SampleValue(name, memory, MemUnit.B));
+            map.add(new SampleValue(name, memory, MemUnit.B));
             index++;
         }
         Sample sample = new Sample(getStatsType(), map);

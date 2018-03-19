@@ -18,19 +18,4 @@ public class ThroughputUnitTest {
 
         assertEquals(7E9, opsec, 0);
     }
-
-    @Test
-    public void shouldConvertToBase() {
-        // 7 op/ns
-        Quantity<ThroughputUnit> q = ThroughputUnit.GIGAOP.quantity(7);
-
-        double opsec = q.toBase();
-
-        assertEquals(7E9, opsec, 0);
-    }
-
-    @Test
-    public void shouldGetBase() {
-        assertEquals(ThroughputUnit.OP, ThroughputUnit.UNITS.getBase());
-    }
 }

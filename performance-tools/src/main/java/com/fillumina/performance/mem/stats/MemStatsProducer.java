@@ -14,6 +14,7 @@ import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,8 @@ public class MemStatsProducer
             int currentSampleIndex, int totalSamples) {
         for (Sample sample : sampleMap.values()) {
             for (SampleValue v : sample.getValuesMap().values()) {
-                notifyListeners(v.getName(), 0, 0, (long) v.getQuantity().toBase());
+                notifyListeners(v.getName(), 0, 0,
+                        (long) v.getQuantity().as(MemUnit.B));
             }
         }
     }

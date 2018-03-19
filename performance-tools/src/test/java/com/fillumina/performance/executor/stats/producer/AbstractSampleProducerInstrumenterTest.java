@@ -6,6 +6,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.SampleProducerMock;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -87,7 +88,8 @@ public class AbstractSampleProducerInstrumenterTest {
 
     @Test
     public void shouldInstrument() {
-        SampleProducerMock sampleProducer = new SampleProducerMock();
+        SampleProducerMock sampleProducer =
+                new SampleProducerMock(Magnitude.UNIT);
         producer.instrument(sampleProducer);
         assertEquals(sampleProducer, producer.getSampleProducer());
     }

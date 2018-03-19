@@ -19,7 +19,7 @@ public class StopWatch {
      * @return the elapsed nanoseconds since {@link #start()},
      *         it doesn't reset the counter.
      */
-    public long stop() {
+    public long getNanosecondsSinceStart() {
         return System.nanoTime() - startNs;
     }
 

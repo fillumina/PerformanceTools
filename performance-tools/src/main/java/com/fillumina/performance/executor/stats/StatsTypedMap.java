@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.util.collection.AbstractMapListWrapper;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
 import java.util.List;
 
 /**
@@ -8,7 +8,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StatsTypedMap<T extends StatsTyped>
-        extends AbstractMapListWrapper<StatsTypedMap<T>, StatsType, T> {
+        extends IndexedArrayMap<StatsType,T> {
     private static final long serialVersionUID = 1L;
 
     public StatsTypedMap() {
@@ -23,16 +23,15 @@ public class StatsTypedMap<T extends StatsTyped>
     }
 
     private StatsTypedMap(List<T> list) {
-        super(list);
+        super();
     }
 
-    @Override
-    protected StatsType getKeyFromValue(T value) {
-        return value.getStatsType();
+    public StatsTypedMap<T> add(T t) {
+        put(t.getStatsType(), t);
+        return this;
     }
 
-    @Override
-    protected StatsTypedMap<T> createNew(List<T> list) {
-        return new StatsTypedMap<>(list);
+    public T put(T t) {
+        return put(t.getStatsType(), t);
     }
 }

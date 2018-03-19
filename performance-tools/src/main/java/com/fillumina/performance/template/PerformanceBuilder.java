@@ -98,7 +98,7 @@ public class PerformanceBuilder {
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
 
         Quantity<IntervalUnit> elapsed =
-                IntervalUnit.NANOSECONDS.quantity(timer.stop());
+                IntervalUnit.NANOSECONDS.quantity(timer.getNanosecondsSinceStart());
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();

@@ -2,6 +2,7 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class NameStatsProducerMock
             builder.addTest(name).mean(index).samples(33).stdev(0).endTest();
             index++;
         });
-        return builder.buildWithCoincidentalValues();
+        return builder.buildWithCoincidentalValues(Magnitude.UNIT);
     }
 
     public List<List<CharSequence>> getTree() {

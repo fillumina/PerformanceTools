@@ -9,6 +9,7 @@ import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.template.PerformanceBuilder.MixedHolder;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +87,7 @@ public class PerformanceBuilderTest {
                                     .mean(78.9)
                                     .stdev(1.5)
                                 .endTest()
-                            .buildWithSyntheticNormalValues() ));
+                            .buildWithSyntheticNormalValues(Magnitude.UNIT) ));
 
         config.listener = new PerformanceBuilderListener() {
             @Override

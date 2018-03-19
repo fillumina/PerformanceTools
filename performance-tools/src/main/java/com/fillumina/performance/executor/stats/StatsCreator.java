@@ -7,8 +7,7 @@ import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
-import com.fillumina.performance.util.unit.Unit;
-import java.util.ArrayList;
+import com.fillumina.performance.util.unit.QuantityList;
 import java.util.List;
 
 /**
@@ -17,9 +16,9 @@ import java.util.List;
  */
 public class StatsCreator implements StatsTyped {
 
-    private final IndexedArrayMap<TName, List<Double>> valuesMap = new IndexedArrayMap<>();
+    private final IndexedArrayMap<TName, QuantityList.Builder> valuesMap =
+            new IndexedArrayMap<>();
     private final StatsType type;
-    private Unit<?> unit;
 
     public StatsCreator(StatsType type) {
         this.type = type;
@@ -32,11 +31,8 @@ public class StatsCreator implements StatsTyped {
 
     public void addSample(Sample sample) {
         sample.getValuesMap().values().forEach((SampleValue v) -> {
-            if (unit == null) {
-                unit = v.getQuantity().getUnit().units().getBase();
-            }
-            List<Double> list = getValueList(v.getName());
-            list.add(v.getQuantity().toBase());
+            QuantityList.Builder builder = getBuilder(v.getName());
+            builder.add(v.getQuantity());
         });
     }
 
@@ -50,22 +46,23 @@ public class StatsCreator implements StatsTyped {
     public Stats createStats(ListFilter<Double> filter) {
         IndexedArrayMap<TName, DimensionalMeasure> map = new IndexedArrayMap<>();
 
-        valuesMap.forEach((TName name, List<Double> list) -> {
-            List<Double> filtered = filter.filter(list);
+        valuesMap.forEach((TName name, QuantityList.Builder builder) -> {
+            final QuantityList qList = builder.build();
+            List<Double> filtered = filter.filter(qList);
             DimensionalOnlineMeasure measure =
-                    new DimensionalOnlineMeasure(unit, filtered);
+                    new DimensionalOnlineMeasure(qList.getUnit(), filtered);
             map.put(name, measure);
         });
 
         return new Stats(type, map);
     }
 
-    private List<Double> getValueList(TName name) {
-        List<Double> a = valuesMap.get(name);
-        if (a == null) {
-            a = new ArrayList<>();
-            valuesMap.put(name, a);
+    private QuantityList.Builder getBuilder(TName name) {
+        QuantityList.Builder builder = valuesMap.get(name);
+        if (builder == null) {
+            builder = QuantityList.builder();
+            valuesMap.put(name, builder);
         }
-        return a;
+        return builder;
     }
 }

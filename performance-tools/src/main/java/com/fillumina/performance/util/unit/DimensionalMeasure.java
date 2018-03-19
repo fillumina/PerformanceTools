@@ -16,12 +16,16 @@ public abstract class DimensionalMeasure extends Measure {
         return toStringForConfidence(Ratio.P_95, unit);
     }
 
-    public Measure in(Unit<?> unit) {
-        if (!getUnit().isSameType(unit)) {
-            throw new RuntimeException("type mismatch: " +
-                    getUnit().toString() + " vs " + unit.toString());
+    public DimensionalMeasure in(Unit<?> unit) {
+        if (getUnit() == unit) {
+            return this;
         }
-        return multiplyBy(getUnit().getFactor() / unit.getFactor());
+        if (!getUnit().isSameType(unit)) {
+            throw new MismatchedUnitRuntimeException(getUnit(), unit);
+        }
+        return new DefaultDimensionalMeasure(
+                multiplyBy(getUnit().getConversionFactorTo(unit)),
+                unit);
     }
 
     public String toStringForConfidenceWitoutSamples(Ratio confidence,

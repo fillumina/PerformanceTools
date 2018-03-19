@@ -2,8 +2,8 @@ package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,14 +16,19 @@ import java.util.Map;
 public class SampleProducerMock
         extends AbstractSampleProducer<SampleProducerMock> {
 
-    private final List<Samples> samples = new ArrayList<>();
+    private final List<SampleData> samples = new ArrayList<>();
+    private final Unit<?> unit;
     private int index;
 
-    public static class Samples {
+    public SampleProducerMock(Unit<?> unit) {
+        this.unit = unit;
+    }
+
+    public static class SampleData {
         private final String name;
         private final double[] values;
 
-        public Samples(String name, double[] values) {
+        public SampleData(String name, double[] values) {
             this.name = name;
             this.values = values;
         }
@@ -32,12 +37,12 @@ public class SampleProducerMock
         public double[] getValues() { return values; }
     }
 
-    public List<Samples> getSamples() {
+    public List<SampleData> getSamples() {
         return samples;
     }
 
     public SampleProducerMock addSamples(String name, double... values) {
-        samples.add(new Samples(name, values));
+        samples.add(new SampleData(name, values));
         return this;
     }
 
@@ -48,8 +53,8 @@ public class SampleProducerMock
 
     @Override
     public Map<StatsType, Sample> get() {
-        SampleCreator.Builder builder = SampleCreator.builder();
-        for (Samples s : samples) {
+        SampleCreator.Builder builder = SampleCreator.builder(unit);
+        for (SampleData s : samples) {
             builder.add(s.name, s.values[index % s.values.length]);
         }
         index++;

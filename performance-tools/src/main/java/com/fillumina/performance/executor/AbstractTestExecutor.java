@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  */
 public abstract class AbstractTestExecutor
                 <I extends TestExecutor<I,M,T,P>, M, T, P>
-        implements TestExecutor<I, M, T, P> {
+        implements TestExecutor<I, M, T, P>, TestContainer<I,T> {
     public static final String UNNAMED_TEST_PREFIX = "test_";
     public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 

@@ -8,13 +8,14 @@ import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatus;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
-import com.fillumina.performance.util.StopWatch;
+import com.fillumina.performance.util.LinearEtaEstimator;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
 
 /**
@@ -28,7 +29,7 @@ public class ConsoleTimeProgressionListener
 
     private final Verbosity verbosity;
     private final StringGenerator<Stats> stringGenerator;
-    private final StopWatch stopWatch = new StopWatch();
+    private final LinearEtaEstimator eta = new LinearEtaEstimator();
 
     public ConsoleTimeProgressionListener(Verbosity verbosity,
             Ratio confidence) {
@@ -42,23 +43,20 @@ public class ConsoleTimeProgressionListener
             return;
         }
         StringBuilder buf = new StringBuilder();
-        long estimated = 0;
-        final int sample = status.getExecutedSamples();
-        Sample timeSample = status.getSamples().values().iterator().next();
+        Quantity<IntervalUnit> etaQuantity = LinearEtaEstimator.ZERO;
+        int sample = status.getExecutedSamples();
         if (sample > 1) {
-            estimated =
-                    (stopWatch.stop() / sample) *
-                    (status.getTotalSamples() - sample);
+            etaQuantity = eta.getEta(status.getError());
         } else {
-            stopWatch.start();
+            eta.start();
         }
         String totalSamplesStr = Integer.toString(status.getTotalSamples());
         String sampleStr = Integer.toString(sample);
         String etc;
-        if (estimated == 0) {
+        if (etaQuantity == LinearEtaEstimator.ZERO) {
             etc = " --";
         } else {
-            etc = IntervalUnit.UNITS.toPrettyString(estimated, 2);
+            etc = etaQuantity.toPrettyString(1);
         }
         etc = TableFormatter.padToLengthBefore(13, etc);
         buf.append(TableFormatter.repeat(' ',
@@ -70,6 +68,7 @@ public class ConsoleTimeProgressionListener
                 .append(" \titerations= ");
 
         CsvFormatter cf = new CsvFormatter();
+        Sample timeSample = status.getSamples().values().iterator().next();
         for (SampleValue sv : timeSample.getValuesMap().values()) {
             cf.append(sv.toStringValue());
         }
@@ -95,7 +94,6 @@ public class ConsoleTimeProgressionListener
         Collection<? extends Stats> stats = status.getStats();
         String statusMessage = status.getStatusMessage();
 
-        stopWatch.reset();
         if (Verbosity.MEDIUM_OUTPUT.isGreaterThan(verbosity)) {
             return;
         }

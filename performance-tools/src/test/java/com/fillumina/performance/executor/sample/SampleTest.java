@@ -2,9 +2,11 @@ package com.fillumina.performance.executor.sample;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.MockStatsType;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -52,7 +54,7 @@ public class SampleTest {
 
         Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
-        TNameMap<SampleValue> m = sample.getValuesMap();
+        Map<TName,SampleValue> m = sample.getValuesMap();
         assertEquals(oneValue, m.get("one"));
         assertEquals(twoValue, m.get("two"));
         assertEquals(threeValue, m.get("three"));
@@ -67,12 +69,13 @@ public class SampleTest {
 
         Sample sample = new Sample(MockStatsType.INSTANCE, map);
 
-        TNameMap<SampleValue> m = sample.getValuesMap();
+        Map<TName,SampleValue> m = sample.getValuesMap();
 
-        SampleValue twoValue =
-                new SampleValue(TN.tname("two"), 17, IntervalUnit.MILLISECONDS);
+        TName two = TN.tname("two");
 
-        m.add(twoValue);
+        SampleValue twoValue = new SampleValue(two, 17, IntervalUnit.MILLISECONDS);
+
+        m.put(two, twoValue);
     }
 
     @Test
@@ -147,7 +150,8 @@ public class SampleTest {
 
         Sample sample =new Sample(MockStatsType.INSTANCE, map);
 
-        assertEquals("Mock Stats{one=12.0000 ms, two=17.0000 ms, three=20.0000 ms}",
+        assertEquals(
+                "Mock Stats{one=12.0000 ms, two=17.0000 ms, three=20.0000 ms}",
                 sample.toString());
     }
 }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.executor.TN;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -42,7 +43,7 @@ public class TNameMapTest {
     @Test
     public void shouldGetWithStringPath() {
         TNameMap<TNamedImpl> map = new TNameMap<>();
-        map.put(new TNamedImpl(12, "one", "two"));
+        map.add(new TNamedImpl(12, "one", "two"));
 
         assertEquals(12, map.get("one", "two").getValue(), 0);
     }
@@ -50,11 +51,23 @@ public class TNameMapTest {
     @Test
     public void shouldGetWithSingleString() {
         TNameMap<TNamedImpl> map = new TNameMap<>();
-        map.put(new TNamedImpl(1, "one"));
-        map.put(new TNamedImpl(2, "two"));
+        map.add(new TNamedImpl(1, "one"));
+        map.add(new TNamedImpl(2, "two"));
 
         assertEquals(1, map.get("one").getValue(), 0);
         assertEquals(2, map.get("two").getValue(), 0);
+    }
+
+    @Test
+    public void shouldGetWithSingleStringUnmodifiable() {
+        TNameMap<TNamedImpl> map = new TNameMap<>();
+        map.add(new TNamedImpl(1, "one"));
+        map.add(new TNamedImpl(2, "two"));
+
+        Map<TName,TNamedImpl> unmodifiable = map.unmodifiable();
+
+        assertEquals(1, unmodifiable.get("one").getValue(), 0);
+        assertEquals(2, unmodifiable.get("two").getValue(), 0);
     }
 
     @Test
@@ -64,9 +77,9 @@ public class TNameMapTest {
         TName twelve = TName.ROOT.append("one", "two");
 
         TNameMap<TNamedImpl> map = new TNameMap<>();
-        map.put(new TNamedImpl(1, one));
-        map.put(new TNamedImpl(2, two));
-        map.put(new TNamedImpl(12, twelve));
+        map.add(new TNamedImpl(1, one));
+        map.add(new TNamedImpl(2, two));
+        map.add(new TNamedImpl(12, twelve));
 
         assertEquals(1, map.get(one).getValue(), 0);
         assertEquals(2, map.get(two).getValue(), 0);

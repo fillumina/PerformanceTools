@@ -3,13 +3,15 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -25,14 +27,18 @@ public class StatsMockBuilder {
     private Ratio confidence = Ratio.P_95;
 
     public static Stats create(Object... objs) {
-        return create(MockStatsType.INSTANCE, TN.EMPTY, objs);
+        return create(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
     }
 
     public static Stats create(TName title, Object... objs) {
-        return create(MockStatsType.INSTANCE, title, objs);
+        return create(MockStatsType.INSTANCE, title, Magnitude.UNIT, objs);
     }
 
-    public static Stats create(StatsType statsType, TName title, Object... objs) {
+    public static Stats create(
+            StatsType statsType,
+            TName title,
+            Unit<?> unit,
+            Object... objs) {
         StatsMockBuilder builder = new StatsMockBuilder(statsType);
         for (int i=0,l=objs.length; i<l; i+=2) {
             String testName = (String) objs[i];
@@ -40,7 +46,7 @@ public class StatsMockBuilder {
             TName tn = title.append(testName);
             builder.addTest(tn).mean(testMean).stdev(2.0).endTest();
         }
-        return builder.buildWithSyntheticNormalValues()
+        return builder.buildWithSyntheticNormalValues(unit)
                 .getFirstStatsHolder().getStats();
     }
 
@@ -66,7 +72,7 @@ public class StatsMockBuilder {
         return new Data(name);
     }
 
-    public MixedStatsHolder buildWithCoincidentalValues() {
+    public MixedStatsHolder buildWithCoincidentalValues(Unit<?> unit) {
         int[] counter = new int[dataList.size()];
 
         int index = 0;
@@ -75,13 +81,15 @@ public class StatsMockBuilder {
             index++;
         }
 
-        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator =
+                new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;
             index = 0;
 
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(statsType, m));
             for (Data data : dataList) {
                 if (counter[index] > 0) {
@@ -99,7 +107,7 @@ public class StatsMockBuilder {
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());
     }
 
-    public MixedStatsHolder buildWithSyntheticNormalValues() {
+    public MixedStatsHolder buildWithSyntheticNormalValues(Unit<?> unit) {
         int[] counter = new int[dataList.size()];
 
         int index = 0;
@@ -108,12 +116,14 @@ public class StatsMockBuilder {
             index++;
         }
 
-        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator =
+                new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;
             index = 0;
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(statsType, m));
             for (Data data : dataList) {
                 int samples = counter[index];
@@ -134,7 +144,7 @@ public class StatsMockBuilder {
         return statsCreator.getMixedAssertableHolder(ListFilter.identity());
     }
 
-    public MixedStatsHolder buildWithNormalDistribution() {
+    public MixedStatsHolder buildWithNormalDistribution(Unit<?> unit) {
         @SuppressWarnings("unchecked")
         Iterator<Double>[] iterators = new Iterator[dataList.size()];
         int[] counter = new int[dataList.size()];
@@ -142,18 +152,20 @@ public class StatsMockBuilder {
         for (Data data : dataList) {
             double tolerance = 1 - confidence.getDecimal();
             iterators[index] = new NormalDistributionMeasureBuilder(
-                    data.mean, data.stdev, tolerance, data.samples)
+                        data.mean, data.stdev, tolerance, data.samples)
                     .iterator();
             counter[index] = data.samples;
             index++;
         }
 
-        MixedStatsHolderCreator statsCreator = new MixedStatsHolderCreator(TN.tname(name));
+        MixedStatsHolderCreator statsCreator =
+                new MixedStatsHolderCreator(TN.tname(name));
         boolean added;
         do {
             added = false;
             index = 0;
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(statsType, m));
 
             for (Data data : dataList) {

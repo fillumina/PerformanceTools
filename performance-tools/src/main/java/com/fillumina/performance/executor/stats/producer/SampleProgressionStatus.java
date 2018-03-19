@@ -23,6 +23,8 @@ public class SampleProgressionStatus {
     private final int timeSpentCoolingCpuMs;
     private final String statusMessage;
 
+    private double error;
+
     public SampleProgressionStatus(
             int executedSamples,
             int totalSamples,
@@ -40,6 +42,14 @@ public class SampleProgressionStatus {
         this.samples = samples;
         this.lastStats = mixedHolder;
         this.timeSpentCoolingCpuMs = timeSpentCoolingCpuMs;
+    }
+
+    void setError(double error) {
+        this.error = error;
+    }
+
+    public double getError() {
+        return error;
     }
 
     public String getStatusMessage() {

@@ -51,7 +51,6 @@ public abstract class
         if (selectableRank(stats) < 0) {
             throw new RuntimeException("cannot show given stats.");
         }
-        Unit<?> unit = calculateUnit(stats);
         appendTitle(appendable, stats);
         TableFormatter header = new TableFormatter("  ")
             .param("Required measure confidence", confidence)
@@ -72,6 +71,7 @@ public abstract class
                 stats.getMeasureMap().entrySet()) {
             TName n = e.getKey();
             DimensionalMeasure elapsed = e.getValue();
+            Unit<?> unit = elapsed.getUnit();
             double stdev =
                     unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
             // http://www.webassign.net/question_assets/unccolphysmechl1/measurements/manual.html

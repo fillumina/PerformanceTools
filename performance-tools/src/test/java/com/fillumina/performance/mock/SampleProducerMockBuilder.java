@@ -3,12 +3,12 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,10 +79,11 @@ public class SampleProducerMockBuilder {
         return new Data(name);
     }
 
-    public SampleProducerMock buildWithCoincidentalValues() {
+    public SampleProducerMock buildWithCoincidentalValues(Unit<?> unit) {
         List<TNameMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(statsType, m));
             dataList.forEach((Data d) -> sampleBuilder.add(d.name, d.mean));
             list.add(sampleBuilder.getMap());
@@ -91,10 +92,11 @@ public class SampleProducerMockBuilder {
         return new SampleProducerMock(list);
     }
 
-    public SampleProducerMock buildWithSyntheticNormalValues() {
+    public SampleProducerMock buildWithSyntheticNormalValues(Unit<?> unit) {
         List<TNameMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(MockStatsType.INSTANCE, m));
             for (Data data : dataList) {
                 double linear = ((samples >> 1) - i) * 1.0 / samples;
@@ -107,7 +109,7 @@ public class SampleProducerMockBuilder {
         return new SampleProducerMock(list);
     }
 
-    public SampleProducerMock buildWithNormalDistribution() {
+    public SampleProducerMock buildWithNormalDistribution(Unit<?> unit) {
         @SuppressWarnings("unchecked")
         List<Iterator<Double>> iterators = new ArrayList<>(dataList.size());
 
@@ -122,6 +124,7 @@ public class SampleProducerMockBuilder {
         for (int i=0; i<samples; i++) {
             int index = 0;
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
+                    unit,
                     m -> new Sample(statsType, m));
 
             for (Data data : dataList) {

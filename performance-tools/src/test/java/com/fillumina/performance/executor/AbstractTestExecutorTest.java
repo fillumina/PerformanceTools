@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class AbstractTestExecutorTest {
 
-    static class AbstractNamedTestExecutorImpl
+    private static class AbstractNamedTestExecutorImpl
             extends AbstractTestExecutor<
                 AbstractNamedTestExecutorImpl, // self
                 String,                        // message to consumers
@@ -42,7 +42,7 @@ public class AbstractTestExecutorTest {
             new AbstractNamedTestExecutorImpl();
 
     @Test
-    public void shouldAddConsumerIfTrue() {
+    public void shouldAddConsumersIfTrue() {
         List<String> list = new ArrayList<>();
         executor.addConsumerIf(true, s -> list.add(s));
         executor.addTest("alpha", 10)
@@ -54,7 +54,7 @@ public class AbstractTestExecutorTest {
     }
 
     @Test
-    public void shouldAddConsumerIfFalse() {
+    public void shouldNotAddConsumersIfFalse() {
         List<String> list = new ArrayList<>();
         executor.addConsumerIf(false, s -> list.add(s));
         executor.addTest("one", 1)
@@ -66,7 +66,7 @@ public class AbstractTestExecutorTest {
     }
 
     @Test
-    public void shouldAddConsumer() {
+    public void shouldAddConsumers() {
         List<String> list = new ArrayList<>();
         executor.addConsumer(s -> list.add(s));
         executor.addTest("one", 1)
@@ -142,7 +142,7 @@ public class AbstractTestExecutorTest {
     }
 
     @Test
-    public void testAddUnnamedTest() {
+    public void shouldAddAnonymousTest() {
         executor.addTest(1)
                 .addTest(2);
 
@@ -153,13 +153,13 @@ public class AbstractTestExecutorTest {
     }
 
     @Test
-    public void shouldAddTestWithString() {
+    public void shouldAddTestWithStringName() {
         executor.addTest("one", 111);
         assertEquals(111, executor.getTests().get(TN.tname("one")), 0);
     }
 
     @Test
-    public void shouldAddTestWithTName() {
+    public void shouldAddTestWithTNameName() {
         TName tname = TN.tname("one","two");
         executor.addTest(tname, 111);
         assertEquals(111, executor.getTests().get(tname), 0);

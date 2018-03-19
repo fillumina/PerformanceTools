@@ -53,7 +53,6 @@ public class ThroughputStatsSingleTestStringGenerator
                 .cell("throughput")
                 .cell("stdev")
                 .cell("uncertainty")
-                .cell("average time")
                 .cell("samples")
                 .cell("iterations")
                 .cell("confidence")
@@ -61,8 +60,6 @@ public class ThroughputStatsSingleTestStringGenerator
                 .cell(throughput.toStringForConfidenceWitoutSamples(confidence,unit))
                 .cell(String.format(Locale.US, "%.6f %s", stdev, unit))
                 .cell(throughput.getFractionalUncertainty(confidence))
-                .cell(throughputToAverageTime(
-                        throughput.getConfidenceInterval(confidence)))
                 .cell(throughput.getCount())
                 .cell(iterationPerSample)
                 .cell(confidence)

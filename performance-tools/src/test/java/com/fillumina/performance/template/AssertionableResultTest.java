@@ -7,6 +7,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,10 @@ public class AssertionableResultTest {
         return new StatsMockBuilder()
                 .name(name)
                 .addTest("test").mean(10.0).stdev(2.0).endTest()
-                .buildWithCoincidentalValues().getFirstStatsHolder().getStats();
+                .buildWithCoincidentalValues(Magnitude.UNIT)
+                .getFirstStatsHolder()
+                .getStats()
+                .as(Magnitude.UNIT);
     }
 
     @Test

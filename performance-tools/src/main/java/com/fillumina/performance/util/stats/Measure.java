@@ -192,6 +192,6 @@ public abstract class Measure {
 
     @Override
     public String toString() {
-        return toStringForConfidence(Ratio.P_95);
+        return toStringForConfidence(Ratio.P_99);
     }
 }

@@ -34,7 +34,7 @@ public class SampleLineStringGenerator
                 appendable.append(", \t");
             }
             appendable.append(v.getName()).append("=");
-            appendable.append(Double.toString(v.getQuantity().toBase()) );
+            appendable.append(Double.toString(v.getQuantity().getValue()) );
         }
     }
 }

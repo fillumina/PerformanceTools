@@ -5,6 +5,7 @@ import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class StatsProducerMock<T>
                     .stdev(0)
                     .endTest();
         });
-        return builder.buildWithCoincidentalValues();
+        return builder.buildWithCoincidentalValues(Magnitude.UNIT);
     }
 
     /**

@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
+import com.fillumina.performance.util.unit.Magnitude;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -21,19 +22,19 @@ public class BiggerMeasureTest {
         creator.addSample(SampleCreator.createSample("one", 9.79, "two", 19.9, "three", 29.7));
         creator.addSample(SampleCreator.createSample("one", 10.2, "two", 20.1, "three", 30.0));
 
-        Stats stats = creator.createStats();
+        Stats stats = creator.createStats().as(Magnitude.UNIT);
 
         BiggerMeasure bigger = new BiggerMeasure(stats.getMeasureMap());
 
         assertEquals(2, bigger.getIndex());
         assertEquals("three", bigger.getName().toString());
-        assertEquals(30E-9, bigger.getMeasure().getMean(), 1E-10);
+        assertEquals(30, bigger.getMeasure().getMean(), 0.1);
     }
 
     @Test
     public void shouldReturnNullIfEmptyMapIsGiven() {
         StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
-        Stats stats = creator.createStats();
+        Stats stats = creator.createStats().as(Magnitude.UNIT);
 
         BiggerMeasure bigger = new BiggerMeasure(stats.getMeasureMap());
 
@@ -52,13 +53,13 @@ public class BiggerMeasureTest {
         creator.addSample(SampleCreator.createSample("one", 9.79));
         creator.addSample(SampleCreator.createSample("one", 10.2));
 
-        Stats stats = creator.createStats();
+        Stats stats = creator.createStats().as(Magnitude.UNIT);
 
         BiggerMeasure bigger = new BiggerMeasure(stats.getMeasureMap());
 
         assertEquals(0, bigger.getIndex());
         assertEquals("one", bigger.getName().toString());
-        assertEquals(10E-9, bigger.getMeasure().getMean(), 1E-11);
+        assertEquals(10, bigger.getMeasure().getMean(), 0.1);
     }
 
 }

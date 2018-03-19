@@ -118,14 +118,14 @@ public class FixedSamplesAndIterationsStrategyTest {
         for (int i=0; i<warmup; i++) {
             SampleProgressionStatus status = createStatus(i, warmup);
             assertTrue("i=" + i + ", warmup=" + warmup,
-                    strategy.continueTakingSamples(status));
+                    strategy.errorToStopTakingSamplesCondition(status) != 0.0);
         }
         assertTrue(strategy.repeatExecution(null));
 
         for (int i=0; i<samples; i++) {
             SampleProgressionStatus status = createStatus(i, samples);
             assertTrue("i=" + i + ", samples=" + samples,
-                    strategy.continueTakingSamples(status));
+                    strategy.errorToStopTakingSamplesCondition(status) != 0.0);
         }
         assertFalse(strategy.repeatExecution(null));
     }
@@ -133,7 +133,7 @@ public class FixedSamplesAndIterationsStrategyTest {
     private void iterate(FixedSamplesAndIterationsStrategy strategy, int times) {
         for (int i=0; i<times; i++) {
             SampleProgressionStatus status = createStatus(i, times);
-            strategy.continueTakingSamples(status);
+            strategy.errorToStopTakingSamplesCondition(status);
         }
     }
 
@@ -175,9 +175,9 @@ public class FixedSamplesAndIterationsStrategyTest {
         SampleProgressionStatus status;
 
         status = createStatus(0, 2);
-        assertTrue(strategy.continueTakingSamples(status));
+        assertTrue(strategy.errorToStopTakingSamplesCondition(status) != 0.0);
         status = createStatus(1, 2);
-        assertTrue(strategy.continueTakingSamples(status));
+        assertTrue(strategy.errorToStopTakingSamplesCondition(status) != 0.0);
 
         assertTrue(strategy.repeatExecution(null));
         assertEquals(3, strategy.getExpectedNumberOfSamples());
@@ -185,11 +185,11 @@ public class FixedSamplesAndIterationsStrategyTest {
                 strategy.getStatusMessage());
 
         status = createStatus(0, 3);
-        assertTrue(strategy.continueTakingSamples(status));
+        assertTrue(strategy.errorToStopTakingSamplesCondition(status) != 0.0);
         status = createStatus(1, 3);
-        assertTrue(strategy.continueTakingSamples(status));
+        assertTrue(strategy.errorToStopTakingSamplesCondition(status) != 0.0);
         status = createStatus(2, 3);
-        assertTrue(strategy.continueTakingSamples(status));
+        assertTrue(strategy.errorToStopTakingSamplesCondition(status) != 0.0);
 
         assertFalse(strategy.repeatExecution(null));
     }

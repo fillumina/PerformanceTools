@@ -38,11 +38,7 @@ public class Quantity<U extends Unit<U>>
         return targetUnit.convert(value, unit);
     }
 
-    public double toBase() {
-        return unit.convertToBase(value);
-    }
-
-    public Quantity<U> add(Quantity<U> o) {
+    public Quantity<U> sum(Quantity<U> o) {
         U u = minUnit(o);
         double tot = as(u) + o.as(u);
         return new Quantity<>(tot, u);
@@ -64,7 +60,7 @@ public class Quantity<U extends Unit<U>>
         return new Quantity<>(tot, unit);
     }
 
-    public boolean isSameUnit(Quantity<?> other) {
+    public boolean isSameType(Quantity<?> other) {
         return unit.units().getBase() == other.unit.units().getBase();
     }
 
@@ -94,7 +90,7 @@ public class Quantity<U extends Unit<U>>
         }
         @SuppressWarnings("unchecked")
         Quantity<U> other = (Quantity<U>) obj;
-        if (!isSameUnit(other)) {
+        if (!isSameType(other)) {
             return false;
         }
         U u = minUnit(other);
@@ -102,22 +98,43 @@ public class Quantity<U extends Unit<U>>
         return Math.abs(as(u) - other.as(u)) < 1E-12;
     }
 
+    @SuppressWarnings("unchecked")
+    private U minUnit(Quantity<U> other) {
+        if (!isSameType(other)) {
+            throw new IllegalArgumentException(
+                    "cannot operate on different units: " +
+                    unit.toString() + ", " + other.unit.toString());
+        }
+        return (U) Units.min(unit, other.unit);
+    }
+
+    private double toBase() {
+        return unit.convertToBase(value);
+    }
+
     @Override
     public int hashCode() {
         return Double.hashCode(toBase());
     }
 
-    private U minUnit(Quantity<U> other) {
-        if (!isSameUnit(other)) {
-            throw new IllegalArgumentException(
-                    "cannot operate on different units: " +
-                    unit.toString() + ", " + other.unit.toString());
-        }
-        return unit.units().minUnit(unit, other.unit);
-    }
-
     @Override
     public String toString() {
-        return unit.units().toString(toBase());
+        return unit.toString(value);
+    }
+
+    public String toString(int precision) {
+        return unit.toString(value, precision);
+    }
+
+    public String toBestString() {
+        return unit.toBestString(value);
+    }
+
+    public String toBestString(int precision) {
+        return unit.toBestString(value, precision);
+    }
+
+    public String toPrettyString(int groups) {
+        return unit.toPrettyString(value, groups);
     }
 }

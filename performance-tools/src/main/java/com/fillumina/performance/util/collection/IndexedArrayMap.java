@@ -16,7 +16,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Fast linked hash map implementation.
+ * Fast indexed hash map implementation (similar in features to
+ * {@link LinkedHashMap} but can index its entries directly).
  * <ul>
  * <li>insertion and extraction have O(1) complexity
  * <li>gets its entries by index in O(1)
@@ -59,7 +60,7 @@ public class IndexedArrayMap<K,V>
     private Set<K> keySet;
     private Collection<V> values;
     private List<K> keyList;
-    private UnmodifiableView unmodifiableView;
+    private UnmodifiableView<K,V> unmodifiableView;
 
     @SuppressWarnings("unchecked")
     public static <K,V> IndexedArrayMap<K,V> emtpy() {
@@ -137,6 +138,16 @@ public class IndexedArrayMap<K,V>
         return (V) array[(index << 1) + 1];
     }
 
+    @SuppressWarnings("unchecked")
+    public V setValueAtIndex(int index, V value) {
+        if (index >= size()) {
+            throw new IndexOutOfBoundsException("size= " + size());
+        }
+        V oldValue = (V) array[(index << 1) + 1];
+        array[(index << 1) + 1] = value;
+        return oldValue;
+    }
+
     /**
      * Override if you need a different equals().
      * @param a the given object
@@ -147,26 +158,22 @@ public class IndexedArrayMap<K,V>
     }
 
     public Entry<K,V> getEntryAtIndex(int index) {
-        return new Cursor(index << 1);
+        return new Cursor(index);
     }
 
     public Cursor getCursorAtIndex(int index) {
-        return new Cursor(index << 1);
+        return new Cursor(index);
     }
 
-    public class UnmodifiableView extends IndexedArrayMap<K,V> {
+    //TODO test unmodifiable!
+    public static class UnmodifiableView<K,V> extends IndexedArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
-        private UnmodifiableView(Object[] array, int[] hashes, int size) {
-            super(array, hashes, size);
-        }
+        private IndexedArrayMap<K,V> delegate;
 
-        private void relink() {
-            if (super.array != IndexedArrayMap.this.array) {
-                super.array = IndexedArrayMap.this.array;
-                super.indexes = IndexedArrayMap.this.indexes;
-                super.size = IndexedArrayMap.this.size;
-            }
+        public UnmodifiableView(IndexedArrayMap<K,V> delegate) {
+            super();
+            this.delegate = delegate;
         }
 
         @Override
@@ -185,38 +192,58 @@ public class IndexedArrayMap<K,V>
         }
 
         @Override
-        public IndexedArrayMap<K, V> clone() throws CloneNotSupportedException {
+        protected void removeEntryAtIndex(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public IndexedArrayMap<K, V> clone() {
             return this;
         }
 
         @Override
+        public int getIndexOfKey(Object key) {
+            return delegate.getIndexOfKey(key);
+        }
+
+        @Override
+        public Entry<K, V> getEntryAtIndex(int index) {
+            return delegate.getEntryAtIndex(index);
+        }
+
+        @Override
+        public V getValueAtIndex(int index) {
+            return delegate.getValueAtIndex(index);
+        }
+
+        @Override
+        public K getKeyAtIndex(int index) {
+            return delegate.getKeyAtIndex(index);
+        }
+
+        @Override
         public V get(Object key) {
-            relink();
-            return super.get(key);
+            return delegate.get(key);
         }
 
         @Override
         public int size() {
-            relink();
-            return super.size();
+            return delegate.size();
         }
 
         @Override
         public boolean containsValue(Object value) {
-            relink();
-            return super.containsValue(value);
+            return delegate.containsValue(value);
         }
 
         @Override
         public boolean containsKey(Object key) {
-            relink();
-            return super.containsKey(key);
+            return delegate.containsKey(key);
         }
 
         @Override
-        public Iterator<Entry<K, V>> iterator() {
-            relink();
-            return super.iterator();
+        public V setValueAtIndex(int index, V value) {
+            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -244,13 +271,13 @@ public class IndexedArrayMap<K,V>
             return this;
         }
         if (unmodifiableView == null) {
-            unmodifiableView = new UnmodifiableView(array, indexes, size);
+            unmodifiableView = new UnmodifiableView<>(this);
         }
         return unmodifiableView;
     }
 
     @Override
-    public IndexedArrayMap<K,V> clone() throws CloneNotSupportedException {
+    public IndexedArrayMap<K,V> clone() {
         if (array == null) {
             return new IndexedArrayMap<>();
         }
@@ -407,48 +434,7 @@ public class IndexedArrayMap<K,V>
                     @SuppressWarnings("unchecked")
                     V oldValue = (V) array[pointer];
 
-                    // shift the array list from index back by 2
-                    System.arraycopy(array, index + 2,
-                            array, index, array.length - index - 2);
-                    // clear last positions to let GC do its work
-                    array[array.length - 1] = null;
-                    array[array.length - 2] = null;
-
-                    // free the bucket
-                    indexes[bucket + 1] = 0;
-
-                    // adjusts indexes (O(N))
-                    for (int i=1,l=indexes.length; i<l; i+=2) {
-                        int idx = indexes[i];
-                        if (idx > index) {
-                            indexes[i] = idx - 2;
-                        }
-                    }
-
-                    // rolls subsequent buckets back if needed
-                    int b = bucket;
-                    while (true) {
-                        b = (b + 2) & mask;
-                        int p = indexes[b + 1];
-                        if (p == 0) {
-                            break;
-                        }
-                        int h = indexes[b];
-                        int w = h & mask; // where it want to be
-                        if (b != w) {
-                            while (indexes[w + 1] != 0) {
-                                w = (w + 2) & mask;
-                            }
-                            // relocate the bucket
-                            indexes[w] = indexes[b];
-                            indexes[w + 1] = indexes[b + 1];
-                            indexes[b + 1] = 0; // free the former bucket
-                        }
-                    }
-                    size -= 2;
-                    if (size < (indexes.length >> 2)) {
-                        resize(indexes.length >> 1);
-                    }
+                    removeIndex(index, bucket, mask);
                     return oldValue;
                 }
             }
@@ -456,11 +442,56 @@ public class IndexedArrayMap<K,V>
         }
     }
 
-    protected void removeIndex(int index) {
+    private void removeIndex(int index, int bucket, int mask) {
+        // shift the array list from index back by 2
+        System.arraycopy(array, index + 2,
+                array, index, array.length - index - 2);
+        // clear last positions to let GC do its work
+        array[array.length - 1] = null;
+        array[array.length - 2] = null;
+
+        // free the bucket
+        indexes[bucket + 1] = 0;
+
+        // adjusts indexes (O(N))
+        for (int i=1,l=indexes.length; i<l; i+=2) {
+            int idx = indexes[i];
+            if (idx > index) {
+                indexes[i] = idx - 2;
+            }
+        }
+
+        // rolls subsequent buckets back if needed
+        int b = bucket;
+        while (true) {
+            b = (b + 2) & mask;
+            int p = indexes[b + 1];
+            if (p == 0) {
+                break;
+            }
+            int h = indexes[b];
+            int w = h & mask; // where it want to be
+            if (b != w) {
+                while (indexes[w + 1] != 0) {
+                    w = (w + 2) & mask;
+                }
+                // relocate the bucket
+                indexes[w] = indexes[b];
+                indexes[w + 1] = indexes[b + 1];
+                indexes[b + 1] = 0; // free the former bucket
+            }
+        }
+        size -= 2;
+        if (size < (indexes.length >> 2)) {
+            resize(indexes.length >> 1);
+        }
+    }
+
+    protected void removeEntryAtIndex(int index) {
         if (array == null || index < 0 || index > size) {
             throw new IllegalStateException();
         }
-        remove(array[index]);
+        remove(getKeyAtIndex(index));
     }
 
     @Override
@@ -550,7 +581,7 @@ public class IndexedArrayMap<K,V>
 
     /** WARNING! this is a <b>mutable</b> object! */
     public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
-        private int index = -2;
+        private int index = -1;
         private boolean removed;
 
         public Cursor() {}
@@ -564,38 +595,35 @@ public class IndexedArrayMap<K,V>
         }
 
         public void setIndex(int index) {
-            this.index = (index << 1);
+            this.index = index;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public K getKey() {
-            return (K) array[index];
+            return getKeyAtIndex(index);
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public V getValue() {
-            return (V) array[index + 1];
+            return getValueAtIndex(index);
         }
 
         @Override
         public V setValue(V value) {
-            @SuppressWarnings("unchecked")
-            V v = (V) array[index + 1];
-            array[index + 1] = value;
-            return v;
+            return setValueAtIndex(index, value);
         }
 
         @Override
         public boolean hasNext() {
-            return index < size - 2;
+            return index + 1 < size();
         }
 
         @Override
         public Cursor next() {
             removed = false;
-            index += 2;
+            index++;
             return this;
         }
 
@@ -604,8 +632,8 @@ public class IndexedArrayMap<K,V>
             if (removed) {
                 throw new IllegalStateException();
             }
-            removeIndex(index);
-            index -= 2;
+            removeEntryAtIndex(index);
+            index--;
             removed = true;
         }
 
@@ -634,7 +662,7 @@ public class IndexedArrayMap<K,V>
         @Override
         public String toString() {
             return "" + index + ": " +
-                    getKey().toString() + " = " + Objects.toString(getValue());
+                    getKey().toString() + " => " + Objects.toString(getValue());
         }
     }
 
@@ -653,7 +681,6 @@ public class IndexedArrayMap<K,V>
         @Override
         public Iterator<T> iterator() {
             return new Iterator<T>() {
-                // so that UnmodifiableView can detect cursor calling
                 @SuppressWarnings("unchecked")
                 private final Cursor cursor = (Cursor) IndexedArrayMap.this.iterator();
 
@@ -676,20 +703,25 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public int size() {
-            return size >> 1;
+            return IndexedArrayMap.this.size();
         }
     }
 
     private class UnmodifiableKeyList extends AbstractList<K> {
         @Override
         public int size() {
-            return size >> 1;
+            return IndexedArrayMap.this.size();
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public K get(int index) {
-            return (K) array[index << 1];
+            return getKeyAtIndex(index);
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return indexOf(o) != -1;
         }
 
         @Override
@@ -700,7 +732,7 @@ public class IndexedArrayMap<K,V>
         /** Very fast: accesses index in O(1). */
         @Override
         public int indexOf(Object o) {
-            return IndexedArrayMap.this.getIndexOfKey(o);
+            return getIndexOfKey(o);
         }
     }
 
@@ -757,9 +789,9 @@ public class IndexedArrayMap<K,V>
     @Override
     public int hashCode() {
         int hash = 3;
-        for (int i=0; i<size; i+=2) {
-            hash = 31 * hash + array[i].hashCode(); // cannot be null
-            hash = 31 * hash + Objects.hashCode(array[i + 1]);
+        Cursor cursor = cursor();
+        while (cursor.hasNext()) {
+            hash = 31 * hash + cursor.next().hashCode();
         }
         return hash;
     }
@@ -821,7 +853,7 @@ public class IndexedArrayMap<K,V>
         }
 
         try {
-            Iterator<Entry<K,V>> i = iterator();
+            Iterator<Entry<K,V>> i = cursor();
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
                 K key = e.getKey();
@@ -864,5 +896,4 @@ public class IndexedArrayMap<K,V>
             sb.append(',').append(' ');
         }
     }
-
 }

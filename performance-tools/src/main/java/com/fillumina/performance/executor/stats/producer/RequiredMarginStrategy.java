@@ -118,12 +118,12 @@ public class RequiredMarginStrategy
     }
 
     @Override
-    public boolean continueTakingSamples(SampleProgressionStatus status) {
+    public double errorToStopTakingSamplesCondition(SampleProgressionStatus status) {
         message = null;
 
-        // take at least a minimum amount of samples
+        // take at least a minimum number of samples
         if (status.getExecutedSamples() < minSamples) {
-            return true;
+            return 1.5 * minSamples - status.getExecutedSamples();
         }
 
         Ratio maxMargin =
@@ -133,10 +133,11 @@ public class RequiredMarginStrategy
                     maxMargin.toString() +
                     " too high, required less than " +
                     maxRequiredPercentageMargin.toString();
-            return true;
+            return maxRequiredPercentageMargin.getDecimal() -
+                    maxMargin.getDecimal();
         }
 
-        return false;
+        return 0.0; // stop taking samples
     }
 
     protected static Ratio getMaxPercentageMargin(

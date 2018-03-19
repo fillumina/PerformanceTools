@@ -62,7 +62,6 @@ public enum IntervalUnit implements Unit<IntervalUnit> {
         }
     }
 
-
     private final double factor;
     private final String symbol;
 

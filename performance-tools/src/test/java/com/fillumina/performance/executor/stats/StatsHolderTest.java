@@ -10,6 +10,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,10 @@ public class StatsHolderTest {
         public StatsMock(String name) {
             super(new StatsMockBuilder()
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
+                    .buildWithCoincidentalValues(Magnitude.UNIT)
+                    .getFirstStatsHolder()
+                    .getStats()
+                    .as(Magnitude.UNIT));
             this.name = name;
         }
 
@@ -257,11 +261,14 @@ public class StatsHolderTest {
                 StatsHolder.builder(type, "root")
                         .subExperiment("subroot")
                             .test("one", StatsMockBuilder.create(type,
-                                    one, "first", 10.0, "second", 20.0 ))
+                                    one, Magnitude.UNIT,
+                                    "first", 10.0, "second", 20.0 ))
                             .test("two", StatsMockBuilder.create(type,
-                                    two, "first", 10.0, "second", 20.0 ))
+                                    two, Magnitude.UNIT,
+                                     "first", 10.0, "second", 20.0 ))
                             .test("three", StatsMockBuilder.create(type,
-                                    three, "first", 10.0, "second", 20.0 ))
+                                    three, Magnitude.UNIT,
+                                     "first", 10.0, "second", 20.0 ))
                         .build();
 
         //System.out.println(holder.toString());

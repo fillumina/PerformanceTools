@@ -9,6 +9,7 @@ import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -34,7 +35,7 @@ public class Sample implements StatsTyped, Serializable {
         return type;
     }
 
-    public TNameMap<SampleValue> getValuesMap() {
+    public Map<TName, SampleValue> getValuesMap() {
         return map.unmodifiable();
     }
 

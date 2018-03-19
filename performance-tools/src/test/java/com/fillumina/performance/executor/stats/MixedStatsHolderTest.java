@@ -5,6 +5,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -45,7 +46,10 @@ public class MixedStatsHolderTest {
         public StatsMock(String name) {
             super(new StatsMockBuilder()
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
-                    .buildWithCoincidentalValues().getFirstStatsHolder().getStats());
+                    .buildWithCoincidentalValues(Magnitude.UNIT)
+                    .getFirstStatsHolder()
+                    .getStats()
+                    .as(Magnitude.UNIT));
             this.name = name;
         }
 

@@ -122,8 +122,15 @@ public class FixedSamplesAndIterationsStrategy
         return message;
     }
 
+//    @Override
+//    public boolean continueTakingSamples(SampleProgressionStatus status) {
+//        return status.getExecutedSamples() <  (warmup ? warmupSamples : samples);
+//    }
+
     @Override
-    public boolean continueTakingSamples(SampleProgressionStatus status) {
-        return status.getExecutedSamples() <  (warmup ? warmupSamples : samples);
+    public double errorToStopTakingSamplesCondition(SampleProgressionStatus status) {
+        double totalSamples = (warmup ? warmupSamples : samples);
+        return totalSamples - status.getExecutedSamples();
     }
+
 }

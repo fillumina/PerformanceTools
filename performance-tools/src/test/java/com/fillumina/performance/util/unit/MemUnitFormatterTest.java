@@ -39,7 +39,7 @@ public class MemUnitFormatterTest {
     }
 
     private void assertMemUnit(final MemUnit expected, double... values) {
-        Unit result = MemUnit.UNITS.calculateAppropriatedUnitFrom(values);
+        Unit<?> result = MemUnit.B.bestUnit(values);
         assertEquals(" values: " + Arrays.toString(values),
                 expected, result);
     }

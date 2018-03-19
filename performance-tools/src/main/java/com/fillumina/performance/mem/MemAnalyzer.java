@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.AbstractTestExecutor;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
+import com.fillumina.performance.util.unit.MemUnit;
 
 /**
  *
@@ -19,6 +20,7 @@ public class MemAnalyzer {
         StatsHolder holder = mixed.getFirstStatsHolder();
 
         return (long) holder.getStats()
+                .as(MemUnit.B)
                 .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .getMean();
     }
@@ -31,6 +33,7 @@ public class MemAnalyzer {
         StatsHolder holder = mixed.getFirstStatsHolder();
 
         return (long) holder.getStats()
+                .as(MemUnit.B)
                 .getMeasure(AbstractTestExecutor.SINGLE_TEST_NAME)
                 .getMean();
     }

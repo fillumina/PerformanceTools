@@ -6,9 +6,10 @@ import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.Magnitude;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 import org.junit.Test;
 
 /**
@@ -55,7 +56,7 @@ public class RequiredMarginStrategyTest {
 
         SampleProgressionStatus status = createStatus(7, 5, margin);
 
-        assertTrue(strategy.continueTakingSamples(status));
+        assertNotEquals(0.0, strategy.errorToStopTakingSamplesCondition(status));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class RequiredMarginStrategyTest {
 
         SampleProgressionStatus status = createStatus(7, 5, margin);
 
-        assertFalse(strategy.continueTakingSamples(status));
+        assertNotEquals(0.0, strategy.errorToStopTakingSamplesCondition(status));
     }
 
     private SampleProgressionStatus createStatus(int executedSamples,
@@ -113,7 +114,8 @@ public class RequiredMarginStrategyTest {
                             .samples(100)
                             .stdev(stdev)
                         .endTest()
-                        .buildWithSyntheticNormalValues();
+                        .buildWithSyntheticNormalValues(Magnitude.UNIT);
+
         return mixedAssertableHolder;
     }
 }

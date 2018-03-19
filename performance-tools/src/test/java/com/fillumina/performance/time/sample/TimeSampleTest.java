@@ -20,7 +20,6 @@ import org.junit.Test;
  */
 public class TimeSampleTest {
     private static final IntervalUnit UNIT = IntervalUnit.MILLISECONDS;
-    private static final double SCALE = 1E-3;
 
     private static final int ELAPSED_TWO = 2_500;
     private static final int ELAPSED_ONE = 10_000;
@@ -56,7 +55,9 @@ public class TimeSampleTest {
 
     @Test
     public void shouldReturnTheValues() {
-        assertEquals(ELAPSED_ONE * SCALE, sample.getQuantity(ONE).toBase(), 0.01);
-        assertEquals(ELAPSED_TWO * SCALE, sample.getQuantity(TWO).toBase(), 0.01);
+        assertEquals(ELAPSED_ONE,
+                sample.getQuantity(ONE).as(IntervalUnit.MILLISECONDS), 0.01);
+        assertEquals(ELAPSED_TWO,
+                sample.getQuantity(TWO).as(IntervalUnit.MILLISECONDS), 0.01);
     }
 }

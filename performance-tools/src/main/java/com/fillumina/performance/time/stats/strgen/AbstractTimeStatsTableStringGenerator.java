@@ -47,9 +47,8 @@ public abstract class AbstractTimeStatsTableStringGenerator
         appendable.append(header);
         appendable.append(System.lineSeparator());
 
-        Unit<?> unit = calculateUnit(stats);
         TableFormatter performance =
-                createPerformanceTable(stats, unit, confidence);
+                createPerformanceTable(stats, confidence);
         appendable.append(performance.toString());
         appendable.append(System.lineSeparator());
     }
@@ -73,7 +72,7 @@ public abstract class AbstractTimeStatsTableStringGenerator
     }
 
     protected TableFormatter createPerformanceTable(
-            Stats stats, Unit<?> unit, Ratio confidence) {
+            Stats stats, Ratio confidence) {
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
@@ -81,7 +80,7 @@ public abstract class AbstractTimeStatsTableStringGenerator
                 stats.getMeasureMap().entrySet()) {
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
-
+            Unit<?> unit = measure.getUnit();
             double stdev = unit.convert(
                     measure.getUnbiasedStandardDeviation(), measure.getUnit());
 

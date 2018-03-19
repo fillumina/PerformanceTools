@@ -54,43 +54,35 @@ public class MemUnitTest {
 
     @Test
     public void shouldFindTheRightUnit() {
-        Unit<?> dimension = MemUnit.UNITS.calculateAppropriatedUnit(12.23E6);
+        Unit<?> dimension = MemUnit.B.bestUnit(12.23E6);
         assertEquals(MemUnit.MiB, dimension);
     }
 
     @Test
-    public void shouldFormatStatically() {
-        assertEquals("117.7376 MiB", MemUnit.UNITS.toString(0.123456789E9));
-    }
-
-    @Test
-    public void shouldFormatStaticallyByHelper() {
-        assertEquals("117.7376 MiB",
-                new Units<>(MemUnit.values()).toString(0.123456789E9));
+    public void shouldFormat() {
+        assertEquals("123,456,789.0000 B", MemUnit.B.toString(0.123456789E9));
     }
 
     @Test
     public void shouldPrettyFormatWith1Unit() {
-        assertEquals("117 MiB",
-                MemUnit.UNITS.toPrettyString(0.123456789E9, 1));
+        assertEquals("117 MiB", MemUnit.B.toPrettyString(0.123456789E9, 1));
     }
 
     @Test
     public void shouldPrettyFormatWith2Units() {
         assertEquals("117 MiB 755 KiB",
-                MemUnit.UNITS.toPrettyString(0.123456789E9, 2));
+                MemUnit.B.toPrettyString(0.123456789E9, 2));
     }
 
     @Test
     public void shouldPrettyFormatWith3Units() {
         assertEquals("117 MiB 755 KiB 277 B",
-                MemUnit.UNITS.toPrettyString(0.123456789E9, 3));
+                MemUnit.B.toPrettyString(0.123456789E9, 3));
     }
 
     @Test
-    public void shouldFormatFromGivenUnit() {
-        assertEquals("0.1150 GiB",
-                Units.toString(0.123456789E9, 4, MemUnit.GiB));
+    public void shouldFormatBestString() {
+        assertEquals("117.7376 MiB", MemUnit.B.toBestString(0.123456789E9, 4));
     }
 
     @Test

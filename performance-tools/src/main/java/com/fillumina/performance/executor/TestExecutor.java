@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 
 /**
  *
- * @param I self (to allow sub-classes to use methods with a fluid interface)
- * @param C notifiable
- * @param T test
+ * @param I self (to allow sub-classes to call super methods with a fluid interface)
+ * @param C notifiable  type of the notification messages
+ * @param T test        type of the tests
  * @param P product
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

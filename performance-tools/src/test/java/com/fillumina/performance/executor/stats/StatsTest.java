@@ -6,6 +6,7 @@ import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -31,9 +32,10 @@ public class StatsTest {
                     .stdev(3.0)
                     .samples(250)
                 .endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         final Measure first = stats.getMeasure("first");
         assertEquals(10.0, first.getMean(), 1.0);
@@ -55,9 +57,10 @@ public class StatsTest {
                 .addTest("first").mean(10).stdev(5).samples(200).endTest()
                 .addTest("second").mean(20).stdev(7).samples(250).endTest()
                 .addTest("third").mean(30).stdev(5).samples(250).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertEquals(
                 StatsTableStringGenerator.INSTANCE.toString(stats),
@@ -71,9 +74,10 @@ public class StatsTest {
                 .addTest("first").mean(10).stdev(2).samples(250).endTest()
                 .addTest("second").mean(20).stdev(4).samples(250).endTest()
                 .addTest("third").mean(30).stdev(5).samples(250).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertEquals(10.0, stats.getMeasure("first").getMean(), 1);
         assertEquals(20.0, stats.getMeasure("second").getMean(), 1);
@@ -87,9 +91,10 @@ public class StatsTest {
                 .addTest("first").mean(10).stdev(8).samples(100).endTest()
                 .addTest("second").mean(20).stdev(15).samples(100).endTest()
                 .addTest("third").mean(30).stdev(20).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         final double max = stats.getMaximumPercentageMargin(Ratio.P_95)
                 .getDecimal();
@@ -104,9 +109,10 @@ public class StatsTest {
                 .addTest("first").mean(10).stdev(25).samples(100).endTest()
                 .addTest("second").mean(20).stdev(10).samples(100).endTest()
                 .addTest("third").mean(30).stdev(5).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         stats.getMeasure("non existent");
     }
@@ -117,9 +123,10 @@ public class StatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(300).samples(100).endTest()
                 .addTest("second").mean(300).samples(100).endTest()
-                .buildWithCoincidentalValues()
+                .buildWithCoincidentalValues(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertTrue(stats.toString(), stats.getAnova() < 0.6);
     }
@@ -130,9 +137,10 @@ public class StatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("first").mean(100).stdev(7.0).samples(100).endTest()
                 .addTest("second").mean(50).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertTrue(stats.toString(), stats.getAnova() > 0.8);
     }
@@ -144,9 +152,11 @@ public class StatsTest {
                 .addTest("first").mean(10).stdev(5).samples(100).endTest()
                 .addTest("second").mean(20).stdev(4).samples(100).endTest()
                 .addTest("third").mean(30).stdev(5).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
+
 
         assertEquals(10.0 / 20.0,
                 stats.getRatio("first", "second", Ratio.P_95).getValue(),
@@ -178,9 +188,10 @@ public class StatsTest {
         Stats stats = new StatsMockBuilder()
                 .confidence(Ratio.decimal(0.9))
                 .addTest("single").mean(100).stdev(7.0).samples(100).endTest()
-                .buildWithNormalDistribution()
+                .buildWithNormalDistribution(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
-                .getStats();
+                .getStats()
+                .as(Magnitude.UNIT);
 
         assertEquals(0, stats.getAnova(), 0.1);
         assertEquals(0,
@@ -201,7 +212,7 @@ public class StatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("one").mean(1.0).stdev(2.0).samples(33).endTest()
                 .addTest("two").mean(2.0).stdev(2.0).samples(33).endTest()
-                .buildWithSyntheticNormalValues()
+                .buildWithSyntheticNormalValues(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
                 .getStats();
 
@@ -209,11 +220,11 @@ public class StatsTest {
                 .confidence(Ratio.decimal(0.9))
                 .addTest("three").mean(3.0).stdev(2.0).samples(33).endTest()
                 .addTest("four").mean(4.0).stdev(2.0).samples(33).endTest()
-                .buildWithSyntheticNormalValues()
+                .buildWithSyntheticNormalValues(Magnitude.UNIT)
                 .getStatsHolder(MockStatsType.INSTANCE)
                 .getStats();
 
-        Stats sum = a.join(b);
+        Stats sum = a.join(b).as(Magnitude.UNIT);
 
         assertEquals(Arrays.asList(
                 TN.tname("one"),

@@ -15,6 +15,7 @@ import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.IntervalUnit;
+import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,26 +33,6 @@ import org.junit.Test;
 public class ConfigurableStatsProducerTest
         extends AbstractStatsProducerTest {
     private static final boolean OUTPUT = false;
-
-    private static final String TEST_0 = "test_0";
-    private static final String TEST_1 = "test_1";
-
-    @Override
-    public ConfigurableStatsProducer createStatsProducer() {
-        ConfigurationImpl conf = new ConfigurationImpl();
-        StrategyImpl strategy = new StrategyImpl();
-        SampleProducerMock sampleProducer = new SampleProducerMock() {
-            @Override
-            public Map<StatsType, Sample> get() {
-                for (Runnable r : getTests().values()) {
-                    r.run();
-                }
-                return super.get();
-            }
-        }.addSamples(TEST_0, 1.0, 3.0);
-
-        return createProducer(conf, strategy, sampleProducer);
-    }
 
     private static class ConfigurationImpl
             implements ConfigurableStatsProducer.Configuration {
@@ -87,9 +68,9 @@ public class ConfigurableStatsProducerTest
         @Override public int getExpectedNumberOfSamples() {
             return samples;
         }
-        @Override public boolean continueTakingSamples(
-                SampleProgressionStatus status) {
-            return status.getExecutedSamples() < samples;
+        @Override
+        public double errorToStopTakingSamplesCondition(SampleProgressionStatus status) {
+            return samples - status.getExecutedSamples();
         }
         @Override public boolean repeatExecution(
                 Collection<Stats> stats) {
@@ -98,6 +79,24 @@ public class ConfigurableStatsProducerTest
         @Override public String getStatusMessage() {
             return errorMessage;
         }
+    }
+
+    private static final String TEST_0 = "test_0";
+    private static final String TEST_1 = "test_1";
+
+    @Override
+    public ConfigurableStatsProducer createStatsProducer() {
+        ConfigurationImpl conf = new ConfigurationImpl();
+        StrategyImpl strategy = new StrategyImpl();
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT) {
+            @Override
+            public Map<StatsType, Sample> get() {
+                getTests().values().forEach(r -> r.run());
+                return super.get();
+            }
+        }.addSamples(TEST_0, 1.0, 3.0);
+
+        return createProducer(conf, strategy, sampleProducer);
     }
 
     @Test(expected=IllegalStateException.class)
@@ -115,7 +114,7 @@ public class ConfigurableStatsProducerTest
                 new ConfigurableStatsProducer(
                         new ConfigurationImpl(), new StrategyImpl());
 
-        SampleProducerMock sampleProducer = new SampleProducerMock();
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT);
         producer.instrument(sampleProducer);
 
         producer.execute();
@@ -132,7 +131,7 @@ public class ConfigurableStatsProducerTest
         ConfigurableStatsProducer producer =
                 new ConfigurableStatsProducer(conf, strategy);
 
-        producer.instrument(new SampleProducerMock());
+        producer.instrument(new SampleProducerMock(Magnitude.UNIT));
 
         producer.addTest(() -> {});
 
@@ -158,10 +157,9 @@ public class ConfigurableStatsProducerTest
     @Test
     public void shouldStopTakingSamples() {
         StrategyImpl strategy = new StrategyImpl() {
-                @Override
-                public boolean continueTakingSamples(
+                @Override public double errorToStopTakingSamplesCondition(
                         SampleProgressionStatus status) {
-                    return status.getExecutedSamples() < 7;
+                    return 7 - status.getExecutedSamples();
                 }
             };
         strategy.samples = 13;
@@ -193,6 +191,7 @@ public class ConfigurableStatsProducerTest
         List<Double> filteredValues = new ArrayList<>();
 
         ConfigurationImpl config = new ConfigurationImpl();
+        // a filter that saves all passed values to filteredValues list
         config.filter = new ListFilter<Double>() {
             @Override
             public <T> List<T> filter(List<T> list,
@@ -203,13 +202,21 @@ public class ConfigurableStatsProducerTest
             }
         };
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 3.0)
                 .addSamples(TEST_1, 2.0, 4.0);
 
         execute(config, strategy, sampleProducer);
 
-        assertEquals(Arrays.asList(1.0, 2.0, 1.0, 3.0, 2.0, 4.0),
+        // Stats are created at each new sample for the strategy to check
+        // if there are enough samples.
+        assertEquals(Arrays.asList(
+                // 1st sample filter
+                1.0,
+                2.0,
+                // 2nd sample filter
+                1.0, 3.0,
+                2.0, 4.0),
                 filteredValues);
     }
 
@@ -227,13 +234,13 @@ public class ConfigurableStatsProducerTest
         strategy.samples = samples;
 
         // defines the AVAILABLE samples
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 10.0, 100.0, 1_000.0, 10_000.0);
 
         StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        Stats stats = holder.getStats();
+        Stats stats = holder.getStats().as(Magnitude.UNIT);
         Measure test0 = stats.getMeasure(TEST_0);
         String errMsg = "samples=" + samples + ", mean=" + mean +
                 System.lineSeparator() + stats.toString();
@@ -246,14 +253,16 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
         StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        Stats stats = holder.getStats();
+        Stats stats = holder.getStats().as(Magnitude.UNIT);
+
+//        assertEquals(Magnitude.UNIT.name(), stats.getUnit().name());
 
         Measure test0 = stats.getMeasure(TEST_0);
         assertEquals(5.0, test0.getMean(), 1E-8);
@@ -267,16 +276,17 @@ public class ConfigurableStatsProducerTest
         Holder.Integer index = new Holder.Integer(0);
         StrategyImpl strategy = new StrategyImpl() {
             @Override
-            public boolean continueTakingSamples(SampleProgressionStatus status) {
+            public double errorToStopTakingSamplesCondition(
+                    SampleProgressionStatus status) {
                 assertEquals(index.incrementAndGet(), status.getExecutedSamples());
                 assertEquals(0, status.getRepetitions());
                 assertNull(status.getStatusMessage());
-                return super.continueTakingSamples(status);
+                return super.errorToStopTakingSamplesCondition(status);
             }
         };
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
@@ -298,7 +308,7 @@ public class ConfigurableStatsProducerTest
         };
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
@@ -313,31 +323,29 @@ public class ConfigurableStatsProducerTest
 
     @Test
     public void shouldRepeatTest() {
-        Holder.Boolean repeatCalled = new Holder.Boolean(false);
+        Holder.Integer counter = new Holder.Integer(0);
         StrategyImpl strategy = new StrategyImpl() {
             @Override
             public boolean repeatExecution(Collection<Stats> stats) {
-                if (repeatCalled.getValue()) {
-                    return false;
-                }
-                repeatCalled.setValue(true);
-                return true;
+                return counter.getAndIncrement() < 2;
             }
         };
         strategy.samples = 1;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0)
                 .addSamples(TEST_1, 0.1, 0.2);
 
         StatsHolder holder =
                 execute(new ConfigurationImpl(), strategy, sampleProducer);
 
-        Stats stats = holder.getStats();
+        Stats stats = holder.getStats().as(Magnitude.UNIT);
 
-        assertTrue(repeatCalled.getValue());
-        assertEquals(2.0, stats.getMeasure(TEST_0).getMean(), 0);
-        assertEquals(0.2, stats.getMeasure(TEST_1).getMean(), 0);
+        assertEquals(3, counter.getValue());
+        assertEquals(stats.toString(),
+                1.0, stats.getMeasure(TEST_0).getMean(), 0);
+        assertEquals(stats.toString(),
+                0.1, stats.getMeasure(TEST_1).getMean(), 0);
     }
 
     @Test
@@ -351,7 +359,7 @@ public class ConfigurableStatsProducerTest
         };
         strategy.samples = 1;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0);
 
         ConfigurableStatsProducer producer =
@@ -374,7 +382,7 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
@@ -401,7 +409,7 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
@@ -414,7 +422,8 @@ public class ConfigurableStatsProducerTest
                 (StatsProgressionStatus status) ->
                         coll.setValue(status.getStats()));
 
-        StatsHolder holder = producer.execute().getStatsHolder(MockStatsType.INSTANCE);
+        StatsHolder holder = producer.execute()
+                .getStatsHolder(MockStatsType.INSTANCE);
 
         Stats stats = holder.getStats();
 
@@ -427,7 +436,7 @@ public class ConfigurableStatsProducerTest
         StrategyImpl strategy = new StrategyImpl();
         strategy.samples = 9;
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0)
                 .addSamples(TEST_1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9);
 
@@ -450,7 +459,7 @@ public class ConfigurableStatsProducerTest
             ConfigurableStatsProducer.Configuration config,
             ConfigurableStatsProducer.Strategy strategy) {
 
-        SampleProducerMock sampleProducer = new SampleProducerMock()
+        SampleProducerMock sampleProducer = new SampleProducerMock(Magnitude.UNIT)
                 .addSamples(TEST_0, 1.0)
                 .addSamples(TEST_1, 2.0);
 
@@ -472,12 +481,13 @@ public class ConfigurableStatsProducerTest
             ConfigurableStatsProducer.Configuration config,
             ConfigurableStatsProducer.Strategy strategy,
             SampleProducerMock sampleProducer) {
+
         ConfigurableStatsProducer producer =
                 new ConfigurableStatsProducer(config, strategy);
 
         producer.instrument(sampleProducer);
 
-        for (SampleProducerMock.Samples s : sampleProducer.getSamples()) {
+        for (SampleProducerMock.SampleData s : sampleProducer.getSamples()) {
             producer.addTest(s.getName(), new RunnableMock());
         }
 

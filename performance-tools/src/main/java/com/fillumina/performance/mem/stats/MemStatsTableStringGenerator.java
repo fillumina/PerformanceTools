@@ -8,11 +8,9 @@ import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.MemUnit;
-import com.fillumina.performance.util.unit.Units;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -70,8 +68,7 @@ public class MemStatsTableStringGenerator
      */
     @Override
     public String toString(Stats stats) {
-        MemUnit unit = calculateMinUnit(stats);
-        return getTable(stats, unit);
+        return getTable(stats);
     }
 
     /**
@@ -86,7 +83,7 @@ public class MemStatsTableStringGenerator
      *          <i><a href='http://en.wikipedia.org/wiki/Fluent_interface'>
      *          fluent interface</a></i>.
      */
-    public String getTable(final Stats stats, final MemUnit unit) {
+    public String getTable(final Stats stats) {
         String name = stats.getMeasureMap().keySet().iterator().next()
                 .getPrefixString(" : ");
 
@@ -97,7 +94,7 @@ public class MemStatsTableStringGenerator
             title = ":";
         }
 
-        TableFormatter memoryTable = createMemoryTable(stats, unit);
+        TableFormatter memoryTable = createMemoryTable(stats);
         if (!memoryTable.isEmpty()) {
             return memType +
                     " memory" + title + System.lineSeparator() +
@@ -106,8 +103,7 @@ public class MemStatsTableStringGenerator
         return null;
     }
 
-    private TableFormatter createMemoryTable(final Stats stats,
-            MemUnit unit) {
+    private TableFormatter createMemoryTable(final Stats stats) {
         final TableFormatter memoryTable = new TableFormatter("  ");
         memoryTable
             .cell("test name")
@@ -118,27 +114,17 @@ public class MemStatsTableStringGenerator
             .cell("max")
             .endl();
         stats.getMeasureMap().forEach( (TName n, DimensionalMeasure m) -> {
+            Unit<?> unit = m.getUnit();
             memoryTable
                 .cell(n.getLastName())
-                .cell(Units.toString(m, confidence, unit))
+                .cell(m.toStringForConfidence(confidence))
                 .cell(confidence.toString())
-                .cell(Units.toString(
-                        m.getUnbiasedStandardDeviation(), 0, unit))
-                .cell(Units.toString(m.getMin(), 0, unit))
-                .cell(Units.toString(m.getMax(), 0, unit))
+                .cell(unit.toString(m.getUnbiasedStandardDeviation(), 0))
+                .cell(unit.toString(m.getMin(), 0))
+                .cell(unit.toString(m.getMax(), 0))
                 .endl();
         });
         return memoryTable;
     }
 
-    private MemUnit calculateMinUnit(Stats stats) {
-        final Map<TName, DimensionalMeasure> testMap = stats.getMeasureMap();
-        double[] memory = new double[testMap.size()];
-        int counter = 0;
-        for (DimensionalMeasure m : testMap.values()) {
-            memory[counter] = m.getMean();
-            counter++;
-        }
-        return MemUnit.UNITS.calculateAppropriatedUnitFrom(memory);
-    }
 }
