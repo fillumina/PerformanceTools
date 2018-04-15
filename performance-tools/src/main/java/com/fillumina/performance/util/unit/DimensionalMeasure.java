@@ -36,6 +36,9 @@ public abstract class DimensionalMeasure extends Measure {
         }
         double mean = unit.convert(getMean(), getUnit());
         double moe = unit.convert(getMarginOfError(confidence), getUnit());
+        if (Double.isNaN(moe)) {
+            return String.format(Locale.US, "%.3f %s", mean, unit);
+        }
         return String.format(Locale.US, "%.3f +/- %.3f %s",
             mean, moe, unit);
     }

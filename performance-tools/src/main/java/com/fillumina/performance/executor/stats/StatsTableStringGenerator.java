@@ -168,13 +168,14 @@ public final class StatsTableStringGenerator
                 .cell("idx")
                 .cell("name")
                 .cell("ratio")
-                .cell("count")
+                .cell("value")
                 .endl();
         int index = 0;
         for (Map.Entry<TName,DimensionalMeasure> e :
                 stats.getMeasureMap().entrySet()) {
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
+            Unit<?> unit = measure.getUnit();
 
             int testPrefixSize = TName.commonPrefix(stats.getNames()).size();
 
@@ -183,7 +184,9 @@ public final class StatsTableStringGenerator
                     .cell(name.toStringWithSeparatorFromIndex("_", testPrefixSize))
                     .cell(String.format(Locale.US, "%.2f %%",
                             stats.getRatioWithRef(name, confidence).getValue() * 100.0) )
-                    .cell(String.format(Locale.US, "%d", (long)measure.getMean()) )
+                    .cell(measure.toStringForConfidenceWitoutSamples(
+                        confidence, unit))
+                    //.cell(String.format(Locale.US, "%d", (long)measure.getMean()) )
                     .endl();
             index++;
         }

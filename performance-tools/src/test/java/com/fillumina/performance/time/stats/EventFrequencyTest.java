@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class EventFrequencyTest {
 
-    public void testSomeMethod() {
+    public static void main(String[] args) {
 
         EventFrequency ef = new EventFrequency();
         Looper.loop(IntervalUnit.SECONDS.quantity(10),
@@ -38,6 +38,7 @@ public class EventFrequencyTest {
                 })
             .print();
 
+        // using names
         new EventFrequency("one", "two", "total")
             .loop(IntervalUnit.SECONDS.quantity(5),
                 (event) -> {

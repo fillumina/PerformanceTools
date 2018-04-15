@@ -5,7 +5,6 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.time.TimeStatsType;
-import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
@@ -14,14 +13,11 @@ import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.IntervalUnit;
-import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.ThroughputUnit;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
- * Extracts performances out of an existing code using a stopwatch timer.
+ * Extracts performances using a stopwatch timer.
  *
  * @see com.fillumina.performance.Telemetry
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -66,15 +62,10 @@ public class StopWatchTimer {
         return this;
     }
 
-    public MixedStatsHolder loop(Quantity<IntervalUnit> time,
-            Consumer<StopWatchTimer> consumer) {
-        Looper.loop(time, this, consumer);
-        return getPerformances();
-    }
-
-    public MixedStatsHolder loop(int times, Consumer<StopWatchTimer> consumer) {
-        Looper.loop(times, this, consumer);
-        return getPerformances();
+    public void reset() {
+        for (ReciprocalOnlineMeasureSampler s: cache) {
+            s.clear();
+        }
     }
 
     /** Starts the timer. It must be called at each new iteration. */

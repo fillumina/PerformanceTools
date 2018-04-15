@@ -18,7 +18,8 @@ import org.junit.Test;
  * @author Francesco Illuminati
  */
 public class TelemetryTest {
-    private static final int ITERATIONS = 100;
+    private static final int WARMUP = 1;
+    private static final int ITERATIONS = 10;
     private static final String START = "START";
     private static final String ONE = "ONE";
     private static final String TWO = "TWO";
@@ -72,6 +73,12 @@ public class TelemetryTest {
     @Test
     public void shouldReturnValidResults() {
         Telemetry.init();
+        // warmp up
+        for (int i=0; i<WARMUP; i++) {
+            process();
+        }
+        Telemetry.reset();
+        // iterations
         for (int i=0; i<ITERATIONS; i++) {
             process();
         }
@@ -113,6 +120,10 @@ public class TelemetryTest {
     @Test
     public void shouldNotAccountForAMissingTest() {
         Telemetry.init();
+        for (int i=0; i<WARMUP; i++) {
+            alternateProcess();
+        }
+        Telemetry.reset();
         for (int i=0; i<ITERATIONS; i++) {
             alternateProcess();
         }

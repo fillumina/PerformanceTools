@@ -65,10 +65,12 @@ public class Stats extends Printable<Stats>
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
 
+    /** @return a new Stats normalized to the given unit. */
     public Stats as(Unit<?> unit) {
         return new Stats(type, map, unit);
     }
 
+    /** @return a new Stats with the merged measures of the two Stats. */
     public Stats join(Stats other) {
         if (!type.equals(other.type)) {
             throw new RuntimeException("mismatching types: " +
