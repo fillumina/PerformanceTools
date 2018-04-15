@@ -6,12 +6,7 @@ import com.fillumina.performance.time.stats.StopWatchTimer;
 /**
  * Evaluates the percentage of time spent by different parts of a code.
  * It can be used in a multi-threaded environment (i.e. tracing a single
- * request in a web server).
- * <p>
- * All static methods return a {@code boolean} so they can be used in
- * an {@code assert} which will not by default be executed by the JVM.
- * This allows to leave the performance testing code in place without
- * impacting production code.
+ * request on a web server).
  * <pre>
  * assert Telemetry.section("calculation");
  * </pre>
@@ -38,7 +33,7 @@ public class Telemetry {
     }
 
     /**
-     * Reset current statistics.
+     * Reset current statistics. It should be called after warmup.
      */
     public static boolean reset() {
         THREAD_LOCAL_TELEMETRY.get().reset();
@@ -90,7 +85,6 @@ public class Telemetry {
      * @param confidence the required confidence of the returned measure
      * @return the statistics
      */
-    // TODO should get stats from ALL threads?
     @SuppressWarnings("unchecked")
     public static MixedStatsHolder stopAndGetStats() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
