@@ -83,24 +83,24 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeJolly() {
-        TName ok = tname("alfa");
-        TName nok = tname("beta");
+        TName ok1 = tname("alfa");
+        TName ok2 = tname("beta");
 
         TNameMatcher pattern = TNameMatcher.builder().jolly().build();
 
-        assertTrue(pattern.matches(ok));
-        assertTrue(pattern.matches(nok));
+        assertTrue(pattern.matches(ok1));
+        assertTrue(pattern.matches(ok2));
     }
 
     @Test
     public void shouldRecognizeAll() {
-        TName ok = tname("alfa");
-        TName nok = tname("beta");
+        TName ok1 = tname("alfa");
+        TName ok2 = tname("beta");
 
         TNameMatcher pattern = TNameMatcher.builder().all().build();
 
-        assertTrue(pattern.matches(ok));
-        assertTrue(pattern.matches(nok));
+        assertTrue(pattern.matches(ok1));
+        assertTrue(pattern.matches(ok2));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TNameMatcherTest {
 
         TNameMatcher pattern = TNameMatcher.builder()
                 .condition(value -> "alfa".equals(value) ?
-                        Result.OK : Result.REJECT)
+                        Result.ACCEPT : Result.REJECT)
                 .build();
 
         assertTrue(pattern.matches(ok));

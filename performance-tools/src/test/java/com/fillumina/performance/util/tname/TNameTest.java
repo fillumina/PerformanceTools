@@ -342,4 +342,38 @@ public class TNameTest {
         a[0] = "XXX";
         assertEquals("one", b[0]);
     }
+
+    @Test
+    public void shouldRootBeEmpty() {
+        assertTrue(ROOT.isEmpty());
+    }
+
+    @Test
+    public void shouldNonRootBeNotEmpty() {
+        TName tn = ROOT.append("one", "two", "three");
+        assertFalse(tn.isEmpty());
+    }
+
+    @Test
+    public void shouldANullParamReturnRoot() {
+        TName a = ROOT.append((String)null);
+        assertEquals(a, ROOT);
+
+    }
+
+    @Test
+    public void shouldANullParamReturnTheSameTName() {
+        TName a = ROOT.append("one", "two", "three");
+        TName b = a.append((String)null);
+        assertEquals(a, b);
+    }
+
+    @Test
+    public void shouldGetTNameAt() {
+        TName tn = ROOT.append("one", "two", "three");
+
+        assertEquals("one", tn.getTNameAt(0).getLastName());
+        assertEquals("two", tn.getTNameAt(1).getLastName());
+        assertEquals("three", tn.getTNameAt(2).getLastName());
+    }
 }

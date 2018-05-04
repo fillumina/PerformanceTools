@@ -154,7 +154,7 @@ public class TName extends AbstractList<String>
 
     @Override
     public boolean isEmpty() {
-        return lastName == null;
+        return level == 0;
     }
 
     @Override
@@ -179,6 +179,14 @@ public class TName extends AbstractList<String>
             current = current.parent;
         }
         return new UnmodifiableList<>(tnames);
+    }
+
+    public TName getTNameAt(int index) {
+        TName current = this;
+        for (int i=0; i< level - index - 1; i++) {
+            current = current.parent;
+        }
+        return current;
     }
 
     @Override

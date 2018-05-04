@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
+ * A matcher that matches {@link TName}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -17,6 +18,7 @@ public class TNameMatcher {
 
     private final List<Condition> conditions;
 
+    /** Build a matcher that matches {@link TName}s. */
     public static class MatcherBuilder<C> extends CallBackBuilder<C,TNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
@@ -117,7 +119,7 @@ public class TNameMatcher {
         /** Eats nodes up to a match */
         NEXT,
         /** {@link TName} matches */
-        OK
+        ACCEPT
     }
 
     public static interface Condition {
@@ -133,7 +135,7 @@ public class TNameMatcher {
 
         @Override
         public Result matches(String value) {
-            return fixedValue.equals(value) ? Result.OK : Result.REJECT;
+            return fixedValue.equals(value) ? Result.ACCEPT : Result.REJECT;
         }
 
         @Override
@@ -151,7 +153,7 @@ public class TNameMatcher {
 
         @Override
         public Result matches(String value) {
-            return pattern.matcher(value).matches() ? Result.OK : Result.REJECT;
+            return pattern.matcher(value).matches() ? Result.ACCEPT : Result.REJECT;
         }
 
         @Override
@@ -176,7 +178,7 @@ public class TNameMatcher {
             try {
                 double d = Double.parseDouble(name);
                 return (Double.compare(d, value) == comparator) ?
-                        Result.OK : Result.REJECT;
+                        Result.ACCEPT : Result.REJECT;
             } catch (NumberFormatException e) {
                 return Result.REJECT;
             }
@@ -201,7 +203,7 @@ public class TNameMatcher {
             try {
                 double d = Double.parseDouble(name);
                 return (from <= d && d <= to) ?
-                        Result.OK : Result.REJECT;
+                        Result.ACCEPT : Result.REJECT;
             } catch (NumberFormatException e) {
                 return Result.REJECT;
             }
@@ -216,7 +218,7 @@ public class TNameMatcher {
     private static final Condition JOLLY = new Condition() {
         @Override
         public Result matches(String value) {
-            return Result.OK;
+            return Result.ACCEPT;
         }
 
         @Override
@@ -244,8 +246,8 @@ public class TNameMatcher {
     public boolean matches(TName tname) {
         String[] tnames = tname.toArray();
         int size = tnames.length;
-        Result previousMatch = Result.OK;
-        Result match = Result.OK;
+        Result previousMatch = Result.ACCEPT;
+        Result match = Result.ACCEPT;
         int index = 0;
         for (Condition node : conditions) {
             if (index == size) {
@@ -255,7 +257,7 @@ public class TNameMatcher {
             if (previousMatch == Result.NEXT) {
                 for (int i=index, s=size; i<s; i++) {
                     match = node.matches(tnames[i]);
-                    if (match == Result.OK) {
+                    if (match == Result.ACCEPT) {
                         index += i;
                         break;
                     }
@@ -266,7 +268,7 @@ public class TNameMatcher {
             }
             switch (match) {
                 case REJECT: return false;
-                case OK: index++; break;
+                case ACCEPT: index++; break;
             }
             previousMatch = match;
         }
