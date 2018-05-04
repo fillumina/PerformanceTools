@@ -5,6 +5,7 @@ import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
+import java.util.function.BiPredicate;
 
 /**
  *
@@ -32,23 +33,25 @@ public class ValueAssertionError extends AbstractAssertionError {
     }
 
     @Override
-    public boolean isConditionSatisfied(RelativeOrder condition,
-            Ratio tolerance) {
+    protected BiPredicate<RelativeOrder,Ratio> getPredicate() {
         ConfidenceInterval interval =
                 actualValue.getConfidenceInterval(Ratio.P_99);
         double lower = interval.getLowerBound();
         double upper = interval.getUpperBound();
-        ToleranceEvaluator.Value expectedValue =
-                new ToleranceEvaluator(tolerance).value(expected);
-        switch (condition) {
-            case EQUALS:
-                return expectedValue.between(lower, upper);
-            case GREATER:
-                return expectedValue.lessThan(lower);
-            case LESS:
-                return expectedValue.greaterThan(upper);
-        }
-        throw new AssertionError("not managed condition: " + condition);
+        
+        return (condition, tolerance) -> {
+            ToleranceEvaluator.Value expectedValue =
+                    new ToleranceEvaluator(tolerance).value(expected);
+            switch (condition) {
+                case EQUALS:
+                    return expectedValue.between(lower, upper);
+                case GREATER:
+                    return expectedValue.lessThan(lower);
+                case LESS:
+                    return expectedValue.greaterThan(upper);
+            }
+            throw new AssertionError("not managed condition: " + condition);
+        };
     }
 
     public CharSequence getTestName() {

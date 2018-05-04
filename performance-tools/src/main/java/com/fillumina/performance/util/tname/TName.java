@@ -44,13 +44,96 @@ public class TName extends AbstractList<String>
     private final int level;
     private final String lastName;
     private final String fullName;
+    private final String[] array;
     private ArrayList<WeakReference<TName>> children;
 
     private TName(TName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.level = parent == null ? 0 : parent.size() + 1;
+        this.array = createArray();
         this.fullName = toStringWithSeparator(SEPARATOR);
+    }
+
+    private String[] createArray() {
+        String[] a = new String[level];
+        int s = level;
+        TName current = this;
+        while (s > 0) {
+            a[--s] = current.lastName;
+            current = current.parent;
+        }
+        return a;
+    }
+
+    public TName append(Iterable<String> names) {
+        TName current = this;
+        for (String n : names) {
+            if (n != null) {
+                current = current.append(n);
+            }
+        }
+        return current;
+    }
+
+    public TName append(String... names) {
+        TName current = this;
+        for (String n : names) {
+            if (n != null) {
+                current = current.append(n);
+            }
+        }
+        return current;
+    }
+
+    public synchronized TName append(String name) {
+        if (name == null) {
+            return this;
+        }
+        if (children != null) {
+            ListIterator<WeakReference<TName>> it = children.listIterator();
+            while (it.hasNext()) {
+                WeakReference<TName> wr = it.next();
+                TName child = wr.get();
+                if (child == null) {
+                    it.remove();
+                } else if (name.equals(child.getLastName())) {
+                    return child;
+                }
+            }
+        } else {
+            children = new ArrayList<>(3);
+        }
+        TName child = new TName(this, name);
+        children.add(new WeakReference<>(child));
+        return child;
+    }
+
+    public synchronized void clean() {
+        if (children != null) {
+            int removed = 0;
+            ListIterator<WeakReference<TName>> it = children.listIterator();
+            while (it.hasNext()) {
+                WeakReference<TName> wr = it.next();
+                TName child = wr.get();
+                if (child == null) {
+                    removed++;
+                    it.remove();
+                } else {
+                    child.clean();
+                }
+            }
+            if (children.isEmpty()) {
+                children = null;
+            } else if (removed > children.size() / 2) {
+                children.trimToSize();
+            }
+        }
+    }
+
+    /** test only */
+    protected boolean isChildrenEmpty() {
+        return children == null || children.isEmpty();
     }
 
     public boolean isRoot() {
@@ -87,126 +170,39 @@ public class TName extends AbstractList<String>
         return parent;
     }
 
-    public List<TName> getItems() {
-        TName[] array = new TName[level];
+    /** @return an unmodifiable {@link List} of {@link TName}s. */
+    public List<TName> getAllPartialTNames() {
+        TName[] tnames = new TName[level];
         TName current = this;
         for (int index = level - 1; index >= 0; index--) {
-            array[index] = current;
+            tnames[index] = current;
             current = current.parent;
         }
-        return new UnmodifiableList<>(array);
+        return new UnmodifiableList<>(tnames);
     }
 
     @Override
     public String[] toArray() {
-        String[] array = new String[level];
-        int s = level;
-        TName current = this;
-        while (s > 0) {
-            array[--s] = current.lastName;
-            current = current.parent;
-        }
-        return array;
+        return this.array.clone();
     }
 
+    /** It does nothing. */
     @Override
     public boolean add(String e) {
-        append(e);
         return true;
-    }
-
-    public synchronized TName append(Iterable<String> names) {
-        TName current = this;
-        for (String n : names) {
-            if (n != null) {
-                current = current.append(n);
-            }
-        }
-        return current;
-    }
-
-    public synchronized TName append(String... names) {
-        TName current = this;
-        for (String n : names) {
-            if (n != null) {
-                current = current.append(n);
-            }
-        }
-        return current;
-    }
-
-    public synchronized TName append(String name) {
-        if (name == null) {
-            return this;
-        }
-        if (children != null) {
-            ListIterator<WeakReference<TName>> it = children.listIterator();
-            while (it.hasNext()) {
-                WeakReference<TName> wr = it.next();
-                TName cn = wr.get();
-                if (cn == null) {
-                    it.remove();
-                } else if (name.equals(cn.getLastName())) {
-                    return cn;
-                }
-            }
-        } else {
-            children = new ArrayList<>(3);
-        }
-        TName cn = new TName(this, name);
-        children.add(new WeakReference<>(cn));
-        return cn;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public synchronized String getFirstName() {
-        TName current = this;
-        while(current.parent != null && current.parent.lastName != null) {
-            current = current.parent;
-        }
-        return current.lastName;
+    public String getFirstName() {
+        return array == null || array.length == 0 ? null : array[0];
     }
 
     /** @return all but last name. */
-    public synchronized String getPrefixString(String separator) {
-        StringBuilder buf = new StringBuilder();
-        String[] array = toArray();
-        for (int i=0, l=array.length-1; i<l; i++) {
-            if (i > 0) {
-                buf.append(separator);
-            }
-            buf.append(array[i]);
-        }
-        return buf.toString();
-    }
-
-    public boolean isChildrenEmpty() {
-        return children == null || children.isEmpty();
-    }
-
-    public synchronized void clean() {
-        if (children != null) {
-            int removed = 0;
-            ListIterator<WeakReference<TName>> it = children.listIterator();
-            while (it.hasNext()) {
-                WeakReference<TName> wr = it.next();
-                TName cn = wr.get();
-                if (cn == null) {
-                    removed++;
-                    it.remove();
-                } else {
-                    cn.clean();
-                }
-            }
-            if (children.isEmpty()) {
-                children = null;
-            } else if (removed > children.size() / 2) {
-                children.trimToSize();
-            }
-        }
+    public String getPrefixString(String separator) {
+        return parent.toStringWithSeparator(separator);
     }
 
     public boolean isSharingPrefixWith(TName other) {
@@ -228,13 +224,13 @@ public class TName extends AbstractList<String>
     }
 
     public String toStringWithSeparator(String separator) {
-        return toStringWithSeparatorFromIndex(separator, 0);
+        return toStringWithSeparatorStartingFrom(separator, 0);
     }
 
-    public String toStringWithSeparatorFromIndex(String separator, int index) {
+    public String toStringWithSeparatorStartingFrom(String separator, int index) {
         StringBuilder buf = new StringBuilder();
         int i = 0;
-        for (String s : toArray()) {
+        for (String s : array) {
             if (i >= index) {
                 if (buf.length() != 0) {
                     buf.append(separator);
@@ -248,12 +244,7 @@ public class TName extends AbstractList<String>
 
     @Override
     public String get(int index) {
-        int backIndex = level - index;
-        TName current = this;
-        for (int i=1; i<backIndex; i++) {
-            current = current.parent;
-        }
-        return current.lastName;
+        return array == null ? null : array[index];
     }
 
     @Override
@@ -288,7 +279,6 @@ public class TName extends AbstractList<String>
     @Override
     public ListIterator<String> listIterator(int startIndex) {
         return new ListIterator<String>() {
-            private final String[] array = toArray();
             private int index = startIndex;
 
             @Override

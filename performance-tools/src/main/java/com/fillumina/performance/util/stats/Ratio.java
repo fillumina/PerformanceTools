@@ -19,6 +19,8 @@ public class Ratio implements Comparable<Ratio> {
         }
     }
 
+    /** IVALID*/   public static final Ratio INVALID = Ratio.percentage(Double.NaN);
+
     /** 0%    */   public static final Ratio ZERO = Ratio.percentage(0);
     /** 5%    */   public static final Ratio P_05 = Ratio.percentage(5);
     /** 10%   */   public static final Ratio P_10 = Ratio.percentage(10);
@@ -108,6 +110,9 @@ public class Ratio implements Comparable<Ratio> {
 
     @Override
     public String toString() {
+        if (Double.isNaN(decimal)) {
+            return "INVALID";
+        }
         return String.format(Locale.US, "%.3f %%", getPercentage());
     }
 
@@ -130,5 +135,9 @@ public class Ratio implements Comparable<Ratio> {
 
     public boolean isGreaterOrEqualThan(Ratio o) {
         return decimal >= o.decimal;
+    }
+
+    public boolean isValid() {
+        return !Double.isNaN(decimal);
     }
 }

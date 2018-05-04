@@ -122,7 +122,7 @@ public final class StatsTableStringGenerator
 
             performanceTable
                 .cell(index)
-                .cell(name.toStringWithSeparatorFromIndex("_", testPrefixSize))
+                .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
                 .cell(stats.getRatioWithRef(name, confidence)
                         .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
@@ -181,7 +181,7 @@ public final class StatsTableStringGenerator
 
             performanceTable
                     .cell(index)
-                    .cell(name.toStringWithSeparatorFromIndex("_", testPrefixSize))
+                    .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
                     .cell(String.format(Locale.US, "%.2f %%",
                             stats.getRatioWithRef(name, confidence).getValue() * 100.0) )
                     .cell(measure.toStringForConfidenceWitoutSamples(

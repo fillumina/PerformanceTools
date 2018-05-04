@@ -7,6 +7,7 @@ import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -36,23 +37,24 @@ public class AbstractAssertionErrorTest {
         }
 
         @Override
-        public boolean isConditionSatisfied(RelativeOrder condition,
-                Ratio tolerance) {
+        protected BiPredicate<RelativeOrder,Ratio> getPredicate() {
             ConfidenceInterval interval =
                     actualMeasure.getConfidenceInterval(Ratio.P_99);
             double lower = interval.getLowerBound();
             double upper = interval.getUpperBound();
-            ToleranceEvaluator.Value expectedValue =
-                    new ToleranceEvaluator(tolerance).value(expected);
-            switch (condition) {
-                case EQUALS:
-                    return expectedValue.between(lower, upper);
-                case GREATER:
-                    return expectedValue.lessThan(lower);
-                case LESS:
-                    return expectedValue.greaterThan(upper);
-            }
-            throw new AssertionError("not managed condition: " + condition);
+            return (condition, tolerance) -> {
+                ToleranceEvaluator.Value expectedValue =
+                        new ToleranceEvaluator(tolerance).value(expected);
+                switch (condition) {
+                    case EQUALS:
+                        return expectedValue.between(lower, upper);
+                    case GREATER:
+                        return expectedValue.lessThan(lower);
+                    case LESS:
+                        return expectedValue.greaterThan(upper);
+                }
+                throw new AssertionError("not managed condition: " + condition);
+            };
         }
 
     }

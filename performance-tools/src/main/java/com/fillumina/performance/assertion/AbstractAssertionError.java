@@ -1,11 +1,10 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.RelativeOrder;
-import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.RequiredTolerance;
 import com.fillumina.performance.util.stats.Ratio;
-import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.BiPredicate;
 
 /**
  *
@@ -16,6 +15,7 @@ public abstract class AbstractAssertionError extends AssertionError {
 
     private final RelativeOrder relativeOrder;
     private final Ratio tolerance;
+    private RequiredTolerance requiredTolerance;
 
     public AbstractAssertionError(
             RelativeOrder requiredOrder,
@@ -25,8 +25,7 @@ public abstract class AbstractAssertionError extends AssertionError {
         this.tolerance = tolerance;
     }
 
-    public abstract boolean isConditionSatisfied(RelativeOrder relativeOrder,
-            Ratio tolerance);
+    protected abstract BiPredicate<RelativeOrder,Ratio> getPredicate();
 
     public void checkAndThrowExceptionIfNotSatisfied() {
         if (!isConditionSatisfied()) {
@@ -35,7 +34,7 @@ public abstract class AbstractAssertionError extends AssertionError {
     }
 
     public boolean isConditionSatisfied() {
-        return isConditionSatisfied(relativeOrder, tolerance);
+        return getPredicate().test(relativeOrder, tolerance);
     }
 
     public Ratio getTolerance() {
@@ -46,43 +45,18 @@ public abstract class AbstractAssertionError extends AssertionError {
         return relativeOrder;
     }
 
-    /** What if scenario proposed as solution for the error. */
     protected void appendWhatIfTolerance(StringBuilder buf) {
-        buf.append(TableFormatter.title("Would have been:", '-'));
-        for (Map.Entry<RelativeOrder, Ratio> e :
-                getWhatIfToleranceMap().entrySet()) {
-            Ratio t = e.getValue();
-            buf.append(e.getKey().name().toLowerCase())
-                    .append(" if tolerance >= ")
-                    .append(t)
-                    .append(System.lineSeparator());
-        }
-        buf.append(System.lineSeparator());
+        getRequiredTolerance().appendWhatIfTolerance(buf);
     }
 
     public Map<RelativeOrder, Ratio> getWhatIfToleranceMap() {
-        Map<RelativeOrder, Ratio> map =
-                new EnumMap<>(RelativeOrder.class);
-        for (RelativeOrder oc : RelativeOrder.values()) {
-            Ratio tr = findToleranceRequiredToSatisfyCondition(oc);
-            if (!tr.isZero()) {
-                map.put(oc, tr);
-            }
-        }
-        return map;
+        return getRequiredTolerance().getMap();
     }
 
-    private Ratio findToleranceRequiredToSatisfyCondition(
-            final RelativeOrder o) {
-
-        int p = ExpBinarySearcher.searchGreaterOrEquals(0, Integer.MAX_VALUE,
-                (int v) -> isConditionSatisfied(o, Ratio.percentage(v)));
-
-        if (p == -1) {
-            return Ratio.MAX;
-        } else if (p == 0) {
-            return Ratio.ZERO;
+    private RequiredTolerance getRequiredTolerance() {
+        if (requiredTolerance == null) {
+            requiredTolerance = new RequiredTolerance(getPredicate());
         }
-        return Ratio.percentage(p);
+        return requiredTolerance;
     }
 }

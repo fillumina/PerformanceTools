@@ -220,7 +220,8 @@ public class StatsHolder extends Printable<StatsHolder>
         }
         TName tpath = TN.tname(array);
         LinkedTree<TName,Stats> subTree = null;
-        for (TName t : tpath.getItems()) {
+
+        for (TName t : tpath.getAllPartialTNames()) {
             if (t.size() == 1 && t.equals(tree.getKey())) {
                 subTree = tree;
             } else {

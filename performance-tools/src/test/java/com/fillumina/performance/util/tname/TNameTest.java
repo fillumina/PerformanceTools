@@ -2,6 +2,7 @@ package com.fillumina.performance.util.tname;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -15,6 +16,20 @@ public class TNameTest {
 
     public static void main(final String[] args) {
         new TNameTest().shouldCleanTheTree();
+    }
+
+    @Test
+    public void shouldAppendFluently() {
+        TName a = ROOT.append("1", "2", "3");
+        TName b = ROOT.append("1").append("2").append("3");
+        assertTrue(a == b);
+    }
+
+    @Test
+    public void shouldAppendIterable() {
+        TName a = ROOT.append("1", "2", "3");
+        TName b = ROOT.append(Arrays.asList("1", "2", "3"));
+        assertTrue(a == b);
     }
 
     @Test
@@ -33,7 +48,7 @@ public class TNameTest {
         TName a = ROOT.append("1", "2", "3");
         TName b = ROOT.append("1", "2", "3");
         TName c = ROOT.append("1", "2", "X", "Y");
-        TName d = ROOT.append("A", "B");
+        TName d = ROOT.append("A", "2");
 
         TName common = TName.commonPrefix(Arrays.asList(a, b, c, d));
         assertNotNull(common);
@@ -130,8 +145,7 @@ public class TNameTest {
 
     @Test
     public void shouldReturnTheFirstName() {
-        TName cn =
-                ROOT.append("alfa").append("beta").append("delta");
+        TName cn = ROOT.append("alfa").append("beta").append("delta");
         assertEquals("alfa", cn.getFirstName());
     }
 
@@ -264,5 +278,68 @@ public class TNameTest {
         TName name = TName.createRoot().append("one", "two", "three");
 
         assertFalse(name.isRoot());
+    }
+
+    @Test
+    public void shouldMatchTheSize() {
+        assertEquals(0, ROOT.size());
+        assertEquals(1, ROOT.append("one").size());
+        assertEquals(2, ROOT.append("one", "two").size());
+        assertEquals(3, ROOT.append("one", "two", "three").size());
+    }
+
+    @Test
+    public void shouldNotHaveParent() {
+        assertFalse(ROOT.hasParent());
+    }
+
+    @Test
+    public void shouldHaveParent() {
+        assertTrue(ROOT.append("one").hasParent());
+    }
+
+    @Test
+    public void shouldReturnNullIfHasNoParent() {
+        assertNull(ROOT.getParent());
+    }
+
+    @Test
+    public void shouldGetParent() {
+        assertEquals(ROOT, ROOT.append("something").getParent());
+    }
+
+    @Test
+    public void shouldReturngetAllPartialTNames() {
+        List<TName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
+        assertEquals("one", items.get(0).getLastName());
+        assertEquals("two", items.get(1).getLastName());
+        assertEquals("three", items.get(2).getLastName());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldTheReturnedgetAllPartialTNamesBeImmutable() {
+        List<TName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
+        items.set(2, ROOT.append("bla"));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldNotRemove() {
+        ROOT.append("one", "two", "three").remove(2);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldNotClear() {
+        ROOT.append("one", "two", "three").clear();
+    }
+
+    @Test
+    public void shouldTheReturnedArrayBeAClone() {
+        TName tn = ROOT.append("one", "two", "three");
+        String[] a = tn.toArray();
+        String[] b = tn.toArray();
+        assertTrue(a != b);
+
+        a[0] = "XXX";
+        assertEquals("one", b[0]);
     }
 }

@@ -5,6 +5,7 @@ import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
+import java.util.function.BiPredicate;
 
 /**
  *
@@ -20,40 +21,42 @@ public class OrderAssertionError extends AbstractAssertionError {
 
     public OrderAssertionError(
             CharSequence firstTestName,
-            Measure first,
+            Measure firstMeasure,
             CharSequence secondTestName,
-            Measure second,
+            Measure secondMeasure,
             Ratio tolerance,
             RelativeOrder requiredCondition,
             Assertable assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.firstTestName = firstTestName;
-        this.firstMeasure = first;
+        this.firstMeasure = firstMeasure;
         this.secondTestName = secondTestName;
-        this.secondMeasure = second;
+        this.secondMeasure = secondMeasure;
         this.assertableMultiTest = assertableMultiTest;
     }
 
     @Override
-    public boolean isConditionSatisfied(RelativeOrder condition,
-            Ratio tolerance) {
+    protected BiPredicate<RelativeOrder,Ratio> getPredicate() {
         ConfidenceInterval aci = firstMeasure.getConfidenceInterval(Ratio.P_99);
         double aLower = aci.getLowerBound();
         double aUpper = aci.getUpperBound();
         ConfidenceInterval bci = secondMeasure.getConfidenceInterval(Ratio.P_99);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
-        ToleranceEvaluator ev = new ToleranceEvaluator(tolerance);
-        switch (condition) {
-            case EQUALS:
-                return ev.value(aLower).between(bLower, bUpper) ||
-                        ev.value(aUpper).between(bLower, bUpper);
-            case GREATER:
-                return ev.value(bUpper).lessThan(aLower);
-            case LESS:
-                return ev.value(aUpper).lessThan(bLower);
-        }
-        throw new AssertionError("not managed condition: " + condition);
+        
+        return (condition, tolerance) -> {
+            ToleranceEvaluator ev = new ToleranceEvaluator(tolerance);
+            switch (condition) {
+                case EQUALS:
+                    return ev.value(aLower).between(bLower, bUpper) ||
+                            ev.value(aUpper).between(bLower, bUpper);
+                case GREATER:
+                    return ev.value(bUpper).lessThan(aLower);
+                case LESS:
+                    return ev.value(aUpper).lessThan(bLower);
+            }
+            throw new AssertionError("not managed condition: " + condition);
+        };
     }
 
     public CharSequence getFirstTestName() {

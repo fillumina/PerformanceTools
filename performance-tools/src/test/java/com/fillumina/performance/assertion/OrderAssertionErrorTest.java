@@ -62,7 +62,7 @@ public class OrderAssertionErrorTest {
             assertion.accept(assertable);
             fail();
         } catch(OrderAssertionError e) {
-            assertTrue(e.isConditionSatisfied(RelativeOrder.GREATER,
+            assertTrue(e.getPredicate().test(RelativeOrder.GREATER,
                     Ratio.percentage(271.0)));
         }
 
