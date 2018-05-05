@@ -9,8 +9,8 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
-import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.Holder;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
@@ -218,7 +218,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public OrderCondition(TNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
-                this.tolerance = new Ratio(tolerance);
+                this.tolerance = tolerance;
             }
 
             public TNameMatcher.MatcherBuilder<C> lessThan() {
@@ -326,7 +326,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public PercentageCondition(TNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
-                this.tolerance = new Ratio(tolerance);
+                this.tolerance = tolerance;
             }
 
             public Builder<C> lessThan(Ratio percentage) {
@@ -393,7 +393,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
 
             public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
-                this.tolerance = new Ratio(tolerance);
+                this.tolerance = tolerance;
             }
 
             public Builder<C> lessThan(double value) {

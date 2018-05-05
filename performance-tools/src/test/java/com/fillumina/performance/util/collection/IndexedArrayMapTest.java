@@ -6,8 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -21,7 +20,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         return new IndexedArrayMap<>();
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldUseCopyConstructor() {
         Map<Integer,String> map = new LinkedHashMap<>();
         map.put(1, "one");
@@ -36,7 +35,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals("four", copy.get(4));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldUseCloneConstructor() {
         IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
         map.put(1, "one");
@@ -51,7 +50,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals("four", copy.get(4));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldIterateThroughAllEntries() {
         IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
         map.put(1, "one");
@@ -67,7 +66,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(Arrays.asList("one", "two", "three", "four"), values);
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldGetTheEntryAtIndex() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -81,7 +80,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(3, e.getValue(), 0);
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldGetTheKeyAtIndex() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -92,7 +91,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals("two", map.getKeyAtIndex(1));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldGetTheValueAtIndex() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -104,7 +103,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
     }
 
 
-    @Test
+    @Test(timeout = 500)
     public void shouldDetectUnmodifiableMapWhileNotModifyingTheMap() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -125,7 +124,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         @Override public int hashCode() { return 0; }
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldPutAndGetSameHash() {
         SameHash a = new SameHash();
         SameHash b = new SameHash();
@@ -145,7 +144,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(Character.valueOf('d'), map.get(d));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldRemoveSameHash() {
         SameHash a = new SameHash();
         SameHash b = new SameHash();
@@ -177,7 +176,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldGetIndexOfKey() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -191,7 +190,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals("four", map.getKeyAtIndex(map.getIndexOfKey("four")));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldGetIndexOfList() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -207,7 +206,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals("four", list.get(list.indexOf("four")));
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldIncreaseItsSize() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<>();
         for (int i=0; i<128; i++) {
@@ -222,7 +221,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         }
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldIterateWithForEach() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -236,7 +235,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(Arrays.asList("1one", "2two", "3three", "4four"), list);
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldIterateWithForEachMaintainingOrder() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("one", 1)
@@ -253,7 +252,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(Arrays.asList("1one", "3three", "4four", "5five"), list);
     }
 
-    @Test
+    @Test(timeout = 500)
     public void shouldClearTheMapIfAllElementsAreRemoved() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
                 .add("four", 4);
@@ -262,10 +261,22 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertEquals(0, map.size());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test(timeout = 500, expected = UnsupportedOperationException.class)
     public void shouldUnmodifiableEmptyMapBeUnmofiable() {
         IndexedArrayMap<String,Integer> map = new IndexedArrayMap<>();
 
         map.unmodifiable().put("one", 1);
     }
+
+    @Test(timeout = 500)
+    public void shouldGetWithoutInfiniteLoop() {
+        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<Integer,String>()
+                .add(1, "one")
+                .add(2, "two")
+                .add(3, "three")
+                .add(4, "four");
+
+        assertNull(map.get(5));
+    }
+
 }

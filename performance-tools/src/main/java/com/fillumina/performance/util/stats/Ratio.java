@@ -3,7 +3,8 @@ package com.fillumina.performance.util.stats;
 import java.util.Locale;
 
 /**
- * A ratio can be expressed as a decimal (0.23) or as a percentage (23 %).
+ * A ratio can be expressed as a decimal (0.23) or as a percentage (23 %), this
+ * class helps to clear the doubt.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -33,25 +34,28 @@ public class Ratio implements Comparable<Ratio> {
 
     /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
     public static Ratio decimal(double decimal) {
+        try {
+            int integer = (int) Math.round(decimal);
+            if (integer == decimal) {
+                return percentage(integer);
+            }
+        } catch (Exception e) {
+            // nothing
+        }
         return new Ratio(decimal);
     }
 
     /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
     public static Ratio percentage(double percentage) {
-        return new Ratio(percentage / 100.0);
+        return Ratio.decimal(percentage / 100.0);
     }
 
-    /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
+    /** Set the ratio as a percentage. i.e. 2% is entered here as 2 */
     public static Ratio percentage(int percentage) {
         if (percentage >= 0 && percentage < 101) {
             return percentages[percentage];
         }
         return percentage((double) percentage);
-    }
-
-    /** Copy constructor. */
-    public Ratio(Ratio copy) {
-        this(copy.getDecimal());
     }
 
     protected Ratio(double decimal) {

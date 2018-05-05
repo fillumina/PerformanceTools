@@ -13,18 +13,16 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Fast indexed hash map implementation (similar in features to
  * {@link LinkedHashMap} but can index its entries directly).
  * <ul>
- * <li>insertion and extraction have O(1) complexity
- * <li>gets its entries by index in O(1)
- * <li>removal has O(N) complexity (linear)
+ * <li>insertion, extraction have O(1) complexity (if entry exists)
+ * <li>worse case is linear O(N)
+ * <li>removal is linear O(N)
  * <li>increases and decreases its size automatically
  * <li>maintains insertion order
- * <li>caches hash codes
  * <li>views its keys as a random access list
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
@@ -89,7 +87,7 @@ public class IndexedArrayMap<K,V>
         }
         int length = roundUpToPowerOf2(initialSize);
         this.array = new Object[length];
-        this.indexes = new int[length << 1];
+        this.indexes = new int[length << 1]; // 50% fill
     }
 
     private static int roundUpToPowerOf2(int number) {
@@ -104,6 +102,12 @@ public class IndexedArrayMap<K,V>
         this.size = size;
     }
 
+    /**
+     * Builder to create a map from key,value pairs.
+     *
+     * @param objects pairs of key, value
+     * @return the map
+     */
     @SuppressWarnings("unchecked")
     public static <K,V> IndexedArrayMap<K,V> create(Object... objects) {
         final IndexedArrayMap<K,V> map = new IndexedArrayMap<>();
@@ -113,6 +117,7 @@ public class IndexedArrayMap<K,V>
         return map;
     }
 
+    /** Converts to another map. */
     public <W> IndexedArrayMap<K,W> transform(Function<V,W> converter) {
         IndexedArrayMap<K,W> map = new IndexedArrayMap<>();
         for (Map.Entry<K,V> t : this) {
@@ -123,28 +128,19 @@ public class IndexedArrayMap<K,V>
 
     @SuppressWarnings("unchecked")
     public K getKeyAtIndex(int index) {
-        int idx = index << 1;
-        if (idx >= size) {
-            throw new IndexOutOfBoundsException("size= " + size());
-        }
-        return (K) array[idx];
+        return (K) array[index << 1];
     }
 
     @SuppressWarnings("unchecked")
     public V getValueAtIndex(int index) {
-        if (index >= size()) {
-            throw new IndexOutOfBoundsException("size= " + size());
-        }
         return (V) array[(index << 1) + 1];
     }
 
     @SuppressWarnings("unchecked")
     public V setValueAtIndex(int index, V value) {
-        if (index >= size()) {
-            throw new IndexOutOfBoundsException("size= " + size());
-        }
-        V oldValue = (V) array[(index << 1) + 1];
-        array[(index << 1) + 1] = value;
+        final int idx = (index << 1) + 1;
+        V oldValue = (V) array[idx];
+        array[idx] = value;
         return oldValue;
     }
 
@@ -158,10 +154,6 @@ public class IndexedArrayMap<K,V>
     }
 
     public Entry<K,V> getEntryAtIndex(int index) {
-        return new Cursor(index);
-    }
-
-    public Cursor getCursorAtIndex(int index) {
         return new Cursor(index);
     }
 
@@ -179,11 +171,6 @@ public class IndexedArrayMap<K,V>
         @Override
         public boolean isUnmodifiable() {
             return true;
-        }
-
-        @Override
-        public V getOrSet(K key, Supplier<V> valueProducer) {
-            throw new UnsupportedOperationException();
         }
 
         @Override
@@ -312,7 +299,7 @@ public class IndexedArrayMap<K,V>
     public V put(K key, V value) {
         if (array == null) {
             array = new Object[8];
-            indexes = new int[16];
+            indexes = new int[16]; // 50% max fill
         } else if (size == array.length) {
             resize(indexes.length << 1);
         }
@@ -349,9 +336,15 @@ public class IndexedArrayMap<K,V>
 
     @SuppressWarnings("unchecked")
     private void resize(int newSize) {
+        resize(newSize, -1);
+    }
+
+    private void resize(int newSize, int butIndex) {
         IndexedArrayMap<K,V> newMap = new IndexedArrayMap<>(newSize);
         for (int i=0; i<size; i+=2) {
-            newMap.put((K)array[i], (V)array[i+1]);
+            if (i != butIndex) {
+                newMap.put((K)array[i], (V)array[i+1]);
+            }
         }
         this.array = newMap.array;
         this.indexes = newMap.indexes;
@@ -378,15 +371,6 @@ public class IndexedArrayMap<K,V>
             }
             bucket = (bucket + 2) & mask;
         }
-    }
-
-    public V getOrSet(K key, Supplier<V> valueProducer) {
-        V v = get(key);
-        if (v == null) {
-            v = valueProducer.get();
-            put(key, v);
-        }
-        return v;
     }
 
     @Override
@@ -443,47 +427,50 @@ public class IndexedArrayMap<K,V>
     }
 
     private void removeIndex(int index, int bucket, int mask) {
-        // shift the array list from index back by 2
-        System.arraycopy(array, index + 2,
-                array, index, array.length - index - 2);
-        // clear last positions to let GC do its work
-        array[array.length - 1] = null;
-        array[array.length - 2] = null;
-
-        // free the bucket
-        indexes[bucket + 1] = 0;
-
-        // adjusts indexes (O(N))
-        for (int i=1,l=indexes.length; i<l; i+=2) {
-            int idx = indexes[i];
-            if (idx > index) {
-                indexes[i] = idx - 2;
-            }
-        }
-
-        // rolls subsequent buckets back if needed
-        int b = bucket;
-        while (true) {
-            b = (b + 2) & mask;
-            int p = indexes[b + 1];
-            if (p == 0) {
-                break;
-            }
-            int h = indexes[b];
-            int w = h & mask; // where it want to be
-            if (b != w) {
-                while (indexes[w + 1] != 0) {
-                    w = (w + 2) & mask;
-                }
-                // relocate the bucket
-                indexes[w] = indexes[b];
-                indexes[w + 1] = indexes[b + 1];
-                indexes[b + 1] = 0; // free the former bucket
-            }
-        }
         size -= 2;
         if (size < (indexes.length >> 2)) {
-            resize(indexes.length >> 1);
+            resize(indexes.length >> 1, index);
+
+        } else {
+
+            // shift the array list from index back by 2
+            System.arraycopy(array, index + 2,
+                    array, index, array.length - index - 2);
+            // clear last positions to let GC do its work
+            array[array.length - 1] = null;
+            array[array.length - 2] = null;
+
+            // free the bucket
+            indexes[bucket + 1] = 0;
+
+            // adjusts indexes (O(N))
+            for (int i=1,l=indexes.length; i<l; i+=2) {
+                int idx = indexes[i];
+                if (idx > index) {
+                    indexes[i] = idx - 2;
+                }
+            }
+
+            // rolls subsequent buckets back if needed
+            int b = bucket;
+            while (true) {
+                b = (b + 2) & mask;
+                int p = indexes[b + 1];
+                if (p == 0) {
+                    break;
+                }
+                int h = indexes[b];
+                int w = h & mask; // where it want to be
+                if (b != w) {
+                    while (indexes[w + 1] != 0) {
+                        w = (w + 2) & mask;
+                    }
+                    // relocate the bucket
+                    indexes[w] = indexes[b];
+                    indexes[w + 1] = indexes[b + 1];
+                    indexes[b + 1] = 0; // free the former bucket
+                }
+            }
         }
     }
 
