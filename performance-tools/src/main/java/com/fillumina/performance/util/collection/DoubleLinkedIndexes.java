@@ -34,7 +34,7 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
 
     public int addFirst() {
         int idx = popNextFree();
-        if (idx == END_OF_FREE_QUEUE) {
+        if (idx == -1) {
             return -1;
         }
         addAtFirst(idx);
@@ -43,14 +43,14 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
 
     public int addLast() {
         int idx = popNextFree();
-        if (idx == END_OF_FREE_QUEUE) {
+        if (idx == -1) {
             return -1;
         }
         addAtLast(idx);
         return idx;
     }
 
-    void addAtLast(int idx) {
+    private void addAtLast(int idx) {
         if (isNotEmptyElseAdd(idx)) {
             array[idx] = last;
             array[idx + 1] = -1;
@@ -59,7 +59,7 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
         }
     }
 
-    void addAtFirst(int idx) {
+    private void addAtFirst(int idx) {
         if (isNotEmptyElseAdd(idx)) {
             array[idx] = -1;
             array[idx + 1] = first;
@@ -79,7 +79,7 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
         return true;
     }
 
-    void remove(int idx) {
+    public void remove(int idx) {
         final int next = array[idx + 1];
         final int prev = array[idx];
         if (prev != REMOVED) {
@@ -99,7 +99,7 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
         }
     }
 
-    boolean isRemoved(int idx) {
+    public boolean isRemoved(int idx) {
         return array[idx] == REMOVED;
     }
 
@@ -111,7 +111,7 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
         return free == END_OF_FREE_QUEUE;
     }
 
-    int popNextFree() {
+    private int popNextFree() {
         int result = free;
         if (result == END_OF_FREE_QUEUE) {
             return -1;
@@ -128,22 +128,22 @@ public class DoubleLinkedIndexes implements Cloneable, Serializable {
         return result;
     }
 
-    int getFirst() {
+    public int getFirst() {
         return first;
     }
 
-    int getLast() {
+    public int getLast() {
         return last;
     }
 
-    int getNext(int idx) {
+    public int getNext(int idx) {
         if (idx == -1) {
             return first;
         }
         return array[idx + 1];
     }
 
-    int getPrev(int idx) {
+    public int getPrev(int idx) {
         if (idx == -1) {
             return last;
         }
