@@ -1,11 +1,10 @@
 package com.fillumina.performance.util.collection;
 
+import com.fillumina.performance.util.collection.DoubleLinkedIndexes.FastIterator;
 import java.io.Serializable;
-import java.util.AbstractList;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -16,14 +15,12 @@ import java.util.function.Function;
 
 /**
  * Fast indexed hash map implementation (similar in features to
- * {@link LinkedHashMap} but can index its entries directly).
+ * {@link LinkedHashMap} but faster to clone).
  * <ul>
- * <li>insertion, extraction have O(1) complexity (if entry exists)
+ * <li>all operations are O(1) on average
  * <li>worse case is linear O(N)
- * <li>removal is linear O(N)
  * <li>increases and decreases its size automatically
  * <li>maintains insertion order
- * <li>views its keys as a random access list
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
  * <li>doesn't accept null as key
@@ -42,14 +39,15 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IndexedArrayMap<K,V>
+public class LinkedArrayMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
 
-    public static final IndexedArrayMap<?,?> EMPTY =
-            new IndexedArrayMap<>().unmodifiable();
+    public static final LinkedArrayMap<?,?> EMPTY =
+            new LinkedArrayMap<>().unmodifiable();
 
     private static final long serialVersionUID = 1L;
 
+    private DoubleLinkedIndexes dlIndexes;
     private Object[] array; // [key, value]
     private int[] indexes;  // [index, hashcode]
     private int size;       // actual size * 2
@@ -57,30 +55,30 @@ public class IndexedArrayMap<K,V>
     private Set<Entry<K,V>> entrySet;
     private Set<K> keySet;
     private Collection<V> values;
-    private List<K> keyList;
     private UnmodifiableView<K,V> unmodifiableView;
 
     @SuppressWarnings("unchecked")
-    public static <K,V> IndexedArrayMap<K,V> emtpy() {
-        return (IndexedArrayMap<K, V>) EMPTY;
+    public static <K,V> LinkedArrayMap<K,V> emtpy() {
+        return (LinkedArrayMap<K, V>) EMPTY;
     }
 
-    public IndexedArrayMap() {
+    public LinkedArrayMap() {
     }
 
-    public IndexedArrayMap(Map<? extends K, ? extends V> copy) {
+    public LinkedArrayMap(Map<? extends K, ? extends V> copy) {
         putAll(copy);
     }
 
-    public IndexedArrayMap(IndexedArrayMap<? extends K, ? extends V> clone) {
+    public LinkedArrayMap(LinkedArrayMap<? extends K, ? extends V> clone) {
         if (clone.array != null) {
             this.array = clone.array.clone();
             this.indexes = clone.indexes.clone();
             this.size = clone.size;
+            this.dlIndexes = clone.dlIndexes.clone();
         }
     }
 
-    public IndexedArrayMap(int initialSize) {
+    public LinkedArrayMap(int initialSize) {
         if (initialSize < 0) {
             throw new IllegalArgumentException(
                     "initial size must be > 0, was " + initialSize);
@@ -88,6 +86,7 @@ public class IndexedArrayMap<K,V>
         int length = roundUpToPowerOf2(initialSize);
         this.array = new Object[length];
         this.indexes = new int[length << 1]; // 50% fill
+        this.dlIndexes = new DoubleLinkedIndexes(length);
     }
 
     private static int roundUpToPowerOf2(int number) {
@@ -95,11 +94,14 @@ public class IndexedArrayMap<K,V>
         return (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 2; //1;
     }
 
-
-    protected IndexedArrayMap(Object[] array, int[] hashes, int size) {
+    protected LinkedArrayMap(Object[] array,
+            int[] hashes,
+            int size,
+            DoubleLinkedIndexes dlIndexes) {
         this.array = array;
         this.indexes = hashes;
         this.size = size;
+        this.dlIndexes = dlIndexes;
     }
 
     /**
@@ -109,8 +111,8 @@ public class IndexedArrayMap<K,V>
      * @return the map
      */
     @SuppressWarnings("unchecked")
-    public static <K,V> IndexedArrayMap<K,V> create(Object... objects) {
-        final IndexedArrayMap<K,V> map = new IndexedArrayMap<>();
+    public static <K,V> LinkedArrayMap<K,V> create(Object... objects) {
+        final LinkedArrayMap<K,V> map = new LinkedArrayMap<>();
         for (int i=0; i<objects.length; i+=2) {
             map.put((K) objects[i], (V) objects[i+1]);
         }
@@ -118,30 +120,12 @@ public class IndexedArrayMap<K,V>
     }
 
     /** Converts to another map. */
-    public <W> IndexedArrayMap<K,W> transform(Function<V,W> converter) {
-        IndexedArrayMap<K,W> map = new IndexedArrayMap<>();
+    public <W> LinkedArrayMap<K,W> transform(Function<V,W> converter) {
+        LinkedArrayMap<K,W> map = new LinkedArrayMap<>();
         for (Map.Entry<K,V> t : this) {
             map.put(t.getKey(), converter.apply(t.getValue()));
         }
         return map;
-    }
-
-    @SuppressWarnings("unchecked")
-    public K getKeyAtIndex(int index) {
-        return (K) array[index << 1];
-    }
-
-    @SuppressWarnings("unchecked")
-    public V getValueAtIndex(int index) {
-        return (V) array[(index << 1) + 1];
-    }
-
-    @SuppressWarnings("unchecked")
-    public V setValueAtIndex(int index, V value) {
-        final int idx = (index << 1) + 1;
-        V oldValue = (V) array[idx];
-        array[idx] = value;
-        return oldValue;
     }
 
     /**
@@ -153,17 +137,13 @@ public class IndexedArrayMap<K,V>
         return Objects.equals(a, b);
     }
 
-    public Entry<K,V> getEntryAtIndex(int index) {
-        return new Cursor(index);
-    }
-
     //TODO test unmodifiable!
-    public static class UnmodifiableView<K,V> extends IndexedArrayMap<K,V> {
+    public static class UnmodifiableView<K,V> extends LinkedArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
-        private IndexedArrayMap<K,V> delegate;
+        private LinkedArrayMap<K,V> delegate;
 
-        public UnmodifiableView(IndexedArrayMap<K,V> delegate) {
+        public UnmodifiableView(LinkedArrayMap<K,V> delegate) {
             super();
             this.delegate = delegate;
         }
@@ -179,33 +159,13 @@ public class IndexedArrayMap<K,V>
         }
 
         @Override
-        protected void removeEntryAtIndex(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public IndexedArrayMap<K, V> clone() {
+        public LinkedArrayMap<K, V> clone() {
             return this;
         }
 
         @Override
         public int getIndexOfKey(Object key) {
             return delegate.getIndexOfKey(key);
-        }
-
-        @Override
-        public Entry<K, V> getEntryAtIndex(int index) {
-            return delegate.getEntryAtIndex(index);
-        }
-
-        @Override
-        public V getValueAtIndex(int index) {
-            return delegate.getValueAtIndex(index);
-        }
-
-        @Override
-        public K getKeyAtIndex(int index) {
-            return delegate.getKeyAtIndex(index);
         }
 
         @Override
@@ -229,11 +189,6 @@ public class IndexedArrayMap<K,V>
         }
 
         @Override
-        public V setValueAtIndex(int index, V value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public void clear() {
             throw new UnsupportedOperationException();
         }
@@ -253,7 +208,7 @@ public class IndexedArrayMap<K,V>
         return false;
     }
 
-    public IndexedArrayMap<K,V> unmodifiable() {
+    public LinkedArrayMap<K,V> unmodifiable() {
         if (isUnmodifiable()) {
             return this;
         }
@@ -264,11 +219,11 @@ public class IndexedArrayMap<K,V>
     }
 
     @Override
-    public IndexedArrayMap<K,V> clone() {
+    public LinkedArrayMap<K,V> clone() {
         if (array == null) {
-            return new IndexedArrayMap<>();
+            return new LinkedArrayMap<>();
         }
-        return new IndexedArrayMap<>(this);
+        return new LinkedArrayMap<>(this);
     }
 
     public void ensureCapacity(int requiredCapacity) {
@@ -290,7 +245,7 @@ public class IndexedArrayMap<K,V>
     }
 
     /** Useful with fluid interface initializations. */
-    public IndexedArrayMap<K,V> add(K key, V value) {
+    public LinkedArrayMap<K,V> add(K key, V value) {
         put(key, value);
         return this;
     }
@@ -300,6 +255,7 @@ public class IndexedArrayMap<K,V>
         if (array == null) {
             array = new Object[8];
             indexes = new int[16]; // 50% max fill
+            dlIndexes = new DoubleLinkedIndexes(8);
         } else if (size == array.length) {
             resize(indexes.length << 1);
         }
@@ -311,9 +267,11 @@ public class IndexedArrayMap<K,V>
             if (pointer == 0) {
                 // bucket free, use it
                 indexes[bucket] = hashcode;
-                indexes[bucket + 1] = size + 1; // points to value
-                array[size] = key;
-                array[size + 1] = value;
+                int idx = dlIndexes.addLast();
+                //indexes[bucket + 1] = size + 1; // points to value
+                indexes[bucket + 1] = idx + 1; // points to value
+                array[idx] = key;
+                array[idx + 1] = value;
                 size += 2;
                 return null;
             }
@@ -340,7 +298,7 @@ public class IndexedArrayMap<K,V>
     }
 
     private void resize(int newSize, int butIndex) {
-        IndexedArrayMap<K,V> newMap = new IndexedArrayMap<>(newSize);
+        LinkedArrayMap<K,V> newMap = new LinkedArrayMap<>(newSize);
         for (int i=0; i<size; i+=2) {
             if (i != butIndex) {
                 newMap.put((K)array[i], (V)array[i+1]);
@@ -348,6 +306,7 @@ public class IndexedArrayMap<K,V>
         }
         this.array = newMap.array;
         this.indexes = newMap.indexes;
+        this.dlIndexes = newMap.dlIndexes;
     }
 
     @Override
@@ -426,30 +385,27 @@ public class IndexedArrayMap<K,V>
         }
     }
 
+    /**
+     *
+     * @param index         the index of k,v
+     * @param bucket the    the bucket in the h,i
+     * @param mask
+     */
     private void removeIndex(int index, int bucket, int mask) {
         size -= 2;
         if (size < (indexes.length >> 2)) {
             resize(indexes.length >> 1, index);
 
         } else {
-
-            // shift the array list from index back by 2
-            System.arraycopy(array, index + 2,
-                    array, index, array.length - index - 2);
-            // clear last positions to let GC do its work
-            array[array.length - 1] = null;
-            array[array.length - 2] = null;
+            // null references to let GC eventually reclaims
+            array[index] = null;
+            array[index + 1] = null;
 
             // free the bucket
             indexes[bucket + 1] = 0;
 
-            // adjusts indexes (O(N))
-            for (int i=1,l=indexes.length; i<l; i+=2) {
-                int idx = indexes[i];
-                if (idx > index) {
-                    indexes[i] = idx - 2;
-                }
-            }
+            // unlink the element
+            dlIndexes.remove(index);
 
             // rolls subsequent buckets back if needed
             int b = bucket;
@@ -472,13 +428,6 @@ public class IndexedArrayMap<K,V>
                 }
             }
         }
-    }
-
-    protected void removeEntryAtIndex(int index) {
-        if (array == null || index < 0 || index > size) {
-            throw new IllegalStateException();
-        }
-        remove(getKeyAtIndex(index));
     }
 
     @Override
@@ -507,6 +456,7 @@ public class IndexedArrayMap<K,V>
         indexes = null;
         array = null;
         size = 0;
+        dlIndexes = null;
     }
 
     private class EntryImpl implements Map.Entry<K,V> {
@@ -523,12 +473,12 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public V getValue() {
-            return IndexedArrayMap.this.get(key);
+            return LinkedArrayMap.this.get(key);
         }
 
         @Override
         public V setValue(V value) {
-            return IndexedArrayMap.this.put(key, value);
+            return LinkedArrayMap.this.put(key, value);
         }
 
         @Override
@@ -562,65 +512,66 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public String toString() {
-            return key + " = " + Objects.toString(IndexedArrayMap.this.get(key));
+            return key + " = " + Objects.toString(LinkedArrayMap.this.get(key));
         }
     }
 
     /** WARNING! this is a <b>mutable</b> object! */
     public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
-        private int index = -1;
+        private final FastIterator fit;
         private boolean removed;
 
-        public Cursor() {}
-
-        public Cursor(int index) {
-            this.index = index;
+        public Cursor() {
+            fit = dlIndexes == null ? null : dlIndexes.fastIterator();
         }
 
         private Entry<K,V> createEntry() {
             return new EntryImpl(getKey());
         }
 
-        public void setIndex(int index) {
-            this.index = index;
-        }
-
         @Override
         @SuppressWarnings("unchecked")
         public K getKey() {
-            return getKeyAtIndex(index);
+            return (K) array[fit.current()];
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public V getValue() {
-            return getValueAtIndex(index);
+            return (V) array[fit.current() + 1];
         }
 
         @Override
         public V setValue(V value) {
-            return setValueAtIndex(index, value);
+            @SuppressWarnings("unchecked")
+            V oldValue = (V) array[fit.current() + 1];
+            array[fit.current() + 1] = value;
+            return oldValue;
         }
 
         @Override
         public boolean hasNext() {
-            return index + 1 < size();
+            return fit.hasNext();
         }
 
         @Override
         public Cursor next() {
             removed = false;
-            index++;
+            fit.next();
             return this;
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public void remove() {
-            if (removed) {
-                throw new IllegalStateException();
+            if (removed || fit == null) {
+                throw new IllegalStateException("element already removed");
             }
-            removeEntryAtIndex(index);
-            index--;
+            int idx = fit.current();
+            if (idx == -1) {
+                throw new IllegalStateException("next() must be called first");
+            }
+            LinkedArrayMap.this.remove((K) array[idx]);
             removed = true;
         }
 
@@ -648,8 +599,7 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public String toString() {
-            return "" + index + ": " +
-                    getKey().toString() + " => " + Objects.toString(getValue());
+            return getKey().toString() + " => " + Objects.toString(getValue());
         }
     }
 
@@ -669,7 +619,7 @@ public class IndexedArrayMap<K,V>
         public Iterator<T> iterator() {
             return new Iterator<T>() {
                 @SuppressWarnings("unchecked")
-                private final Cursor cursor = (Cursor) IndexedArrayMap.this.iterator();
+                private final Cursor cursor = (Cursor) LinkedArrayMap.this.iterator();
 
                 @Override
                 public boolean hasNext() {
@@ -690,36 +640,7 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public int size() {
-            return IndexedArrayMap.this.size();
-        }
-    }
-
-    private class UnmodifiableKeyList extends AbstractList<K> {
-        @Override
-        public int size() {
-            return IndexedArrayMap.this.size();
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public K get(int index) {
-            return getKeyAtIndex(index);
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            return indexOf(o) != -1;
-        }
-
-        @Override
-        public int lastIndexOf(Object o) {
-            return indexOf(o); // there aren't repetitions (it's a key set)
-        }
-
-        /** Very fast: accesses index in O(1). */
-        @Override
-        public int indexOf(Object o) {
-            return getIndexOfKey(o);
+            return LinkedArrayMap.this.size();
         }
     }
 
@@ -736,13 +657,6 @@ public class IndexedArrayMap<K,V>
 
     private class Values extends View<V> {
         @Override V select(Cursor entry) { return entry.getValue(); }
-    }
-
-    public List<K> keyList() {
-        if (keyList == null) {
-            keyList = new UnmodifiableKeyList();
-        }
-        return keyList;
     }
 
     @Override

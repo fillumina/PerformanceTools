@@ -217,7 +217,7 @@ public abstract class AbstractMapTest {
     }
 
     @Test(timeout=300)
-    public void testIsNotEmpty() {
+    public void shouldNotBeEmpty() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
         assertFalse(map.isEmpty());
@@ -238,6 +238,53 @@ public abstract class AbstractMapTest {
     }
 
     @Test(timeout=300)
+    public void shouldReturnSize3() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 2);
+        assertEquals(3, map.size());
+    }
+
+    @Test(timeout=300)
+    public void shouldReturnSize2IfRemovingElement() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 2);
+        map.remove("two");
+        assertEquals(2, map.size());
+    }
+
+    @Test(timeout=300)
+    public void shouldReturnSize0IfCleared() {
+        Map<String,Integer> map = createMap();
+        map.put("one", 1);
+        map.put("two", 2);
+        map.put("three", 2);
+        map.clear();
+        assertEquals(0, map.size());
+    }
+
+    @Test(timeout=300)
+    public void shouldReturnEmptyIfCleared() {
+        Map<String,Integer> map = createMap();
+        assertTrue(map.isEmpty());
+
+        map.put("one", 1);
+        assertFalse(map.isEmpty());
+
+        map.put("two", 2);
+        assertFalse(map.isEmpty());
+
+        map.put("three", 2);
+        assertFalse(map.isEmpty());
+
+        map.clear();
+        assertTrue(map.isEmpty());
+    }
+
+    @Test(timeout=300)
     public void shouldOverwritePreviousEntryWithSameKey() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -247,9 +294,15 @@ public abstract class AbstractMapTest {
     }
 
     @Test(timeout=300)
-    public void shouldReturnNullForANotExistentValue() {
+    public void shouldReturnNullForANotExistentValueWhenEmpty() {
         Map<String,Integer> map = createMap();
         assertNull(map.get("one"));
+    }
+
+    @Test(timeout=300)
+    public void shouldReturnNullForANotExistentValueWhenNotEmpty() {
+        Map<String,Integer> map = populateMap();
+        assertNull(map.get("not existent"));
     }
 
     @Test(timeout=300)

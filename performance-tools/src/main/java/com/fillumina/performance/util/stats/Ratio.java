@@ -16,7 +16,7 @@ public class Ratio implements Comparable<Ratio> {
     private static Ratio[] percentages = new Ratio[101];
     static {
         for (int p=0; p<101; p++) {
-            percentages[p] = Ratio.percentage((double)p);
+            percentages[p] = new Ratio(p / 100.0);
         }
     }
 
