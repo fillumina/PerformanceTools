@@ -52,7 +52,7 @@ public class ArrayMap<K,V>
     private Set<Entry<K,V>> entrySet;
     private Set<K> keySet;
     private Collection<V> values;
-    private UnmodifiableView unmodifiableView;
+    private UnmodifiableView<K,V> unmodifiableView;
 
     @SuppressWarnings("unchecked")
     public static <K,V> ArrayMap<K,V> emtpy() {
@@ -83,19 +83,12 @@ public class ArrayMap<K,V>
     }
 
     private static int roundUpToPowerOf2(int number) {
-        // assert number >= 0 : "number must be non-negative";
         return (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 2; //1;
-    }
-
-
-    protected ArrayMap(Object[] array, int size) {
-        this.array = array;
-        this.size = size;
     }
 
     @SuppressWarnings("unchecked")
     public static <K,V> ArrayMap<K,V> create(Object... objects) {
-        final ArrayMap<K,V> map = new ArrayMap<>();
+        final ArrayMap<K,V> map = new ArrayMap<>(objects.length >> 1);
         for (int i=0; i<objects.length; i+=2) {
             map.put((K) objects[i], (V) objects[i+1]);
         }
@@ -634,11 +627,11 @@ public class ArrayMap<K,V>
         return values;
     }
 
-    @Override
     /**
      * WARNING: using this set means that a new {@link Map.Entry} must be
      * created at each access.
      */
+    @Override
     public Set<Entry<K, V>> entrySet() {
         if (entrySet == null) {
             entrySet = new EntrySet();

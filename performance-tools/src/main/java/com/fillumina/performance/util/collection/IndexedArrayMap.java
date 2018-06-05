@@ -20,7 +20,7 @@ import java.util.function.Function;
  * <ul>
  * <li>insertion, extraction have O(1) complexity (if entry exists)
  * <li>worse case is linear O(N)
- * <li>removal is linear O(N)
+ * <li>removal is linear O(N) VERY INEFFICIENT
  * <li>increases and decreases its size automatically
  * <li>maintains insertion order
  * <li>views its keys as a random access list

@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * The annotated method is executed after each sample and its time will not be
+ * added with the test execution time.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

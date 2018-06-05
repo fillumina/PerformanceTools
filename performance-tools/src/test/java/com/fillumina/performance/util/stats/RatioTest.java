@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -76,4 +77,25 @@ public class RatioTest {
         assertEquals("56.796 %", r.toString());
     }
 
+    @Test
+    public void shoudlGet100Percent() {
+        Ratio r = Ratio.percentage(100);
+        assertEquals(1.00, r.getDecimal(), 0);
+    }
+
+    @Test
+    public void shouldEqualsPercentageBeSameObject() {
+        Ratio a = Ratio.percentage(11);
+        Ratio b = Ratio.percentage(11);
+
+        assertTrue(a == b);
+    }
+
+    @Test
+    public void shouldEqualPercentageInsertedDifferentlyBeSameObject() {
+        Ratio a = Ratio.percentage(8);
+        Ratio b = Ratio.decimal(0.08);
+
+        assertTrue(a == b);
+    }
 }

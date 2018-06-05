@@ -35,9 +35,9 @@ public class Ratio implements Comparable<Ratio> {
     /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
     public static Ratio decimal(double decimal) {
         try {
-            int integer = (int) Math.round(decimal);
-            if (integer == decimal) {
-                return percentage(integer);
+            double integer = Math.round(decimal * 100);
+            if (integer == decimal * 100.0) {
+                return percentages[(int)integer];
             }
         } catch (Exception e) {
             // nothing

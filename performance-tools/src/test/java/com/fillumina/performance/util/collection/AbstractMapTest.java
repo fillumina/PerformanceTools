@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -494,6 +495,68 @@ public abstract class AbstractMapTest {
         assertTrue(map1.equals(map1));
     }
 
+    public static class SameHash {
+        private final int value;
+
+        public SameHash(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return "SameHash{" + "value=" + value + '}';
+        }
+
+        @Override
+        public int hashCode() {
+            return 123;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            return this.value == ((SameHash) obj).value;
+        }
+    }
+
+    @Test(timeout=300)
+    public void shouldPutElementsWithSameHash() {
+        SameHash a = new SameHash(1);
+        SameHash b = new SameHash(2);
+        SameHash c = new SameHash(3);
+
+        assertNotEquals(a, b);
+        assertNotEquals(c, b);
+        assertNotEquals(a, c);
+        assertEquals(a.hashCode(), b.hashCode(), 0);
+        assertEquals(b.hashCode(), c.hashCode(), 0);
+
+        Map<SameHash,Integer> map = createMap();
+        map.put(a, 1);
+        map.put(b, 2);
+        map.put(c, 3);
+
+        assertEquals(3, map.size(), 0);
+
+        assertEquals(1, map.get(a), 0);
+        assertEquals(2, map.get(b), 0);
+        assertEquals(3, map.get(c), 0);
+
+        assertTrue(map.containsKey(a));
+        assertTrue(map.containsKey(b));
+        assertTrue(map.containsKey(c));
+
+        map.remove(b);
+        assertEquals(1, map.get(a), 0);
+        assertNull(map.get(b));
+        assertEquals(3, map.get(c), 0);
+    }
+
     @Test(timeout=300)
     public void testKeySet() {
         final Map<String, Integer> map = populateMap();
@@ -525,14 +588,15 @@ public abstract class AbstractMapTest {
 
         Set<String> keys = new HashSet<>();
         for (Entry<String,Integer> e : set) {
+            //System.out.println("key=" + e.getKey());
             keys.add(e.getKey());
         }
-        assertEquals(5, keys.size(), 0);
         assertTrue(keys.contains("one"));
         assertTrue(keys.contains("two"));
         assertTrue(keys.contains("three"));
         assertTrue(keys.contains("four"));
         assertTrue(keys.contains("five"));
+        assertEquals(5, keys.size(), 0);
 
         Set<Integer> values = new HashSet<>();
         for (Entry<String,Integer> e : set) {
