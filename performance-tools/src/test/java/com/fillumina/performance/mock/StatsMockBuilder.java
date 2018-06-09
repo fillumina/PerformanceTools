@@ -150,7 +150,7 @@ public class StatsMockBuilder {
         int[] counter = new int[dataList.size()];
         int index = 0;
         for (Data data : dataList) {
-            double tolerance = 1 - confidence.getDecimal();
+            double tolerance = 1.0 - confidence.getDecimal();
             iterators[index] = new NormalDistributionMeasureBuilder(
                         data.mean, data.stdev, tolerance, data.samples)
                     .iterator();
@@ -164,9 +164,8 @@ public class StatsMockBuilder {
         do {
             added = false;
             index = 0;
-            SampleCreator.Builder sampleBuilder = SampleCreator.builder(
-                    unit,
-                    m -> new Sample(statsType, m));
+            SampleCreator.Builder sampleBuilder =
+                    SampleCreator.builder(unit, m -> new Sample(statsType, m));
 
             for (Data data : dataList) {
                 Iterator<Double> it = iterators[index];

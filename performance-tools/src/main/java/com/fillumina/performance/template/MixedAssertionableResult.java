@@ -1,7 +1,6 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;

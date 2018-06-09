@@ -34,6 +34,11 @@ public class MeasureMock extends Measure {
         return this;
     }
 
+    public MeasureMock stdDev(final double value) {
+        this.variance = value * value;
+        return this;
+    }
+
     public MeasureMock variance(final double value) {
         this.variance = value;
         return this;

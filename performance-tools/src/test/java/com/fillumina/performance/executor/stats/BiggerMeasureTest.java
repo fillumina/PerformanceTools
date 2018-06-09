@@ -2,7 +2,11 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
+import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.unit.Magnitude;
+import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -62,4 +66,20 @@ public class BiggerMeasureTest {
         assertEquals(10, bigger.getMeasure().getMean(), 0.1);
     }
 
+    @Test
+    public void shouldReturnTheCorrectBiggerResult() {
+        final MeasureMock first = new MeasureMock().mean(3.245).stdDev(0.041);
+        final MeasureMock second = new MeasureMock().mean(38.797).stdDev(0.302);
+        final MeasureMock third = new MeasureMock().mean(3.290).stdDev(0.049);
+
+        final Map<CharSequence, Measure> map = new IndexedArrayMap<>();
+        map.put("first", first);
+        map.put("second", second);
+        map.put("third", third);
+
+        BiggerMeasure bigger = new BiggerMeasure(map);
+        assertEquals("second", bigger.getName());
+        assertEquals(second, bigger.getMeasure());
+        assertEquals(1, bigger.getIndex());
+    }
 }

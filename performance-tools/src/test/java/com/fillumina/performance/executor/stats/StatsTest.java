@@ -18,6 +18,42 @@ import org.junit.Test;
  */
 public class StatsTest {
 
+    public static void main(final String[] args) {
+
+        MixedStatsHolder mixedStatsHolder = new StatsMockBuilder()
+                .confidence(Ratio.P_99)
+                .addTest("first")
+                    .mean(3.25)
+                    .stdev(0.039)
+                    .samples(53)
+                    .endTest()
+                .addTest("second")
+                    .mean(38.77)
+                    .stdev(0.365)
+                    .samples(51)
+                    .endTest()
+                .addTest("third")
+                    .mean(3.285)
+                    .stdev(0.048)
+                    .samples(54)
+                    .endTest()
+                .buildWithNormalDistribution(Magnitude.UNIT);
+
+        System.out.println("\nmixedStatsHolder\n" + mixedStatsHolder.toString());
+
+        StatsHolder statsHolder = mixedStatsHolder.getStatsHolder(MockStatsType.INSTANCE);
+
+        System.out.println("\nstatsHolder\n" + statsHolder.toString());
+
+        Stats stats = statsHolder.getStats();
+
+        System.out.println("\nstats\n" + stats.toString());
+
+        Stats correctedStats = stats.as(Magnitude.UNIT);
+
+        System.out.println("\ncorrectedStats\n" + correctedStats.toString());
+    }
+
     @Test
     public void shouldGetStatistics() {
         Stats stats = new StatsMockBuilder()

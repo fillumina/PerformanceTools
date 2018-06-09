@@ -12,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Spliterator;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -503,13 +502,18 @@ public class IndexedArrayMap<K,V>
         if (unmodifiableView != null) {
             unmodifiableView.size = size;
         }
+        if (entrySet != null) {
+            entrySet.reset();
+        }
     }
 
     private class EntryImpl implements Map.Entry<K,V> {
         private final K key;
+        private V value;
 
-        public EntryImpl(K key) {
+        public EntryImpl(K key, V value) {
             this.key = key;
+            this.value = value;
         }
 
         @Override
@@ -519,11 +523,17 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public V getValue() {
-            return IndexedArrayMap.this.get(key);
+            int index = getIndexOfKey(key);
+            if (index == -1) {
+                return value;
+            }
+            value = IndexedArrayMap.this.getValueAtIndex(index);
+            return value;
         }
 
         @Override
         public V setValue(V value) {
+            this.value = value;
             return IndexedArrayMap.this.put(key, value);
         }
 
@@ -555,7 +565,7 @@ public class IndexedArrayMap<K,V>
 
         @Override
         public String toString() {
-            return key + " = " + Objects.toString(IndexedArrayMap.this.get(key));
+            return getKey() + " = " + Objects.toString(getValue());
         }
     }
 
@@ -582,7 +592,7 @@ public class IndexedArrayMap<K,V>
         }
 
         private Entry<K,V> createEntry() {
-            return new EntryImpl(getKey());
+            return new EntryImpl(getKey(), getValue());
         }
 
         public void setIndex(int index) {
@@ -694,6 +704,7 @@ public class IndexedArrayMap<K,V>
         return new Cursor();
     }
 
+    /** Uses fast cursor. */
     @Override
     public Iterator<Entry<K, V>> iterator() {
         return new Cursor();
@@ -867,6 +878,7 @@ public class IndexedArrayMap<K,V>
 
     private class EntrySet extends View<Entry<K,V>> {
         private static final long serialVersionUID = 1L;
+        private Entry<K,V>[] entries;
 
         EntrySet() {
             super();
@@ -874,6 +886,10 @@ public class IndexedArrayMap<K,V>
 
         EntrySet(int start, int end) {
             super(start, end);
+        }
+
+        void reset() {
+            this.entries = null;
         }
 
         @Override
@@ -897,7 +913,19 @@ public class IndexedArrayMap<K,V>
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public Spliterator<Entry<K, V>> spliterator() {
+            if (entries == null) {
+                entries = (Entry<K, V>[]) new Entry[size];
+            } else if (entries.length > (size << 1)) {
+                Entry<K,V>[] old = entries;
+                entries = (Entry<K, V>[]) new Entry[size];
+                System.arraycopy(old, 0, entries, 0, old.length);
+            } else if (entries.length < (size >> 1)) {
+                Entry<K,V>[] old = entries;
+                entries = (Entry<K, V>[]) new Entry[size];
+                System.arraycopy(old, 0, entries, 0, size);
+            }
             return new Spliterator<Entry<K,V>>() {
                 private final Cursor c = new Cursor();
 
@@ -905,7 +933,14 @@ public class IndexedArrayMap<K,V>
                 public boolean tryAdvance(
                         Consumer<? super Entry<K, V>> action) {
                     if (c.hasNext()) {
-                        action.accept(c.next());
+                        c.next();
+                        Entry<K,V> entry = entries[c.index];
+                        if (entry == null ||
+                                !Objects.equals(entry.getKey(), c.getKey())) {
+                            entry = c.createEntry();
+                            entries[c.index] = entry;
+                        }
+                        action.accept(entry);
                         return true;
                     }
                     return false;
@@ -926,7 +961,6 @@ public class IndexedArrayMap<K,V>
                     return Spliterator.ORDERED | Spliterator.DISTINCT |
                             Spliterator.NONNULL | Spliterator.SIZED;
                 }
-
             };
         }
     }
@@ -1048,10 +1082,16 @@ public class IndexedArrayMap<K,V>
 
     /** Overridden to use cursor instead of {@link #entrySet()}. */
     @Override
-    public void forEach(BiConsumer<? super K, ? super V> action) {
-        for (Map.Entry<K, V> e : this) {
-            action.accept(e.getKey(), e.getValue());
+    public void forEach(Consumer<? super Entry<K, V>> action) {
+        final Cursor c = new Cursor();
+        while (c.hasNext()) {
+            action.accept(c.next());
         }
+    }
+
+    @Override
+    public Spliterator<Entry<K, V>> spliterator() {
+        return entrySet().spliterator();
     }
 
     /** Overridden to use cursor instead of {@link #entrySet()}. */

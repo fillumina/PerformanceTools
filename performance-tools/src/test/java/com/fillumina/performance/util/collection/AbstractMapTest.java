@@ -10,10 +10,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -650,6 +652,66 @@ public abstract class AbstractMapTest {
             assertTrue(m2.containsKey(key));
             assertEquals(m1.get(key), m2.get(key));
         }
+    }
 
+    @Test
+    public void shouldEntriesBeDistinctInStream() {
+        final Map<String, Integer> map = populateMap();
+
+        Optional<Entry<String,Integer>> result =
+                map.entrySet().stream().max((e1, e2) ->
+                        Integer.compare(e1.getValue(), e2.getValue()));
+
+        assertTrue(result.isPresent());
+        Entry<String,Integer> entry = result.get();
+        assertEquals("five", entry.getKey());
+        assertEquals(5, entry.getValue(), 0);
+    }
+
+    @Test
+    public void shouldAnEntryBeValidEvenIfMapIsModified() {
+        final Map<String, Integer> map = populateMap();
+        Entry<String,Integer> entry = map.entrySet().iterator().next();
+
+        assertNotNull(entry);
+        String key = entry.getKey();
+        int value = entry.getValue();
+
+        map.clear();
+
+        assertEquals(key, entry.getKey());
+        assertEquals(value, entry.getValue(), 0);
+    }
+
+    @Test
+    public void shouldAnEntryUseTheLastValidValueIfMapIsCleared() {
+        final Map<String, Integer> map = populateMap();
+        Entry<String,Integer> entry = map.entrySet().iterator().next();
+
+        assertNotNull(entry);
+        String key = entry.getKey();
+        int value = entry.getValue();
+
+        map.clear();
+
+        map.put(key, value + 1);
+        assertEquals(key, entry.getKey());
+        assertEquals(value, entry.getValue(), 0);
+    }
+
+    @Test
+    public void shouldAnEntryUpdateItsValueIfItChanges() {
+        final Map<String, Integer> map = populateMap();
+        Entry<String,Integer> entry = map.entrySet().iterator().next();
+
+        assertNotNull(entry);
+        String key = entry.getKey();
+        int value = entry.getValue();
+        final int newValue = value + 1;
+
+        map.put(key, newValue);
+
+        assertEquals(key, entry.getKey());
+        assertEquals(newValue, entry.getValue(), 0);
     }
 }

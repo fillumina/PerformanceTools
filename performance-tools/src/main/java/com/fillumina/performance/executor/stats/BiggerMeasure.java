@@ -18,7 +18,7 @@ class BiggerMeasure implements Serializable {
 
     public BiggerMeasure(Map<? extends CharSequence, ? extends Measure> map) {
         Optional<? extends Map.Entry<? extends CharSequence, ? extends Measure>> result =
-                map.entrySet().stream().min((e1, e2) -> {
+                map.entrySet().stream().max((e1, e2) -> {
             return Double.compare(e1.getValue().getMean(), e2.getValue().getMean());
         });
 
