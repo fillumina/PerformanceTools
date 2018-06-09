@@ -119,6 +119,10 @@ public class Holder<T> {
         this.value = value;
     }
 
+    public boolean isNull() {
+        return value == null;
+    }
+
     public T getValue() {
         return value;
     }

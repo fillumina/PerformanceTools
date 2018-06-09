@@ -3,6 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
@@ -109,16 +110,16 @@ public class SingleThreadPerformanceExecutor
             Map<TName, Runnable> tests,
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
-        int index = 0;
-        for (Map.Entry<TName, Runnable> entry : tests.entrySet()) {
+        Holder.Integer index = new Holder.Integer();
+        tests.entrySet().forEach(entry -> {
             TName name = entry.getKey();
             final Runnable runnable = entry.getValue();
             RunnableIterator iterator =
                     RunnableIterator.DISPATCHER.getIterator(runnable);
-            int iterations = iterationPerFraction[index];
-            data[index] = new IterationData(name, iterator, iterations);
-            index++;
-        }
+            int idx = index.getAndIncrement();
+            int iterations = iterationPerFraction[idx];
+            data[idx] = new IterationData(name, iterator, iterations);
+        });
         return Arrays.asList(data);
     }
 

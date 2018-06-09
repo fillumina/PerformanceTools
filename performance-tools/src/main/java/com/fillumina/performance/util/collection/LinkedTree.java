@@ -33,33 +33,33 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
     private static final Tree<Object, Object> EMPTY =
             UnmodifiableTree.wrap(new LinkedTree<>());
 
-    public class OrderedLinkedTree<K,V> extends LinkedTree<K,V> {
+    public class ForwardLinkedTree<K,V> extends LinkedTree<K,V> {
         private static final long serialVersionUID = 1L;
         private final Predicate<Tree<K,V>> orderSelector;
 
-        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector) {
+        public ForwardLinkedTree(Predicate<Tree<K, V>> orderSelector) {
             this.orderSelector = orderSelector;
         }
 
-        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+        public ForwardLinkedTree(Predicate<Tree<K, V>> orderSelector,
                 LinkedTree<K, V> clone) {
             super(clone);
             this.orderSelector = orderSelector;
         }
 
-        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+        public ForwardLinkedTree(Predicate<Tree<K, V>> orderSelector,
                 Map<K, V> map) {
             super(map);
             this.orderSelector = orderSelector;
         }
 
-        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+        public ForwardLinkedTree(Predicate<Tree<K, V>> orderSelector,
                 Collection<? extends Entry<K, V>> copy) {
             super(copy);
             this.orderSelector = orderSelector;
         }
 
-        public OrderedLinkedTree(Predicate<Tree<K, V>> orderSelector,
+        public ForwardLinkedTree(Predicate<Tree<K, V>> orderSelector,
                 K key, V value) {
             super(key, value);
             this.orderSelector = orderSelector;
@@ -972,9 +972,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-        for (Entry<? extends K,? extends V> entry : m.entrySet()) {
-            put(entry.getKey(), entry.getValue());
-        }
+        m.entrySet().forEach(e -> put(e.getKey(), e.getValue()) );
     }
 
     @Override
@@ -983,7 +981,7 @@ public class LinkedTree<K,V> implements Tree<K,V>, Serializable {
             @Override
             public Iterator<K> iterator() {
                 return new Iterator<K>() {
-                    Iterator<Tree<K,V>> it = LinkedTree.this.iterator();
+                    private final Iterator<Tree<K,V>> it = LinkedTree.this.iterator();
 
                     @Override
                     public boolean hasNext() {

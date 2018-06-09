@@ -41,14 +41,6 @@ public class TNameMapTest {
     }
 
     @Test
-    public void shouldGetWithStringPath() {
-        TNameMap<TNamedImpl> map = new TNameMap<>();
-        map.add(new TNamedImpl(12, "one", "two"));
-
-        assertEquals(12, map.get("one", "two").getValue(), 0);
-    }
-
-    @Test
     public void shouldGetWithSingleString() {
         TNameMap<TNamedImpl> map = new TNameMap<>();
         map.add(new TNamedImpl(1, "one"));

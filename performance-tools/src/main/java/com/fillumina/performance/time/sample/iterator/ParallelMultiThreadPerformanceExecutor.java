@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
@@ -12,8 +13,6 @@ import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -65,11 +64,11 @@ public class ParallelMultiThreadPerformanceExecutor
         final TimeSampleCollector timeCollector =
                 new TimeSampleCollector();
 
-        int index = 0;
-        for (Map.Entry<TName,Runnable> entry : tests.entrySet()) {
+        Holder.Integer index = new Holder.Integer();
+        tests.entrySet().forEach(entry -> {
             final TName testName = entry.getKey();
             final ParallelTest runnable = (ParallelTest) entry.getValue();
-            final int millis = bound[index];
+            final int millis = bound[index.getValue()];
 
             final List<IteratingRunnable> workerList = new ArrayList<>();
 
@@ -94,12 +93,12 @@ public class ParallelMultiThreadPerformanceExecutor
             runnableSetter.onAfterSample(runnable, totalWorkers);
             runnableSetter.tearDown(runnable);
 
-            for (IteratingRunnable task : workerList) {
+            workerList.forEach((task) -> {
                 timeCollector.add(task.name, task.elapsed, task.iterations);
-            }
+            });
 
-            index++;
-        }
+            index.incrementAndGet();
+        });
 
         return timeCollector;
     }
@@ -150,7 +149,7 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     private void assertAllTestsAreAsymmetric(IndexedArrayMap<TName, Runnable> tests) {
-        for (Entry<TName,Runnable> entry : tests.entrySet()) {
+        tests.entrySet().forEach(entry -> {
             TName name = entry.getKey();
             Runnable runnable = entry.getValue();
             if (!(runnable instanceof ParallelTest)) {
@@ -167,7 +166,7 @@ public class ParallelMultiThreadPerformanceExecutor
             if (workers > concurrencyLevel) {
                 concurrencyLevel = workers;
             }
-        }
+        });
     }
 
     private class IteratingRunnable implements Runnable {

@@ -10,9 +10,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
+ * WARNING: very long test
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO shorten?
 public class RunnableIteratorTest {
 
     private final Dispatcher dispatcher = RunnableIterator.DISPATCHER;

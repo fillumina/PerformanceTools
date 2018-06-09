@@ -3,6 +3,7 @@ package com.fillumina.performance.executor.stats;
 import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -16,26 +17,21 @@ class BiggerMeasure implements Serializable {
     private final CharSequence refName;
 
     public BiggerMeasure(Map<? extends CharSequence, ? extends Measure> map) {
-        CharSequence name = null;
-        int index = -1;
-        Measure measure = null;
+        Optional<? extends Map.Entry<? extends CharSequence, ? extends Measure>> result =
+                map.entrySet().stream().min((e1, e2) -> {
+            return Double.compare(e1.getValue().getMean(), e2.getValue().getMean());
+        });
 
-        // save max measure in list
-        int i = 0;
-        for (Map.Entry<? extends CharSequence,? extends Measure> e : map.entrySet()) {
-            CharSequence n = e.getKey();
-            Measure m = e.getValue();
-            if (measure == null || measure.getMean() < m.getMean()) {
-                name = n;
-                index = i;
-                measure = m;
-            }
-            i++;
+        if (!result.isPresent()) {
+            this.refName = null;
+            this.refMeasure = null;
+            this.refIndex = -1;
+        } else {
+            Map.Entry<? extends CharSequence, ? extends Measure> entry = result.get();
+            this.refName = entry.getKey();
+            this.refMeasure = entry.getValue();
+            this.refIndex = findIndex(map, refName);
         }
-
-        this.refName = name;
-        this.refIndex = index;
-        this.refMeasure = measure;
     }
 
     public Measure getMeasure() {
@@ -58,4 +54,16 @@ class BiggerMeasure implements Serializable {
                 "}";
     }
 
+    private int findIndex(
+            Map<? extends CharSequence, ? extends Measure> map,
+            CharSequence refName) {
+        int index = 0;
+        for (CharSequence k : map.keySet()) {
+            if (refName.equals(k)) {
+                return index;
+            }
+            index++;
+        }
+        throw new AssertionError("should really not happen");
+    }
 }

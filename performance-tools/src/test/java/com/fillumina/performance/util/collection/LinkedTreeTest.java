@@ -38,10 +38,10 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .branch("1", 111)
                     .leaf("11", 1)
                     .leaf("12", 2)
-                .end()
+                    .end()
                 .branch("2", 222)
                     .leaf("21", 222_000)
-                .end()
+                    .end()
                 .getRoot();
 
         LinkedTree<Integer,String> modified = LinkedTree.createFrom(tree,
@@ -114,14 +114,14 @@ public class LinkedTreeTest extends AbstractMapTest {
                     .leaf("two", 2)
                     .leaf("three", 3)
                     .leaf("four", 4)
-                .end()
+                    .end()
                 .branch("1", 222)
                     .leaf("alfa", 0)
                     .branch("10", 333)
                         .leaf("oo", 0)
-                    .end()
+                        .end()
                     .leaf("beta", 1)
-                .end()
+                    .end()
                 .getRoot();
 
         List<Integer> results = new ArrayList<>();
@@ -142,14 +142,14 @@ public class LinkedTreeTest extends AbstractMapTest {
                     .leaf("two", 2)
                     .leaf("three", 3)
                     .leaf("four", 4)
-                .end()
+                    .end()
                 .branch("1", 222)
                     .leaf("alfa", 0)
                     .branch("10", 333)
                         .leaf("oo", 0)
-                    .end()
+                        .end()
                     .leaf("beta", 1)
-                .end()
+                    .end()
                 .getRoot();
 
         Iterator<Tree<String,Integer>> it = tree.depthFirstIterator();

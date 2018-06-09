@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -321,7 +322,7 @@ public abstract class AbstractMapTest {
         assertTrue(map.isEmpty());
     }
 
-    @Test(timeout=300)
+    @Test//(timeout=300)
     public void shouldRemoveFirst() {
         Map<String,Integer> map = createMap();
         map.put("one", 1);
@@ -618,5 +619,37 @@ public abstract class AbstractMapTest {
         map.put("four", 4);
         map.put("five", 5);
         return map;
+    }
+
+    @Test
+    public void shouldUseEntrySetForEach() {
+        Map<String,Integer> map = populateMap();
+
+        LinkedHashMap<String,Integer> m = new LinkedHashMap<>();
+        map.entrySet().forEach(e -> m.put(e.getKey(), e.getValue()));
+
+        assertEqualMap(map, m);
+    }
+
+    @Test
+    public void shouldUseEntrySetStream() {
+        Map<String,Integer> map = populateMap();
+
+        LinkedHashMap<String,Integer> m = new LinkedHashMap<>();
+        map.entrySet().stream().forEach(e -> m.put(e.getKey(), e.getValue()));
+
+        assertEqualMap(map, m);
+    }
+
+    private void assertEqualMap(Map<String,Integer> m1, Map<String,Integer> m2) {
+        assertEquals(m1.size(), m2.size(), 0);
+
+        Iterator<String> keyIterator = m1.keySet().iterator();
+        while (keyIterator.hasNext()) {
+            final String key = keyIterator.next();
+            assertTrue(m2.containsKey(key));
+            assertEquals(m1.get(key), m2.get(key));
+        }
+
     }
 }

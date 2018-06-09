@@ -55,7 +55,7 @@ public class SequencedTestProducer
         final TName experimentName = getName();
 
         MixedStatsHolder.Joiner joiner =
-                MixedStatsHolder.joiner(getName());
+                MixedStatsHolder.joiner(experimentName);
 
         StatsProducer<?> producer = getProducer();
         int sequenceSize = sequencedTestMap.getEntryAtIndex(0).getValue().size();

@@ -53,8 +53,8 @@ public class WarmupTimedIterator {
         long less = 0;
         do {
             long max = Integer.MIN_VALUE;
-            for (Map.Entry<TName,Runnable> e : tests.entrySet()) {
-                long ns = iterate(e.getValue(), iterations);
+            for (Runnable r : tests.values()) {
+                long ns = iterate(r, iterations);
                 if (ns > max) {
                     max = ns;
                 }

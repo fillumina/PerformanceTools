@@ -70,7 +70,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
             Unit<?> unit,
             Function<IterationTimeAccumulator, Double> valueFunc) {
         TNameMap<SampleValue> map = new TNameMap<>(timeMap.size());
-        for (Map.Entry<TName,IterationTimeAccumulator> e : timeMap.entrySet()) {
+        timeMap.entrySet().forEach((e) -> {
             TName name = e.getKey();
             IterationTimeAccumulator ita = e.getValue();
 
@@ -82,7 +82,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
                     ita.getTimeNs());
 
             map.put(name, s);
-        }
+        });
         return map;
     }
 }

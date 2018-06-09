@@ -90,19 +90,18 @@ public class AssertionableResult<C>
     }
 
     public void appendFailedAssertions(Appendable appendable) {
-        for (Map.Entry<Assertable, List<Assertion>> entry :
-                getFailedAssertions().entrySet()) {
-            try {
-                Assertable assertable = entry.getKey();
-                List<Assertion> failedAssertions = entry.getValue();
-                for (Assertion a : failedAssertions) {
-                    a.appendTo(appendable, assertable);
+        getFailedAssertions().entrySet().forEach(entry -> {
+                try {
+                    Assertable assertable = entry.getKey();
+                    List<Assertion> failedAssertions = entry.getValue();
+                    for (Assertion a : failedAssertions) {
+                        a.appendTo(appendable, assertable);
+                    }
+                    appendable.append(System.lineSeparator());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
-                appendable.append(System.lineSeparator());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
+        });
     }
 
     public static final Assertable UNCHECKED = new Assertable() {

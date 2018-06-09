@@ -1,11 +1,12 @@
 package com.fillumina.performance.util.tname;
 
 import com.fillumina.performance.util.collection.IndexedArrayMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 
 /**
+ * Because {@link TName} implements {@link CharSequence} this map has
+ * uses equality over string representations to allow searching by
+ * {@link String} or {@link CharSequence}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -25,14 +26,66 @@ public class TNameMap<T extends TNamed>
         super(copy);
     }
 
-    private TNameMap(List<T> list) {
-        super();
-        list.forEach( t -> add(t) );
+    protected TNameMap(TNameMap<T> delegate, boolean notUsed) {
+        super(delegate, true);
+    }
+
+    protected static class UnmodifiableView<T extends TNamed> extends TNameMap<T> {
+        private static final long serialVersionUID = 1L;
+
+        UnmodifiableView(TNameMap<T> delegate) {
+            super(delegate, true);
+        }
+
+        @Override
+        public boolean isUnmodifiable() {
+            return true;
+        }
+
+        @Override
+        public UnmodifiableView<T> clone() {
+            return this;
+        }
+
+        @Override
+        public void ensureCapacity(int requiredCapacity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected void removeEntryAtIndex(int index) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public T setValueAtIndex(int index, T value) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public T remove(Object key) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public T put(TName key, T value) {
+            throw new UnsupportedOperationException();
+        }
     }
 
     @Override
-    public IndexedArrayMap<TName, T> unmodifiable() {
-        return new IndexedArrayMap.UnmodifiableView<>(this);
+    protected UnmodifiableView<T> createUnmodifiable() {
+        return new UnmodifiableView<>(this);
+    }
+
+    @Override
+    public UnmodifiableView<T> unmodifiable() {
+        return (UnmodifiableView<T>) super.unmodifiable();
     }
 
     @Override
@@ -47,32 +100,5 @@ public class TNameMap<T extends TNamed>
 
     public T put(T t) {
         return put(t.getName(), t);
-    }
-
-    /** Much slower, it must perform a linear search. */
-    public T get(String... key) {
-        Iterator<Entry<TName,T>> it = cursor();
-        while (it.hasNext()) {
-            Entry<TName,T> e = it.next();
-            if (equals(e.getKey(), key)) {
-                return e.getValue();
-            }
-        }
-        return null;
-    }
-
-    static boolean equals(TName tname, String[] key) {
-        if (tname.size() != key.length) {
-            return false;
-        }
-        int index = key.length;
-        Iterator<String> it = tname.reverseIterator();
-        while (it.hasNext()) {
-            index--;
-            if (index < 0 || !key[index].equals(it.next()) ) {
-                return false;
-            }
-        }
-        return true;
     }
 }

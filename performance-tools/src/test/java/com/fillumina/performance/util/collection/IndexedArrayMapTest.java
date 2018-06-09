@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -101,7 +102,6 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
         assertEquals(4, map.getValueAtIndex(3), 0);
     }
-
 
     @Test(timeout = 500)
     public void shouldDetectUnmodifiableMapWhileNotModifyingTheMap() {
@@ -279,4 +279,177 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         assertNull(map.get(5));
     }
 
+    public static class ExtendedIndexedArrayMap
+            extends IndexedArrayMap<Integer,String> {
+        private static final long serialVersionUID = 1L;
+
+        public ExtendedIndexedArrayMap() {
+            super();
+        }
+
+        public ExtendedIndexedArrayMap(
+                Map<? extends Integer, ? extends String> copy) {
+            super(copy);
+        }
+
+        public ExtendedIndexedArrayMap(
+                IndexedArrayMap<? extends Integer, ? extends String> clone) {
+            super(clone);
+        }
+
+        public ExtendedIndexedArrayMap(int initialSize) {
+            super(initialSize);
+        }
+
+        public ExtendedIndexedArrayMap(boolean notUsed, ExtendedIndexedArrayMap copy) {
+            super(copy, true);
+        }
+
+        public String get(String key) {
+            return get(Integer.valueOf(key));
+        }
+
+        /**
+         * If you want to support unmodifiable views a dedicated
+         * unmodifiable view class MUST be created.
+         */
+        public static class UnmodifiableView extends ExtendedIndexedArrayMap {
+            private static final long serialVersionUID = 1L;
+
+            public UnmodifiableView(IndexedArrayMap<Integer, String> copy) {
+                super(copy);
+            }
+
+            @Override
+            public boolean isUnmodifiable() {
+                return true;
+            }
+
+            @Override
+            public void ensureCapacity(int requiredCapacity) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            protected void removeEntryAtIndex(int index) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public IndexedArrayMap<Integer, String>clone() {
+                return this;
+            }
+
+            @Override
+            public String setValueAtIndex(int index, String value) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public void clear() {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String remove(Object key) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public String put(Integer key, String value) {
+                throw new UnsupportedOperationException();
+            }
+        }
+
+        @Override
+        protected ExtendedIndexedArrayMap createUnmodifiable() {
+            return new UnmodifiableView(this);
+        }
+
+        @Override
+        public ExtendedIndexedArrayMap unmodifiable() {
+            return (ExtendedIndexedArrayMap) super.unmodifiable();
+        }
+    }
+
+    @Test
+    public void shouldInitializeExtendedMap() {
+        ExtendedIndexedArrayMap emap = new ExtendedIndexedArrayMap();
+        emap.put(1, "one");
+        emap.put(2, "two");
+        emap.put(3, "three");
+
+        assertEquals("one", emap.get(1));
+        assertEquals("two", emap.get("2")); // using overided method
+        assertEquals("three", emap.get(3));
+    }
+
+    @Test
+    public void shouldGetUnmodifiableExtendedMap() {
+        ExtendedIndexedArrayMap emap = new ExtendedIndexedArrayMap();
+        emap.put(1, "one");
+        emap.put(2, "two");
+        emap.put(3, "three");
+
+        ExtendedIndexedArrayMap uemap = emap.unmodifiable();
+
+        assertEquals("one", uemap.get(1));
+        assertEquals("two", uemap.get("2")); // using overided method
+        assertEquals("three", uemap.get(3));
+
+        try {
+            uemap.put(4, "four");
+            fail("should not put into an unmodifiable map");
+        } catch (UnsupportedOperationException e) {
+            // ok
+        }
+    }
+
+    @Test
+    public void shouldUnmodifiableBeAView() {
+        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        map.put(1, "one");
+
+        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        assertEquals("one", umap.get(1));
+
+        map.remove(1);
+        assertTrue(map.isEmpty());
+        assertTrue(umap.isEmpty());
+    }
+
+    @Test
+    public void shouldEntrySetOfUnmodifiableBeUpdatedByClear() {
+        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+
+        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        Set<Entry<Integer,String>> uset = umap.entrySet();
+
+        map.clear();
+
+        assertTrue(map.isEmpty());
+        assertTrue(umap.isEmpty());
+        assertTrue(uset.isEmpty());
+    }
+
+    @Test
+    public void shouldAddEntriesToUnmodifiableToo() {
+        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+
+        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        assertEquals(2, umap.size(), 0);
+
+        map.put(3, "three");
+        assertEquals(3, umap.size(), 0);
+
+        map.clear();
+        assertEquals(0, umap.size(), 0);
+
+        map.put(4, "four");
+        assertEquals(1, umap.size(), 0);
+    }
 }

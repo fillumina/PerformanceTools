@@ -8,8 +8,8 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  *
@@ -81,13 +81,13 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
     @Override
     public Measure getMeasure(CharSequence testName) {
         String nstr = testName.toString();
-        for (Entry<CharSequence,Measure> e : map.entrySet()) {
-            CharSequence t = e.getKey();
-            if (t.equals(testName) || nstr.equals(t.toString())) {
-                return e.getValue();
-            }
+        Optional<CharSequence> result = map.keySet().stream()
+                    .filter(t -> t.equals(testName) || nstr.equals(t.toString()))
+                    .findFirst();
+        if (!result.isPresent()) {
+            throw new MeasureNotFoundException(testName, map.keySet());
         }
-        throw new MeasureNotFoundException(testName, map.keySet());
+        return map.get(result.get());
     }
 
     @Override

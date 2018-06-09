@@ -90,11 +90,11 @@ class RunnableHelper {
         }
 
         public Cloner setParameters(Map<String, Object> parameters) {
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+            parameters.entrySet().forEach((entry) -> {
                 final String paramName = entry.getKey();
                 final Object paramValue = entry.getValue();
                 set(paramName, paramValue);
-            }
+            });
             return this;
         }
 

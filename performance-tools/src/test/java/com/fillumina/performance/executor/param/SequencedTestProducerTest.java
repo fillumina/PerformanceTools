@@ -198,7 +198,7 @@ public class SequencedTestProducerTest {
         table.row("test", "confidence", "size").hr('=');
         for (Map<CharSequence, Runnable> map : exec) {
 
-            for (Entry<CharSequence, Runnable> e : map.entrySet()) {
+            map.entrySet().forEach( e -> {
                 final Ratio ratioFieldValue = (Ratio)
                         ReflectionHelper.getFieldValue(e.getValue(), "ratio");
                 final int sizeFieldValue = (int)
@@ -207,7 +207,7 @@ public class SequencedTestProducerTest {
                 table.row(e.getKey(),
                         ratioFieldValue.getPercentage(),
                         "" + sizeFieldValue);
-            }
+            });
             table.hr('-');
         }
         System.out.println(table.toString());

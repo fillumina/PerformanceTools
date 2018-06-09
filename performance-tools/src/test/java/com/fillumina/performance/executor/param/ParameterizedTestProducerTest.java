@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -259,7 +258,7 @@ public class ParameterizedTestProducerTest {
         table.row("test", "list", "size").hr('=');
         for (Map<CharSequence, Runnable> map : exec) {
 
-            for (Entry<CharSequence, Runnable> e : map.entrySet()) {
+            map.entrySet().forEach(e -> {
                 final List<?> listFieldValue = (List<?>)
                         ReflectionHelper.getFieldValue(e.getValue(), "list");
                 final int sizeFieldValue = (int)
@@ -268,7 +267,7 @@ public class ParameterizedTestProducerTest {
                 table.row(e.getKey(),
                         listFieldValue.getClass().getSimpleName(),
                         "" + sizeFieldValue);
-            }
+            });
             table.hr('-');
         }
         System.out.println(table.toString());

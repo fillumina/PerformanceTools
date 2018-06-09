@@ -32,6 +32,8 @@ public class ConsecutiveExecutorStatsProducerTest {
 
         Stats stats = mixedHolder.getStatsHolder(MockStatsType.INSTANCE).getStats();
 
+        System.out.println("STATS=" + stats.toString());
+
         assertEquals(1.0, stats.getMeasure("one").getMean(), 0);
         assertEquals(2.0, stats.getMeasure("two").getMean(), 0);
         assertEquals(3.0, stats.getMeasure("three").getMean(), 0);

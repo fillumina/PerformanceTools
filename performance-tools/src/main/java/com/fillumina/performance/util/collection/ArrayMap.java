@@ -2,29 +2,38 @@ package com.fillumina.performance.util.collection;
 
 import java.io.Serializable;
 import java.util.AbstractSet;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
  * Fast hash map implementation.
+ * Features:
  * <ul>
  * <li>insertion, extraction and removal have O(1) complexity
- * <li>worst case (hash clashing) insertion, extraction and removal O(N)
+ * <li>linear for worst case (colliding hash) O(N)
  * <li>increases and decreases its size automatically
  * <li>very fast to clone
  * <li>uses fast Cursor iteration
- * <li>doesn't accept null as key
  * <li>manages its own unmodifiable version of itself
  * <li>has copy constructor and clone constructor
  * <li>improves locality of access by using arrays
  * <li>use less memory by avoiding creating Entry objects
+ * </ul>
+ * Drawbacks:
+ * <ul>
+ * <li>doesn't accept null as key
+ * <li>doesn't cache hashes so key.hashcode() must be fast.
+ * <li>doesn't work too well for huge size
  * </ul>
  * {@link #Cursor} is faster than a standard iterator but it is not
  * compliant with {@link Map} specifications because every {@link Map.Entry}
@@ -49,10 +58,10 @@ public class ArrayMap<K,V>
     private Object[] array; // [key, value]
     private int size;       // actual size
 
-    private Set<Entry<K,V>> entrySet;
-    private Set<K> keySet;
-    private Collection<V> values;
-    private UnmodifiableView<K,V> unmodifiableView;
+    private transient Set<Entry<K,V>> entrySet;
+    private transient Set<K> keySet;
+    private transient Collection<V> values;
+    private transient ArrayMap<K,V> unmodifiableView;
 
     @SuppressWarnings("unchecked")
     public static <K,V> ArrayMap<K,V> emtpy() {
@@ -82,6 +91,15 @@ public class ArrayMap<K,V>
         this.array = new Object[length << 2];
     }
 
+    protected ArrayMap(ArrayMap<K,V> delegate, boolean notUsed) {
+        setDelegate(delegate);
+    }
+
+    protected void setDelegate(ArrayMap<K,V> delegate) {
+        this.array = delegate.array;
+        this.size = delegate.size;
+    }
+
     private static int roundUpToPowerOf2(int number) {
         return (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 2; //1;
     }
@@ -100,18 +118,23 @@ public class ArrayMap<K,V>
      * @param a the given object
      * @param b the internal key
      */
-    public boolean equals(Object a, Object b) {
+    protected boolean equals(Object a, Object b) {
         return Objects.equals(a, b);
+    }
+
+    /**
+     * Override if you need a different hash function.
+     */
+    protected int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 15);
     }
 
     public static class UnmodifiableView<K,V> extends ArrayMap<K,V> {
         private static final long serialVersionUID = 1L;
 
-        private ArrayMap<K,V> delegate;
-
-        private UnmodifiableView(ArrayMap<K,V> delegate) {
-            super();
-            this.delegate = delegate;
+        UnmodifiableView(ArrayMap<K,V> delegate) {
+            super(delegate, true);
         }
 
         @Override
@@ -141,31 +164,6 @@ public class ArrayMap<K,V>
         }
 
         @Override
-        public V get(Object key) {
-            return delegate.get(key);
-        }
-
-        @Override
-        public int size() {
-            return delegate.size();
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return delegate.containsValue(value);
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return delegate.containsKey(key);
-        }
-
-        @Override
-        public Iterator<Entry<K, V>> iterator() {
-            return delegate.iterator();
-        }
-
-        @Override
         public void clear() {
             throw new UnsupportedOperationException();
         }
@@ -178,6 +176,11 @@ public class ArrayMap<K,V>
         @Override
         public V put(K key, V value) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Cursor cursor() {
+            return new Cursor(true);
         }
     }
 
@@ -235,8 +238,7 @@ public class ArrayMap<K,V>
             resize(array.length << 1);
         }
         int mask = getMask();
-        int hashcode = key.hashCode();
-        int bucket = hashcode & mask;
+        int bucket = hash(key) & mask;
         while (true) {
             Object k = array[bucket];
             if (k == null) {
@@ -244,6 +246,9 @@ public class ArrayMap<K,V>
                 array[bucket] = key;
                 array[bucket + 1] = value;
                 size++;
+                if (unmodifiableView != null) {
+                    unmodifiableView.size = size;
+                }
                 return null;
             }
             if (equals(key, k)) {
@@ -263,17 +268,23 @@ public class ArrayMap<K,V>
 
     @SuppressWarnings("unchecked")
     private void resize(int newSize) {
-        if (array == null) {
+        if (newSize == 0) {
+            array = null;
+        } else if (array == null) {
             array = new Object[newSize << 2];
-        }
-        ArrayMap<K,V> newMap = new ArrayMap<>(newSize);
-        for (int i=0,l=array.length; i<l; i+=2) {
-            K k = (K) array[i];
-            if (k != null) {
-                newMap.put(k, (V)array[i+1]);
+        } else {
+            ArrayMap<K,V> newMap = new ArrayMap<>(newSize);
+            for (int i=0,l=array.length; i<l; i+=2) {
+                K k = (K) array[i];
+                if (k != null) {
+                    newMap.put(k, (V)array[i+1]);
+                }
             }
+            this.array = newMap.array;
         }
-        this.array = newMap.array;
+        if (unmodifiableView != null) {
+            unmodifiableView.setDelegate(this);
+        }
     }
 
     @Override
@@ -283,8 +294,7 @@ public class ArrayMap<K,V>
             return null;
         }
         int mask = getMask();
-        int hashcode = key.hashCode();
-        int bucket = hashcode & mask;
+        int bucket = hash(key) & mask;
         while (true) {
             Object k = array[bucket];
             if (k == null) {
@@ -317,8 +327,7 @@ public class ArrayMap<K,V>
             return null;
         }
         int mask = getMask();
-        int hashcode = key.hashCode();
-        int bucket = hashcode & mask;
+        int bucket = hash(key) & mask;
         while (true) {
             Object k = array[bucket];
             if (k == null) {
@@ -337,8 +346,7 @@ public class ArrayMap<K,V>
                     if (k == null) {
                         break;
                     }
-                    int h = k.hashCode();
-                    int w = h & mask; // where it want to be
+                    int w = hash(k) & mask; // where it want to be
                     if (w != bucket) {
                         while (true) {
                             if (array[w] == null) {
@@ -356,6 +364,8 @@ public class ArrayMap<K,V>
                 size--;
                 if (size < (array.length >> 3)) {
                     resize(array.length >> 3);
+                } else if (unmodifiableView != null) {
+                    unmodifiableView.size = size;
                 }
                 return oldValue;
             }
@@ -393,8 +403,13 @@ public class ArrayMap<K,V>
 
     @Override
     public void clear() {
-        array = null;
-        size = 0;
+        if (array != null) {
+            Arrays.fill(array, null);
+            size = 0;
+            if (unmodifiableView != null) {
+                unmodifiableView.size = size;
+            }
+        }
     }
 
     private class EntryImpl implements Map.Entry<K,V> {
@@ -456,12 +471,28 @@ public class ArrayMap<K,V>
 
     /** WARNING! this is a <b>mutable</b> object! */
     public class Cursor implements Entry<K,V>, Iterator<Entry<K,V>> {
+        private final boolean unmodifiable;
         private int index = -2;
         private int next = getNext();
         private boolean removed;
 
+        public Cursor(boolean unmodifiable) {
+            this.unmodifiable = unmodifiable;
+        }
+
         private Entry<K,V> createEntry() {
             return new EntryImpl(getKey());
+        }
+
+        public boolean moveForward(int step) {
+            for (int i=0; i<step; i++) {
+                if (hasNext()) {
+                    next();
+                } else {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override
@@ -478,6 +509,9 @@ public class ArrayMap<K,V>
 
         @Override
         public V setValue(V value) {
+            if (unmodifiable) {
+                throw new UnsupportedOperationException("not supported");
+            }
             @SuppressWarnings("unchecked")
             V v = (V) array[index + 1];
             array[index + 1] = value;
@@ -511,6 +545,9 @@ public class ArrayMap<K,V>
 
         @Override
         public void remove() {
+            if (unmodifiable) {
+                throw new UnsupportedOperationException("not supported");
+            }
             if (array == null || index < 0) {
                 throw new IllegalStateException();
             }
@@ -555,12 +592,12 @@ public class ArrayMap<K,V>
     }
 
     public Cursor cursor() {
-        return new Cursor();
+        return new Cursor(isUnmodifiable());
     }
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
-        return new Cursor();
+        return cursor();
     }
 
     private abstract class View<T> extends AbstractSet<T> {
@@ -600,6 +637,48 @@ public class ArrayMap<K,V>
         @Override
         Entry<K, V> select(Cursor entry) {
             return entry.createEntry();
+        }
+
+        @Override
+        public void forEach(Consumer<? super Entry<K, V>> action) {
+            Cursor c = new Cursor(true);
+            while (c.hasNext()) {
+                action.accept(c.next());
+            }
+        }
+
+        @Override
+        public Spliterator<Entry<K, V>> spliterator() {
+            return new Spliterator<Entry<K,V>>() {
+                private Cursor c = new Cursor(true);
+
+                @Override
+                public boolean tryAdvance(
+                        Consumer<? super Entry<K, V>> action) {
+                    if (c.hasNext()) {
+                        action.accept(c.next());
+                        return true;
+                    }
+                    return false;
+                }
+
+                @Override
+                public Spliterator<Entry<K, V>> trySplit() {
+                    return null;
+                }
+
+                @Override
+                public long estimateSize() {
+                    return size();
+                }
+
+                @Override
+                public int characteristics() {
+                    return Spliterator.ORDERED | Spliterator.DISTINCT |
+                            Spliterator.NONNULL | Spliterator.SIZED;
+                }
+
+            };
         }
     }
 
@@ -709,32 +788,28 @@ public class ArrayMap<K,V>
             return false;
         }
 
-//        try {
-            Iterator<Entry<K,V>> i = iterator();
-            while (i.hasNext()) {
-                Entry<K,V> e = i.next();
-                K key = e.getKey();
-                V value = e.getValue();
-                if (value == null) {
-                    if (!(other.get(key)==null && other.containsKey(key))) {
-                        return false;
-                    }
-                } else {
-                    if (!value.equals(other.get(key))) {
-                        return false;
-                    }
+        Iterator<Entry<K,V>> i = iterator();
+        while (i.hasNext()) {
+            Entry<K,V> e = i.next();
+            K key = e.getKey();
+            V value = e.getValue();
+            if (value == null) {
+                if (!(other.get(key)==null && other.containsKey(key))) {
+                    return false;
+                }
+            } else {
+                if (!value.equals(other.get(key))) {
+                    return false;
                 }
             }
-//        } catch (ClassCastException | NullPointerException unused) {
-//            return false;
-//        }
+        }
 
         return true;
     }
 
     @Override
     public String toString() {
-        Cursor i = new Cursor();
+        Cursor i = new Cursor(true);
         if (! i.hasNext()) {
             return "{}";
         }

@@ -58,7 +58,7 @@ public interface Tree<K,V> extends Iterable<Tree<K,V>>, Map<K,V>, Entry<K,V> {
 
     Tree<K,V> getTreeAtIndex(int index);
 
-    /** @return the tree matching the key or create new one if not existent. */
+    /** @return the tree matching the key or new one if not existent. */
     Tree<K, V> getOrAddTree(K key);
 
     /** @return the created children. */

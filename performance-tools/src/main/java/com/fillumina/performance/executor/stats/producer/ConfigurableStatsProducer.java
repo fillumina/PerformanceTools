@@ -17,7 +17,6 @@ import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
@@ -174,9 +173,9 @@ public class ConfigurableStatsProducer
             throw new IllegalStateException("no test registered");
         }
         getSampleProducer().clearTests();
-        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+        getTests().entrySet().forEach((entry) -> {
             getSampleProducer().addTest(entry.getKey(), entry.getValue());
-        }
+        });
     }
 
     @SuppressWarnings("unchecked")

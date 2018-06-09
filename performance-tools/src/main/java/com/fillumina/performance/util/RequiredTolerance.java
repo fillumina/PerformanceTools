@@ -39,13 +39,13 @@ public class RequiredTolerance {
     /** What if scenario proposed as solution for the error. */
     public void appendWhatIfTolerance(StringBuilder buf) {
         buf.append(TableFormatter.title("Would have been:", '-'));
-        for (Map.Entry<RelativeOrder, Ratio> e : map.entrySet()) {
-            Ratio t = e.getValue();
-            buf.append(e.getKey().name().toLowerCase())
-                    .append(" if tolerance >= ")
-                    .append(t)
-                    .append(System.lineSeparator());
-        }
+        map.entrySet().forEach((e) -> {
+                    Ratio t = e.getValue();
+                    buf.append(e.getKey().name().toLowerCase())
+                            .append(" if tolerance >= ")
+                            .append(t)
+                            .append(System.lineSeparator());
+        });
         buf.append(System.lineSeparator());
     }
 

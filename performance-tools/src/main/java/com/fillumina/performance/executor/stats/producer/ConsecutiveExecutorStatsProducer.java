@@ -1,12 +1,11 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.TestExecutor;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.tname.TName;
-import java.util.Map;
 
 /**
  * Executes tests sequentially and returns them as an aggregate statistics.
@@ -49,8 +48,8 @@ public class ConsecutiveExecutorStatsProducer
 
     private Stats executeConsecutively(
             TestExecutor<?, ?, Runnable, MixedStatsHolder> producer) {
-        Stats joinStats = null;
-        for (Map.Entry<TName, Runnable> entry : getTests().entrySet()) {
+        final Holder<Stats> joinStats = new Holder<>();
+        getTests().entrySet().forEach(entry -> {
             final TName name = entry.getKey();
             final Runnable test = entry.getValue();
 
@@ -60,16 +59,16 @@ public class ConsecutiveExecutorStatsProducer
 
             MixedStatsHolder mixedHolder = producer.get();
 
-            for (StatsHolder holder : mixedHolder.getStatsMap().values()) {
-                @SuppressWarnings("unchecked")
-                Stats stats = holder.getStats();
-                if (joinStats == null) {
-                    joinStats = stats;
-                } else {
-                    joinStats = joinStats.join(stats);
-                }
-            }
-        }
-        return joinStats;
+            mixedHolder.getStatsMap().values().stream()
+                    .map((holder) -> holder.getStats())
+                    .forEachOrdered((stats) -> {
+                        if (joinStats.isNull()) {
+                            joinStats.setValue(stats);
+                        } else {
+                            joinStats.setValue(joinStats.getValue().join(stats));
+                        }
+                    });
+        });
+        return joinStats.getValue();
     }
 }

@@ -5,11 +5,13 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
+ * NOTE: very long test
  *
  * @see <a href="https://it.wikipedia.org/wiki/Distribuzione_t_di_Student">
  *  Wikipedia: Distribuzione di Student (Italian)</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO could it be possible to shorten the test duration?
 public class StatFunctionsTest {
 
     @Test

@@ -61,7 +61,7 @@ public class Stats extends Printable<Stats>
         this.type = type;
         this.unit = getArmonizedUnit(measures.values());
         this.map = createMap(measures, unit);
-        this.refMeasure = new BiggerMeasure(measures);
+        this.refMeasure = new BiggerMeasure(this.map);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
 

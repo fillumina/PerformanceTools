@@ -3,6 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.IndexedArrayMap;
 import com.fillumina.performance.util.tname.TName;
@@ -11,7 +12,6 @@ import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -85,24 +85,25 @@ public class MultiThreadPerformanceExecutor
         final TimeSampleCollector timeCollector =
                 new TimeSampleCollector();
 
-        int index = 0;
-        for (Map.Entry<TName, Runnable> entry: tests.entrySet()) {
+        Holder.Integer index = new Holder.Integer();
+        tests.entrySet().forEach(entry -> {
             final TName testName = entry.getKey();
             final Runnable runnable = entry.getValue();
-            final int totalIterations = iterations[index] * workerNumber;
+            final int iteration = iterations[index.getValue()];
+            final int totalIterations = iteration * workerNumber;
 
             AnnotatedRunnableSetter.INSTANCE
                     .onBeforeSample(runnable, totalIterations);
 
-            final long elapsedNanoseconds = iterateOn(runnable, iterations[index]);
+            final long elapsedNanoseconds = iterateOn(runnable, iteration);
 
             AnnotatedRunnableSetter.INSTANCE
                     .onAfterSample(runnable, totalIterations);
 
-            timeCollector.add(testName, elapsedNanoseconds, iterations[index]);
+            timeCollector.add(testName, elapsedNanoseconds, iteration);
 
-            index++;
-        }
+            index.incrementAndGet();
+        });
 
         return timeCollector;
     }

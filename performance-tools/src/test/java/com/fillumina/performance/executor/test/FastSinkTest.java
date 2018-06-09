@@ -17,6 +17,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO shorten
 public class FastSinkTest extends SinkTestHelper {
 
     @Test(expected = InvalidTestException.class)

@@ -62,12 +62,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         public Joiner addSubExperiment(
                 MixedStatsHolder mixedHolder) {
             if (mixedHolder != null) {
-                for (Map.Entry<StatsType, StatsHolder> e :
-                        mixedHolder.getStatsMap().entrySet()) {
+                mixedHolder.getStatsMap().entrySet().forEach((e) -> {
                     StatsType type = e.getKey();
                     StatsHolder stats = e.getValue();
                     getBuilder(type).addSubExperiment(stats);
-                }
+                });
             }
             return this;
         }
@@ -86,12 +85,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         public MixedStatsHolder join() {
             IndexedArrayMap<StatsType, StatsHolder> statsHolderMap =
                     new IndexedArrayMap<>();
-            for (Map.Entry<StatsType,
-                    StatsHolder.Builder> entry: map.entrySet()) {
-                StatsType type = entry.getKey();
-                StatsHolder.Builder builder = entry.getValue();
-                statsHolderMap.put(type, builder.build());
-            }
+            map.entrySet().forEach((entry) -> {
+                    StatsType type = entry.getKey();
+                    StatsHolder.Builder builder = entry.getValue();
+                    statsHolderMap.put(type, builder.build());
+            });
             return new MixedStatsHolder(statsHolderMap);
         }
     }

@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.util.CamelCaseUtils;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -103,37 +103,33 @@ public final class StatsTableStringGenerator
                 .cell("smpl")
                 .cell("TukeyHSD")
                 .endl();
-        int index = 0;
-        for (Map.Entry<TName,DimensionalMeasure> e :
-                stats.getMeasureMap().entrySet()) {
+        Holder.Integer index = new Holder.Integer();
+        stats.getMeasureMap().entrySet().forEach((e) -> {
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
             Unit<?> unit = measure.getUnit();
             final double stdev = unit.convert(
                     measure.getUnbiasedStandardDeviation(),
                     measure.getUnit());
-
             List<TName> names = stats.getNames();
             int testPrefixSize = TName.commonPrefix(names).size();
-
             double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
             String tukeyHsdStr = tukeyHsd < 0 ? "" :
                     String.format(Locale.US,"%.3f", tukeyHsd);
-
             performanceTable
-                .cell(index)
-                .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
-                .cell(stats.getRatioWithRef(name, confidence)
-                        .toStringAsPercentage())
-                .cell(measure.toStringForConfidenceWitoutSamples(
-                        confidence, unit))
-                .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
-                .cell(measure.getFractionalUncertainty(confidence))
-                .cell(measure.getCount())
-                .cell(tukeyHsdStr)
-                .endl();
-            index++;
-        }
+                    .cell(index.getValue())
+                    .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
+                    .cell(stats.getRatioWithRef(name, confidence)
+                            .toStringAsPercentage())
+                    .cell(measure.toStringForConfidenceWitoutSamples(
+                            confidence, unit))
+                    .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
+                    .cell(measure.getFractionalUncertainty(confidence))
+                    .cell(measure.getCount())
+                    .cell(tukeyHsdStr)
+                    .endl();
+            index.incrementAndGet();
+        });
         return performanceTable;
     }
 
@@ -170,9 +166,8 @@ public final class StatsTableStringGenerator
                 .cell("ratio")
                 .cell("value")
                 .endl();
-        int index = 0;
-        for (Map.Entry<TName,DimensionalMeasure> e :
-                stats.getMeasureMap().entrySet()) {
+        Holder.Integer index = new Holder.Integer();
+        stats.getMeasureMap().entrySet().forEach(e -> {
             TName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
             Unit<?> unit = measure.getUnit();
@@ -180,7 +175,7 @@ public final class StatsTableStringGenerator
             int testPrefixSize = TName.commonPrefix(stats.getNames()).size();
 
             performanceTable
-                    .cell(index)
+                    .cell(index.getValue())
                     .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
                     .cell(String.format(Locale.US, "%.2f %%",
                             stats.getRatioWithRef(name, confidence).getValue() * 100.0) )
@@ -188,8 +183,8 @@ public final class StatsTableStringGenerator
                         confidence, unit))
                     //.cell(String.format(Locale.US, "%d", (long)measure.getMean()) )
                     .endl();
-            index++;
-        }
+            index.incrementAndGet();
+        });
         return performanceTable;
     }
 
