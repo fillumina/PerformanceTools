@@ -301,7 +301,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
             super(initialSize);
         }
 
-        public ExtendedIndexedArrayMap(boolean notUsed, ExtendedIndexedArrayMap copy) {
+        public ExtendedIndexedArrayMap(ExtendedIndexedArrayMap copy, boolean readonly) {
             super(copy, true);
         }
 
@@ -309,61 +309,9 @@ public class IndexedHashMapTest extends AbstractMapTest {
             return get(Integer.valueOf(key));
         }
 
-        /**
-         * If you want to support unmodifiable views a dedicated
-         * unmodifiable view class MUST be created.
-         */
-        public static class UnmodifiableView extends ExtendedIndexedArrayMap {
-            private static final long serialVersionUID = 1L;
-
-            public UnmodifiableView(IndexedHashMap<Integer, String> copy) {
-                super(copy);
-            }
-
-            @Override
-            public boolean isUnmodifiable() {
-                return true;
-            }
-
-            @Override
-            public void ensureCapacity(int requiredCapacity) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void removeEntryAtIndex(int index) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IndexedHashMap<Integer, String>clone() {
-                return this;
-            }
-
-            @Override
-            public String setValueAtIndex(int index, String value) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void clear() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public String remove(Object key) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public String put(Integer key, String value) {
-                throw new UnsupportedOperationException();
-            }
-        }
-
         @Override
         protected ExtendedIndexedArrayMap createUnmodifiable() {
-            return new UnmodifiableView(this);
+            return new ExtendedIndexedArrayMap(this, true);
         }
 
         @Override
@@ -451,5 +399,29 @@ public class IndexedHashMapTest extends AbstractMapTest {
 
         map.put(4, "four");
         assertEquals(1, umap.size(), 0);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void shouldAnUnmodifiableEntryBeUnmodifiable() {
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+
+        IndexedHashMap<Integer, String> umap = map.unmodifiable();
+        Map.Entry<Integer, String> uentry = umap.entrySet().iterator().next();
+        uentry.setValue("XXX");
+    }
+
+    @Test
+    public void shouldTheCloneBeIndipendent() {
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
+        map.put(1, "one");
+        map.put(2, "two");
+
+        IndexedHashMap<Integer,String> clone = map.clone();
+        assertEquals("one", clone.get(1));
+
+        map.clear();
+        assertEquals("one", clone.get(1));
     }
 }

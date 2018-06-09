@@ -26,7 +26,6 @@ import java.util.function.Function;
  * <li>insertion, extraction have O(1) complexity
  * <li>worse case is linear O(N)
  * <li>removal is linear O(N) VERY INEFFICIENT
- * <li>increases and decreases its size automatically
  * <li>maintains insertion order
  * <li>views are random access list
  * <li>manages its own unmodifiable version of itself
@@ -54,6 +53,7 @@ public class IndexedHashMap<K,V>
     private EntryImpl<K,V>[] array;
     private int[] indexes;
     private int size;
+    private boolean readonly;
 
     private transient EntrySet entrySet;
     private transient KeySet keySet;
@@ -72,11 +72,16 @@ public class IndexedHashMap<K,V>
         putAll(copy);
     }
 
+    @SuppressWarnings("unchecked")
     public IndexedHashMap(IndexedHashMap<? extends K, ? extends V> clone) {
         if (clone.array != null) {
-            this.array = (EntryImpl<K, V>[]) clone.array.clone();
             this.indexes = clone.indexes.clone();
             this.size = clone.size;
+            this.array = new EntryImpl[clone.array.length];
+            EntryImpl<K,V> c[] = (EntryImpl<K,V>[]) clone.array;
+            for (int i=0, l=size; i<l; i++) {
+                this.array[i] = c[i].clone();
+            }
         }
     }
 
@@ -95,8 +100,14 @@ public class IndexedHashMap<K,V>
         return (number > 1) ? Integer.highestOneBit((number - 1) << 1) : 2; //1;
     }
 
-    protected IndexedHashMap(IndexedHashMap<K,V> delegate, boolean notUsed) {
+    /** Special constructor to use to create unmodifiable view. */
+    protected IndexedHashMap(IndexedHashMap<K,V> delegate, boolean readonly) {
+        if (!readonly) {
+            // check that it is used only for create the unmodifiable view
+            throw new IllegalArgumentException("readonly must be true");
+        }
         setDelegate(delegate);
+        this.readonly = readonly;
     }
 
     protected void setDelegate(IndexedHashMap<K, V> delegate) {
@@ -172,61 +183,8 @@ public class IndexedHashMap<K,V>
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 15);
     }
 
-    protected static class UnmodifiableView<K,V> extends IndexedHashMap<K,V> {
-        private static final long serialVersionUID = 1L;
-
-        protected UnmodifiableView(IndexedHashMap<K,V> delegate) {
-            super(delegate, true);
-        }
-
-        @Override
-        public boolean isUnmodifiable() {
-            return true;
-        }
-
-        @Override
-        public IndexedHashMap<K,V> unmodifiable() {
-            return this;
-        }
-
-        @Override
-        public IndexedHashMap<K, V> clone() {
-            return this;
-        }
-
-        @Override
-        public void ensureCapacity(int requiredCapacity) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void removeEntryAtIndex(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public V setValueAtIndex(int index, V value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public V remove(Object key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public V put(K key, V value) {
-            throw new UnsupportedOperationException();
-        }
-    }
-
     public boolean isUnmodifiable() {
-        return false;
+        return readonly;
     }
 
     public IndexedHashMap<K,V> unmodifiable() {
@@ -237,7 +195,7 @@ public class IndexedHashMap<K,V>
     }
 
     protected IndexedHashMap<K, V> createUnmodifiable() {
-        return new UnmodifiableView<>(this);
+        return new IndexedHashMap<>(this, true);
     }
 
     @Override
@@ -249,6 +207,9 @@ public class IndexedHashMap<K,V>
     }
 
     public void ensureCapacity(int requiredCapacity) {
+        if (readonly) {
+            return;
+        }
         int available = (array == null) ? 0 : ((array.length - size) >> 1);
         if (requiredCapacity > available) {
             int newSize = roundUpToPowerOf2((size >> 1) + requiredCapacity);
@@ -274,6 +235,9 @@ public class IndexedHashMap<K,V>
 
     @Override
     public V put(K key, V value) {
+        if (readonly) {
+            throw new UnsupportedOperationException("unmodifiable view");
+        }
         if (array == null) {
             resize(8);
         } else if (size == array.length) {
@@ -339,6 +303,11 @@ public class IndexedHashMap<K,V>
     @Override
     @SuppressWarnings("unchecked")
     public V get(Object key) {
+        Entry<K,V> result = getEntry((K) key);
+        return result == null ? null : result.getValue();
+    }
+
+    public Entry<K,V> getEntry(K key) {
         if (size == 0) {
             return null;
         }
@@ -351,7 +320,7 @@ public class IndexedHashMap<K,V>
             }
             EntryImpl<K,V> e = array[pointer - 1];
             if (equalsKey(e.key, key)) {
-                return e.value;
+                return e;
             }
             bucket = (bucket + 1) & mask;
         }
@@ -384,6 +353,9 @@ public class IndexedHashMap<K,V>
     /** WARNING: inefficient method O(N) */
     @Override
     public V remove(Object key) {
+        if (readonly) {
+            throw new UnsupportedOperationException("unmodifiable view");
+        }
         if (array == null) {
             return null;
         }
@@ -410,10 +382,6 @@ public class IndexedHashMap<K,V>
 
     private void removeIndex(int index, int bucket, int mask) {
         size--;
-//        if (size < (indexes.length >> 2)) {
-//            resize(indexes.length >> 1, index);
-//
-//        } else {
 
         // shift the array list from index back by 1
         System.arraycopy(array, index + 1,
@@ -471,12 +439,18 @@ public class IndexedHashMap<K,V>
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
+        if (readonly) {
+            throw new UnsupportedOperationException("unmodifiable view");
+        }
         ensureCapacity(m.size());
         m.forEach((k,v) -> put(k,v));
     }
 
     @Override
     public void clear() {
+        if (readonly) {
+            throw new UnsupportedOperationException("unmodifiable view");
+        }
         if (array != null) {
             Arrays.fill(array, null);
             Arrays.fill(indexes, 0);
@@ -487,13 +461,68 @@ public class IndexedHashMap<K,V>
         }
     }
 
-    private static class EntryImpl<K,V> implements Map.Entry<K,V> {
+    private static class UnmodifiableEntryImpl<K,V> implements Map.Entry<K,V> {
+        private final EntryImpl<K,V> delegate;
+
+        public UnmodifiableEntryImpl(EntryImpl<K, V> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public K getKey() {
+            return delegate.key;
+        }
+
+        @Override
+        public V getValue() {
+            return delegate.value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            throw new UnsupportedOperationException("Not supported.");
+        }
+
+        @Override
+        public int hashCode() {
+            // as per definition of hashCode
+            return getKey().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final Entry<?,?> other = (Entry<?,?>) obj;
+            if (!Objects.equals(getKey(), other.getKey())) {
+                return false;
+            }
+            return Objects.equals(getValue(), other.getValue());
+        }
+    }
+
+    public static class EntryImpl<K,V> implements Map.Entry<K,V>, Cloneable {
         private final K key;
         private V value;
+        private UnmodifiableEntryImpl<K,V> uentry;
 
         public EntryImpl(K key, V value) {
             this.key = key;
             this.value = value;
+        }
+
+        Entry<K,V> unmodifiable() {
+            if (uentry == null) {
+                uentry = new UnmodifiableEntryImpl<>(this);
+            }
+            return uentry;
         }
 
         @Override
@@ -514,9 +543,14 @@ public class IndexedHashMap<K,V>
         }
 
         @Override
+        protected EntryImpl<K,V> clone() {
+            return new EntryImpl<>(key, value);
+        }
+
+        @Override
         public int hashCode() {
             // as per definition of hashCode
-            return Objects.hashCode(key);
+            return key.hashCode();
         }
 
         @Override
@@ -597,6 +631,9 @@ public class IndexedHashMap<K,V>
 
         @Override
         public void remove() {
+            if (readonly) {
+                throw new UnsupportedOperationException("unmodifiable view");
+            }
             if (removed) {
                 throw new IllegalStateException();
             }
@@ -673,6 +710,9 @@ public class IndexedHashMap<K,V>
 
         @Override
         public void clear() {
+            if (readonly) {
+                throw new UnsupportedOperationException("unmodifiable view");
+            }
             start = 0;
             end = 0;
             IndexedHashMap.this.clear();
@@ -726,6 +766,9 @@ public class IndexedHashMap<K,V>
 
                 @Override
                 public void remove() {
+                    if (readonly) {
+                        throw new UnsupportedOperationException("unmodifiable view");
+                    }
                     c.remove();
                 }
 
@@ -768,6 +811,9 @@ public class IndexedHashMap<K,V>
 
         @Override
         public T remove(int index) {
+            if (readonly) {
+                throw new UnsupportedOperationException("unmodifiable view");
+            }
             rangeCheck(index);
             T t = get(index);
             IndexedHashMap.this.removeEntryAtIndex(start + index);
@@ -810,6 +856,9 @@ public class IndexedHashMap<K,V>
 
         @Override
         Entry<K, V> select(Entry<K,V> entry) {
+            if (readonly) {
+                return ((EntryImpl<K,V>)entry).unmodifiable();
+            }
             return entry;
         }
 
@@ -913,11 +962,6 @@ public class IndexedHashMap<K,V>
         return values;
     }
 
-    /**
-     * entrySet().stream() has been optimized to use Cursor.
-     * WARNING: using this set means that a new {@link Map.Entry} must be
-     * created at each access.
-     */
     @Override
     public Set<Entry<K, V>> entrySet() {
         if (entrySet == null) {
@@ -936,7 +980,6 @@ public class IndexedHashMap<K,V>
         return hash;
     }
 
-    /** Overridden to use cursor instead of {@link #entrySet()}. */
     @Override
     public void forEach(Consumer<? super Entry<K, V>> action) {
         final ListIteratorImpl c = new ListIteratorImpl();
@@ -950,10 +993,12 @@ public class IndexedHashMap<K,V>
         return entrySet().spliterator();
     }
 
-    /** Overridden to use cursor instead of {@link #entrySet()}. */
     @Override
     public void replaceAll(
             BiFunction<? super K, ? super V, ? extends V> function) {
+        if (readonly) {
+            throw new UnsupportedOperationException("unmodifiable view");
+        }
         for (Map.Entry<K, V> e : this) {
             V v = function.apply(e.getKey(), e.getValue());
             e.setValue(v);

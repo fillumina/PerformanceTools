@@ -30,62 +30,14 @@ public class TNameMap<T extends TNamed>
         super(delegate, true);
     }
 
-    protected static class UnmodifiableView<T extends TNamed> extends TNameMap<T> {
-        private static final long serialVersionUID = 1L;
-
-        UnmodifiableView(TNameMap<T> delegate) {
-            super(delegate, true);
-        }
-
-        @Override
-        public boolean isUnmodifiable() {
-            return true;
-        }
-
-        @Override
-        public UnmodifiableView<T> clone() {
-            return this;
-        }
-
-        @Override
-        public void ensureCapacity(int requiredCapacity) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void removeEntryAtIndex(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public T setValueAtIndex(int index, T value) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public T remove(Object key) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public T put(TName key, T value) {
-            throw new UnsupportedOperationException();
-        }
+    @Override
+    protected TNameMap<T> createUnmodifiable() {
+        return new TNameMap<>(this, true);
     }
 
     @Override
-    protected UnmodifiableView<T> createUnmodifiable() {
-        return new UnmodifiableView<>(this);
-    }
-
-    @Override
-    public UnmodifiableView<T> unmodifiable() {
-        return (UnmodifiableView<T>) super.unmodifiable();
+    public TNameMap<T> unmodifiable() {
+        return (TNameMap<T>) super.unmodifiable();
     }
 
     @Override
