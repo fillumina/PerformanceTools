@@ -14,11 +14,11 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class IndexedArrayMapTest extends AbstractMapTest {
+public class IndexedHashMapTest extends AbstractMapTest {
 
     @Override
     protected <K, V> Map<K, V> createMap() {
-        return new IndexedArrayMap<>();
+        return new IndexedHashMap<>();
     }
 
     @Test(timeout = 500)
@@ -29,7 +29,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         map.put(3, "three");
         map.put(4, "four");
 
-        Map<Integer,String> copy = new IndexedArrayMap<>(map);
+        Map<Integer,String> copy = new IndexedHashMap<>(map);
         assertEquals("one", copy.get(1));
         assertEquals("two", copy.get(2));
         assertEquals("three", copy.get(3));
@@ -38,13 +38,13 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldUseCloneConstructor() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
         map.put(2, "two");
         map.put(3, "three");
         map.put(4, "four");
 
-        Map<Integer,String> copy = new IndexedArrayMap<>(map);
+        Map<Integer,String> copy = new IndexedHashMap<>(map);
         assertEquals("one", copy.get(1));
         assertEquals("two", copy.get(2));
         assertEquals("three", copy.get(3));
@@ -53,7 +53,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldIterateThroughAllEntries() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
         map.put(2, "two");
         map.put(3, "three");
@@ -69,7 +69,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldGetTheEntryAtIndex() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -83,7 +83,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldGetTheKeyAtIndex() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -94,7 +94,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldGetTheValueAtIndex() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -105,7 +105,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldDetectUnmodifiableMapWhileNotModifyingTheMap() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -131,7 +131,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         SameHash c = new SameHash();
         SameHash d = new SameHash();
 
-        IndexedArrayMap<SameHash,Character> map = new IndexedArrayMap<>();
+        IndexedHashMap<SameHash,Character> map = new IndexedHashMap<>();
         map.put(a, 'a');
         map.put(b, 'b');
         map.put(c, 'c');
@@ -151,7 +151,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         SameHash c = new SameHash();
         SameHash d = new SameHash();
 
-        IndexedArrayMap<SameHash,Character> map = new IndexedArrayMap<>();
+        IndexedHashMap<SameHash,Character> map = new IndexedHashMap<>();
         map.put(a, 'a');
         map.put(b, 'b');
         map.put(c, 'c');
@@ -178,7 +178,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldGetIndexOfKey() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -192,7 +192,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldGetIndexOfList() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -208,7 +208,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldIncreaseItsSize() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<>();
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<>();
         for (int i=0; i<128; i++) {
             map.put("" + i, i);
         }
@@ -223,7 +223,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldIterateWithForEach() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -237,7 +237,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldIterateWithForEachMaintainingOrder() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("one", 1)
                 .add("two", 2)
                 .add("three", 3)
@@ -254,7 +254,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500)
     public void shouldClearTheMapIfAllElementsAreRemoved() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<String,Integer>()
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<String,Integer>()
                 .add("four", 4);
 
         map.remove("four");
@@ -263,14 +263,14 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test(timeout = 500, expected = UnsupportedOperationException.class)
     public void shouldUnmodifiableEmptyMapBeUnmofiable() {
-        IndexedArrayMap<String,Integer> map = new IndexedArrayMap<>();
+        IndexedHashMap<String,Integer> map = new IndexedHashMap<>();
 
         map.unmodifiable().put("one", 1);
     }
 
     @Test(timeout = 500)
     public void shouldGetWithoutInfiniteLoop() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<Integer,String>()
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<Integer,String>()
                 .add(1, "one")
                 .add(2, "two")
                 .add(3, "three")
@@ -280,7 +280,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
     }
 
     public static class ExtendedIndexedArrayMap
-            extends IndexedArrayMap<Integer,String> {
+            extends IndexedHashMap<Integer,String> {
         private static final long serialVersionUID = 1L;
 
         public ExtendedIndexedArrayMap() {
@@ -293,7 +293,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         }
 
         public ExtendedIndexedArrayMap(
-                IndexedArrayMap<? extends Integer, ? extends String> clone) {
+                IndexedHashMap<? extends Integer, ? extends String> clone) {
             super(clone);
         }
 
@@ -316,7 +316,7 @@ public class IndexedArrayMapTest extends AbstractMapTest {
         public static class UnmodifiableView extends ExtendedIndexedArrayMap {
             private static final long serialVersionUID = 1L;
 
-            public UnmodifiableView(IndexedArrayMap<Integer, String> copy) {
+            public UnmodifiableView(IndexedHashMap<Integer, String> copy) {
                 super(copy);
             }
 
@@ -331,12 +331,12 @@ public class IndexedArrayMapTest extends AbstractMapTest {
             }
 
             @Override
-            protected void removeEntryAtIndex(int index) {
+            public void removeEntryAtIndex(int index) {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public IndexedArrayMap<Integer, String>clone() {
+            public IndexedHashMap<Integer, String>clone() {
                 return this;
             }
 
@@ -407,10 +407,10 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test
     public void shouldUnmodifiableBeAView() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
 
-        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiable();
         assertEquals("one", umap.get(1));
 
         map.remove(1);
@@ -420,11 +420,11 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test
     public void shouldEntrySetOfUnmodifiableBeUpdatedByClear() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
         map.put(2, "two");
 
-        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiable();
         Set<Entry<Integer,String>> uset = umap.entrySet();
 
         map.clear();
@@ -436,11 +436,11 @@ public class IndexedArrayMapTest extends AbstractMapTest {
 
     @Test
     public void shouldAddEntriesToUnmodifiableToo() {
-        IndexedArrayMap<Integer,String> map = new IndexedArrayMap<>();
+        IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
         map.put(2, "two");
 
-        IndexedArrayMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiable();
         assertEquals(2, umap.size(), 0);
 
         map.put(3, "three");

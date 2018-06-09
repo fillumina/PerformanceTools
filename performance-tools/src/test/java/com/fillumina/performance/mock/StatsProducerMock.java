@@ -3,7 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class StatsProducerMock<T>
     private BiFunction<CharSequence,Runnable,T> evaluator = (x,y) -> null;
 
     public StatsProducerMock(Object... objects) {
-        map = new IndexedArrayMap<>();
+        map = new IndexedHashMap<>();
         for (int i=0,l=objects.length; i<l; i+=2) {
             CharSequence c = (CharSequence) objects[i];
             double value = Double.valueOf(objects[i+1].toString());
@@ -51,7 +51,7 @@ public class StatsProducerMock<T>
     @Override
     public MixedStatsHolder get() {
         StatsMockBuilder builder = new StatsMockBuilder().name(getName());
-        Map<CharSequence,T> subTree = new IndexedArrayMap<>();
+        Map<CharSequence,T> subTree = new IndexedHashMap<>();
         tree.add(subTree);
         getTests().forEach((TName name, Runnable test) -> {
             //TName cname = getName().append(name);

@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class StatsCreator implements StatsTyped {
 
-    private final IndexedArrayMap<TName, QuantityList.Builder> valuesMap =
-            new IndexedArrayMap<>();
+    private final IndexedHashMap<TName, QuantityList.Builder> valuesMap =
+            new IndexedHashMap<>();
     private final StatsType type;
 
     public StatsCreator(StatsType type) {
@@ -44,7 +44,7 @@ public class StatsCreator implements StatsTyped {
      * Builds a {@link Stats} out of the collected samples.
      */
     public Stats createStats(ListFilter<Double> filter) {
-        IndexedArrayMap<TName, DimensionalMeasure> map = new IndexedArrayMap<>();
+        IndexedHashMap<TName, DimensionalMeasure> map = new IndexedHashMap<>();
 
         valuesMap.forEach((TName name, QuantityList.Builder builder) -> {
             final QuantityList qList = builder.build();

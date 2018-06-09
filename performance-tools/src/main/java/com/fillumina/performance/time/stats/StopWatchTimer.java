@@ -5,7 +5,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.time.TimeStatsType;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.ReciprocalOnlineMeasureSampler;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class StopWatchTimer {
 
-    private final IndexedArrayMap<String,ReciprocalOnlineMeasureSampler> map;
+    private final IndexedHashMap<String,ReciprocalOnlineMeasureSampler> map;
     private final ReciprocalOnlineMeasureSampler[] cache;
     private long last;
 
@@ -38,7 +38,7 @@ public class StopWatchTimer {
     }
 
     public StopWatchTimer(int size) {
-        map = new IndexedArrayMap<>(size);
+        map = new IndexedHashMap<>(size);
         cache = new ReciprocalOnlineMeasureSampler[size];
         for (int i=0; i<size; i++) {
             cache[i] = new ReciprocalOnlineMeasureSampler();
@@ -106,8 +106,8 @@ public class StopWatchTimer {
 
     /** Returns the performance statistics. */
     public MixedStatsHolder getPerformances(ListFilter<Double> filter) {
-        Map<TName,DimensionalMeasure> avgMap = new IndexedArrayMap<>(map.size());
-        Map<TName,DimensionalMeasure> tptMap = new IndexedArrayMap<>(map.size());
+        Map<TName,DimensionalMeasure> avgMap = new IndexedHashMap<>(map.size());
+        Map<TName,DimensionalMeasure> tptMap = new IndexedHashMap<>(map.size());
 
         map.forEach( (s,m) -> {
                 TName tname = TN.tname(s);

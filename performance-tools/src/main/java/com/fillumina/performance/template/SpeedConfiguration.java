@@ -13,7 +13,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.ConsumerAggregator;
 import com.fillumina.performance.util.StringGenerator;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ConvergenceFilter;
 import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
@@ -251,7 +251,7 @@ public class SpeedConfiguration<C>
             @Override
             public Map<StatsType, StringGenerator<Stats>>
                     getStringGenerators() {
-                return IndexedArrayMap.create(TimeStatsType.AVERAGE,
+                return IndexedHashMap.create(TimeStatsType.AVERAGE,
                         averageTimeStatsStringGenerator,
                         TimeStatsType.THROUGHPUT,
                         throughputStatsStringGenerator

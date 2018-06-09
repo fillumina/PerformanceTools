@@ -10,7 +10,7 @@ import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.StatsExpression;
 import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
 import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -34,7 +34,7 @@ public class TestConfiguration<C>
     private static final String TAB = "    ";
     private static final String CRLF = System.lineSeparator();
 
-    private final IndexedArrayMap<TName, Runnable> tests = new IndexedArrayMap<>();
+    private final IndexedHashMap<TName, Runnable> tests = new IndexedHashMap<>();
     private final LinkedTree<String, Object> parameters = new LinkedTree<>();
     private final LinkedTree<String, Object> sequences = new LinkedTree<>();
     private final StatsExpression<TestConfiguration<C>> statsExpression;
@@ -66,7 +66,7 @@ public class TestConfiguration<C>
     }
 
     @Override
-    public IndexedArrayMap<TName, Runnable> getTests() {
+    public IndexedHashMap<TName, Runnable> getTests() {
         return tests.unmodifiable();
     }
 
@@ -166,7 +166,7 @@ public class TestConfiguration<C>
         return table.toString();
     }
 
-    public static String toStringTests(IndexedArrayMap<TName,Runnable> tests) {
+    public static String toStringTests(IndexedHashMap<TName,Runnable> tests) {
         StringBuilder buf = new StringBuilder();
         buf.append("tests:").append(CRLF);
         for (TName name : tests.keySet()) {

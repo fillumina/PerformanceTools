@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedArrayMap<TName, Runnable> tests,
+            final IndexedHashMap<TName, Runnable> tests,
             final int[] iterations) {
 
         final int actualFractions =
@@ -133,13 +133,13 @@ public class SingleThreadPerformanceExecutor
         return minIterations < fractions ? 1 : fractions;
     }
 
-    private void setupTests(IndexedArrayMap<TName, Runnable> tests) {
+    private void setupTests(IndexedHashMap<TName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
         }
     }
 
-    private void tearDownTests(IndexedArrayMap<TName, Runnable> tests) {
+    private void tearDownTests(IndexedHashMap<TName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
         }

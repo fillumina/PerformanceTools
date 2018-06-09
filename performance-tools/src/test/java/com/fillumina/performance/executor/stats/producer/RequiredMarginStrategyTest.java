@@ -71,7 +71,7 @@ public class RequiredMarginStrategyTest {
 
         SampleProgressionStatus status = createStatus(7, 5, margin);
 
-        assertNotEquals(0.0, strategy.errorToStopTakingSamplesCondition(status));
+        assertEquals(0.0, strategy.errorToStopTakingSamplesCondition(status), 0);
     }
 
     private SampleProgressionStatus createStatus(int executedSamples,

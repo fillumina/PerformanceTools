@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import java.util.List;
 
 /**
@@ -8,7 +8,7 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StatsTypedMap<T extends StatsTyped>
-        extends IndexedArrayMap<StatsType,T> {
+        extends IndexedHashMap<StatsType,T> {
     private static final long serialVersionUID = 1L;
 
     public StatsTypedMap() {

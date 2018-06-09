@@ -6,7 +6,7 @@ import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -53,7 +53,7 @@ public class ParallelMultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedArrayMap<TName, Runnable> tests,
+            final IndexedHashMap<TName, Runnable> tests,
             final int[] bound) {
 
         final AnnotatedRunnableSetter runnableSetter =
@@ -148,7 +148,7 @@ public class ParallelMultiThreadPerformanceExecutor
                 "to complete: " + timeout, e);
     }
 
-    private void assertAllTestsAreAsymmetric(IndexedArrayMap<TName, Runnable> tests) {
+    private void assertAllTestsAreAsymmetric(IndexedHashMap<TName, Runnable> tests) {
         tests.entrySet().forEach(entry -> {
             TName name = entry.getKey();
             Runnable runnable = entry.getValue();

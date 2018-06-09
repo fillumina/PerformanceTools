@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public abstract class AbstractTestExecutor
     public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 
     private final List<Consumer<? super M>> consumers = new ArrayList<>();
-    private final IndexedArrayMap<TName, T> tests = new IndexedArrayMap<>();
+    private final IndexedHashMap<TName, T> tests = new IndexedHashMap<>();
     private TName name = TN.EMPTY;
 
     @Override
@@ -143,7 +143,7 @@ public abstract class AbstractTestExecutor
     }
 
     @Override
-    public IndexedArrayMap<TName, T> getTests() {
+    public IndexedHashMap<TName, T> getTests() {
         return tests.unmodifiable();
     }
 

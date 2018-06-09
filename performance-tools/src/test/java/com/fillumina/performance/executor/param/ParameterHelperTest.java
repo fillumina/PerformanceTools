@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.param;
 
 import com.fillumina.performance.executor.annotation.Param;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
@@ -54,7 +54,7 @@ public class ParameterHelperTest {
 
         //System.out.println(params.toString());
 
-        IndexedArrayMap<TName,Runnable> lmap =
+        IndexedHashMap<TName,Runnable> lmap =
                 ParameterHelper.createParameterizedRunnable(
                         new ParameterizedRunnable(),
                         params, Param.class);
@@ -111,7 +111,7 @@ public class ParameterHelperTest {
         RunnableHelper setter =
                 new RunnableHelper(runnable, Param.class);
 
-        IndexedArrayMap<String,Object> parameters = IndexedArrayMap.<String,Object>create(
+        IndexedHashMap<String,Object> parameters = IndexedHashMap.<String,Object>create(
                         "name", "Pippo",
                         "size", 123);
 

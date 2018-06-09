@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -26,7 +26,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
     public void shouldRejectNoTests() {
         SingleTestMultiThreadPerformanceExecutor executor =
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
-        IndexedArrayMap<TName,Runnable> noTest = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> noTest = new IndexedHashMap<>();
         executor.executeIterations(noTest, new int[]{});
     }
 
@@ -35,7 +35,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         SingleTestMultiThreadPerformanceExecutor executor =
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
 
-        IndexedArrayMap<TName,Runnable> testMap = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
         testMap.put(TN.tname("one"), (Runnable) () -> {});
         testMap.put(TN.tname("two"), (Runnable) () -> {});
 
@@ -47,7 +47,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
         SingleTestMultiThreadPerformanceExecutor executor =
                 new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
 
-        IndexedArrayMap<TName,Runnable> testMap = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
         testMap.put(TN.tname("alpha"), new LfsrRunnable());
 
         Sample sample = executor

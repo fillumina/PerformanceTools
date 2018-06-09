@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.tname;
 
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import java.util.Objects;
 
 /**
@@ -11,7 +11,7 @@ import java.util.Objects;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TNameMap<T extends TNamed>
-        extends IndexedArrayMap<TName, T> {
+        extends IndexedHashMap<TName, T> {
     private static final long serialVersionUID = 1L;
 
     public TNameMap() {
@@ -53,7 +53,7 @@ public class TNameMap<T extends TNamed>
         }
 
         @Override
-        protected void removeEntryAtIndex(int index) {
+        public void removeEntryAtIndex(int index) {
             throw new UnsupportedOperationException();
         }
 
@@ -89,7 +89,7 @@ public class TNameMap<T extends TNamed>
     }
 
     @Override
-    public boolean equals(Object a, Object b) {
+    public boolean equalsKey(Object a, Object b) {
         return a == b || Objects.toString(a).equals(Objects.toString(b));
     }
 

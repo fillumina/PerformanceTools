@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -74,7 +74,7 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(avgSample);
         Sample thrSample = builder.buildThroughputSample();
         dispatchToConsumers(thrSample);
-        return new IndexedArrayMap<StatsType,Sample>()
+        return new IndexedHashMap<StatsType,Sample>()
                 .add(TimeStatsType.AVERAGE, avgSample)
                 .add(TimeStatsType.THROUGHPUT, thrSample);
     }
@@ -148,7 +148,7 @@ public class DefaultPerformanceTimer
 
     private int[] doEstimation(long milliseconds)
             throws InvalidTestException {
-        IndexedArrayMap<TName,Runnable> map = getTests();
+        IndexedHashMap<TName,Runnable> map = getTests();
         int size = map.size();
         int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
@@ -207,8 +207,8 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder executeSingleTest(Runnable runnable,
             int iterations) {
-        final IndexedArrayMap<TName,Runnable> singletonTest =
-                IndexedArrayMap.create(TN.tname("singleton"), runnable);
+        final IndexedHashMap<TName,Runnable> singletonTest =
+                IndexedHashMap.create(TN.tname("singleton"), runnable);
         final int[] singletonArray = new int[]{iterations};
         return executor.executeIterations(singletonTest, singletonArray);
     }
@@ -235,7 +235,7 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder performTests(int[] iterations)
             throws IllegalStateException {
-        IndexedArrayMap<TName,Runnable> tests = getTests();
+        IndexedHashMap<TName,Runnable> tests = getTests();
         int[] actualIterations = span(iterations, tests.size());
         final TimeSampleBuilder builder =
                 executor.executeIterations(tests, actualIterations);

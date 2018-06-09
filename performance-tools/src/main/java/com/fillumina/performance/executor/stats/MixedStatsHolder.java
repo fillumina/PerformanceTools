@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class MixedStatsHolder extends Printable<MixedStatsHolder> {
 
     public static final MixedStatsHolder EMPTY =
-            new MixedStatsHolder(IndexedArrayMap.<StatsType, StatsHolder>emtpy());
+            new MixedStatsHolder(IndexedHashMap.<StatsType, StatsHolder>emtpy());
 
     public static class Builder {
         private final MixedStatsHolder mixedHolder =
@@ -83,8 +83,8 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         }
 
         public MixedStatsHolder join() {
-            IndexedArrayMap<StatsType, StatsHolder> statsHolderMap =
-                    new IndexedArrayMap<>();
+            IndexedHashMap<StatsType, StatsHolder> statsHolderMap =
+                    new IndexedHashMap<>();
             map.entrySet().forEach((entry) -> {
                     StatsType type = entry.getKey();
                     StatsHolder.Builder builder = entry.getValue();
@@ -102,17 +102,17 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         return new Joiner(name);
     }
 
-    private final IndexedArrayMap<StatsType, StatsHolder> map;
+    private final IndexedHashMap<StatsType, StatsHolder> map;
 
     public MixedStatsHolder(StatsHolder... stats) {
-        this(new IndexedArrayMap<>());
+        this(new IndexedHashMap<>());
         for (StatsHolder s : stats) {
             s.setCaller(this);
             map.put(s.getStatsType(), s);
         }
     }
 
-    private MixedStatsHolder(IndexedArrayMap<StatsType, StatsHolder> map) {
+    private MixedStatsHolder(IndexedHashMap<StatsType, StatsHolder> map) {
         this.map = map;
     }
 

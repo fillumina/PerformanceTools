@@ -4,7 +4,7 @@ import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
@@ -40,7 +40,7 @@ public class Stats extends Printable<Stats>
     /** The results are presented in relation with the bigger value. */
     private final BiggerMeasure refMeasure;
 
-    private final IndexedArrayMap<TName, DimensionalMeasure> map;
+    private final IndexedHashMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
     private final Unit<?> unit;
 
@@ -77,7 +77,7 @@ public class Stats extends Printable<Stats>
                     "this: " + type.toString() +
                     " != other: " + other.type.toString());
         }
-        Map<TName,DimensionalMeasure> m = new IndexedArrayMap<>();
+        Map<TName,DimensionalMeasure> m = new IndexedHashMap<>();
         m.putAll(getMeasureMap());
         m.putAll(other.getMeasureMap());
         return new Stats(other.type , m);
@@ -92,10 +92,10 @@ public class Stats extends Printable<Stats>
         return unit;
     }
 
-    private IndexedArrayMap<TName, DimensionalMeasure> createMap(
+    private IndexedHashMap<TName, DimensionalMeasure> createMap(
             Map<TName,DimensionalMeasure> measures, Unit<?> unit) {
-        IndexedArrayMap<TName,DimensionalMeasure> m =
-                new IndexedArrayMap<>(measures.size());
+        IndexedHashMap<TName,DimensionalMeasure> m =
+                new IndexedHashMap<>(measures.size());
         measures.forEach((TName n, DimensionalMeasure d) -> {
             m.put(n, d.in(unit));
         });

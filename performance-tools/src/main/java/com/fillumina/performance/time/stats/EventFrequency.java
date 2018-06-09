@@ -8,7 +8,7 @@ import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTypeImpl;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Looper;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.stats.Measure;
@@ -54,7 +54,7 @@ public class EventFrequency {
         }
     }
 
-    private final IndexedArrayMap<String,Event> map;
+    private final IndexedHashMap<String,Event> map;
     private final Event[] events;
 
     public EventFrequency() {
@@ -67,7 +67,7 @@ public class EventFrequency {
     }
 
     public EventFrequency(int size) {
-        map = new IndexedArrayMap<>(size);
+        map = new IndexedHashMap<>(size);
         events = new Event[size];
         for (int i=0; i<size; i++) {
             events[i] = new Event();
@@ -179,9 +179,9 @@ public class EventFrequency {
 
     /** Returns the performance statistics. */
     public MixedStatsHolder getPerformances(ListFilter<Double> filter) {
-        Map<TName,DimensionalMeasure> cntMap = new IndexedArrayMap<>(map.size());
-        Map<TName,DimensionalMeasure> avgMap = new IndexedArrayMap<>(map.size());
-        Map<TName,DimensionalMeasure> tptMap = new IndexedArrayMap<>(map.size());
+        Map<TName,DimensionalMeasure> cntMap = new IndexedHashMap<>(map.size());
+        Map<TName,DimensionalMeasure> avgMap = new IndexedHashMap<>(map.size());
+        Map<TName,DimensionalMeasure> tptMap = new IndexedHashMap<>(map.size());
 
         map.forEach( (s,m) -> {
                 TName tname = TN.tname(s);

@@ -3,7 +3,7 @@ package com.fillumina.performance.mock;
 import com.fillumina.performance.assertion.AbstractAssertable;
 import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import java.util.Collection;
@@ -19,7 +19,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
         implements Assertable {
 
     private final String name;
-    private final Map<CharSequence, Measure> map = new IndexedArrayMap<>();
+    private final Map<CharSequence, Measure> map = new IndexedHashMap<>();
 
     /**
      * Use as:
@@ -38,7 +38,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
     public static AssertableMock create(Object... o) {
         int start = (o.length & 1);
         String name = (start == 1) ? (String) o[0] : "test";
-        IndexedArrayMap<CharSequence,Measure> map = new IndexedArrayMap<>();
+        IndexedHashMap<CharSequence,Measure> map = new IndexedHashMap<>();
         for (int i=start; i<o.length; i+=2) {
             double value = Double.valueOf(o[i+1].toString());
             map.put((CharSequence)o[i], new OnlineMeasure(value));
@@ -48,7 +48,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
 
     public static AssertableMock createWithName(String name, Object... o) {
         int start = (o.length & 1);
-        IndexedArrayMap<CharSequence,Measure> map = new IndexedArrayMap<>();
+        IndexedHashMap<CharSequence,Measure> map = new IndexedHashMap<>();
         for (int i=start; i<o.length; i+=2) {
             double value = Double.valueOf(o[i+1].toString());
             map.put((CharSequence)o[i], new OnlineMeasure(value));

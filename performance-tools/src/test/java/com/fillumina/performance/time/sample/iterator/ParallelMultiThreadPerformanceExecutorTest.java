@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
-import com.fillumina.performance.util.collection.IndexedArrayMap;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -30,7 +30,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
-        IndexedArrayMap<TName,Runnable> testMap = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
@@ -51,7 +51,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(2, DAYS_1);
 
-        IndexedArrayMap<TName,Runnable> testMap = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
@@ -66,7 +66,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(8, DAYS_1);
 
-        IndexedArrayMap<TName,Runnable> testMap = new IndexedArrayMap<>();
+        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 
         final AtomicInteger oneCounter = new AtomicInteger();
         final AtomicInteger twoCounter = new AtomicInteger();
