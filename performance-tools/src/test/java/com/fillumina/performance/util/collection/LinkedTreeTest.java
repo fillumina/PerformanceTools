@@ -13,6 +13,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -80,7 +81,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         tree.put("one", 1);
         tree.put("two", 2);
 
-        Iterator<Tree<String,Integer>> it = tree.iterator();
+        Iterator<LinkedTree<String,Integer>> it = tree.iterator();
 
         assertTrue(it.hasNext());
         Entry<String,Integer> entry = it.next();
@@ -125,7 +126,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .getRoot();
 
         List<Integer> results = new ArrayList<>();
-        for (Tree<String,Integer> t : tree.depthFirstIterable()) {
+        for (LinkedTree<String,Integer> t : tree.depthFirstIterable()) {
             results.add(t.getValue());
         }
 
@@ -152,16 +153,16 @@ public class LinkedTreeTest extends AbstractMapTest {
                     .end()
                 .getRoot();
 
-        Iterator<Tree<String,Integer>> it = tree.depthFirstIterator();
+        Iterator<LinkedTree<String,Integer>> it = tree.depthFirstIterator();
         while(it.hasNext()) {
-            Tree<String,Integer> t = it.next();
+            LinkedTree<String,Integer> t = it.next();
             if (t.getKey().equals("10")) {
                 it.remove();
             }
         }
 
         List<Integer> results = new ArrayList<>();
-        for (Tree<String,Integer> t : tree.depthFirstIterable()) {
+        for (LinkedTree<String,Integer> t : tree.depthFirstIterable()) {
             results.add(t.getValue());
         }
 
@@ -189,7 +190,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .getRoot();
 
         List<Integer> results = new ArrayList<>();
-        for (Tree<String,Integer> t : tree.breathFirstIterable()) {
+        for (LinkedTree<String,Integer> t : tree.breathFirstIterable()) {
             results.add(t.getValue());
         }
 
@@ -201,12 +202,9 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldVisitDepthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.traverseDepthFirst(new Visitor<Tree<String, String>>() {
-            @Override
-            public boolean visit(Tree<String, String> tree) {
-                buf.append(tree.getKey()).append(System.lineSeparator());
-                return false;
-            }
+        tree.traverseDepthFirst((LinkedTree<String, String> tree1) -> {
+            buf.append(tree1.getKey()).append(System.lineSeparator());
+            return false;
         });
         assertEquals(
                 "zero" + NL +
@@ -223,12 +221,9 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldVisitBreadthFirst() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.traverseBreadthFirst(new Visitor<Tree<String, String>>() {
-            @Override
-            public boolean visit(Tree<String, String> tree) {
-                buf.append(tree.getKey()).append(System.lineSeparator());
-                return false;
-            }
+        tree.traverseBreadthFirst((LinkedTree<String, String> tree1) -> {
+            buf.append(tree1.getKey()).append(System.lineSeparator());
+            return false;
         });
         assertEquals(
                 "zero" + NL +
@@ -245,12 +240,9 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldVisitDepthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.traverseDepthFirst(new Visitor<Tree<String, String>>() {
-            @Override
-            public boolean visit(Tree<String, String> tree) {
-                buf.append(tree.getKey()).append(System.lineSeparator());
-                return "two-one".equals(tree.getKey());
-            }
+        tree.traverseDepthFirst((LinkedTree<String, String> tree1) -> {
+            buf.append(tree1.getKey()).append(System.lineSeparator());
+            return "two-one".equals(tree1.getKey());
         });
         assertEquals(
                 "zero" + NL +
@@ -266,12 +258,9 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldVisitBreadthFirstAndStop() {
         LinkedTree<String,String> tree = createTree();
         final StringBuilder buf = new StringBuilder();
-        tree.traverseBreadthFirst(new Visitor<Tree<String, String>>() {
-            @Override
-            public boolean visit(Tree<String, String> tree) {
-                buf.append(tree.getKey()).append(System.lineSeparator());
-                return "two-one".equals(tree.getKey());
-            }
+        tree.traverseBreadthFirst((LinkedTree<String, String> tree1) -> {
+            buf.append(tree1.getKey()).append(System.lineSeparator());
+            return "two-one".equals(tree1.getKey());
         });
         assertEquals(
                 "zero" + NL +
@@ -286,7 +275,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     private LinkedTree<String,String> createTree() {
         LinkedTree<String,String> tree = new LinkedTree<>("zero", "zero");
 
-        LinkedTree<String,String> one = tree.addTree("one", "one");
+        LinkedTree<String,String> one = tree.add("one", "one");
         assertEquals(1, tree.size());
         assertEquals(0, one.size());
         one.put("one-one", "one-one");
@@ -296,7 +285,7 @@ public class LinkedTreeTest extends AbstractMapTest {
         assertEquals(1, tree.size());
         assertEquals(2, one.size());
 
-        LinkedTree<String,String> two = tree.addTree("two", "two");
+        LinkedTree<String,String> two = tree.add("two", "two");
         two.put("two-one", "two-one");
         two.put("two-two", "two-two");
         return tree;
@@ -371,7 +360,8 @@ public class LinkedTreeTest extends AbstractMapTest {
         }
 
         @Override
-        protected LinkedTree<String, Void> createNew(String key, Void value) {
+        protected LinkedTree<String, Void> createNew(
+                LinkedTree<String,Void> parent, String key, Void value) {
             return new LinkedTreeImpl(key, value);
         }
     }
@@ -379,7 +369,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     @Test(timeout=300)
     public void shouldAllowSubclassing() {
         LinkedTreeImpl tree = new LinkedTreeImpl();
-        Tree<String,Void> subTree = tree.addTree("one", null);
+        LinkedTree<String,Void> subTree = tree.add("one", null);
 
         assertTrue(subTree instanceof LinkedTreeImpl);
     }
@@ -388,7 +378,7 @@ public class LinkedTreeTest extends AbstractMapTest {
     public void shouldReturnHeight() {
         assertEquals(0, new LinkedTree<>().getHeight());
 
-        Tree<String,Void> tree = new LinkedTree<>("alfa", null);
+        LinkedTree<String,Void> tree = new LinkedTree<>("alfa", null);
         tree.put("beta", null);
         assertEquals(1, tree.getHeight());
 
@@ -397,7 +387,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldGetTheEntryAtGivenIndex() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .leaf("one", 1)
                 .leaf("two", 2)
                 .leaf("three", 3)
@@ -417,7 +407,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldReturnTheParent() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -433,7 +423,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
+        LinkedTree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
 
         assertEquals(0, oo.getValue(), 0);
         assertEquals(333, oo.getParent().getValue(), 0);
@@ -444,7 +434,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldGetSiblings() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -460,7 +450,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
+        LinkedTree<String,Integer> oo = tree.getTree("1").getTree("10").getTree("oo");
 
         assertEquals(0, oo.getValue(), 0);
         assertEquals(333, oo.getParent().getValue(), 0);
@@ -471,11 +461,11 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldGetOrAddTree() {
-        Tree<String,Integer> tree = new LinkedTree<>();
-        tree.getOrAddTree("one").put("first", 1);
-        tree.getOrAddTree("one").put("second", 2);
-        tree.getOrAddTree("two").put("third", 3);
-        tree.getOrAddTree("two").put("fourth", 4);
+        LinkedTree<String,Integer> tree = new LinkedTree<>();
+        tree.getOrCreate("one").put("first", 1);
+        tree.getOrCreate("one").put("second", 2);
+        tree.getOrCreate("two").put("third", 3);
+        tree.getOrCreate("two").put("fourth", 4);
 
         assertTrue(tree.getTree("one").keySet()
                 .containsAll(Arrays.asList("first", "second")));
@@ -486,7 +476,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldFlatten() {
-        Tree<String,Integer> tree =
+        LinkedTree<String,Integer> tree =
                 LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
@@ -520,7 +510,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldFlattenToList() {
-        Tree<String,Integer> tree =
+        LinkedTree<String,Integer> tree =
                 LinkedTree.<String,Integer>builder("666", 666)
                         .branch("0", 111)
                             .leaf("one", 1)
@@ -558,7 +548,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldFlattenToMap() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -606,7 +596,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldGetPath() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .branch("1", 222)
                     .leaf("alfa", 0)
                     .branch("10", 333)
@@ -617,14 +607,14 @@ public class LinkedTreeTest extends AbstractMapTest {
 
         List<String> listPath = Arrays.asList("1", "10", "oo");
 
-        Tree<String,Integer> t = tree.getTreeAtPath(listPath);
+        LinkedTree<String,Integer> t = tree.getTreeAtPath(listPath);
         List<String> path = t.getPath();
         assertEquals(listPath, path);
     }
 
     @Test
     public void shouldGetValieAtPath() {
-        Tree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -640,13 +630,13 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> subt = tree.getTreeAtPath("1", "10");
+        LinkedTree<String,Integer> subt = tree.getTreeAtPath("1", "10");
         assertEquals(333, subt.getValue(), 0);
     }
 
     @Test
     public void shouldSetPath() {
-        Tree<String,Integer> tree = new LinkedTree<>();
+        LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.putValueAtPath(3, "0", "1", "2");
 
         //System.out.println("tree:" + tree);
@@ -655,7 +645,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldSet2Paths() {
-        Tree<String,Integer> tree = new LinkedTree<>();
+        LinkedTree<String,Integer> tree = new LinkedTree<>();
         tree.putValueAtPath(3, "0", "1", "2");
         tree.putValueAtPath(4, "0", "1", "3");
 
@@ -666,7 +656,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldMerge() {
-        Tree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
                 .branch("0", 111)
                     .leaf("one", 1)
                     .leaf("two", 2)
@@ -675,7 +665,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> t2 = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> t2 = LinkedTree.<String,Integer>builder()
                 .branch("1", 222)
                     .leaf("alfa", 0)
                     .branch("10", 333)
@@ -685,7 +675,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Integer> m = LinkedTree.mergeTrees(t1, t2, (u, v) -> {
+        LinkedTree<String,Integer> m = LinkedTree.mergeTrees(t1, t2, (u, v) -> {
             return u != null ? u : v;
         });
 
@@ -708,7 +698,7 @@ public class LinkedTreeTest extends AbstractMapTest {
 
     @Test
     public void shouldMergeSameTree() {
-        Tree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
+        LinkedTree<String,Integer> t1 = LinkedTree.<String,Integer>builder()
                 .branch("first", 1)
                     .leaf("one", 2)
                     .leaf("two", 3)
@@ -717,7 +707,7 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,Character> t2 = LinkedTree.<String,Character>builder()
+        LinkedTree<String,Character> t2 = LinkedTree.<String,Character>builder()
                 .branch("first", 'a')
                     .leaf("one", 'b')
                     .leaf("two", 'c')
@@ -726,12 +716,56 @@ public class LinkedTreeTest extends AbstractMapTest {
                 .end()
                 .getRoot();
 
-        Tree<String,String> m = LinkedTree.mergeTrees(t1, t2, (u,v) -> {
+        LinkedTree<String,String> m = LinkedTree.mergeTrees(t1, t2, (u,v) -> {
                 return v != null && u != null ? "" + v + u : "root";
         });
 
         List<String> list = new ArrayList<>(m.getFlattenedMap().values());
 
         assertEquals(Arrays.asList("root", "a1", "b2", "c3", "d4", "e5"), list);
+    }
+
+    @Test
+    public void shouldCreateUnmodifiableTree() {
+        LinkedTree<String,Integer> tree = LinkedTree.<String,Integer>builder()
+                .branch("first", 1)
+                    .leaf("one", 2)
+                .end()
+                .getRoot();
+
+        tree.setUnmodifiable();
+
+        assertTrue(tree.isUnmodifiable());
+
+        assertTrue(tree.getTree("first").getTree("one").isUnmodifiable());
+
+        try {
+            tree.add("hello", 666);
+            fail("should be forbidden");
+        } catch (UnsupportedOperationException e) {
+            // ok
+        }
+
+        LinkedTree<String,Integer> subtree = tree.getTree("first").getTree("one");
+        try {
+            subtree.add("hello", 666);
+            fail("should be forbidden");
+        } catch (UnsupportedOperationException e) {
+            // ok
+        }
+
+        try {
+            subtree.clear();
+            fail("should be forbidden");
+        } catch (UnsupportedOperationException e) {
+            // ok
+        }
+
+        try {
+            subtree.remove("hello");
+            fail("should be forbidden");
+        } catch (UnsupportedOperationException e) {
+            // ok
+        }
     }
 }

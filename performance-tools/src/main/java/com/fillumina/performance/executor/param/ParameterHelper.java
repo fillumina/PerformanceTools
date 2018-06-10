@@ -3,10 +3,9 @@ package com.fillumina.performance.executor.param;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.collection.Tree;
+import com.fillumina.performance.util.tname.TName;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -53,7 +52,7 @@ public class ParameterHelper {
     static int[] calculateBranchesDepth(LinkedTree<String, Object> tree) {
         int[] max = new int[tree.size()];
         int counter = 0;
-        for (Tree<String,Object> t : tree) {
+        for (LinkedTree<String,Object> t : tree) {
             max[counter] = t.size();
             counter++;
         }

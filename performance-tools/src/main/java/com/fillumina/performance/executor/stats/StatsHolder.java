@@ -8,8 +8,6 @@ import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.collection.Tree;
-import com.fillumina.performance.util.collection.UnmodifiableTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
 import java.io.IOException;
@@ -51,7 +49,7 @@ public class StatsHolder extends Printable<StatsHolder>
         }
 
         public Builder addSubExperiment(StatsHolder holder) {
-            current.addSubTree(holder.tree);
+            current.addTreeCopy(holder.tree);
             return this;
         }
 
@@ -61,7 +59,7 @@ public class StatsHolder extends Printable<StatsHolder>
         }
 
         public Builder subExperiment(String name) {
-            current = current.addTree(tname(name), null);
+            current = current.add(tname(name), null);
             return this;
         }
 
@@ -88,7 +86,6 @@ public class StatsHolder extends Printable<StatsHolder>
     private final StatsType statsType;
     private final LinkedTree<TName, Stats> tree;
     private final StringGenerator<Stats> formatter;
-    private Tree<TName, Stats> unmodifiableTree;
     private MixedStatsHolder caller;
 
     /** @return a builder to create a tree statistics */
@@ -169,7 +166,7 @@ public class StatsHolder extends Printable<StatsHolder>
             final LinkedTree<TName,Stats> tree,
             final StringGenerator<Stats> formatter) {
         this.statsType = type;
-        this.tree = tree;
+        this.tree = tree == null ? null : tree.setUnmodifiable();
         this.formatter = formatter;
     }
 
@@ -180,9 +177,6 @@ public class StatsHolder extends Printable<StatsHolder>
 
     /** Still not sure if make it part of the public API */
     public LinkedTree<TName,Stats> getTree() {
-        if (unmodifiableTree == null) {
-            unmodifiableTree = UnmodifiableTree.wrap(tree);
-        }
         return tree;
     }
 
@@ -246,8 +240,8 @@ public class StatsHolder extends Printable<StatsHolder>
      */
     @SuppressWarnings("unchecked")
     private void traverseLeaves(final LeafVisitor<Stats> visitor) {
-        ((Tree<TName,Stats>)tree).<TName,Stats>traverseLeaves(
-                (Tree<TName, Stats> t) -> {
+        tree.<TName,Stats>traverseLeaves(
+                (LinkedTree<TName, Stats> t) -> {
                     visitor.visitLeaf(t.getKey(), t.getValue());
                     return false;
                 });
@@ -367,7 +361,7 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    private void appendTo(Appendable appendable, Tree<TName,Stats>  tree)
+    private void appendTo(Appendable appendable, LinkedTree<TName,Stats>  tree)
             throws IOException {
         TName title = tree.getKey();
         if (title != null && !title.isEmpty()) {
@@ -379,7 +373,7 @@ public class StatsHolder extends Printable<StatsHolder>
         if (tree.isLeaf()) {
             appendLeafTo(appendable, tree.getValue());
         } else {
-            for (Tree<TName,Stats> branch : tree) {
+            for (LinkedTree<TName,Stats> branch : tree) {
                 appendTo(appendable, branch);
             }
         }

@@ -12,7 +12,6 @@ import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.collection.Tree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNamed;
@@ -185,7 +184,7 @@ public class TestConfiguration<C>
         StringBuilder buf = new StringBuilder();
         buf.append(type).append(":").append(CRLF);
         TableFormatter table = new TableFormatter();
-        for (Tree<String,Object> t : tree) {
+        for (LinkedTree<String,Object> t : tree) {
             table.cell().cell(t.getKey()).cell(t.getValue()).endl();
         }
         table.appendToCatchingIOException(buf);
@@ -207,9 +206,9 @@ public class TestConfiguration<C>
         if (sequences.isEmpty()) {
             getTestsParamsTree(buf, tab);
         } else {
-            for (Tree<String,Object> seq : sequences) {
+            for (LinkedTree<String,Object> seq : sequences) {
                 String seqName = seq.getKey();
-                for (Tree<String,Object> s : seq) {
+                for (LinkedTree<String,Object> s : seq) {
                     buf.append(seqName)
                             .append("=")
                             .append(s.getKey())
@@ -224,7 +223,7 @@ public class TestConfiguration<C>
     private void getTestsParamsTree(StringBuilder buf, String tab) {
         for (TName test : tests.keySet()) {
             buf.append(tab).append(test.toString()).append(CRLF);
-            for (Tree<String,Object> param : parameters) {
+            for (LinkedTree<String,Object> param : parameters) {
                 String paramName = param.getKey();
                 buf.append(tab).append(TAB)
                         .append(paramName)

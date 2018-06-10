@@ -85,6 +85,7 @@ public class IndexedHashMap<K,V>
         }
     }
 
+    @SuppressWarnings("unchecked")
     public IndexedHashMap(int initialSize) {
         if (initialSize < 0) {
             throw new IllegalArgumentException(
@@ -103,7 +104,7 @@ public class IndexedHashMap<K,V>
     /** Special constructor to use to create unmodifiable view. */
     protected IndexedHashMap(IndexedHashMap<K,V> delegate, boolean readonly) {
         if (!readonly) {
-            // check that it is used only for create the unmodifiable view
+            // check that it is used only to create the unmodifiable view
             throw new IllegalArgumentException("readonly must be true");
         }
         setDelegate(delegate);
@@ -236,7 +237,7 @@ public class IndexedHashMap<K,V>
     @Override
     public V put(K key, V value) {
         if (readonly) {
-            throw new UnsupportedOperationException("unmodifiable view");
+            throw new UnsupportedOperationException("Not supported.");
         }
         if (array == null) {
             resize(8);
@@ -319,7 +320,7 @@ public class IndexedHashMap<K,V>
                 return null; // not found
             }
             EntryImpl<K,V> e = array[pointer - 1];
-            if (equalsKey(e.key, key)) {
+            if (equalsKey(key, e.key)) {
                 return e;
             }
             bucket = (bucket + 1) & mask;
@@ -354,7 +355,7 @@ public class IndexedHashMap<K,V>
     @Override
     public V remove(Object key) {
         if (readonly) {
-            throw new UnsupportedOperationException("unmodifiable view");
+            throw new UnsupportedOperationException("Not supported.");
         }
         if (array == null) {
             return null;
@@ -367,7 +368,7 @@ public class IndexedHashMap<K,V>
                 return null; // not found
             }
             EntryImpl<K,V> e = array[pointer - 1];
-            if (equalsKey(e.key, key)) {
+            if (equalsKey(key, e.key)) {
                 V oldValue = e.value;
 
                 removeIndex(pointer - 1, bucket, mask);
@@ -440,7 +441,7 @@ public class IndexedHashMap<K,V>
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
         if (readonly) {
-            throw new UnsupportedOperationException("unmodifiable view");
+            throw new UnsupportedOperationException("Not supported.");
         }
         ensureCapacity(m.size());
         m.forEach((k,v) -> put(k,v));
@@ -449,7 +450,7 @@ public class IndexedHashMap<K,V>
     @Override
     public void clear() {
         if (readonly) {
-            throw new UnsupportedOperationException("unmodifiable view");
+            throw new UnsupportedOperationException("Not supported.");
         }
         if (array != null) {
             Arrays.fill(array, null);
@@ -632,7 +633,7 @@ public class IndexedHashMap<K,V>
         @Override
         public void remove() {
             if (readonly) {
-                throw new UnsupportedOperationException("unmodifiable view");
+                throw new UnsupportedOperationException("Not supported.");
             }
             if (removed) {
                 throw new IllegalStateException();
@@ -711,7 +712,7 @@ public class IndexedHashMap<K,V>
         @Override
         public void clear() {
             if (readonly) {
-                throw new UnsupportedOperationException("unmodifiable view");
+                throw new UnsupportedOperationException("Not supported.");
             }
             start = 0;
             end = 0;
@@ -767,7 +768,7 @@ public class IndexedHashMap<K,V>
                 @Override
                 public void remove() {
                     if (readonly) {
-                        throw new UnsupportedOperationException("unmodifiable view");
+                        throw new UnsupportedOperationException("Not supported.");
                     }
                     c.remove();
                 }
@@ -812,7 +813,7 @@ public class IndexedHashMap<K,V>
         @Override
         public T remove(int index) {
             if (readonly) {
-                throw new UnsupportedOperationException("unmodifiable view");
+                throw new UnsupportedOperationException("Not supported.");
             }
             rangeCheck(index);
             T t = get(index);
@@ -997,7 +998,7 @@ public class IndexedHashMap<K,V>
     public void replaceAll(
             BiFunction<? super K, ? super V, ? extends V> function) {
         if (readonly) {
-            throw new UnsupportedOperationException("unmodifiable view");
+            throw new UnsupportedOperationException("Not supported.");
         }
         for (Map.Entry<K, V> e : this) {
             V v = function.apply(e.getKey(), e.getValue());

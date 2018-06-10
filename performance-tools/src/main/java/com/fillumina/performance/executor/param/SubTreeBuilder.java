@@ -33,7 +33,7 @@ public class SubTreeBuilder<C>
     }
 
     public Value name(String name) {
-        return new Value(name, root.addTree(name, null));
+        return new Value(name, root.add(name, null));
     }
 
     public class Value {
