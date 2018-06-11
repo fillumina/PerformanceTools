@@ -20,10 +20,9 @@ import java.util.function.Function;
 
 /**
  * A tree with low memory requirements. Every node implements
- * a {@link Map} interface and can iterate through its children.
- * Insertion order is preserved. The map is backed by a simple linked list
- * so its performance is not stellar but good enough and tight on memory
- * for few subtrees.
+ * a {@link Map} interface and can iterate through its children in order of
+ * insertion. The map is backed by a simple linked list
+ * so its performance is quite bad but still OK for few entries.
  * <p>
  * This class is not thread safe.
  *
@@ -205,7 +204,7 @@ public class LinkedTree<K,V>
 
     public boolean isUnmodifiable() {
         LinkedTree<K,V> root = getRoot();
-        return root != null && root.next == UNMODIFIABLE;
+        return root.next == UNMODIFIABLE;
     }
 
     /**

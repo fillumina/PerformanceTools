@@ -8,11 +8,11 @@ import java.util.Collection;
  * <p>
  * It's a collection of measures relative to similar experiments
  * (i.e. same test code on different algorithms) that will be
- * analyzed to produce comparative statistically accurate results.
+ * analyzed to produce statistically accurate results.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface Assertable {
+public interface Assertable { //TODO shouldn't be AssertableExperiment ?
 
     /** @return test names. */
     Collection<? extends CharSequence> getNames();

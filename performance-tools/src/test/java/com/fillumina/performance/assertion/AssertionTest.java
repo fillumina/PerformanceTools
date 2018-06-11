@@ -1,9 +1,8 @@
-package com.fillumina.performance.mock;
+package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
-import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.assertion.UnusedAssertionChecker;
+import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.mock.AssertionMock;
+import com.fillumina.performance.mock.SettableAssertionMock;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,13 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertionTest {
+
+    @Test
+    public void shouldCheckAnAssertable() {
+        Assertion assertion = new AssertionMock();
+        Assertable assertable = new AssertableMock();
+        assertion.check(assertable);
+    }
 
     @Test
     public void shouldReportTheFailingAssertion() {

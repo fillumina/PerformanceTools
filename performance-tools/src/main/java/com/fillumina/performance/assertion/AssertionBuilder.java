@@ -19,12 +19,10 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     private static final long serialVersionUID = 1L;
 
-    public static final Ratio DEFAULT_TOLERANCE = Ratio.percentage(5);
-    public static final Ratio SAFE_TOLERANCE = Ratio.percentage(7);
-    public static final Ratio SUPER_SAFE_TOLERANCE = Ratio.percentage(10);
+    private static final Ratio DEFAULT_TOLERANCE = Ratio.percentage(7);
 
     private final Consumer<Assertion> assertionConsumer;
-    private Ratio tolerance = SAFE_TOLERANCE;
+    private Ratio tolerance = DEFAULT_TOLERANCE;
 
     public AssertionBuilder(Consumer<Assertion> assertionConsumer) {
         super();

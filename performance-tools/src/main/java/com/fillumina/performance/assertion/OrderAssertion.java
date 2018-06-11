@@ -33,7 +33,7 @@ class OrderAssertion
     }
 
     @Override
-    public void accept(Assertable assertable) {
+    public void accept(Assertable assertable) throws MeasureNotFoundException {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);

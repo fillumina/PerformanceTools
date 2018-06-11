@@ -13,7 +13,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface Assertion
-        extends Consumer<Assertable>,
+        extends Consumer<Assertable>, // TODO it's REALLY needed?
                 StringGenerator<Assertable> {
 
     /** It's a more meaningful name for {@link #accept(Assertable)}. */

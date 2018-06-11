@@ -97,7 +97,7 @@ public class PerformanceTimerAccuracyTest {
         }
 
         holder.check(Assertions.
-                <Stats>withTolerance(Assertions.SUPER_SAFE_TOLERANCE)
+                <Stats>withTolerance(Ratio.percentage(10))
                 .assertPercentage("zero").sameAs(0)
                 .assertPercentage("single").sameAs(33)
                 .assertPercentage("double").sameAs(66)
