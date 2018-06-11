@@ -1,5 +1,8 @@
 package com.fillumina.performance.util;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -46,6 +49,20 @@ public class Platform {
             mb(Runtime.getRuntime().freeMemory()),
             mb(Runtime.getRuntime().totalMemory()),
             (maxMemory == Long.MAX_VALUE ? "no limit" : mb(maxMemory))));
+
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+
+        buf.append("\n# JVM bin: ")
+                .append(runtimeMXBean.getVmName())
+                .append(" (")
+                .append(runtimeMXBean.getVmVersion())
+                .append(')');
+
+        buf.append("\n# JVM args: ");
+        List<String> jvmArgs = runtimeMXBean.getInputArguments();
+        for (String arg : jvmArgs) {
+            buf.append(arg).append(System.lineSeparator());
+        }
 
         return buf.toString();
     }
