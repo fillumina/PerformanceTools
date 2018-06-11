@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class ValueAssertion
-        implements Assertion, Serializable {
+        implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
@@ -32,13 +32,13 @@ class ValueAssertion
     }
 
     @Override
-    public void accept(Assertable assertable) {
+    public void accept(AssertableExperiment assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }
     }
 
-    public void check(final Assertable assertable, final Ratio tolerance) {
+    public void check(final AssertableExperiment assertable, final Ratio tolerance) {
         if (assertable != null) {
             Measure actualValue = assertable.getMeasure(testName);
 
@@ -52,7 +52,7 @@ class ValueAssertion
     }
 
     @Override
-    public void appendTo(Appendable appendable, Assertable assertable) {
+    public void appendTo(Appendable appendable, AssertableExperiment assertable) {
         Measure actualValue = assertable.getMeasure(testName);
         if (actualValue != null) {
             new AppendableWrapper(appendable)

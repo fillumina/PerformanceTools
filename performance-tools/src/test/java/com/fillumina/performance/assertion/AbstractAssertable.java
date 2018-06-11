@@ -11,7 +11,7 @@ import java.util.Collection;
  */
 public abstract class AbstractAssertable<I extends AbstractAssertable<I>>
         extends Printable<I>
-        implements Assertable {
+        implements AssertableExperiment {
 
     private Measure refMeasure;
     private int refIndex = -1;

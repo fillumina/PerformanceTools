@@ -1,6 +1,5 @@
 package com.fillumina.performance.util.formatter;
 
-import com.fillumina.performance.util.TimeSpan;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 

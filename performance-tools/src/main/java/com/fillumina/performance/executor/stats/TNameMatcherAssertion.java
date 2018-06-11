@@ -1,7 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
@@ -20,12 +18,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMatcherAssertion<C> implements Assertion {
+public class TNameMatcherAssertion<C> implements ExperimentAssertion {
 
     public static <C> Builder<C> builder() {
         return new Builder<>();
@@ -35,7 +35,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         return new Builder<>(caller);
     }
 
-    public static <C> Builder<C> builder(Setter<C, Assertion> setter) {
+    public static <C> Builder<C> builder(Setter<C, ExperimentAssertion> setter) {
         return new Builder<>(setter);
     }
 
@@ -46,7 +46,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
     }
 
     @Override
-    public void accept(Assertable assertable) {
+    public void accept(AssertableExperiment assertable) {
         forEach(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);
@@ -57,18 +57,18 @@ public class TNameMatcherAssertion<C> implements Assertion {
     }
 
     @Override
-    public void checkAndReport(Assertable assertable,
-            Map<Assertable, List<Assertion>> failedAssertions,
+    public void checkAndReport(AssertableExperiment assertable,
+            Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         List<TName> tnames = extractFullNames(assertable);
         UnusedAssertionChecker dummy = new UnusedAssertionChecker();
         for (Evaluator evaluator : evaluators) {
-            List<Assertion> assertions = evaluator.createAssertions(tnames);
+            List<ExperimentAssertion> assertions = evaluator.createAssertions(tnames);
             if (assertions.isEmpty()) {
                 unusedAssertionChecker.setUnused(evaluator);
             } else {
                 unusedAssertionChecker.setUsed(evaluator);
-                for (Assertion a : assertions) {
+                for (ExperimentAssertion a : assertions) {
                     a.checkAndReport(assertable, failedAssertions, dummy);
                 }
             }
@@ -78,7 +78,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
     @Override
     public void appendTo(
             final Appendable appendable,
-            final Assertable assertable)
+            final AssertableExperiment assertable)
                 throws IOException {
         final AppendableWrapperSentinel wrapped =
                 new AppendableWrapperSentinel(appendable);
@@ -110,18 +110,18 @@ public class TNameMatcherAssertion<C> implements Assertion {
         }
     }
 
-    private void forEach(Assertable assertable,
-            Consumer<Assertion> consumer) {
+    private void forEach(AssertableExperiment assertable,
+            Consumer<ExperimentAssertion> consumer) {
         List<TName> tnames = extractFullNames(assertable);
         for (Evaluator evaluator : evaluators) {
-            List<Assertion> assertions = evaluator.createAssertions(tnames);
-            for (Assertion a : assertions) {
+            List<ExperimentAssertion> assertions = evaluator.createAssertions(tnames);
+            for (ExperimentAssertion a : assertions) {
                 consumer.accept(a);
             }
         }
     }
 
-    private List<TName> extractFullNames(Assertable assertable) {
+    private List<TName> extractFullNames(AssertableExperiment assertable) {
         Collection<? extends CharSequence> names = assertable.getNames();
         List<TName> tnames = new ArrayList<>(names.size());
         for (CharSequence cs : names) {
@@ -134,17 +134,17 @@ public class TNameMatcherAssertion<C> implements Assertion {
         return tnames;
     }
 
-    private interface Evaluator extends Assertion {
-        List<Assertion> createAssertions(Collection<TName> names);
+    private interface Evaluator extends ExperimentAssertion {
+        List<ExperimentAssertion> createAssertions(Collection<TName> names);
 
         @Override
-        public default void accept(Assertable t) {
+        public default void accept(AssertableExperiment t) {
             // do nothing
         }
 
         @Override
         public default void appendTo(Appendable appendable,
-                Assertable assertable) throws IOException {
+                AssertableExperiment assertable) throws IOException {
             appendable
                     .append("assertion not matching assertables: ")
                     .append(toString())
@@ -152,7 +152,7 @@ public class TNameMatcherAssertion<C> implements Assertion {
         }
     }
 
-    public static class Builder<C> extends CallBackBuilder<C, Assertion> {
+    public static class Builder<C> extends CallBackBuilder<C, ExperimentAssertion> {
         private final List<Evaluator> evaluators = new ArrayList<>();
         private Ratio tolerance = Ratio.percentage(10);
         private TNameMatcher base = TNameMatcher.EMPTY;
@@ -165,12 +165,12 @@ public class TNameMatcherAssertion<C> implements Assertion {
             super(caller);
         }
 
-        public Builder(Setter<C, Assertion> setter) {
+        public Builder(Setter<C, ExperimentAssertion> setter) {
             super(setter);
         }
 
         @Override
-        public Assertion build() {
+        public ExperimentAssertion build() {
             return new TNameMatcherAssertion<>(evaluators);
         }
 
@@ -276,14 +276,14 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
 
             @Override
-            public List<Assertion> createAssertions(Collection<TName> names) {
-                List<Assertion> list = new ArrayList<>();
+            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
+                List<ExperimentAssertion> list = new ArrayList<>();
                 List<TName> aList = filterNames(names, nameMatcher);
                 List<TName> bList = filterNames(names, otherMatcher);
                 for (TName aItem : aList) {
                     for (TName bItem : bList) {
                         if (!aItem.equals(bItem)) {
-                            Assertion assertion = Assertions
+                            ExperimentAssertion assertion = Assertions
                                     .withTolerance(tolerance)
                                     .assertOrder(aItem)
                                     .is(equalityCondition, bItem);
@@ -348,11 +348,11 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
 
             @Override
-            public List<Assertion> createAssertions(Collection<TName> names) {
+            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
                 List<TName> matchingNames = filterNames(names, nameMatcher);
-                List<Assertion> list = new ArrayList<>();
+                List<ExperimentAssertion> list = new ArrayList<>();
                 for (TName n : matchingNames) {
-                    Assertion assertion = Assertions
+                    ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertPercentage(n)
                             .is(equalityCondition, percentage.getPercentage());
@@ -415,11 +415,11 @@ public class TNameMatcherAssertion<C> implements Assertion {
             }
 
             @Override
-            public List<Assertion> createAssertions(Collection<TName> names) {
-                List<Assertion> list = new ArrayList<>();
+            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
+                List<ExperimentAssertion> list = new ArrayList<>();
                 List<TName> aList = filterNames(names, nameMatcher);
                 for (TName aItem : aList) {
-                    Assertion assertion = Assertions
+                    ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertValue(aItem)
                             .is(equalityCondition, value);

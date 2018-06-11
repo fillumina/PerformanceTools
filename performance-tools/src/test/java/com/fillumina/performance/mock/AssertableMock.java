@@ -1,7 +1,6 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
@@ -10,13 +9,14 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertableMock extends AbstractAssertable<AssertableMock>
-        implements Assertable {
+        implements AssertableExperiment {
 
     private final String name;
     private final Map<CharSequence, Measure> map = new IndexedHashMap<>();

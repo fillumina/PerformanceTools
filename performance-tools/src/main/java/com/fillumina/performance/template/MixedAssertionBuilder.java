@@ -1,6 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.executor.stats.TNameMatcherAssertion;
 import com.fillumina.performance.executor.stats.Stats;
@@ -9,6 +8,7 @@ import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -49,7 +49,7 @@ public class MixedAssertionBuilder<C>
 
     public MixedAssertionBuilder<C> addAssertion(
             StatsType type,
-            Assertion assertion) {
+            ExperimentAssertion assertion) {
         mixedStatsBuilder.getStatsBuilder(type).addAssertion(assertion);
         return this;
     }

@@ -14,9 +14,9 @@ public class UnusedAssertionCheckerTest {
 
     @Test
     public void shouldNotReportUsedAssertions() {
-        Assertion a1 = new AssertionMock();
-        Assertion a2 = new AssertionMock();
-        Assertion a3 = new AssertionMock();
+        ExperimentAssertion a1 = new AssertionMock();
+        ExperimentAssertion a2 = new AssertionMock();
+        ExperimentAssertion a3 = new AssertionMock();
 
         UnusedAssertionChecker unused = new UnusedAssertionChecker();
         unused.setUsed(a1);
@@ -28,9 +28,9 @@ public class UnusedAssertionCheckerTest {
 
     @Test
     public void shouldReportNotUsedAssertions() {
-        Assertion a1 = new AssertionMock();
-        Assertion a2 = new AssertionMock();
-        Assertion a3 = new AssertionMock();
+        ExperimentAssertion a1 = new AssertionMock();
+        ExperimentAssertion a2 = new AssertionMock();
+        ExperimentAssertion a3 = new AssertionMock();
 
         UnusedAssertionChecker unused = new UnusedAssertionChecker();
         unused.setUnused(a1);
@@ -42,16 +42,16 @@ public class UnusedAssertionCheckerTest {
 
     @Test
     public void shouldReportNotUsedMixedAssertions() {
-        Assertion a1 = new AssertionMock();
-        Assertion a2 = new AssertionMock();
-        Assertion a3 = new AssertionMock();
+        ExperimentAssertion a1 = new AssertionMock();
+        ExperimentAssertion a2 = new AssertionMock();
+        ExperimentAssertion a3 = new AssertionMock();
 
         UnusedAssertionChecker unused = new UnusedAssertionChecker();
         unused.setUnused(a1);
         unused.setUsed(a2);
         unused.setUnused(a3);
 
-        List<Assertion> list = unused.getUnusedAssertionList();
+        List<ExperimentAssertion> list = unused.getUnusedAssertionList();
         assertEquals(2, list.size());
         assertTrue(list.contains(a1));
         assertTrue(list.contains(a3));

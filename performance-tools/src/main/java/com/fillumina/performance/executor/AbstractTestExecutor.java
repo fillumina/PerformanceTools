@@ -10,25 +10,25 @@ import java.util.function.Consumer;
 /**
  *
  * @param I self
- * @param M message for consumers
- * @param T test type
- * @param P product
+ * @param N notification
+ * @param T test
+ * @param R result
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractTestExecutor
-                <I extends TestExecutor<I,M,T,P>, M, T, P>
-        implements TestExecutor<I, M, T, P>, TestContainer<I,T> {
+                <I extends TestExecutor<I,N,T,R>, N, T, R>
+        implements TestExecutor<I, N, T, R>, TestContainer<I,T> {
     public static final String UNNAMED_TEST_PREFIX = "test_";
     public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 
-    private final List<Consumer<? super M>> consumers = new ArrayList<>();
+    private final List<Consumer<? super N>> consumers = new ArrayList<>();
     private final IndexedHashMap<TName, T> tests = new IndexedHashMap<>();
     private TName name = TN.EMPTY;
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumerIf(boolean condition, Consumer<? super M> consumer) {
+    public I addConsumerIf(boolean condition, Consumer<? super N> consumer) {
         if (condition) {
             addConsumer(consumer);
         }
@@ -37,7 +37,7 @@ public abstract class AbstractTestExecutor
 
     @Override
     @SuppressWarnings("unchecked")
-    public I addConsumer(Consumer<? super M> consumer) {
+    public I addConsumer(Consumer<? super N> consumer) {
         if (consumer != null) {
             consumers.add(consumer);
         }
@@ -49,7 +49,7 @@ public abstract class AbstractTestExecutor
      */
     @Override
     @SuppressWarnings("unchecked")
-    public I removeConsumer(final Consumer<? super M> consumer) {
+    public I removeConsumer(final Consumer<? super N> consumer) {
         if (consumer != null) {
             consumers.remove(consumer);
         }
@@ -62,9 +62,9 @@ public abstract class AbstractTestExecutor
      * in the same order they were added.
      */
     @SuppressWarnings("unchecked")
-    protected void dispatchToConsumers(M message) {
+    protected void dispatchToConsumers(N message) {
         if (message != null) {
-            for (Consumer<? super M> c: consumers) {
+            for (Consumer<? super N> c: consumers) {
                 c.accept(message);
             }
         }

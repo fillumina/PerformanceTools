@@ -20,7 +20,7 @@ import java.io.Serializable;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class PercentageAssertion
-        implements Assertion, Serializable {
+        implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
@@ -39,13 +39,13 @@ class PercentageAssertion
     }
 
     @Override
-    public void accept(Assertable assertable) {
+    public void accept(AssertableExperiment assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }
     }
 
-    public void check(final Assertable assertable, final Ratio tolerance) {
+    public void check(final AssertableExperiment assertable, final Ratio tolerance) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
             RatioAgainstBiggerMeasureCalculator ratios =
@@ -63,7 +63,7 @@ class PercentageAssertion
     }
 
     @Override
-    public void appendTo(Appendable appendable, Assertable assertable) {
+    public void appendTo(Appendable appendable, AssertableExperiment assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         RatioAgainstBiggerMeasureCalculator ratios = new RatioAgainstBiggerMeasureCalculator(assertable);
         MeasureRatio actualRatio = ratios.getRatio(testName, confidence);

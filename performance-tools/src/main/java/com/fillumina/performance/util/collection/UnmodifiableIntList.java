@@ -31,7 +31,7 @@ public class UnmodifiableIntList extends AbstractList<Integer>
         if (array == null || array.length == 0) {
             return EMPTY_ARRAY;
         }
-        return Arrays.copyOf(array, array.length);
+        return array.clone();
     }
 
     @Override
@@ -42,5 +42,35 @@ public class UnmodifiableIntList extends AbstractList<Integer>
     @Override
     public int size() {
         return array == null ? 0 : array.length;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return this; // it's immutable
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.array);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UnmodifiableIntList other = (UnmodifiableIntList) obj;
+        return Arrays.equals(this.array, other.array);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + Arrays.toString(array);
     }
 }

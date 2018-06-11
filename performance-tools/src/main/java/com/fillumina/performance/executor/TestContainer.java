@@ -5,7 +5,7 @@ import com.fillumina.performance.util.tname.TName;
 import java.util.Map;
 
 /**
- * Manages performance tests.
+ * Container for tests.
  *
  * @param T test type
  * @author Francesco Illuminati

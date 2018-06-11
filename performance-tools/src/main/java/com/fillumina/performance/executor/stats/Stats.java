@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
@@ -19,9 +18,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
- * An {@link Assertable} representing the Statistics about an experiment.
+ * An {@link AssertableExperiment} representing the Statistics about an experiment.
  * In addition of the usual statistics it calculates ANOVA and performs the
  * Tukey HSD post-hoc test on all experiment pairs so to assess the data
  * collected as statistically significant.
@@ -31,7 +31,7 @@ import java.util.Objects;
  * @author Francesco Illuminati
  */
 public class Stats extends Printable<Stats>
-        implements StatsTyped, Assertable, Serializable {
+        implements StatsTyped, AssertableExperiment, Serializable {
     private static final long serialVersionUID = 1L;
 
     /** Different type of statistics shouldn't be matched. */

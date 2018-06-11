@@ -1,7 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.stats.Stats;
@@ -17,6 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  * Container for:
@@ -33,10 +33,10 @@ public class AssertionableResult<C>
 
     public static class Builder {
         private StatsHolder statsHolder;
-        private List<Assertion> assertions;
-        private StringGenerator<Assertable> viewer;
+        private List<ExperimentAssertion> assertions;
+        private StringGenerator<AssertableExperiment> viewer;
 
-        public Builder addAssertion(Assertion assertion) {
+        public Builder addAssertion(ExperimentAssertion assertion) {
             if (assertions == null) {
                 assertions = new ArrayList<>();
             }
@@ -52,8 +52,8 @@ public class AssertionableResult<C>
 
         @SuppressWarnings("unchecked")
         public Builder setStringGenerator(
-                final StringGenerator<? extends Assertable> viewew) {
-            this.viewer = (StringGenerator<Assertable>) viewew;
+                final StringGenerator<? extends AssertableExperiment> viewew) {
+            this.viewer = (StringGenerator<AssertableExperiment>) viewew;
             return this;
         }
 
@@ -69,16 +69,16 @@ public class AssertionableResult<C>
     }
 
     private final StatsHolder statsHolder;
-    private final Collection<Assertion> assertions;
-    private final StringGenerator<? super Assertable> viewer;
+    private final Collection<ExperimentAssertion> assertions;
+    private final StringGenerator<? super AssertableExperiment> viewer;
 
     private IndexedHashMap<TName, Stats> flatMap;
 
     public AssertionableResult(
             CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
             StatsHolder statsHolder,
-            Collection<Assertion> assertions,
-            StringGenerator<Assertable> viewer) {
+            Collection<ExperimentAssertion> assertions,
+            StringGenerator<AssertableExperiment> viewer) {
         super(setter);
         this.statsHolder = statsHolder;
         this.assertions = assertions;
@@ -92,9 +92,9 @@ public class AssertionableResult<C>
     public void appendFailedAssertions(Appendable appendable) {
         getFailedAssertions().entrySet().forEach(entry -> {
                 try {
-                    Assertable assertable = entry.getKey();
-                    List<Assertion> failedAssertions = entry.getValue();
-                    for (Assertion a : failedAssertions) {
+                    AssertableExperiment assertable = entry.getKey();
+                    List<ExperimentAssertion> failedAssertions = entry.getValue();
+                    for (ExperimentAssertion a : failedAssertions) {
                         a.appendTo(appendable, assertable);
                     }
                     appendable.append(System.lineSeparator());
@@ -104,7 +104,7 @@ public class AssertionableResult<C>
         });
     }
 
-    public static final Assertable UNCHECKED = new Assertable() {
+    public static final AssertableExperiment UNCHECKED = new AssertableExperiment() {
         @Override public Collection<? extends CharSequence> getNames() {
             return Collections.<CharSequence>emptyList();
         }
@@ -112,18 +112,18 @@ public class AssertionableResult<C>
         @Override public String toString() { return "UNCHECKED"; }
     };
 
-    public Map<Assertable, List<Assertion>> getFailedAssertions() {
+    public Map<AssertableExperiment, List<ExperimentAssertion>> getFailedAssertions() {
         if (assertions == null) {
-            return Collections.<Assertable, List<Assertion>>emptyMap();
+            return Collections.<AssertableExperiment, List<ExperimentAssertion>>emptyMap();
         }
-        Map<Assertable, List<Assertion>> failedAssertions = new IndexedHashMap<>();
+        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions = new IndexedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        for (Assertable assertable : getFlattenedAssertableMap().values()) {
+        for (AssertableExperiment assertable : getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
                 assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
             });
         }
-        List<Assertion> unusedAssertionList = unusedAssertion.getUnusedAssertionList();
+        List<ExperimentAssertion> unusedAssertionList = unusedAssertion.getUnusedAssertionList();
         if (!unusedAssertionList.isEmpty()) {
             failedAssertions.put(UNCHECKED, unusedAssertionList);
         }
@@ -131,7 +131,7 @@ public class AssertionableResult<C>
     }
 
     public void appendNamedTestResults(Appendable appendable, TName name) {
-        Assertable assertable = getFlattenedAssertableMap().get(name);
+        AssertableExperiment assertable = getFlattenedAssertableMap().get(name);
         if (assertable != null) {
             viewer.appendToCatchingException(appendable, assertable);
             if (assertions != null && !assertions.isEmpty()) {

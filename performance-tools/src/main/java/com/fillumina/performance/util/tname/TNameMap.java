@@ -4,7 +4,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import java.util.Objects;
 
 /**
- * Because {@link TName} implements {@link CharSequence} this map has
+ * Because {@link TName} implements {@link CharSequence} this map 
  * uses equality over string representations to allow searching by
  * {@link String} or {@link CharSequence}.
  *

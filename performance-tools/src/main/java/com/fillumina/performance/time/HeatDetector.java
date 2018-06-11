@@ -5,11 +5,11 @@ import com.fillumina.performance.util.stats.OnlineMeasure;
 
 /**
  * Heat could in some cases hinder the results of a performance test.
- * Extreme heat might provoke CPU/bus down-clocking and other collateral
- * that can affect the test. This utility tries to establish a
+ * Extreme heat might provoke CPU/bus down-clocking and other collateral effects
+ * that can compromise the test. This utility tries to establish a
  * performance baseline so to detect when the general performances are
  * degraded. In that case it sleeps down the CPU for some time in an effort
- * to cool it.
+ * to cool it down.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -18,7 +18,7 @@ public class HeatDetector {
 
     private static final int RETRIES = 30;
     private static final int BASE_MEASURE_COUNT = 6;
-    private static final long SECONDS = 1_000_000_000;
+    private static final long NS_PER_SECOND = 1_000_000_000;
     private static final int SECONDS_BEFORE_CHECK = 5;
     private static final int SECONDS_TO_WAIT = 3;
 
@@ -88,7 +88,7 @@ public class HeatDetector {
      */
     public int checkCpuHeat() {
         long time = System.nanoTime();
-        if (time - lastCheck > secondsBeforeCheck * SECONDS) {
+        if (time - lastCheck > secondsBeforeCheck * NS_PER_SECOND) {
             if (isHeated()) {
                 coolDownCpu();
                 long after = System.nanoTime();

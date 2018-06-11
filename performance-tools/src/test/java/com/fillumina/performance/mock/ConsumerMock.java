@@ -1,10 +1,10 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.Assertable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  * Records the test names of performances.
@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  * @param <A>
  */
-public class ConsumerMock<A extends Assertable> implements Consumer<A> {
+public class ConsumerMock<A extends AssertableExperiment> implements Consumer<A> {
 
     private final List<A> list = new ArrayList<>();
 

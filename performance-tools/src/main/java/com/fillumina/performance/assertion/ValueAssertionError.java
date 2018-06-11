@@ -16,7 +16,7 @@ public class ValueAssertionError extends AbstractAssertionError {
     private final CharSequence testName;
     private final Measure actualValue;
     private final double expected;
-    private final Assertable assertableMultiTest;
+    private final AssertableExperiment assertableMultiTest;
 
     public ValueAssertionError(
             CharSequence testName,
@@ -24,7 +24,7 @@ public class ValueAssertionError extends AbstractAssertionError {
             double expectedPercentage,
             Ratio tolerance,
             RelativeOrder requiredCondition,
-            Assertable assertableMultiTest) {
+            AssertableExperiment assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.testName = testName;
         this.actualValue = actualValue;
@@ -58,7 +58,7 @@ public class ValueAssertionError extends AbstractAssertionError {
         return testName;
     }
 
-    public Assertable getAssertableMultiTest() {
+    public AssertableExperiment getAssertableMultiTest() {
         return assertableMultiTest;
     }
 

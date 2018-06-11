@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.MockStatsType;
@@ -20,6 +19,7 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -377,7 +377,7 @@ public class StatsHolderTest {
 
         holder.check(assertion);
 
-        List<Assertable> list = assertion.getConsumedAssertableList();
+        List<AssertableExperiment> list = assertion.getConsumedAssertableList();
 
         assertEquals(6, list.size());
 
@@ -414,13 +414,13 @@ public class StatsHolderTest {
         StringBuilder buf = new StringBuilder();
         holder.checkAndAppendTo(buf, assertion);
 
-        Assertable[] array = new Assertable[] {
+        AssertableExperiment[] array = new AssertableExperiment[] {
             assertable1, assertable2, assertable3,
             assertable4, assertable5, assertable6
         };
 
         StringBuilder req = new StringBuilder();
-        for (Assertable a : array) {
+        for (AssertableExperiment a : array) {
             req.append(a).append(System.lineSeparator());
         }
 

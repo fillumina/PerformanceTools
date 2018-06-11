@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.formatter;
 
 import java.time.Duration;
 import java.util.Date;

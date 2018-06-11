@@ -12,19 +12,19 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class UnusedAssertionChecker {
-    private final Map<Assertion, Boolean> checkedMap = new HashMap<>();
+    private final Map<ExperimentAssertion, Boolean> checkedMap = new HashMap<>();
 
-    public void setUsed(Assertion assertion) {
+    public void setUsed(ExperimentAssertion assertion) {
         checkedMap.put(assertion, Boolean.TRUE);
     }
 
-    public void setUnused(Assertion assertion) {
+    public void setUnused(ExperimentAssertion assertion) {
         if (!checkedMap.containsKey(assertion)) {
             checkedMap.put(assertion, Boolean.FALSE);
         }
     }
 
-    public List<Assertion> getUnusedAssertionList() {
+    public List<ExperimentAssertion> getUnusedAssertionList() {
         if (!checkedMap.isEmpty()) {
             Iterator<Boolean> it = checkedMap.values().iterator();
             while (it.hasNext()) {
@@ -37,6 +37,6 @@ public class UnusedAssertionChecker {
         if (!checkedMap.isEmpty()) {
             return new UnmodifiableList<>(checkedMap.keySet());
         }
-        return Collections.<Assertion>emptyList();
+        return Collections.<ExperimentAssertion>emptyList();
     }
 }

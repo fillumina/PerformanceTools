@@ -11,7 +11,7 @@ import org.junit.Test;
  *  Identifying Outliers</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OutlierEliminatorTest {
+public class OutlierEliminatorFilterTest {
 
     @Test
     public void shouldNotEliminateAnySample() {

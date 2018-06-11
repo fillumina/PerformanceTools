@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.function.Consumer;
 
 /**
- * Helper to build {@link Assertion}s.
+ * Helper to build {@link ExperimentAssertion}s.
  *
  * @param I self
  * @param C caller used for fluent interface
@@ -21,29 +21,29 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     private static final Ratio DEFAULT_TOLERANCE = Ratio.percentage(7);
 
-    private final Consumer<Assertion> assertionConsumer;
+    private final Consumer<ExperimentAssertion> assertionConsumer;
     private Ratio tolerance = DEFAULT_TOLERANCE;
 
-    public AssertionBuilder(Consumer<Assertion> assertionConsumer) {
+    public AssertionBuilder(Consumer<ExperimentAssertion> assertionConsumer) {
         super();
         this.assertionConsumer = assertionConsumer;
     }
 
     public AssertionBuilder(C caller,
-            Consumer<Assertion> assertionConsumer,
+            Consumer<ExperimentAssertion> assertionConsumer,
             Ratio tolerance) {
         super(caller);
         this.assertionConsumer = assertionConsumer;
         this.tolerance = tolerance;
     }
 
-    public AssertionBuilder(C caller, Consumer<Assertion> assertionConsumer) {
+    public AssertionBuilder(C caller, Consumer<ExperimentAssertion> assertionConsumer) {
         super(caller);
         this.assertionConsumer = assertionConsumer;
     }
 
     public AssertionBuilder(Setter<C, AssertionBuilder<I,C>> setter,
-            Consumer<Assertion> assertionConsumer) {
+            Consumer<ExperimentAssertion> assertionConsumer) {
         super(setter);
         this.assertionConsumer = assertionConsumer;
     }
@@ -93,7 +93,7 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * @param assertion A consumer that should implement a condition to check.
      */
     @SuppressWarnings("unchecked")
-    public I addAssertion(Assertion assertion) {
+    public I addAssertion(ExperimentAssertion assertion) {
         assertionConsumer.accept(assertion);
         return (I) this;
     }

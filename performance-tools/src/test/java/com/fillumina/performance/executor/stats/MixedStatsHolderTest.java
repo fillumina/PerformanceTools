@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
@@ -14,6 +13,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -273,7 +273,7 @@ public class MixedStatsHolderTest {
         return TN.tname(prefix + Integer.toString(index));
     }
 
-    private Assertable getAssertable(MixedStatsHolder mixedHolder,
+    private AssertableExperiment getAssertable(MixedStatsHolder mixedHolder,
             StatsType type, TName name) {
         return mixedHolder
                 .getStatsHolder(type)

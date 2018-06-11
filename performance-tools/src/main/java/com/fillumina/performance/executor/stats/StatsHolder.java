@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
@@ -229,7 +229,7 @@ public class StatsHolder extends Printable<StatsHolder>
         return tree.getValueAtPath(path);
     }
 
-    private interface LeafVisitor<T extends Assertable> {
+    private interface LeafVisitor<T extends AssertableExperiment> {
         void visitLeaf(TName name, T stats);
     }
 
@@ -268,7 +268,7 @@ public class StatsHolder extends Printable<StatsHolder>
                 });
     }
 
-    public StatsHolder check(Assertion assertion) {
+    public StatsHolder check(ExperimentAssertion assertion) {
         if (assertion != null) {
             traverseLeaves((TName name, Stats stats) -> {
                 assertion.accept(stats);
@@ -287,7 +287,7 @@ public class StatsHolder extends Printable<StatsHolder>
     @SuppressWarnings("unchecked")
     public StatsHolder checkAndAppendTo(
             Appendable appendable,
-            Assertion assertion) {
+            ExperimentAssertion assertion) {
         if (appendable != null) {
             final AppendableWrapperSentinel wrapped =
                     new AppendableWrapperSentinel(appendable);

@@ -17,17 +17,18 @@ public class AssertionTest {
 
     @Test
     public void shouldCheckAnAssertable() {
-        Assertion assertion = new AssertionMock();
-        Assertable assertable = new AssertableMock();
+        ExperimentAssertion assertion = new AssertionMock();
+        AssertableExperiment assertable = new AssertableMock();
         assertion.check(assertable);
     }
 
     @Test
     public void shouldReportTheFailingAssertion() {
-        Assertion assertion = new SettableAssertionMock(a -> {
+        ExperimentAssertion assertion = new SettableAssertionMock(a -> {
             throw new AssertionError(); } );
         final AssertableMock assertable = new AssertableMock("one");
-        Map<Assertable, List<Assertion>> failedAssertions = new LinkedHashMap<>();
+        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
+                new LinkedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
 
@@ -39,10 +40,11 @@ public class AssertionTest {
 
     @Test
     public void shouldReportTheNotFoundAssertion() {
-        Assertion assertion = new SettableAssertionMock(a -> {
+        ExperimentAssertion assertion = new SettableAssertionMock(a -> {
             throw new MeasureNotFoundException("not found"); } );
         final AssertableMock assertable = new AssertableMock("one");
-        Map<Assertable, List<Assertion>> failedAssertions = new LinkedHashMap<>();
+        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
+                new LinkedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
         assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
 

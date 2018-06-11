@@ -18,7 +18,7 @@ public class GarbageCollectorExecutor {
         if (millis > 0) {
             System.gc();
             try {
-                // helps the JVM to scedule a GC
+                // helps the JVM to actually scedule a GC
                 Thread.sleep(millis);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);

@@ -12,16 +12,16 @@ import java.util.Map;
  * Creates and checks a list of assertions.
  *
  * @param C caller used for fluent interface
- * @param A {@link Assertable} returned
+ * @param A {@link AssertableExperiment} returned
  *
  * @author Francesco Illuminati
  */
 public class Assertions
         extends AssertionBuilder<Assertions, Assertions>
-        implements Assertion, Serializable {
+        implements ExperimentAssertion, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Collection<Assertion> collection;
+    private final Collection<ExperimentAssertion> collection;
 
     public static Assertions withTolerance(final Ratio tolerance) {
         return new Assertions().setTolerance(tolerance);
@@ -31,7 +31,7 @@ public class Assertions
         this(new ArrayList<>());
     }
 
-    private Assertions(Collection<Assertion> collection) {
+    private Assertions(Collection<ExperimentAssertion> collection) {
         super(collection::add);
         this.collection = collection;
     }
@@ -42,28 +42,28 @@ public class Assertions
     }
 
     /**
-     * Checks the given {@link Assertable}.
+     * Checks the given {@link AssertableExperiment}.
      *
-     * @param assertable       the {@link Assertable} to check
-     * @throws AssertionError  if the {@link Assertable} doesn't comply
+     * @param assertable       the {@link AssertableExperiment} to check
+     * @throws AssertionError  if the {@link AssertableExperiment} doesn't comply
      */
     @Override
-    public void accept(Assertable assertable) throws AssertionError {
+    public void accept(AssertableExperiment assertable) throws AssertionError {
         collection.forEach(a -> a.accept(assertable) );
     }
 
     @Override
-    public void checkAndReport(Assertable assertable,
-            Map<Assertable, List<Assertion>> failedAssertions,
+    public void checkAndReport(AssertableExperiment assertable,
+            Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         collection.forEach(a ->
                 a.checkAndReport(assertable, failedAssertions, unusedAssertionChecker) );
     }
 
     @Override
-    public void appendTo(Appendable appendable, Assertable assertable)
+    public void appendTo(Appendable appendable, AssertableExperiment assertable)
             throws IOException {
-        for (Assertion assertion : collection) {
+        for (ExperimentAssertion assertion : collection) {
             assertion.appendTo(appendable, assertable);
         }
     }

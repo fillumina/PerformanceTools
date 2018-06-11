@@ -17,7 +17,7 @@ public class OrderAssertionError extends AbstractAssertionError {
     private final Measure firstMeasure;
     private final CharSequence secondTestName;
     private final Measure secondMeasure;
-    private final Assertable assertableMultiTest;
+    private final AssertableExperiment assertableMultiTest;
 
     public OrderAssertionError(
             CharSequence firstTestName,
@@ -26,7 +26,7 @@ public class OrderAssertionError extends AbstractAssertionError {
             Measure secondMeasure,
             Ratio tolerance,
             RelativeOrder requiredCondition,
-            Assertable assertableMultiTest) {
+            AssertableExperiment assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.firstTestName = firstTestName;
         this.firstMeasure = firstMeasure;

@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.assertion.Assertable;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
@@ -21,6 +20,7 @@ import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
 import java.util.Map;
+import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -266,7 +266,7 @@ public class ConfigurableStatsProducer
             MixedStatsHolder mixedHolder) {
         StatsTypedMap<Stats> map = new StatsTypedMap<>();
         for (StatsHolder h : mixedHolder.getStatsMap().values()) {
-            for (Assertable a : h.getFlattenedAssertableMap().values()) {
+            for (AssertableExperiment a : h.getFlattenedAssertableMap().values()) {
                 map.add((Stats)a);
             }
         }

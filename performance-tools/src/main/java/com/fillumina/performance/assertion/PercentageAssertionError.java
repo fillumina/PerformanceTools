@@ -15,7 +15,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
     private final CharSequence testName;
     private final MeasureRatio actualRatio;
     private final Ratio expected;
-    private final Assertable assertableMultiTest;
+    private final AssertableExperiment assertableMultiTest;
 
     public PercentageAssertionError(
             CharSequence testName,
@@ -23,7 +23,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
             Ratio expectedRatio,
             Ratio tolerance,
             RelativeOrder requiredCondition,
-            Assertable assertableMultiTest) {
+            AssertableExperiment assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.testName = testName;
         this.actualRatio = actualRatio;
@@ -64,7 +64,7 @@ public class PercentageAssertionError extends AbstractAssertionError {
         return expected;
     }
 
-    public Assertable getAssertableMultiTest() {
+    public AssertableExperiment getAssertableMultiTest() {
         return assertableMultiTest;
     }
 

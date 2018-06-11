@@ -13,12 +13,12 @@ class RatioAgainstBiggerMeasureCalculator
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final Assertable assertable;
+    private final AssertableExperiment assertable;
     private final Measure refMeasure;
     private final int refIndex;
     private final CharSequence refName;
 
-    public RatioAgainstBiggerMeasureCalculator(Assertable assertable) {
+    public RatioAgainstBiggerMeasureCalculator(AssertableExperiment assertable) {
         this.assertable = assertable;
         CharSequence name = null;
         int index = -1;

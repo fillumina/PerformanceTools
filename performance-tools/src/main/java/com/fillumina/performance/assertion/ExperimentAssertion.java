@@ -7,24 +7,24 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * A {@link Consumer} that checks if an {@link Assertable} complies with the
- * requirements.
+ * A {@link Consumer} that checks if an {@link AssertableExperiment} complies
+ * with the requirements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface Assertion
-        extends Consumer<Assertable>, // TODO it's REALLY needed?
-                StringGenerator<Assertable> {
+public interface ExperimentAssertion
+        extends Consumer<AssertableExperiment>,
+        StringGenerator<AssertableExperiment> {
 
     /** It's a more meaningful name for {@link #accept(Assertable)}. */
-    default void check(Assertable assertable) throws AssertionError {
+    default void check(AssertableExperiment assertable) throws AssertionError {
         accept(assertable);
     }
 
-    /** @return true if the given {@link Assertable} complies. */
-    default boolean satisfy(Assertable assertable) {
+    /** @return true if the given {@link AssertableExperiment} complies. */
+    default boolean satisfy(AssertableExperiment assertable) {
         try {
-            Assertion.this.check(assertable);
+            ExperimentAssertion.this.check(assertable);
             return true;
         } catch (AssertionError ignored) {
             return false;
@@ -34,17 +34,17 @@ public interface Assertion
     /**
      * Adds itself to the given {@link failedAssertions} if fails.
      *
-     * @param assertable            the {@link Assertable} to check
+     * @param assertable            the {@link AssertableExperiment} to check
      * @param failedAssertions      failed assertions for each assertable
      * @param unusedAssertionChecker   unchecked assertions (to recognize
      *                              unused assertions)
      */
-    default void checkAndReport(Assertable assertable,
-            Map<Assertable, List<Assertion>> failedAssertions,
+    default void checkAndReport(AssertableExperiment assertable,
+            Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
         try {
             if (!satisfy(assertable)) {
-                List<Assertion> list = failedAssertions.get(assertable);
+                List<ExperimentAssertion> list = failedAssertions.get(assertable);
                 if (list == null) {
                     list = new ArrayList<>();
                     failedAssertions.put(assertable, list);
@@ -56,5 +56,4 @@ public interface Assertion
             unusedAssertionChecker.setUnused(this);
         }
     }
-
 }

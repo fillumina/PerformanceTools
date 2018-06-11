@@ -1,7 +1,5 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
@@ -14,6 +12,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -48,13 +48,13 @@ public class AssertionableResultTest {
 
     @Test
     public void shouldReturnUnsatisfiedAssertion() {
-        Assertion assertion = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion assertion = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 throw new AssertionError();
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
@@ -70,7 +70,7 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = result.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map = result.getFailedAssertions();
 
         assertEquals(1, map.size());
         assertEquals(assertion, map.get(stats).get(0));
@@ -78,13 +78,13 @@ public class AssertionableResultTest {
 
     @Test
     public void shouldReturnAssertionNotFound() {
-        Assertion assertion = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion assertion = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 throw new MeasureNotFoundException("not found");
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
@@ -102,7 +102,7 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = aResult.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map = aResult.getFailedAssertions();
 
         assertEquals(1, map.size());
         assertEquals(assertion, map.get(AssertionableResult.UNCHECKED).get(0));
@@ -110,13 +110,13 @@ public class AssertionableResultTest {
 
     @Test
     public void shouldReturnNothingIfAllAssertionsAreSatisfied() {
-        Assertion assertion = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion assertion = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 // do nothing
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
@@ -131,59 +131,59 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = result.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map = result.getFailedAssertions();
 
         assertTrue(map.isEmpty());
     }
 
     @Test
     public void shouldReturnForDifferentResults() {
-        Assertion okAssertion = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion okAssertion = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 // do nothing
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
 
         };
 
-        Assertion failingAssertion1 = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion failingAssertion1 = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 throw new AssertionError("not found");
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
 
         };
 
-        Assertion failingAssertion2 = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion failingAssertion2 = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 throw new AssertionError("not found");
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
 
         };
 
-        Assertion notFoundAssertion = new Assertion() {
-            @Override public void accept(Assertable t) {
+        ExperimentAssertion notFoundAssertion = new ExperimentAssertion() {
+            @Override public void accept(AssertableExperiment t) {
                 throw new MeasureNotFoundException("not found");
             }
 
             @Override
-            public void appendTo(Appendable appendable, Assertable assertable)
+            public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
                 // do nothing
             }
@@ -204,7 +204,7 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<Assertable, List<Assertion>> map = aResult.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map = aResult.getFailedAssertions();
 
         assertEquals(2, map.size());
         assertEquals(notFoundAssertion,

@@ -1,6 +1,5 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.assertion.Assertion;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.test.LfsrRunnable;
@@ -11,6 +10,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -39,7 +39,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test
     public void shouldCheckMultipleAssertion() {
-        Assertion assertion = Assertions.withTolerance(Ratio.ZERO)
+        ExperimentAssertion assertion = Assertions.withTolerance(Ratio.ZERO)
                 .assertValue(NOMEMORY).sameAs(0)
                 .assertValue(NOALLOCATED).sameAs(0)
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10)
@@ -51,7 +51,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertWrongOrder() {
-        Assertion assertion =
+        ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
                 .assertOrder(NOALLOCATED).sameAs(ALLOCATED);
 
@@ -60,7 +60,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test
     public void shouldAssertValueWithinTolerance() {
-        Assertion assertion =
+        ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 1);
 
@@ -69,7 +69,7 @@ public class AllocatedMemAnalyzerTest {
 
     @Test(expected = AssertionError.class)
     public void shouldNotAssertValueOutsideTolerance() {
-        Assertion assertion =
+        ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
                 .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 10);
 

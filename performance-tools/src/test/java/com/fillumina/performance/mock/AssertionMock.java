@@ -1,8 +1,8 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import java.io.IOException;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  * Records the test names of performances.
@@ -11,16 +11,16 @@ import java.io.IOException;
  * @param <Assertable>
  */
 public class AssertionMock
-        extends ConsumerMock<Assertable>
-        implements Assertion {
+        extends ConsumerMock<AssertableExperiment>
+        implements ExperimentAssertion {
 
     @Override
-    public void check(Assertable assertable) {
+    public void check(AssertableExperiment assertable) {
         accept(assertable);
     }
 
     @Override
-    public void appendTo(Appendable appendable, Assertable assertable)
+    public void appendTo(Appendable appendable, AssertableExperiment assertable)
             throws IOException {
         if (appendable != null) {
             appendable.append(assertable.toString());

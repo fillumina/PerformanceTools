@@ -12,7 +12,7 @@ import java.util.Collection;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface Assertable { //TODO shouldn't be AssertableExperiment ?
+public interface AssertableExperiment {
 
     /** @return test names. */
     Collection<? extends CharSequence> getNames();

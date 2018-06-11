@@ -1,37 +1,37 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.assertion.Assertable;
-import com.fillumina.performance.assertion.Assertion;
 import java.io.IOException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SettableAssertionMock implements Assertion {
+public class SettableAssertionMock implements ExperimentAssertion {
 
-    private final Consumer<Assertable> consumer;
-    private final Function<Assertable,String> viewer;
+    private final Consumer<AssertableExperiment> consumer;
+    private final Function<AssertableExperiment,String> viewer;
 
-    public SettableAssertionMock(Consumer<Assertable> consumer) {
+    public SettableAssertionMock(Consumer<AssertableExperiment> consumer) {
         this(consumer, a -> a.toString());
     }
 
-    public SettableAssertionMock(Consumer<Assertable> consumer,
-            Function<Assertable, String> viewer) {
+    public SettableAssertionMock(Consumer<AssertableExperiment> consumer,
+            Function<AssertableExperiment, String> viewer) {
         this.consumer = consumer;
         this.viewer = viewer;
     }
 
     @Override
-    public void accept(Assertable t) {
+    public void accept(AssertableExperiment t) {
         consumer.accept(t);
     }
 
     @Override
-    public void appendTo(Appendable appendable, Assertable assertable)
+    public void appendTo(Appendable appendable, AssertableExperiment assertable)
             throws IOException {
         appendable.append(viewer.apply(assertable));
     }

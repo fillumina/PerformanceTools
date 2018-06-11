@@ -20,6 +20,20 @@ public class UnmodifiableListTest {
         assertEquals("modified", list.get(1));
     }
 
+    @Test
+    public void shouldGetElements() {
+        List<String> list = new UnmodifiableList<>("one", "two", "three");
+        assertEquals("one", list.get(0));
+        assertEquals("two", list.get(1));
+        assertEquals("three", list.get(2));
+    }
+
+    @Test
+    public void shouldGetSize() {
+        List<String> list = new UnmodifiableList<>("one", "two", "three");
+        assertEquals(3, list.size(), 0);
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void shouldNotUnmodifiableListBeWritable() {
         List<String> list = new UnmodifiableList<>("one", "two", "three");
@@ -27,9 +41,9 @@ public class UnmodifiableListTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void shouldNotUnmodifiableListBeRemovable() {
+    public void shouldNotUnmodifiableListBeClearable() {
         List<String> list = new UnmodifiableList<>("one", "two", "three");
-        list.remove(2);
+        list.clear();
     }
 
     @Test(expected = UnsupportedOperationException.class)
