@@ -28,7 +28,7 @@ import java.util.function.Function;
  * <li>removal is linear O(N) VERY INEFFICIENT
  * <li>maintains insertion order
  * <li>views are random access list
- * <li>manages its own unmodifiable version of itself
+ * <li>manages its own very efficient unmodifiable view of itself
  * <li>has copy constructor and clone constructor
  * <li>improves locality of access by using arrays
  * </ul>
@@ -36,8 +36,6 @@ import java.util.function.Function;
  * <ul>
  * <li>doesn't accept null as key
  * <li>removal time is linear O(N), very inefficient!
- * <li>if you want to support unmodifiable views on an extended class a
- *     dedicated unmodifiable view class MUST be created.
  * </ul>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -46,7 +44,7 @@ public class IndexedHashMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
 
     public static final IndexedHashMap<?,?> EMPTY =
-            new IndexedHashMap<>().unmodifiable();
+            new IndexedHashMap<>().unmodifiableView();
 
     private static final long serialVersionUID = 1L;
 
@@ -184,11 +182,16 @@ public class IndexedHashMap<K,V>
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 15);
     }
 
+    /** @return an unmodifiable clone. */
+    public IndexedHashMap<K,V> unmodifiableClone() {
+        return clone().unmodifiableView();
+    }
+
     public boolean isUnmodifiable() {
         return readonly;
     }
 
-    public IndexedHashMap<K,V> unmodifiable() {
+    public IndexedHashMap<K,V> unmodifiableView() {
         if (unmodifiableView == null) {
             unmodifiableView = createUnmodifiable();
         }

@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.test;
 
 /**
  * Sinker that does not protect against repeating values but it's about
- * twice faster than {@link SafeSink}. Be warned that a long series of
+ * twice as faster than {@link SafeSink}. Be warned that a long series of
  * repeating values might run the risk of being optimized out by
  * <a href='https://en.wikipedia.org/wiki/Memoization'>memoization</a>.
  * <br>

@@ -56,7 +56,7 @@ public class TNameMapTest {
         map.add(new TNamedImpl(1, "one"));
         map.add(new TNamedImpl(2, "two"));
 
-        Map<TName,TNamedImpl> unmodifiable = map.unmodifiable();
+        Map<TName,TNamedImpl> unmodifiable = map.unmodifiableView();
 
         assertEquals(1, unmodifiable.get("one").getValue(), 0);
         assertEquals(2, unmodifiable.get("two").getValue(), 0);

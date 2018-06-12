@@ -113,7 +113,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
 
         List<Entry<String,Integer>> copyBefore = new ArrayList<>(map.entrySet());
 
-        assertTrue(map.unmodifiable().isUnmodifiable());
+        assertTrue(map.unmodifiableView().isUnmodifiable());
 
         List<Entry<String,Integer>> copyAfter = new ArrayList<>(map.entrySet());
 
@@ -265,7 +265,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
     public void shouldUnmodifiableEmptyMapBeUnmofiable() {
         IndexedHashMap<String,Integer> map = new IndexedHashMap<>();
 
-        map.unmodifiable().put("one", 1);
+        map.unmodifiableView().put("one", 1);
     }
 
     @Test(timeout = 500)
@@ -315,8 +315,8 @@ public class IndexedHashMapTest extends AbstractMapTest {
         }
 
         @Override
-        public ExtendedIndexedArrayMap unmodifiable() {
-            return (ExtendedIndexedArrayMap) super.unmodifiable();
+        public ExtendedIndexedArrayMap unmodifiableView() {
+            return (ExtendedIndexedArrayMap) super.unmodifiableView();
         }
     }
 
@@ -339,7 +339,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
         emap.put(2, "two");
         emap.put(3, "three");
 
-        ExtendedIndexedArrayMap uemap = emap.unmodifiable();
+        ExtendedIndexedArrayMap uemap = emap.unmodifiableView();
 
         assertEquals("one", uemap.get(1));
         assertEquals("two", uemap.get("2")); // using overided method
@@ -358,7 +358,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
         IndexedHashMap<Integer,String> map = new IndexedHashMap<>();
         map.put(1, "one");
 
-        IndexedHashMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiableView();
         assertEquals("one", umap.get(1));
 
         map.remove(1);
@@ -372,7 +372,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
         map.put(1, "one");
         map.put(2, "two");
 
-        IndexedHashMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiableView();
         Set<Entry<Integer,String>> uset = umap.entrySet();
 
         map.clear();
@@ -388,7 +388,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
         map.put(1, "one");
         map.put(2, "two");
 
-        IndexedHashMap<Integer,String> umap = map.unmodifiable();
+        IndexedHashMap<Integer,String> umap = map.unmodifiableView();
         assertEquals(2, umap.size(), 0);
 
         map.put(3, "three");
@@ -407,7 +407,7 @@ public class IndexedHashMapTest extends AbstractMapTest {
         map.put(1, "one");
         map.put(2, "two");
 
-        IndexedHashMap<Integer, String> umap = map.unmodifiable();
+        IndexedHashMap<Integer, String> umap = map.unmodifiableView();
         Map.Entry<Integer, String> uentry = umap.entrySet().iterator().next();
         uentry.setValue("XXX");
     }

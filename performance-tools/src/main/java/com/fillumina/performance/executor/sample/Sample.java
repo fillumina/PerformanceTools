@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Contains the measures of one or more tests.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -36,7 +37,7 @@ public class Sample implements StatsTyped, Serializable {
     }
 
     public Map<TName, SampleValue> getValuesMap() {
-        return map.unmodifiable();
+        return map.unmodifiableView();
     }
 
     public List<TName> getTestNames() {
@@ -44,7 +45,8 @@ public class Sample implements StatsTyped, Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    public <U extends Unit<U>> Quantity<U> getQuantity(CharSequence testName) {
+    public <U extends Unit<U>> Quantity<U> getQuantity(CharSequence testName)
+            throws MeasureNotFoundException {
         SampleValue testSample = getSampleValue(testName);
         if (testSample == null) {
             throw new MeasureNotFoundException(testName, getTestNames());

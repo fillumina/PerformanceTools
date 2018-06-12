@@ -121,11 +121,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     }
 
     public Set<StatsType> getTypes() {
-        return map.unmodifiable().keySet();
+        return map.unmodifiableView().keySet();
     }
 
     public Map<StatsType, StatsHolder> getStatsMap() {
-        return map.unmodifiable();
+        return map.unmodifiableView();
     }
 
     /** Use this when there is only one statistic available. */

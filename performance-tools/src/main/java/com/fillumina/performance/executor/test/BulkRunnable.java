@@ -7,9 +7,9 @@ import com.fillumina.performance.executor.annotation.BeforeSample;
  * precision of the measure but sometimes this technique cannot be employed
  * because the state of the object changes as a result of the test itself
  * making it non repeatable.
- * A benchmark that estimate the speed of removing an element from a map
+ * A benchmark that estimates the speed of removing an element from a map
  * filled at 50% cannot be realized without some clever trick.
- * Adding the element after deletion would take time that will be wrongly
+ * Adding back the element after deletion would take time that will be wrongly
  * accounted into the deletion. Adding it in a different method
  * would make the measure limited to only 1 iteration which is often
  * insufficient to reach a decent accuracy.

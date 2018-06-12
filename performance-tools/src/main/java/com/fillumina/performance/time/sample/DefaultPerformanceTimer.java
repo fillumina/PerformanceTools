@@ -8,16 +8,16 @@ import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Computers are not very accurate in measuring short intervals of time
  * and so to improve its accuracy a measure is averaged over several
  * samples.
- * <p>
+ * <br>
  * Timing tests are subject to many factors that might hinder their accuracy:
  * <ul>
  * <li>Hardware type and available resources (FPU, memory quantity, SDD);
@@ -52,14 +52,19 @@ public class DefaultPerformanceTimer
         this.executor = executor;
     }
 
+    /**
+     * Sets a rough estimation of how long a sample will takes for each test.
+     *
+     * @param value duration in milliseconds
+     * @return itself
+     */
     public DefaultPerformanceTimer setSampleTimeMs(final long value) {
         this.sampleTimeMs = value;
         return this;
     }
 
     /**
-     * Runs each test for approximately 250 milliseconds and returns a sample.
-     * If a test takes more than that it will be executed only once.
+     * Runs each test and returns a sample.
      */
     @Override
     public Map<StatsType, Sample> get() {
@@ -76,7 +81,8 @@ public class DefaultPerformanceTimer
         dispatchToConsumers(thrSample);
         return new IndexedHashMap<StatsType,Sample>()
                 .add(TimeStatsType.AVERAGE, avgSample)
-                .add(TimeStatsType.THROUGHPUT, thrSample);
+                .add(TimeStatsType.THROUGHPUT, thrSample)
+                .unmodifiableView();
     }
 
     /**
@@ -88,11 +94,6 @@ public class DefaultPerformanceTimer
      */
     @Override
     public TimeSampleBuilder iterate(int iterations) {
-        assertTestsPresent();
-        if (iterations < 1) {
-            throw new IllegalArgumentException(
-                    "Iterations must be positive, was = " + iterations);
-        }
         return iterate(new int[]{iterations});
     }
 
@@ -106,14 +107,25 @@ public class DefaultPerformanceTimer
     @Override
     public TimeSampleBuilder iterate(int[] iterations) {
         assertTestsPresent();
-        TimeSampleBuilder builder =
-                performTests(createIterationsArrayIfNeeded(iterations));
+        int[] actualIterations = createIterationsArrayIfNeeded(iterations);
+        TimeSampleBuilder builder = performTests(actualIterations);
         return builder;
     }
 
     private int[] createIterationsArrayIfNeeded(int[] iterations) {
         int testsSize = getTests().size();
-        if (iterations.length == testsSize) {
+        final int length = iterations.length;
+        if (length == 0 || !(length == 1  || length == testsSize) ) {
+            throw new IllegalArgumentException("there must " + testsSize +
+                    " iterations, was: " + length);
+        }
+        for (int i : iterations) {
+            if (i < 1) {
+                throw new IllegalArgumentException(
+                        "Iterations must be positive, was = " + iterations);
+            }
+        }
+        if (length == testsSize) {
             return iterations;
         }
         int[] iterationArray = new int[testsSize];
@@ -126,9 +138,13 @@ public class DefaultPerformanceTimer
      * Estimation of how many iterations are completed in the given time.
      * This measure is very approximated (it has also tolerances) and should
      * not be relied upon. It is used for test tuning.
-     * <p>
+     * <br>
      * The test execution order is scrambled to help detecting JVM bias
      * toward first executed test.
+     * <br>
+     * Each tests is executed at least twice, first time as initialization
+     * (required to let JVM load the class and initialize its internals)
+     * and the second time to actually measure its duration.
      *
      * @param milliseconds the time in milliseconds to wait for each test
      * @return number of iteration executed in the given time (approx)
@@ -153,7 +169,7 @@ public class DefaultPerformanceTimer
         int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
         // useful to detect JVM bias toward first executed test.
-        for (int idx : getShuffledArrayOfSize(size)) {
+        for (int idx : getShuffledIndexes(size)) {
             Map.Entry<TName,Runnable> entry = map.getEntryAtIndex(idx);
             TName name = entry.getKey();
             Runnable test = entry.getValue();
@@ -162,12 +178,13 @@ public class DefaultPerformanceTimer
         return estimations;
     }
 
-    protected static int[] getShuffledArrayOfSize(int size) {
+    protected static int[] getShuffledIndexes(int size) {
         int[] array = new int[size];
         for (int i=0; i<size; i++) {
             array[i] = i;
         }
-        Random rnd = new SecureRandom();
+        // swap indexes randomly
+        Random rnd = ThreadLocalRandom.current();
         for (int i=size-1; i>0; i--) {
             int idx = rnd.nextInt(i);
             int t = array[i];
@@ -183,18 +200,17 @@ public class DefaultPerformanceTimer
         int previousIterations = -1;
         int iterations = 1;
         final int max = 30;
-        IterationLogger ite = new IterationLogger(name, max);
+        IterationLogger iteLogger = new IterationLogger(name, max);
         for (int i=0; i<max; i++) {
-            TimeSampleBuilder ita =
-                    executeSingleTest(testable, iterations);
+            TimeSampleBuilder ita = executeSingleTest(testable, iterations);
             long timeNs = ita.getTotalTimeNs();
-            if (!close(iterations, previousIterations, 0.1) &&
-                    !close(timeNs, desiredTimeNs, 0.1)) {
+            if (!almostEqualsTo(iterations, previousIterations, 0.1) &&
+                    !almostEqualsTo(timeNs, desiredTimeNs, 0.1)) {
                 previousIterations = iterations;
                 double ratio = desiredTimeNs / timeNs;
                 iterations = (int) Math.ceil(1.1 * iterations * ratio);
                 iterations = (iterations == 0) ? 1 : iterations;
-                ite.log(i, iterations, desiredTimeNs, timeNs, ratio);
+                iteLogger.log(i, iterations, desiredTimeNs, timeNs, ratio);
                 if (iterations == Integer.MAX_VALUE) {
                     break;
                 }
@@ -202,7 +218,7 @@ public class DefaultPerformanceTimer
                 return iterations;
             }
         }
-        throw new InvalidTestException(ite.getMessage());
+        throw new InvalidTestException(iteLogger.getMessage());
     }
 
     private TimeSampleBuilder executeSingleTest(Runnable runnable,
@@ -213,7 +229,8 @@ public class DefaultPerformanceTimer
         return executor.executeIterations(singletonTest, singletonArray);
     }
 
-    static boolean close(double a, double b, double margin) {
+    /** Equality within given margin. */
+    static boolean almostEqualsTo(double a, double b, double margin) {
         return a >= b * (1.0 - margin) && a <= b * (1.0 + margin);
     }
 
@@ -236,32 +253,12 @@ public class DefaultPerformanceTimer
     private TimeSampleBuilder performTests(int[] iterations)
             throws IllegalStateException {
         IndexedHashMap<TName,Runnable> tests = getTests();
-        int[] actualIterations = span(iterations, tests.size());
+        int[] actualIterations = createIterationsArrayIfNeeded(iterations);
         final TimeSampleBuilder builder =
                 executor.executeIterations(tests, actualIterations);
         if (builder == null || builder.isEmpty()) {
             throw new RuntimeException("no performance test executed");
         }
         return builder;
-    }
-
-    private int[] span(int[] iterations, int size)
-            throws IllegalStateException {
-        if (iterations.length != size) {
-            int value = iterations[0];
-            if (value <= 0) {
-                throw new IllegalStateException("illegal iterations: " + value);
-            }
-            int[] result = new int[size];
-            Arrays.fill(result, value);
-            return result;
-        }
-        for (int iteration : iterations) {
-            if (iteration < 0) {
-                throw new IllegalArgumentException(
-                        "invalid iteration value = " + iteration);
-            }
-        }
-        return iterations;
     }
 }

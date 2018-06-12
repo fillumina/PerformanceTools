@@ -36,8 +36,8 @@ public class TNameMap<T extends TNamed>
     }
 
     @Override
-    public TNameMap<T> unmodifiable() {
-        return (TNameMap<T>) super.unmodifiable();
+    public TNameMap<T> unmodifiableView() {
+        return (TNameMap<T>) super.unmodifiableView();
     }
 
     @Override

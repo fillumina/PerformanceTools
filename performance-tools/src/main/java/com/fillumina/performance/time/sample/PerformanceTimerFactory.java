@@ -8,7 +8,7 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
  * Static factory to create a {@link PerformanceTimer}.
  * <p>
  * <b>IMPORTANT NOTE</b>: don't use two different {@link PerformanceTimer}
- * at the same time (even consecutively) because in some way they interact
+ * at the same time (even consecutively) because they might interact
  * with each other.
  *
  * @see <a href='http://www.ibm.com/developerworks/java/library/j-jtp02225/index.html'>
@@ -40,12 +40,12 @@ public class PerformanceTimerFactory {
     }
 
     /**
-     * Creates a single threaded performance test specifying in how many
-     * fractions each test sample must be divided. Tests are interleaved
+     * Creates a single threaded performance test specifying how many
+     * fractions each test sample must be divided into. Tests are interleaved
      * at each fraction to minimize external factors (i.e. OS scheduling and
      * CPU throttling).
      *
-     * @param fractions indicates the times tests switch execution during a
+     * @param fractions indicates how many times tests switch execution during a
      *        single sample.
      *        Not very important for micro-benchmark should be used when each
      *        test last for a time longer than some milliseconds.

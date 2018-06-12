@@ -22,6 +22,8 @@ import org.junit.Test;
  */
 public class DefaultPerformanceTimerTest {
     private static final TName ONE = TN.tname("one");
+    private static final TName TWO = TN.tname("two");
+    private static final TName THREE = TN.tname("three");
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
@@ -31,6 +33,90 @@ public class DefaultPerformanceTimerTest {
         pt.addTest(ONE, NullRunnable.INSTANCE);
 
         pt.iterate(0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptDifferentNumberOfIterationsThanTestsLess() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{1, 1});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptDifferentNumberOfIterationsThanTestsMore() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{1, 1, 5 ,6});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptZeroIterationsThanTests() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{});
+    }
+
+    @Test
+    public void shouldAcceptOneIterationThough() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{1});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptNegativeOneIteration() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{-7});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptNegativeIterations() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{3, -7, 999});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldNotAcceptZeroIterations() {
+        PerformanceTimer pt = new DefaultPerformanceTimer(
+                new SingleThreadPerformanceExecutor());
+
+        pt.addTest(ONE, NullRunnable.INSTANCE);
+        pt.addTest(TWO, NullRunnable.INSTANCE);
+        pt.addTest(THREE, NullRunnable.INSTANCE);
+
+        pt.iterate(new int []{3, 0, 999});
     }
 
     @Test(expected = IllegalStateException.class)
@@ -190,8 +276,8 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldShuffleArrayOfSize() {
-        int[] a = DefaultPerformanceTimer.getShuffledArrayOfSize(20);
-        int[] b = DefaultPerformanceTimer.getShuffledArrayOfSize(20);
+        int[] a = DefaultPerformanceTimer.getShuffledIndexes(20);
+        int[] b = DefaultPerformanceTimer.getShuffledIndexes(20);
 
         boolean equals = true;
         for (int i=0; i<a.length; i++) {
@@ -204,6 +290,6 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldBeClose() {
-        assertTrue(DefaultPerformanceTimer.close(275149471, 275171084, 0.1));
+        assertTrue(DefaultPerformanceTimer.almostEqualsTo(275149471, 275171084, 0.1));
     }
 }

@@ -144,7 +144,7 @@ public abstract class AbstractTestExecutor
 
     @Override
     public IndexedHashMap<TName, T> getTests() {
-        return tests.unmodifiable();
+        return tests.unmodifiableView();
     }
 
     protected static TName createTestName(TName producerName, TName testName) {

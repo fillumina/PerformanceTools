@@ -34,7 +34,7 @@ class IterationLogger {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("iteration estimator debug info:")
+        buf.append("### iteration estimator debug info:")
                 .append(System.lineSeparator());
         for (int i=0; i<log.length; i++) {
             int iterations = (int) log[i][1];

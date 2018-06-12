@@ -99,7 +99,7 @@ public class Stats extends Printable<Stats>
         measures.forEach((TName n, DimensionalMeasure d) -> {
             m.put(n, d.in(unit));
         });
-        return m.unmodifiable();
+        return m.unmodifiableView();
     }
 
     public Map<TName, DimensionalMeasure> getMeasureMap() {

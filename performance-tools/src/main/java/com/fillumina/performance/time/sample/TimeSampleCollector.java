@@ -27,7 +27,8 @@ public class TimeSampleCollector implements TimeSampleBuilder {
         this.timeMap = new LinkedHashMap<>();
     }
 
-    public TimeSampleCollector add(final TName name,
+    public TimeSampleCollector add(
+            final TName name,
             final long elapsed,
             final int iterations) {
         IterationTimeAccumulator acc = timeMap.get(name);

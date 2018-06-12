@@ -9,17 +9,17 @@ import java.util.function.Supplier;
  * Executes an experiment and return its result.
  *
  * @param I self (to allow sub-classes to call super methods with a fluid interface)
- * @param C notifications
+ * @param N notifications
  * @param T test
  * @param R result
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface TestExecutor<I extends TestExecutor<I,C,T,R>, C, T, R>
+public interface TestExecutor<I extends TestExecutor<I,N,T,R>, N, T, R>
         extends
             Supplier<R>,
             TestContainer<I,T>,
-            ConsumerNotifier<I,C>,
+            ConsumerNotifier<I,N>,
             TNominable<I>,
             TNamed {
 

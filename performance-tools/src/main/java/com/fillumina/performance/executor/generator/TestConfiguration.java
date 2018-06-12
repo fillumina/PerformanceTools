@@ -66,7 +66,7 @@ public class TestConfiguration<C>
 
     @Override
     public IndexedHashMap<TName, Runnable> getTests() {
-        return tests.unmodifiable();
+        return tests.unmodifiableView();
     }
 
     @Override

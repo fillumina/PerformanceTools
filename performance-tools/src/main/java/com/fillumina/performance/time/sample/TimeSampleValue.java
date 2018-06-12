@@ -19,7 +19,7 @@ public class TimeSampleValue extends SampleValue implements Serializable {
 
     public TimeSampleValue(TName name,
             Quantity<?> quantity,
-            String type,
+            String type, // TODO could be eliminated or changed to TypeStat
             long iterations,
             long timeNs) {
         super(name, quantity);
