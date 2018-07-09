@@ -16,6 +16,8 @@ import org.junit.Test;
 public class HugeMemoryTest {
     private static final int SIZE = 1 << 17; // 131,072
 
+    // TODO make a test with some fixed memory other than 0
+
     public static void main(final String[] args) {
         System.out.println("1 << 17 = " + (1 << 17));
         System.out.println("" + usedMemoryForByteArrayOfDoubleSize(0));

@@ -9,14 +9,14 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
  * which has major problems:
  * <ol>
- * <li>Its working depends on the JDK and the memory management implementation;
- * <li>It reports its values without great accuracy (rounded to about 1 MiB);
+ * <li>Its working depends on the JDK and memory management implementation;
+ * <li>It has accuracy of about 1 MiB;
  * <li>The accuracy of the reported values changes with the amount of memory used
  * (it becomes very unstable and misleading around 256 KiB of used memory);
  * <li>Occasionally returned values might be completely wrong (depending on
- * JDK internals or because a GC has been executed during testing).
+ * JDK internals or if a GC has been executed during testing).
  * </ol>
- * Although all these limitations this class employs a hack to report quite
+ * This class employs some tricks to report quite
  * accurate results at least until about 256 KiB of used/allocated memory.
  * <p>
  * The only way to have reliable results is to repeat the estimations many times
@@ -26,7 +26,7 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * more than one memory test at a time</b>.
  * <p
  * Because the mechanism used in this class is very 'hacky' it could change
- * in next versions of the code. Don't use this class directly.
+ * in next versions of the code. <b>Don't use this class directly</b>.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -88,6 +88,7 @@ final class MemoryConsumption {
         dryZero = zeroBag.getMostUsedValue();
         zero = MemUtil.alignDown(dryZero, minAllocableMemory);
         log(buf, zeroBag, "zero: ", zero);
+
 
         // find memory alignment
         Object[] alignmentArray = new Object[SAMPLES];

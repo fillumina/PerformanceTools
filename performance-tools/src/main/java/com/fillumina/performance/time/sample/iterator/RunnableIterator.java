@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * JVM optimizes a code after a certain number of executions
- * (about 100_000 as default).
- * But if the same looping code is used with a different payload
+ * (about 100_000 as default),
+ * but if the same looping code is used with a different payload
  * the JVM must unoptimize it. If multiple tests use the same loop they
  * share a critical code that will be optimized and de-optimized
  * influencing the measurement.

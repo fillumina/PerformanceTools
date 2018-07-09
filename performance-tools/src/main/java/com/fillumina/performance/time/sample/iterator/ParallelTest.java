@@ -45,6 +45,7 @@ public class ParallelTest implements Runnable {
      * workers will be executed consecutively and their time will be
      * accounted together;
      *
+     * @param name  test name
      * @param count number of workers to add
      * @param test  run
      */

@@ -1,5 +1,7 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.stats.Ratio;
+
 /**
  *
  * @author Francesco Illuminati
@@ -20,15 +22,22 @@ public class AssertHelper {
             final String message,
             final double expected,
             final double result,
-            final double tolerancePercentage) {
-        final double tolerance = tolerancePercentage / 100;
+            final Ratio tolerancePercentage) {
+        final double tolerance = tolerancePercentage.getDecimal();
         if ((expected < result * (1 - tolerance)) ||
                 (expected > result * (1 + tolerance))) {
             throw new AssertionError(message +
                     ": The given value " + result +
                     " is not equals to the expected " + expected +
-                    " within the tolerance of " + tolerancePercentage + "%");
+                    " within the tolerance of " + tolerancePercentage.toString());
         }
+    }
+
+    public static void assertEqualsWithinPercentage(
+            final double expected,
+            final double result,
+            final Ratio tolerancePercentage) {
+        assertEqualsWithinPercentage("", expected, result, tolerancePercentage);
     }
 
 }

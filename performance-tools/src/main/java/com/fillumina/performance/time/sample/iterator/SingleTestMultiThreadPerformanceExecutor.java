@@ -18,28 +18,29 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This executor takes statistics from each thread executing the run
- so to evaluate if the code under run is efficiently parallel.
- * It will also execute the run on a single thread to check
- the parallelization level.
- <p>
+ * so to evaluate if the code under run is effectively parallel.
+ * It will also execute the run on a single thread to calculate
+ * the parallelization level.
+ * <p>
  * This {@link PerformanceExecutor} uses many threads and
- workers to run a code as a multi-threaded environment.
- <p>
- * A <b>thread</b> is a code that race with all the other threads as the system
- for an available CPU to be executed on.<br>
+ * workers to run a code as a multi-threaded environment.
+ * <p>
+ * A <b>thread</b> is a code that race with all the other threads in the system
+ * for an available CPU to be executed on.<br>
  * A <b>worker</b> is a code that race for an available thread.<br>
  * All threads are executed concurrently (they might be interleaved by the
- * system scheduler if no physical CPU is available) but the workers have to wait
- * until the preceeding workers have finished to start being processed.
+ * system scheduler if no physical CPU is available for each) but the workers
+ * have to wait until the preceeding workers have finished to start being
+ * processed.
  * <p>
  * <b>NOTES</b>
  * <ul>
  * <li>Taking performance measurement of a multi-threading process
  * is particularly tricky because it involves the OS scheduler and might be
  * influenced by synchronization and memory contention problems. Because of that
- * they are generally less precise of single-threaded ones;
+ * they are generally less accurate than single-threaded ones;
  * <li>The tests run with this executor will be executed by many threads
- * concurrently so they must be thread safe.
+ * concurrently so they <b>must</b> be thread safe.
  * </ul>
  *
  * @author Francesco Illuminati

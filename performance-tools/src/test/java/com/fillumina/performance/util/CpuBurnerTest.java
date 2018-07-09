@@ -1,6 +1,7 @@
 package com.fillumina.performance.util;
 
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +54,7 @@ public class CpuBurnerTest {
 
         AssertHelper.assertEqualsWithinPercentage(
                 "expected linear correlation but was " + slr.toString(),
-                1.0, slr.getRSquared(), 5.0);
+                1.0, slr.getRSquared(), Ratio.percentage(5));
     }
 
     @Test

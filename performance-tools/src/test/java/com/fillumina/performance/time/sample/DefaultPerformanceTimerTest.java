@@ -8,7 +8,9 @@ import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
+import com.fillumina.performance.util.AssertHelper;
 import com.fillumina.performance.util.collection.IndexedHashMap;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -290,6 +292,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldBeClose() {
-        assertTrue(DefaultPerformanceTimer.almostEqualsTo(275149471, 275171084, 0.1));
+        AssertHelper.assertEqualsWithinPercentage(275149471.0, 275171084.0,
+                Ratio.percentage(10));
     }
 }

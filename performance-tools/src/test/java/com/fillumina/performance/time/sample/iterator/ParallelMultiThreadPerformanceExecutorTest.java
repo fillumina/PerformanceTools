@@ -1,8 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -10,7 +8,6 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -59,6 +56,8 @@ public class ParallelMultiThreadPerformanceExecutorTest {
                     .addTask("three", 2, NULL_RUNNABLE));
 
         executor.executeIterations(testMap, new int[]{250});
+
+        assertEquals(5, executor.getConcurrencyLevel());
     }
 
     @Test
@@ -68,22 +67,23 @@ public class ParallelMultiThreadPerformanceExecutorTest {
 
         IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 
-        final AtomicInteger oneCounter = new AtomicInteger();
-        final AtomicInteger twoCounter = new AtomicInteger();
-        int oneWorkers = 2;
-        int twoWorkers = 3;
+        final AtomicInteger aCounter = new AtomicInteger();
+        final AtomicInteger bCounter = new AtomicInteger();
+        int aWorkers = 1;
+        int bWorkers = 3;
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
-                    .addTask("one", oneWorkers,
-                            () -> oneCounter.getAndIncrement() )
-                    .addTask("two", twoWorkers,
-                            () -> twoCounter.getAndIncrement() ) );
+                    .addTask("one", aWorkers,
+                            () -> aCounter.getAndIncrement() )
+                    .addTask("two", bWorkers,
+                            () -> bCounter.getAndIncrement() ) );
 
         executor.executeIterations(testMap, new int[]{250});
 
-        // the 2 tests are executed about with the same iterations
-        assertEquals(
-                "count_1=" + oneCounter.get() + ", count_2=" + twoCounter.get(),
-                1.0, 1.0 * oneCounter.get() / twoCounter.get(), 0.3);
+        // the tests will be executed in parallel
+        assertEquals("count_1=" + bWorkers * aCounter.get() +
+                    ", count_2=" + aWorkers * bCounter.get(),
+                bWorkers * aCounter.get(), aWorkers * bCounter.get(),
+                aWorkers * bCounter.get() * 0.1);
     }
 
     public static void main(final String[] args) {
@@ -110,7 +110,8 @@ public class ParallelMultiThreadPerformanceExecutorTest {
             }
         });
 
-        Map<StatsType,Sample> resultMap = pt.execute();
-        System.out.println("result=" + resultMap.toString());
+        pt.execute().forEach((type, sample) -> {
+            System.out.println("\n" + type.toString() + ":\n" + sample.toString());
+        });
     }
 }

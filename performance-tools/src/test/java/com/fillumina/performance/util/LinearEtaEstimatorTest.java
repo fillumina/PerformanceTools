@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public class LinearEtaEstimatorTest {
             Sleeper.sleepMillis(sleepTime);
             if (i != 0) {
                 AssertHelper.assertEqualsWithinPercentage("different",
-                        (20 - i) * sleepTime, eta, 7);
+                        (20 - i) * sleepTime, eta, Ratio.percentage(7));
             }
         }
     }

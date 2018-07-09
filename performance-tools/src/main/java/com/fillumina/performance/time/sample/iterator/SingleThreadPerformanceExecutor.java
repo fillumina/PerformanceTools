@@ -40,7 +40,7 @@ public class SingleThreadPerformanceExecutor
      * JVM memory manager or code optimization).
      *
      * @param fractions How many times each run switch to the next to average
-                  system's disturbances
+                  disturbances of the system
      */
     public SingleThreadPerformanceExecutor(final int fractions) {
         this.fractions = fractions;
@@ -77,12 +77,11 @@ public class SingleThreadPerformanceExecutor
 
         setupTests(tests);
 
-        long elapsed;
         for (int f = 0; f < actualFractions; f++) {
-            // minimizes inter-sample noise
+            // minimizes inter-sample bias
             Collections.shuffle(testData);
             for (IterationData data : testData) {
-                elapsed = data.iterate();
+                long elapsed = data.iterate();
                 timeCollector.add(data.name, elapsed, data.iterations);
             }
         }
@@ -111,16 +110,14 @@ public class SingleThreadPerformanceExecutor
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
         Holder.Integer index = new Holder.Integer();
-        tests.entrySet().forEach(entry -> {
-            TName name = entry.getKey();
-            final Runnable runnable = entry.getValue();
+        tests.forEach((TName name, Runnable runnable) -> {
             RunnableIterator iterator =
                     RunnableIterator.DISPATCHER.getIterator(runnable);
             int idx = index.getAndIncrement();
             int iterations = iterationPerFraction[idx];
             data[idx] = new IterationData(name, iterator, iterations);
         });
-        return Arrays.asList(data);
+        return Arrays.asList(data); // must be writable
     }
 
     private static int calculateActualFractions(int fractions, int[] iterations) {
@@ -133,13 +130,13 @@ public class SingleThreadPerformanceExecutor
         return minIterations < fractions ? 1 : fractions;
     }
 
-    private void setupTests(IndexedHashMap<TName, Runnable> tests) {
+    private void setupTests(Map<TName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
         }
     }
 
-    private void tearDownTests(IndexedHashMap<TName, Runnable> tests) {
+    private void tearDownTests(Map<TName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
         }
@@ -150,7 +147,8 @@ public class SingleThreadPerformanceExecutor
         private final RunnableIterator iterator;
         private final int iterations;
 
-        public IterationData(TName name, RunnableIterator iterator,
+        public IterationData(TName name,
+                RunnableIterator iterator,
                 int iterations) {
             this.name = name;
             this.iterator = iterator;

@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Collects {@link IterationTime}s and creates a {@link AverageTimeSample}
+ * Collects iterations times and creates a {@link AverageTimeSample}
  * out of them.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -53,7 +53,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
     @Override
     public Sample buildAverageTimeSample() {
-        TNameMap<SampleValue> map = createMap("average time",
+        TNameMap<SampleValue> map = createMap(
                 AverageTimeUnit.NANOSECONDS,
                 ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
         return new Sample(TimeStatsType.AVERAGE, map);
@@ -61,13 +61,13 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
     @Override
     public Sample buildThroughputSample() {
-        TNameMap<SampleValue> map = createMap("throughput",
+        TNameMap<SampleValue> map = createMap(
                 ThroughputUnit.OP,
                 ita -> 1E9 * ita.getIterations() / ita.getTimeNs());
         return new Sample(TimeStatsType.THROUGHPUT, map);
     }
 
-    private TNameMap<SampleValue> createMap(String type,
+    private TNameMap<SampleValue> createMap(
             Unit<?> unit,
             Function<IterationTimeAccumulator, Double> valueFunc) {
         TNameMap<SampleValue> map = new TNameMap<>(timeMap.size());
@@ -78,7 +78,6 @@ public class TimeSampleCollector implements TimeSampleBuilder {
             SampleValue s = new TimeSampleValue(
                     name,
                     Quantity.from(valueFunc.apply(ita), unit),
-                    type,
                     ita.getIterations(),
                     ita.getTimeNs());
 

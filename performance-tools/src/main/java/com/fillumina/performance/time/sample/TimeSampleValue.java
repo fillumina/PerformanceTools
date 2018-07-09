@@ -13,17 +13,14 @@ import java.io.Serializable;
 public class TimeSampleValue extends SampleValue implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final String type;
     private final long iterations;
     private final long timeNs;
 
     public TimeSampleValue(TName name,
             Quantity<?> quantity,
-            String type, // TODO could be eliminated or changed to TypeStat
             long iterations,
             long timeNs) {
         super(name, quantity);
-        this.type = type;
         this.iterations = iterations;
         this.timeNs = timeNs;
     }
