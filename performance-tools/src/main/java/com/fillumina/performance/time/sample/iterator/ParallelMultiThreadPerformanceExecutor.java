@@ -37,6 +37,17 @@ public class ParallelMultiThreadPerformanceExecutor
         return new MultiThreadPerformanceExecutorBuilder();
     }
 
+    /** Unconstrained threads, 1 DAY timeout. */
+    public ParallelMultiThreadPerformanceExecutor() {
+        this(-1, IntervalUnit.DAYS.quantity(1));
+    }
+
+    /** Unconstrained threads. */
+    public ParallelMultiThreadPerformanceExecutor(
+            final Quantity<IntervalUnit> timeout) {
+        this(-1, timeout);
+    }
+
     /**
      * @see MultiThreadPerformanceExecutorBuilder
      */
@@ -109,7 +120,8 @@ public class ParallelMultiThreadPerformanceExecutor
             final Runnable test = group.getRunnable();
 
             for (int i=0; i<workers; i++) {
-                workerList.add(new IteratingRunnable(groupName, test));
+                workerList.add(new IteratingRunnable(
+                        groupName.append(String.valueOf(i)), test));
             }
         }
         return workerList;

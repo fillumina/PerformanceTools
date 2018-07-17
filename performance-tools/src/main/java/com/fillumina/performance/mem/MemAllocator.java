@@ -1,6 +1,7 @@
 package com.fillumina.performance.mem;
 
 /**
+ * Allows to allocate objects in a thread local array of given size.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

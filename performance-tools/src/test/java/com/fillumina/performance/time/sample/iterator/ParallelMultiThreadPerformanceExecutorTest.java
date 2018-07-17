@@ -63,27 +63,37 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(8, DAYS_1);
+                new ParallelMultiThreadPerformanceExecutor(DAYS_1);
 
         IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 
-        final AtomicInteger aCounter = new AtomicInteger();
-        final AtomicInteger bCounter = new AtomicInteger();
+        AtomicInteger aCounter = new AtomicInteger();
+        AtomicInteger bCounter = new AtomicInteger();
+
         int aWorkers = 1;
         int bWorkers = 3;
+
         testMap.put(TN.tname("asymmetric"), new ParallelTest()
-                    .addTask("one", aWorkers,
+                    .addTask("a", aWorkers,
                             () -> aCounter.getAndIncrement() )
-                    .addTask("two", bWorkers,
+                    .addTask("b", bWorkers,
                             () -> bCounter.getAndIncrement() ) );
 
-        executor.executeIterations(testMap, new int[]{250});
+        int[] iterations = new int[]{10_000};
+
+        executor.executeIterations(testMap, iterations);
+
+        double aNormalizedResult = bWorkers * aCounter.get();
+        double bNormalizedResult = aWorkers * bCounter.get();
+
+        // it's huge, I understand
+        double error = bNormalizedResult * 0.25;
 
         // the tests will be executed in parallel
-        assertEquals("count_1=" + bWorkers * aCounter.get() +
-                    ", count_2=" + aWorkers * bCounter.get(),
-                bWorkers * aCounter.get(), aWorkers * bCounter.get(),
-                aWorkers * bCounter.get() * 0.1);
+        assertEquals("count_1=" + aNormalizedResult +
+                    ", count_2=" + bNormalizedResult +
+                    ", error=" + error,
+                aNormalizedResult, bNormalizedResult, error);
     }
 
     public static void main(final String[] args) {

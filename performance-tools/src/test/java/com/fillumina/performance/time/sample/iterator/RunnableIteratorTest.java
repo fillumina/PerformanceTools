@@ -5,8 +5,6 @@ import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
-import com.fillumina.performance.util.AssertHelper;
-import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -181,7 +179,7 @@ public class RunnableIteratorTest {
         Runnable a = () -> { FastSink.drain(measure(c1)); };
         Runnable b = () -> { FastSink.drain(measure(c2)); };
 
-        final int iterations = 900_000_000;
+        final int iterations = 100_000_000;
         final int repetitions = 3;
 
         long la1 = loop(a, iterations, repetitions);
@@ -200,7 +198,7 @@ public class RunnableIteratorTest {
         long la2 = loop(a, iterations, repetitions);
         print("a=" + la2);
 
-        assertTrue("la1=" + la1 + " < la2=" + la2, la1 < la2);
+        assertTrue("la1=" + la1 + " >= la2=" + la2, la1 < la2);
     }
 
     private long loop(Runnable runnable, int iterations, int repetitions) {
@@ -223,7 +221,7 @@ public class RunnableIteratorTest {
         RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
                 () -> { FastSink.drain(measure(k2)); });
 
-        final int iteration = 900_000_000;
+        final int iteration = 100_000_000;
         final int repetitions = 3;
 
         long la1 = loop(a, iteration, repetitions);
@@ -239,9 +237,10 @@ public class RunnableIteratorTest {
         long la2 = loop(a, iteration, repetitions);
         print("a=" + la2);
 
-        AssertHelper.assertEqualsWithinPercentage(
-                "la1=" + la1 + " != la2=" + la2,
-                la1, la2, Ratio.percentage(15));
+        /*
+        second execution is faster than first because of optimizations.
+        */
+        assertTrue("la1=" + la1 + " <= la2=" + la2, la1 > la2);
     }
 
     private long loop(RunnableIterator iterator, int iterations, int repetitions) {

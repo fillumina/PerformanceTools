@@ -1,6 +1,7 @@
 package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.SafeSink;
@@ -10,7 +11,6 @@ import com.fillumina.performance.util.stats.Ratio;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
-import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -29,7 +29,7 @@ public class AllocatedMemAnalyzerTest {
                     final List<Object> list = new ArrayList<>(100);
                     @Override
                     public void run() {
-                        SafeSink.drain(list.add(new int[10]));
+                        list.add(new int[10]);
                     }
                 })
                 .execute()

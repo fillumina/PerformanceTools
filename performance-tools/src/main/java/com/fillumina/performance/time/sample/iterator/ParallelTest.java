@@ -32,6 +32,11 @@ public class ParallelTest implements Runnable {
         public Runnable getRunnable() {
             return runnable;
         }
+
+        @Override
+        public String toString() {
+            return "Group{" + "name=" + name + ", workers=" + workers + '}';
+        }
     }
 
     private final List<Group> runnableGroup = new ArrayList<>();

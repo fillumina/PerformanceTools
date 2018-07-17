@@ -16,6 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class SafeSink {
 
+    // TODO SafeSink is not transperent to memory allocation
+
     /** Defines a pseudo-random odd value. */
     private static int incrementer = ThreadLocalRandom.current().nextInt() | 1;
 

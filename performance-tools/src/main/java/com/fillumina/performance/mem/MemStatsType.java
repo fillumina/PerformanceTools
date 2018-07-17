@@ -1,6 +1,5 @@
 package com.fillumina.performance.mem;
 
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
 
 /**

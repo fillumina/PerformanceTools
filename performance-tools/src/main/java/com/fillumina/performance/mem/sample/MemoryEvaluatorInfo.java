@@ -1,6 +1,5 @@
 package com.fillumina.performance.mem.sample;
 
-import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import java.io.IOException;
@@ -16,7 +15,10 @@ public class MemoryEvaluatorInfo {
 
     private MemoryEvaluatorInfo() {}
 
-    /** @return Minimum amount of allocable memory in bytes (actually 16). */
+    /**
+     * @return Minimum amount of allocable memory in bytes (actually 16).
+     *         This is also the memory used by an empty array or Object.
+     */
     public int getMinimalAllocableMemory() {
         return MemoryConsumption.INSTANCE.getMinimalAllocableMemory();
     }
@@ -26,7 +28,7 @@ public class MemoryEvaluatorInfo {
         return MemoryConsumption.INSTANCE.getAlignment();
     }
 
-    /** Internal debug string, not part of the API. */
+    /** Internal debug string, not part of the API (might change). */
     public String getDebugString() {
         return MemoryConsumption.INSTANCE.toString();
     }
@@ -39,6 +41,10 @@ public class MemoryEvaluatorInfo {
      */
     public long alignWithPadding(long x) {
         return MemUtil.alignUp(x, getMemoryPadding());
+    }
+
+    public long calculateMaxDetectableMemory() {
+        return calculateMaxDetectableMemory(null);
     }
 
     /**
@@ -54,27 +60,33 @@ public class MemoryEvaluatorInfo {
      * @return the upper limit of allocated memory accurately returned by
      *         the memory allocator.
      */
-    public long calculateMemoryAccuracyThreshold(final Appendable log) {
+    public long calculateMaxDetectableMemory(final Appendable log) {
         return ExpBinarySearcher.search(1 << 24, new Comparable<Integer>() {
-            private int arrayMemoryAllocation =
+            private final int sizeOfTheEmptyArrayObject =
                     MemoryConsumption.INSTANCE.getMinimalAllocableMemory();
-            private int alignment = (int)
+            private final int alignment = (int)
                     MemoryConsumption.INSTANCE.getAlignment();
 
             @Override
-            public int compareTo(final Integer o) {
+            public int compareTo(final Integer size) {
                 int mem = (int) UsedMemSampleExecutor.INSTANCE
-                    .execute((Runnable) () -> {
-                        SafeSink.drain(new byte[o]);
+                    .execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            byte[] array = new byte[size];
+                            if (size > 0 && array[0] != 0) {
+                                throw new AssertionError();
+                            }
+                        }
                     });
-                final int value = o + arrayMemoryAllocation;
+                final int value = size + sizeOfTheEmptyArrayObject;
                 final int diff = (int) MemUtil.alignUp(value, alignment) - mem;
                 if (diff == 0) {
-                    log("memory evaluation of byte[", o, "] correct");
+                    log("memory evaluation of byte[", size, "] correct");
                     return -1;
                 } else {
-                    log("memory evaluation of byte[", o, "] incorrect by ",
-                            diff, " bytes");
+                    log("memory evaluation of byte[", size, "] incorrect by ",
+                            diff, " bytes, mem=", mem);
                     return 1;
                 }
             }
@@ -95,8 +107,14 @@ public class MemoryEvaluatorInfo {
     }
 
     public static void main(final String[] args) {
+        evaluateMaxDetectableMemory();
+    }
+
+    private static void evaluateMaxDetectableMemory() {
+        System.out.println("min allocalble memory= " +
+                MemoryConsumption.INSTANCE.getMinimalAllocableMemory());
         long maxMem = MemoryEvaluatorInfo.INSTANCE
-                .calculateMemoryAccuracyThreshold(System.out);
+                .calculateMaxDetectableMemory(System.out);
         System.out.println("max memory assessable= " + maxMem);
     }
 }

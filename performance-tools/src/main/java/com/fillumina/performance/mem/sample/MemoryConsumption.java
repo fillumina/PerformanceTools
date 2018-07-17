@@ -9,10 +9,9 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
  * which has major problems:
  * <ol>
- * <li>Its working depends on the JDK and memory management implementation;
- * <li>It has accuracy of about 1 MiB;
- * <li>The accuracy of the reported values changes with the amount of memory used
- * (it becomes very unstable and misleading around 256 KiB of used memory);
+ * <li>Its working depends on JDK and memory management implementation;
+ * <li>It has an accuracy of about 1 MiB;
+ * <li>The accuracy of the reported values changes with the amount of memory used;
  * <li>Occasionally returned values might be completely wrong (depending on
  * JDK internals or if a GC has been executed during testing).
  * </ol>
@@ -24,12 +23,17 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * <p>
  * This class is <b>NOT</b> thread safe. You must particularly <b>avoid to run
  * more than one memory test at a time</b>.
- * <p
+ * <p>
  * Because the mechanism used in this class is very 'hacky' it could change
  * in next versions of the code. <b>Don't use this class directly</b>.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO try with different GC:
+// -XX:+UseSerialGC
+// -XX:+UseParallelGC
+// -XX:+UseConcMarkSweepGC
+// -XX:+UseG1GC
 final class MemoryConsumption {
 
     public static final MemoryConsumption INSTANCE = new MemoryConsumption();
@@ -38,7 +42,10 @@ final class MemoryConsumption {
 
     private final Runtime rt;
 
-    /** Min memory allocable, usually an empty array as {@code new int[0]}. */
+    /**
+     * Min memory allocable, usually an empty array as {@code new int[0]} or
+     * the size of {@code new Object()} .
+     */
     private final int minAllocableMemory;
 
     /** Size of the filler array used to consume memory. */
@@ -47,10 +54,10 @@ final class MemoryConsumption {
     /** New memory is allocated in chunks of this size. */
     private final long alignment;
 
-    /** Static aligned error that must be subtracted to measure. */
+    /** Systematic aligned error that must be subtracted to a measure. */
     private final long zero;
 
-    /** Static unaligned error. */
+    /** Systematic unaligned error. */
     private final long dryZero;
 
     /** Size of the chunk in which memory usage is reported by JVM. */
@@ -59,6 +66,7 @@ final class MemoryConsumption {
     /** Log actions leading to building this class. */
     private final String constructionLog;
 
+    // variables used internally
     private Object[] filler;
     private long startMemory;
     private int start;
@@ -78,7 +86,7 @@ final class MemoryConsumption {
         minAllocableMemory = minAllocableBag.getMostUsedValue();
         log(buf, minAllocableBag, "minAllocableMemory: ", minAllocableMemory);
 
-        // find static error (zero)
+        // find systematic error (zero)
         MostUsedValueBag<Long> zeroBag = new MostUsedValueBag<>(SAMPLES);
         for (k=0; k<SAMPLES; k++) {
             start();
@@ -95,6 +103,9 @@ final class MemoryConsumption {
         start();
         for (k = 0; k<SAMPLES; k++) {
             alignmentArray[k] = new byte[1]; // 16 + 8 = 24 bytes
+        }
+        if (alignmentArray[0] == null) {
+            throw new AssertionError();
         }
         alignment = MemUtil.alignUp(
                 ((usedMemory() - zero) / SAMPLES) - minAllocableMemory, 8);
@@ -120,10 +131,9 @@ final class MemoryConsumption {
      */
     private synchronized int calculateMinimumAllocableMemory() {
         start();
-        before = rt.totalMemory() - rt.freeMemory();
         for (i=start; i<filler.length; i++) {
             filler[i] = new int[0]; // 16 bytes
-            usedMem = rt.totalMemory() - rt.freeMemory() - before;
+            usedMem = rt.totalMemory() - rt.freeMemory() - startMemory;
             if (usedMem > 0) {
                 return (int) (usedMem / (i - start));
             }
@@ -161,9 +171,12 @@ final class MemoryConsumption {
 
         before = rt.totalMemory() - rt.freeMemory();
         for (i=0; i<filler.length; i++) {
+            // minimal allocable memory
             filler[i] = new int[0];
+            // actual reported memory
             startMemory = rt.totalMemory() - rt.freeMemory();
-            if (startMemory > before) {
+            if (startMemory > before) { // check if reported memory has changed
+                // ok, we are at the beginning of a new chunk
                 start = (i == 0) ? 0 : i + 1;
                 return;
             } else if (startMemory < before) {
@@ -189,7 +202,7 @@ final class MemoryConsumption {
 
     private long usedMemory() {
         for (i=start; i<filler.length; i++) {
-            filler[i] = new int[0]; // 16 bytes
+            filler[i] = new int[0]; // [minAllocableMemory] bytes
             usedMem = rt.totalMemory() - rt.freeMemory() - startMemory;
             if (usedMem > 0) {
                 return usedMem - ((i - start) * minAllocableMemory);

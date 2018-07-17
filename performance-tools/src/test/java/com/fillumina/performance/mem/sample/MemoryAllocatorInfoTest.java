@@ -9,7 +9,7 @@ public class MemoryAllocatorInfoTest {
     // presently returns 498048 which is good enough (in about 16 min)
     public static void main(final String[] args) {
         long accuracy = MemoryEvaluatorInfo.INSTANCE
-                .calculateMemoryAccuracyThreshold(System.out);
+                .calculateMaxDetectableMemory(System.out);
         System.out.println("mem accuracy = " + accuracy);
     }
 }

@@ -16,6 +16,7 @@ public class Holder<T> {
         public Double() {}
         public Double(double value) { this.value = value; }
         public double getValue() { return value; }
+        public double get() { return value; }
         public void setValue(double value) { this.value = value; }
         public void add(double value) { this.value += value; }
         public void subtract(double value) { this.value -= value; }
@@ -26,6 +27,7 @@ public class Holder<T> {
         public Float() {}
         public Float(float value) { this.value = value; }
         public float getValue() { return value; }
+        public double get() { return value; }
         public void setValue(float value) { this.value = value; }
         public void add(float value) { this.value += value; }
         public void subtract(float value) { this.value -= value; }
@@ -36,6 +38,7 @@ public class Holder<T> {
         public Integer() {}
         public Integer(int value) { this.value = value; }
         public int getValue() { return value; }
+        public int get() { return value; }
         public int getAndIncrement() { return value++; }
         public int getAndDecrement() { return value--; }
         public int incrementAndGet() { return ++value; }
@@ -50,6 +53,7 @@ public class Holder<T> {
         public Long() {}
         public Long(long value) { this.value = value; }
         public long getValue() { return value; }
+        public long get() { return value; }
         public long getAndIncrement() { return value++; }
         public long getAndDecrement() { return value--; }
         public long incrementAndGet() { return ++value; }
@@ -64,6 +68,7 @@ public class Holder<T> {
         public Short() {}
         public Short(short value) { this.value = value; }
         public short getValue() { return value; }
+        public short get() { return value; }
         public long getAndIncrement() { return value++; }
         public long getAndDecrement() { return value--; }
         public long incrementAndGet() { return ++value; }
@@ -78,6 +83,7 @@ public class Holder<T> {
         public Char() {}
         public Char(char value) { this.value = value; }
         public char getValue() { return value; }
+        public char get() { return value; }
         public void setValue(char value) { this.value = value; }
         public char getAndIncrement() { return value++; }
         public char getAndDecrement() { return value--; }
@@ -93,6 +99,7 @@ public class Holder<T> {
         public Byte(byte value) { this.value = value; }
         public byte getValue() { return value; }
         public void setValue(byte value) { this.value = value; }
+        public byte get() { return value; }
         public byte getAndIncrement() { return value++; }
         public byte getAndDecrement() { return value--; }
         public byte incrementAndGet() { return ++value; }
@@ -105,6 +112,7 @@ public class Holder<T> {
         private boolean value;
         public Boolean() {}
         public Boolean(boolean value) { this.value = value; }
+        public boolean get() { return value; }
         public boolean getValue() { return value; }
         public void setValue(boolean value) { this.value = value; }
         public void or(boolean value) { this.value |= value; }
@@ -125,6 +133,10 @@ public class Holder<T> {
     }
 
     public T getValue() {
+        return value;
+    }
+
+    public T get() {
         return value;
     }
 
