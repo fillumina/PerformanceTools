@@ -9,6 +9,10 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -72,6 +76,7 @@ public class TelemetryTest {
 
     @Test
     public void shouldReturnValidResults() {
+        Telemetry.clear();
         Telemetry.init();
         // warmp up
         for (int i=0; i<WARMUP; i++) {
@@ -98,6 +103,7 @@ public class TelemetryTest {
 
     @Test
     public void shouldNotWorkAtAllIfNotInitialized() {
+        Telemetry.clear();
         //Telemetry.init();
         for (int i=0; i<ITERATIONS; i++) {
             process();
@@ -119,6 +125,7 @@ public class TelemetryTest {
 
     @Test
     public void shouldNotAccountForAMissingTest() {
+        Telemetry.clear();
         Telemetry.init();
         for (int i=0; i<WARMUP; i++) {
             alternateProcess();
@@ -139,5 +146,52 @@ public class TelemetryTest {
 
         assertNull(map.get(TN.tname(ONE)));
         assertNull(map.get(TN.tname(REPEATING)));
+    }
+
+    @Test
+    public void shouldClearTheTelemetry() {
+        Telemetry.clear();
+        Telemetry.init();
+        Telemetry.start();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+        }
+        Telemetry.section("end");
+
+        assertEquals(1, Telemetry.getStatsFromAllThreads().size());
+
+        Telemetry.clear();
+
+        assertEquals(0, Telemetry.getStatsFromAllThreads().size());
+    }
+
+    @Test
+    public void shouldRecordStatsForConcurrentThreads() throws InterruptedException {
+        Telemetry.clear();
+
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        Runnable worker = () -> {
+            Telemetry.init();
+            Telemetry.start();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+            }
+            Telemetry.section("end");
+        };
+        executor.execute(worker);
+        executor.execute(worker);
+
+        // This will make the executor accept no new threads
+        // and finish all existing threads in the queue
+        executor.shutdown();
+        // Wait until all threads are finish
+
+        executor.awaitTermination(130, TimeUnit.MILLISECONDS);
+
+        Map<String,MixedStatsHolder> map = Telemetry.getStatsFromAllThreads();
+
+        assertEquals(2, map.size());
     }
 }

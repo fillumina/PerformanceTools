@@ -2,6 +2,9 @@ package com.fillumina.performance;
 
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.time.stats.StopWatchTimer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Evaluates the percentage of time spent by different parts of a code.
@@ -18,6 +21,9 @@ public class Telemetry {
     private static final ThreadLocal<StopWatchTimer>
             THREAD_LOCAL_TELEMETRY = new ThreadLocal<>();
 
+    private static final Map<String, StopWatchTimer> MAP =
+            new ConcurrentHashMap<>();
+
     /**
      * Initialize the test. Must be called once before the test starts.
      * If it is not called all the other calls will
@@ -29,6 +35,7 @@ public class Telemetry {
     public static boolean init() {
         StopWatchTimer timer = new StopWatchTimer();
         THREAD_LOCAL_TELEMETRY.set(timer);
+        MAP.put(Thread.currentThread().getName(), timer);
         return true;
     }
 
@@ -95,4 +102,21 @@ public class Telemetry {
         return MixedStatsHolder.EMPTY;
     }
 
+    /**
+     * @return the statistics map of all threads.
+     */
+    public static Map<String, MixedStatsHolder> getStatsFromAllThreads() {
+        Map<String,MixedStatsHolder> result = new HashMap<>();
+        MAP.forEach((String name, StopWatchTimer timer) ->
+                result.put(name, timer.getPerformances()));
+        return result;
+    }
+
+    /**
+     * Reset the statistics for ALL threads.
+     */
+    public static void clear() {
+        MAP.values().forEach(timer -> timer.reset());
+        MAP.clear();
+    }
 }
