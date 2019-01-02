@@ -5,7 +5,15 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Sinker that protects against repeating and static values.
  * <br>
- * The JVM continuously optimizes executing code at runtime and it could evict
+ * It allows to iterate on invariant code like:
+ * <ul>
+ * <li>{@code SafeSink.drain(5);}
+ * <li>{@code int x = 5; SafeSink.drain(x); }
+ * </ul>
+ * This comes at a cost of some extra speed lost compared to
+ * {@link FastSink}.
+ * <br>
+ * The JVM continuously optimizes executing code at run-time and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks
  * use such kind of code in tight loops there must be a way to trick the JVM
  * into not evicting them. The trick is to instruct the JVM that some input
@@ -16,54 +24,142 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class SafeSink {
 
-    // TODO SafeSink is not transperent to memory allocation
-
     /** Defines a pseudo-random odd value. */
     private static int incrementer = ThreadLocalRandom.current().nextInt() | 1;
 
+    /** Assures the value is not optimized out. */
     public static void drain(Object obj) {
         drainInt(System.identityHashCode(obj));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(byte value) {
         drainInt(Byte.hashCode(value));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(int value) {
         drainInt(Integer.hashCode(value));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(boolean b) {
         drainInt(Boolean.hashCode(b));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(short value) {
         drainInt(Short.hashCode(value));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(char value) {
         drainInt(Character.hashCode(value));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(long l) {
         drainInt(Long.hashCode(l));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(float f) {
         drainInt(Float.hashCode(f));
     }
 
+    /** Assures the value is not optimized out. */
     public static void drain(double d) {
         drainInt(Double.hashCode(d));
     }
 
-    private static void drainInt(final int v) {
-        // protects against 0 and repeating values
-        int value = v | (incrementer += 2);
-        // lfsr never returns 0
-        if ((((value >>> 1) ^ (-(value & 1) & -536870400)) & -1) == 0) {
+    // protects against 0 and repeating values
+    private static void drainInt(final int value) {
+        // makes the inner state change so that the method will not
+        // be memoized out.
+        if (impossible(value)) {
             // this codepath never happens but this is hard to predict
-            throw new AssertionError("lfsr zero for value= " + value);
+            throw new DrainAssertionError(value);
         }
+    }
+
+    private static boolean impossible(final int value) {
+        // lfsr never returns 0, it's always false
+        return lfsrNext(value | (incrementer += 2)) == 0;
+    }
+
+    private static int lfsrNext(final int value) {
+        return (((value >>> 1) ^ (-(value & 1) & -536870400)) & -1);
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static Object pass(Object obj) {
+        if (impossible(System.identityHashCode(obj))) {
+            return new Object();
+        }
+        return obj;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static byte pass(byte value) {
+        if (impossible(Byte.hashCode(value))) {
+            return (byte) ThreadLocalRandom.current().nextInt();
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static int pass(int value) {
+        if (impossible(Integer.hashCode(value))) {
+            return ThreadLocalRandom.current().nextInt();
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static boolean pass(boolean value) {
+        if (impossible(Boolean.hashCode(value))) {
+            return false;
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static short pass(short value) {
+        if (impossible(Short.hashCode(value))) {
+            return 0;
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static char pass(char value) {
+        if (impossible(Character.hashCode(value))) {
+            return (char) ThreadLocalRandom.current().nextInt();
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static long pass(long value) {
+        if (impossible(Long.hashCode(value))) {
+            return 0;
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static float pass(float value) {
+        if (impossible(Float.hashCode(value))) {
+            return 0;
+        }
+        return value;
+    }
+
+    /** @return the given value with the guarantee that it's not optimized out. */
+    public static double pass(double value) {
+        if (impossible(Double.hashCode(value))) {
+            return ThreadLocalRandom.current().nextDouble();
+        }
+        return value;
     }
 }

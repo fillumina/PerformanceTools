@@ -63,7 +63,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(DAYS_1);
+                new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
         IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
 

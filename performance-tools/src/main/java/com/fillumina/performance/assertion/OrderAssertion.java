@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 /**
  * It uses the standard margin of error of the measures
- * and than it evaluates if their ratio is within the required tolerance.
+ * and than evaluates if their ratio is within the required tolerance.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

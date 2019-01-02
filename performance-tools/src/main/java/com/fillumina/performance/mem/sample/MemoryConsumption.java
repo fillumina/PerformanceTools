@@ -4,10 +4,10 @@ import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.MostUsedValueBag;
 
 /**
- * Estimates the used memory.
- * JVM doesn't report used memory directly, instead it must be calculated
+ * Estimates memory usage.
+ * JVM doesn't report used memory directly, instead it must be inferred
  * by the formula {@link Runtime#totalMemory()} - {@link Runtime#freeMemory()}
- * which has major problems:
+ * which has some major problems:
  * <ol>
  * <li>Its working depends on JDK and memory management implementation;
  * <li>It has an accuracy of about 1 MiB;
@@ -22,10 +22,10 @@ import com.fillumina.performance.util.MostUsedValueBag;
  * and evaluate the results carefully.
  * <p>
  * This class is <b>NOT</b> thread safe. You must particularly <b>avoid to run
- * more than one memory test at a time</b>.
+ * more than one memory test at a time on the same JVM</b>.
  * <p>
  * Because the mechanism used in this class is very 'hacky' it could change
- * in next versions of the code. <b>Don't use this class directly</b>.
+ * in next versions of the code.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -189,7 +189,7 @@ final class MemoryConsumption {
     /**
      * Call this method after the code to analyze.
      * Remember that if a garbage collection takes place while testing
-     * the result of this test will be wrong. Always take several samples
+     * the result of this test will be garbage. Always take several samples
      * so to be able to exclude outliers.
      *
      * @return the byte used by the code.

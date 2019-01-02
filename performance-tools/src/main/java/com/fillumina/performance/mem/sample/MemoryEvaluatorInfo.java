@@ -2,6 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
+import com.fillumina.performance.util.MostUsedValueBag;
 import java.io.IOException;
 
 /**
@@ -12,6 +13,8 @@ import java.io.IOException;
 public class MemoryEvaluatorInfo {
     public static final MemoryEvaluatorInfo INSTANCE =
             new MemoryEvaluatorInfo();
+
+    private long maxDetectableMemory = Integer.MIN_VALUE;
 
     private MemoryEvaluatorInfo() {}
 
@@ -43,6 +46,18 @@ public class MemoryEvaluatorInfo {
         return MemUtil.alignUp(x, getMemoryPadding());
     }
 
+    public long getMaxDetectableMemory() {
+        if (maxDetectableMemory == Integer.MIN_VALUE) {
+            MostUsedValueBag<Long> maxBag = new MostUsedValueBag<>(10);
+            for (int k=0; k<10; k++) {
+                long max = calculateMaxDetectableMemory();
+                maxBag.add(max);
+            }
+            maxDetectableMemory = maxBag.getMostUsedValue().intValue();
+        }
+        return maxDetectableMemory;
+    }
+
     public long calculateMaxDetectableMemory() {
         return calculateMaxDetectableMemory(null);
     }
@@ -69,24 +84,23 @@ public class MemoryEvaluatorInfo {
 
             @Override
             public int compareTo(final Integer size) {
-                int mem = (int) UsedMemSampleExecutor.INSTANCE
-                    .execute( new Runnable() {
-                        @Override
-                        public void run() {
-                            byte[] array = new byte[size];
-                            if (size > 0 && array[0] != 0) {
-                                throw new AssertionError();
-                            }
-                        }
-                    });
-                final int value = size + sizeOfTheEmptyArrayObject;
-                final int diff = (int) MemUtil.alignUp(value, alignment) - mem;
+                int mem = (int) UsedMemSampleExecutor.INSTANCE.execute(() -> {
+                    byte[] array = new byte[size];
+                    // forces the array to not be discarded by optimizations
+                    if (size > 0 && array[0] != 0) {
+                        throw new AssertionError();
+                    }
+                });
+                final int expected = size + sizeOfTheEmptyArrayObject;
+                final int diff = (int) MemUtil.alignUp(expected, alignment) - mem;
                 if (diff == 0) {
                     log("memory evaluation of byte[", size, "] correct");
                     return -1;
                 } else {
                     log("memory evaluation of byte[", size, "] incorrect by ",
-                            diff, " bytes, mem=", mem);
+                            diff, " bytes, mem=", mem,
+                            ", align=" + alignment,
+                            ", emptyArraySize=", sizeOfTheEmptyArrayObject);
                     return 1;
                 }
             }

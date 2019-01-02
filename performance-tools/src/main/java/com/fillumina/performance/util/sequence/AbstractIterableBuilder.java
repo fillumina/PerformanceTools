@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  *
@@ -57,6 +61,12 @@ public abstract class AbstractIterableBuilder<T>
         }
         list.trimToSize();
         return list;
+    }
+
+    public Stream<T> toStream() {
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(iterator(), Spliterator.ORDERED),
+            false);
     }
 
     private class InnerIterator implements Iterator<T> {

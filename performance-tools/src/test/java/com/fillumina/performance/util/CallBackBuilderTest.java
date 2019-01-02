@@ -38,6 +38,31 @@ public class CallBackBuilderTest {
         }
     }
 
+    public static class Car {
+        private String name;
+
+        public static CallBackBuilderImpl<Car> builder() {
+            return new CallBackBuilderImpl<>( (String name) -> {
+                return new Car(name);
+            });
+        }
+
+        private Car(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    @Test
+    public void shouldCreateACar() {
+        Car car = Car.builder().setName("Alfa Romeo").end();
+        
+        assertEquals("Alfa Romeo", car.getName());
+    }
+
     @Test
     public void shouldReturnTheBuiltObjectUsingTheDefaultConstructor() {
         CallBackBuilderImpl<String> builder = new CallBackBuilderImpl<>();

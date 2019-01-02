@@ -2,6 +2,7 @@ package com.fillumina.performance.util.sequence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -70,5 +71,12 @@ public class IntegerSequenceTest {
         }
 
         assertEquals(list1, list2);
+    }
+
+    @Test
+    public void shouldProduceAStream() {
+        Stream<Integer> stream = IntegerSequence.from(0).to(20).step(3).toStream();
+        long count = stream.filter((Integer n) -> (n & 1) == 0 ).count();
+        assertEquals(4, count); // 0, 6, 12, 18
     }
 }

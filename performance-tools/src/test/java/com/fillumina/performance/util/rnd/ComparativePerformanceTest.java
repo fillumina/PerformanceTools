@@ -1,10 +1,11 @@
 package com.fillumina.performance.util.rnd;
 
+import com.fillumina.performance.executor.generator.TestConfiguration;
 import static com.fillumina.performance.executor.test.SafeSink.drain;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.executor.generator.TestConfiguration;
+import java.util.Random;
 
 /**
  *
@@ -41,6 +42,13 @@ public class ComparativePerformanceTest {
                 });
                 tests.addTest("high quality", new Runnable() {
                     private HighQualityRandom rnd = new HighQualityRandom();
+                    @Override
+                    public void run() {
+                        drain(rnd.nextInt());
+                    }
+                });
+                tests.addTest("cached", new Runnable() {
+                    private Random rnd = new CachedRandom(256);
                     @Override
                     public void run() {
                         drain(rnd.nextInt());

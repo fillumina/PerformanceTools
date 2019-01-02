@@ -98,7 +98,10 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
         return (I) this;
     }
 
-    /** Set the test tolerance. */
+    /**
+     * Set the test tolerance. The new tolerance holds for successive
+     * assertions only.
+     */
     @SuppressWarnings("unchecked")
     public I setTolerance(final Ratio tolerance) {
         this.tolerance = tolerance;

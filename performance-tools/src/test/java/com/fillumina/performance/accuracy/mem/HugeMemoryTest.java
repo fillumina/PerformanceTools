@@ -4,35 +4,25 @@ import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
+import com.fillumina.performance.util.MostUsedValueBag;
 import java.util.Locale;
 import static org.junit.Assert.assertEquals;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Check for precision up to 1 << 17 = 131,072
+ * Check for the upper limit of mem evaluation accuracy.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class HugeMemoryTest {
-
-    private static final int SIZE = (int) MemUtil.alignUp(
-            MemoryEvaluatorInfo.INSTANCE.calculateMaxDetectableMemory() -
-            MemoryEvaluatorInfo.INSTANCE.getMinimalAllocableMemory(),
-            8);
 
     public static void main(final String[] args) {
         evaluateHugeMemorySequentially();
 //        doubleArraySize();
     }
 
-    @BeforeClass
-    public static void printSize() {
-        System.out.println("MAX ALLOCABLE MEMORY= " + SIZE);
-    }
-
     private static void evaluateHugeMemorySequentially() {
-        int bytes = SIZE;
+        int bytes = getMaxByteArrayAllocableSize();
         for (int i=0; i<100; i++) {
             System.out.println(MemoryEvaluatorInfo.INSTANCE.getDebugString());
             System.out.println(i + "\t=\t" +
@@ -53,12 +43,6 @@ public class HugeMemoryTest {
         }
     }
 
-    @Test
-    public void shouldEstimateAllocatedMemory() {
-        final int bytes = SIZE;
-        assertEquals(16 + bytes, allocatedMemoryForByteArrayOfSize(bytes));
-    }
-
     private static long allocatedMemoryForByteArrayOfSize(int size) {
         return MemAnalyzer.allocated(new Runnable() {
                     final Object[] array = new Object[1000];
@@ -71,15 +55,6 @@ public class HugeMemoryTest {
                         SafeSink.drain(array[i]);
                     }
                 });
-    }
-
-    @Test
-    public void shouldEstimateHighUsedMemory() {
-        final int bytes = SIZE;
-        assertEquals(16 + bytes, usedMemoryForByteArrayOfSize(bytes));
-
-//        System.out.println("shouldEstimateHighUsedMemory:\n" +
-//                MemoryEvaluatorInfo.INSTANCE.getDebugString());
     }
 
     private static long usedMemoryForByteArrayOfSize(final int size) {
@@ -105,7 +80,7 @@ public class HugeMemoryTest {
     @Test
     public void shouldEvaluateABigObject() {
         // it seems that is a safe value
-        final int size = SIZE;
+        final int size = getMaxByteArrayAllocableSize();
         final MemoryEvaluatorInfo info = MemoryEvaluatorInfo.INSTANCE;
 
         final String message = info.getDebugString();
@@ -117,5 +92,22 @@ public class HugeMemoryTest {
         assertEquals(message, expected, memUsed, tolerance);
 
 //        System.out.println("shouldEvaluateABigObject:\n" + message);
+    }
+
+    private static int getMaxByteArrayAllocableSize() {
+        long max = calculateMaxDetectableMemory();
+        int min = MemoryEvaluatorInfo.INSTANCE.getMinimalAllocableMemory();
+        int size = (int) MemUtil.alignUp( (max >> 1) - min, 8);
+        System.out.println("MAX=" + max + ", MIN=" + min + ", SIZE=" + size);
+        return size;
+    }
+
+    private static int calculateMaxDetectableMemory() {
+        MostUsedValueBag<Long> maxBag = new MostUsedValueBag<>(10);
+        for (int k=0; k<10; k++) {
+            long max = MemoryEvaluatorInfo.INSTANCE.calculateMaxDetectableMemory(System.out);
+            maxBag.add(max);
+        }
+        return maxBag.getMostUsedValue().intValue();
     }
 }

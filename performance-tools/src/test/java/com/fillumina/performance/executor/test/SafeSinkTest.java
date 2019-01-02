@@ -3,10 +3,8 @@ package com.fillumina.performance.executor.test;
 import static com.fillumina.performance.executor.test.SafeSink.drain;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
-import com.fillumina.performance.util.rnd.HighQualityRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -83,13 +81,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictObjects() {
-        checkIfItIsEvicted("object", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain(rnd.nextBoolean() ? this.getClass() : SafeSinkTest.class);
-            }
-        });
+        checkIfItIsEvicted("object", () -> drain(SafeSinkTest.class) );
     }
 
     @Test
@@ -100,13 +92,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictBooleans() {
-        checkIfItIsEvicted("bool", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain(rnd.nextBoolean());
-            }
-        });
+        checkIfItIsEvicted("bool", () -> drain(false) );
     }
 
     @Test
@@ -116,13 +102,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictBytes() {
-        checkIfItIsEvicted("byte", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain((byte)rnd.nextInt(128));
-            }
-        });
+        checkIfItIsEvicted("byte", () -> drain((byte)12) );
     }
 
     @Test
@@ -132,13 +112,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictShorts() {
-        checkIfItIsEvicted("short", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain((short)rnd.nextInt(1_024));
-            }
-        });
+        checkIfItIsEvicted("short", () -> drain((short)1_024) );
     }
 
     @Test
@@ -148,13 +122,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictCharacters() {
-        checkIfItIsEvicted("char", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain((char)rnd.nextInt(128));
-            }
-        });
+        checkIfItIsEvicted("char", () -> drain((char)18) );
     }
 
     @Test
@@ -164,13 +132,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictIntegers() {
-        checkIfItIsEvicted("int", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain(rnd.nextInt());
-            }
-        });
+        checkIfItIsEvicted("int", () -> drain(123) );
     }
 
     @Test
@@ -180,13 +142,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictLongs() {
-        checkIfItIsEvicted("long", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain(rnd.nextLong());
-            }
-        });
+        checkIfItIsEvicted("long", () -> drain(12345L) );
     }
 
     @Test
@@ -198,10 +154,9 @@ public class SafeSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvicFloats() {
         checkIfItIsEvicted("float", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
             @Override
             public void run() {
-                drain(rnd.nextFloat());
+                drain((float) 34.567);
             }
         });
     }
@@ -214,13 +169,7 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictDoubles() {
-        checkIfItIsEvicted("double", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
-            @Override
-            public void run() {
-                drain(rnd.nextDouble());
-            }
-        });
+        checkIfItIsEvicted("double", () -> drain(678.923) );
     }
 
     private String call(int i) {
@@ -236,6 +185,8 @@ public class SafeSinkTest extends SinkTestHelper {
         Integer i = 5;
         assertEquals("object", call(i));
     }
+
+    // TODO test pass() methods
 
     public static void main(final String[] args) {
         SafeSinkTest test = new SafeSinkTest();

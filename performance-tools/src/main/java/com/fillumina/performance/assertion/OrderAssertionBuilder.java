@@ -2,7 +2,6 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import java.io.Serializable;
 
 /**
@@ -28,7 +27,7 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(RelativeOrder equality, TName other) {
+    public I is(RelativeOrder equality, CharSequence other) {
         switch(equality) {
             case EQUALS: return sameAs(other);
             case LESS: return lessThan(other);

@@ -3,7 +3,7 @@ package com.fillumina.performance.executor.test;
 import static com.fillumina.performance.executor.test.FastSink.drain;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
-import com.fillumina.performance.util.rnd.HighQualityRandom;
+import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -86,7 +86,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictObjects() {
         checkIfItIsEvicted("object", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextBoolean() ? this.getClass() : FastSinkTest.class);
@@ -103,7 +103,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictBooleans() {
         checkIfItIsEvicted("bool", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextBoolean());
@@ -119,7 +119,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictBytes() {
         checkIfItIsEvicted("byte", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain((byte)rnd.nextInt(128));
@@ -135,7 +135,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictShorts() {
         checkIfItIsEvicted("short", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain((short)rnd.nextInt(1_024));
@@ -151,7 +151,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictCharacters() {
         checkIfItIsEvicted("char", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain((char)rnd.nextInt(128));
@@ -167,7 +167,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictIntegers() {
         checkIfItIsEvicted("int", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextInt());
@@ -183,7 +183,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictLongs() {
         checkIfItIsEvicted("long", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextLong());
@@ -200,7 +200,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvicFloats() {
         checkIfItIsEvicted("float", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextFloat());
@@ -217,7 +217,7 @@ public class FastSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictDoubles() {
         checkIfItIsEvicted("double", new Runnable() {
-            private final Random rnd = new HighQualityRandom();
+            private final Random rnd = new XorShiftPlusRandom();
             @Override
             public void run() {
                 drain(rnd.nextDouble());

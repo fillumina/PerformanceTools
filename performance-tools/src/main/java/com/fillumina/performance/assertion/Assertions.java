@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Creates and checks a list of assertions.
+ * Builds, holds and checks a collection of assertions.
  *
  * @param C caller used for fluent interface
  * @param A {@link AssertableExperiment} returned

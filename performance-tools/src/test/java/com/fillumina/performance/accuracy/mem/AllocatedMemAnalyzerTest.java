@@ -3,8 +3,8 @@ package com.fillumina.performance.accuracy.mem;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.test.FastSink;
 import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.executor.test.SafeSink;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
 import com.fillumina.performance.util.stats.Ratio;
@@ -24,7 +24,7 @@ public class AllocatedMemAnalyzerTest {
     private static final Stats MEMSTATS =
             MemStatsProducer.createAllocated()
                 .addTest(NOMEMORY, new LfsrRunnable())
-                .addTest(NOALLOCATED, () -> { SafeSink.drain(new int[10]); })
+                .addTest(NOALLOCATED, () -> FastSink.drain(new int[10]) )
                 .addTest(ALLOCATED, new Runnable() {
                     final List<Object> list = new ArrayList<>(100);
                     @Override

@@ -32,7 +32,7 @@ public interface ExperimentAssertion
     }
 
     /**
-     * Adds itself to the given {@link failedAssertions} if fails.
+     * Adds itself to the given {@link failedAssertions} in case of failure.
      *
      * @param assertable            the {@link AssertableExperiment} to check
      * @param failedAssertions      failed assertions for each assertable

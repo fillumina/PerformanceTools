@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 /**
  *
- * @see
  * @see https://stackoverflow.com/questions/1480626/merging-two-statistical-result-sets
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

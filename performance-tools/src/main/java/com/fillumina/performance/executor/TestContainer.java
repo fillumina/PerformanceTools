@@ -14,10 +14,16 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
 
     IndexedHashMap<TName,T> getTests();
 
-    /** Ignores the test (convenience method to avoid commenting out). */
+    /**
+     * Ignores the test
+     * (convenience method to avoid commenting out large code blocks).
+     */
     I ignoreTest(final String name, final T test);
 
-    /** Ignores the test (convenience method to avoid commenting out). */
+    /**
+     * Ignores the test
+     * (convenience method to avoid commenting out large code blocks).
+     */
     I ignoreTest(final TName name, final T test);
 
     @SuppressWarnings("unchecked")

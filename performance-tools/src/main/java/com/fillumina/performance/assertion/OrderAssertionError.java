@@ -43,7 +43,7 @@ public class OrderAssertionError extends AbstractAssertionError {
         ConfidenceInterval bci = secondMeasure.getConfidenceInterval(Ratio.P_99);
         double bLower = bci.getLowerBound();
         double bUpper = bci.getUpperBound();
-        
+
         return (condition, tolerance) -> {
             ToleranceEvaluator ev = new ToleranceEvaluator(tolerance);
             switch (condition) {

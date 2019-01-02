@@ -3,7 +3,7 @@ package com.fillumina.performance.util.rnd;
 import java.util.Random;
 
 /**
- * Within the same order of magnitude of the speed of {@link java.util.Random}
+ * Speed within the same order of magnitude of {@link java.util.Random}
  * and generates numbers of a much higher quality.
  * However, it still does not generate numbers of cryptographic quality.
  * Not thread safe.

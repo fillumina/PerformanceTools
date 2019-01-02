@@ -29,17 +29,6 @@ package com.fillumina.performance.util.instrument;
  *      .calculate();
  * </pre>
  * <p>
- * The {@link #instrumentedBy(Instrumenter) } should be implemented like this:
- * <pre>
- *
-    &#64;Override
-    public &lt;T extends Instrumenter&lt;InstrumentableImpl&gt;&gt; T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
-    }
-   </pre>
- *
  *
  * @param I self
  *
@@ -48,5 +37,21 @@ package com.fillumina.performance.util.instrument;
  */
 public interface Instrumentable<I extends Instrumentable<I>> {
 
+    /**
+     * The {@link #instrumentedBy(Instrumenter) } should be implemented like this:
+     * <pre>
+     *
+       &#64;Override
+       public &lt;T extends Instrumenter&lt;InstrumentableImpl&gt;&gt; T instrumentedBy(
+               T instrumenter) {
+           instrumenter.instrument(this);
+           return instrumenter;
+       }
+      </pre>
+     *
+     * @param <T>
+     * @param instrumenter
+     * @return
+     */
     <T extends Instrumenter<I>> T instrumentedBy(T instrumenter);
 }

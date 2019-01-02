@@ -27,12 +27,12 @@ package com.fillumina.performance.util.rnd;
  * <p>
  * LFSR algorithm is a very fast way to produce pseudo-random sequences of
  * numbers within the required range. It's a very poor pseudo-random number
- * generator because the sequence is always repeated equals.
+ * generator because the sequence is fixed and always repeated equals.
  * <p>
  * Because it's guaranteed to generate all numbers within the given range
  * (use {@link #fullNext() } to include 0) it can be used as a sequence
  * generator with unpredictable order to call indexed functions,
- * i.e.: {@code list.get(lfsr.next()) }. The sequence is repeated.
+ * i.e.: {@code list.get(lfsr.next()) }.
  * <p>
  * This class is not thread safe.
  * <p>
