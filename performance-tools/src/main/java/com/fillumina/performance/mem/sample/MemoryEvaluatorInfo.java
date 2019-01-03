@@ -48,7 +48,7 @@ public class MemoryEvaluatorInfo {
 
     public long getMaxDetectableMemory() {
         if (maxDetectableMemory == Integer.MIN_VALUE) {
-            maxDetectableMemory = calculateMaxDetectableMemory(System.out);
+            maxDetectableMemory = calculateMaxDetectableMemory(/*System.out*/);
         }
         return maxDetectableMemory;
     }
