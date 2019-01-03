@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mem.AssertMem;
 import com.fillumina.performance.mem.MemAllocator;
 import com.fillumina.performance.mem.MemAnalyzer;
@@ -19,11 +19,10 @@ public class AllocationChunkMemoryTest {
     public static void main(final String[] args) {
         for (int i=0; i<40; i++) {
             final int v = i;
-            System.out.println(
-                    "used memory for array of size = " + i +
+            System.out.println("used memory for array of size = " + i +
                     ", \trequired bytes = " + (i + 16) +
                     ", \tusing bytes = " +
-                        MemAnalyzer.used(() -> SafeSink.drain(new byte[v])) );
+                        MemAnalyzer.used(() -> Sink.drain(new byte[v])) );
         }
     }
 
@@ -36,7 +35,7 @@ public class AllocationChunkMemoryTest {
 
     @Test
     public void shouldEstimateUsedMemory() {
-        AssertMem.used(16 + 23 + 1, () -> SafeSink.drain(new byte[23]));
+        AssertMem.used(16 + 23 + 1, () -> Sink.drain(new byte[23]));
     }
 
 }

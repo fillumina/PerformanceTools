@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.stats;
 
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -39,7 +39,7 @@ public class MemProgressionTemplateTest
 
     @Override
     public void addTests(TestConfiguration<?> tests) {
-        tests.addTest("ArrayList", () -> { SafeSink.drain(new ArrayList<>()); });
-        tests.addTest("LinkedList", () -> { SafeSink.drain(new LinkedList<>()); });
+        tests.addTest("ArrayList", () -> { Sink.drain(new ArrayList<>()); });
+        tests.addTest("LinkedList", () -> { Sink.drain(new LinkedList<>()); });
     }
 }

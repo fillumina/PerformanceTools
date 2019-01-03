@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.executor.test.FastSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.mock.RunnableMock;
@@ -176,8 +176,8 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingTheSameIteratorAffectTheFirstTest() {
-        Runnable a = () -> { FastSink.drain(measure(c1)); };
-        Runnable b = () -> { FastSink.drain(measure(c2)); };
+        Runnable a = () -> { Sink.drain(measure(c1)); };
+        Runnable b = () -> { Sink.drain(measure(c2)); };
 
         final int iterations = 100_000_000;
         final int repetitions = 3;
@@ -216,10 +216,8 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
-        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
-                () -> { FastSink.drain(measure(k1)); });
-        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
-                () -> { FastSink.drain(measure(k2)); });
+        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(() -> { Sink.drain(measure(k1)); });
+        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(() -> { Sink.drain(measure(k2)); });
 
         final int iteration = 100_000_000;
         final int repetitions = 3;

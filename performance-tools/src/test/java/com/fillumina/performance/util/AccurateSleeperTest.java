@@ -1,6 +1,6 @@
-package com.fillumina.performance.util.formatter;
+package com.fillumina.performance.util;
 
-import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.AccurateSleeper.*;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -9,7 +9,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimeHelperTest {
+public class AccurateSleeperTest {
 
     @BeforeClass
     public static void printoutMessage() {

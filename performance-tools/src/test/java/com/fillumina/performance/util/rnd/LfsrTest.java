@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.rnd;
 
-import static com.fillumina.performance.executor.test.SafeSink.drain;
+import static com.fillumina.performance.executor.test.Sink.drain;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;

@@ -2,7 +2,7 @@ package com.fillumina.performance.mem;
 
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.stats.Ratio;
@@ -129,7 +129,7 @@ public class MemUtilTest {
 
                     @Override
                     public void run() {
-                        SafeSink.drain(MemUtil.isPowerOfTwo(i++));
+                        Sink.drain(MemUtil.isPowerOfTwo(i++));
                     }
                 })
                 .addTest("alternative", new Runnable() {
@@ -137,7 +137,7 @@ public class MemUtilTest {
 
                     @Override
                     public void run() {
-                        SafeSink.drain(isPowerOfTwoAlternative(i++));
+                        Sink.drain(isPowerOfTwoAlternative(i++));
                     }
                 })
                 .addConsumer(TimeStatsStringGeneratorSelector.VIEWER)

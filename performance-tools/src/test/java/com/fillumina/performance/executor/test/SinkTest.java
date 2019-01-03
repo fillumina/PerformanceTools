@@ -1,6 +1,8 @@
 package com.fillumina.performance.executor.test;
 
-import static com.fillumina.performance.executor.test.SafeSink.drain;
+import static com.fillumina.performance.executor.test.Sink.drain;
+import static com.fillumina.performance.executor.test.Sink.pass;
+import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
 import java.util.ArrayList;
@@ -14,8 +16,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO shorten?
-public class SafeSinkTest extends SinkTestHelper {
+public class SinkTest extends SinkTestHelper {
 
     @Test
     public void shouldNotEvictSinkedTest() {
@@ -24,13 +25,29 @@ public class SafeSinkTest extends SinkTestHelper {
     }
 
     @Test
+    public void shouldNotEvictSinkedPassTest() {
+        int x = 12;
+        checkIfItIsEvicted("good", () -> { int z = pass(x); });
+    }
+
+    @Test
     public void shouldNotEvictBadTest() {
         checkIfItIsEvicted("bad", () -> { drain(12); });
     }
 
     @Test
+    public void shouldNotEvictBadPassTest() {
+        checkIfItIsEvicted("bad", () -> { int z = pass(12); });
+    }
+
+    @Test
     public void shouldNotEvictBooleanTest() {
         checkIfItIsEvicted("bad", () -> { drain(false); });
+    }
+
+    @Test
+    public void shouldNotEvictBooleanPassTest() {
+        checkIfItIsEvicted("bad", () -> { boolean b = pass(false); });
     }
 
     @Test(expected = InvalidTestException.class)
@@ -76,12 +93,17 @@ public class SafeSinkTest extends SinkTestHelper {
 
     @Test
     public void shouldDrainObject() {
-        drain(SafeSinkTest.class);
+        drain(SinkTest.class);
     }
 
     @Test
     public void shouldNotEvictObjects() {
-        checkIfItIsEvicted("object", () -> drain(SafeSinkTest.class) );
+        checkIfItIsEvicted("object", () -> drain(SinkTest.class) );
+    }
+
+    @Test
+    public void shouldNotEvictPassedObjects() {
+        checkIfItIsEvicted("object", () -> { Object o = pass(SinkTest.class); } );
     }
 
     @Test
@@ -96,6 +118,11 @@ public class SafeSinkTest extends SinkTestHelper {
     }
 
     @Test
+    public void shouldNotEvictPassedBooleans() {
+        checkIfItIsEvicted("bool", () -> { boolean b = pass(false); } );
+    }
+
+    @Test
     public void shouldDrainByte() {
         drain(Byte.MAX_VALUE);
     }
@@ -103,6 +130,11 @@ public class SafeSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictBytes() {
         checkIfItIsEvicted("byte", () -> drain((byte)12) );
+    }
+
+    @Test
+    public void shouldNotEvictPassedBytes() {
+        checkIfItIsEvicted("byte", () -> { byte b = pass((byte)12); } );
     }
 
     @Test
@@ -116,6 +148,11 @@ public class SafeSinkTest extends SinkTestHelper {
     }
 
     @Test
+    public void shouldNotEvictPassedShorts() {
+        checkIfItIsEvicted("short", () -> { short s = pass((short)1_024); } );
+    }
+
+    @Test
     public void shouldDrainChar() {
         drain(Character.MAX_VALUE);
     }
@@ -123,6 +160,11 @@ public class SafeSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictCharacters() {
         checkIfItIsEvicted("char", () -> drain((char)18) );
+    }
+
+    @Test
+    public void shouldNotEvictPassedCharacters() {
+        checkIfItIsEvicted("char", () -> { char c = pass((char)18); } );
     }
 
     @Test
@@ -136,6 +178,11 @@ public class SafeSinkTest extends SinkTestHelper {
     }
 
     @Test
+    public void shouldNotEvictPassedIntegers() {
+        checkIfItIsEvicted("int", () -> { int i = pass(123); } );
+    }
+
+    @Test
     public void shouldDrainLong() {
         drain(Long.MAX_VALUE);
     }
@@ -143,6 +190,11 @@ public class SafeSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictLongs() {
         checkIfItIsEvicted("long", () -> drain(12345L) );
+    }
+
+    @Test
+    public void shouldNotEvictPassedLongs() {
+        checkIfItIsEvicted("long", () -> { long l = pass(12345L); } );
     }
 
     @Test
@@ -162,6 +214,11 @@ public class SafeSinkTest extends SinkTestHelper {
     }
 
     @Test
+    public void shouldNotEvicPassFloats() {
+        checkIfItIsEvicted("float", () -> { float f = pass((float) 34.567); });
+    }
+
+    @Test
     public void shouldDrainDouble() {
         drain(Double.MAX_VALUE);
         drain(Double.POSITIVE_INFINITY);
@@ -170,6 +227,11 @@ public class SafeSinkTest extends SinkTestHelper {
     @Test
     public void shouldNotEvictDoubles() {
         checkIfItIsEvicted("double", () -> drain(678.923) );
+    }
+
+    @Test
+    public void shouldNotEvictPassedDoubles() {
+        checkIfItIsEvicted("double", () -> { double d = pass(678.923); } );
     }
 
     private String call(int i) {
@@ -186,10 +248,24 @@ public class SafeSinkTest extends SinkTestHelper {
         assertEquals("object", call(i));
     }
 
-    // TODO test pass() methods
+    @Test
+    public void shouldNotAllocateMemory() {
+        long safed = MemAnalyzer.allocated(() -> Sink.drain(new Object()));
+        long unsafed = MemAnalyzer.allocated(() -> new Object());
+
+        assertEquals(safed, unsafed);
+    }
+
+    @Test
+    public void shouldNotUseMemory() {
+        long safed = MemAnalyzer.used(() -> Sink.drain(new Object()));
+        long unsafed = MemAnalyzer.used(() -> new Object());
+
+        assertEquals(safed, unsafed);
+    }
 
     public static void main(final String[] args) {
-        SafeSinkTest test = new SafeSinkTest();
+        SinkTest test = new SinkTest();
         test.printout = true;
 
         test.shouldDrainBoolean();

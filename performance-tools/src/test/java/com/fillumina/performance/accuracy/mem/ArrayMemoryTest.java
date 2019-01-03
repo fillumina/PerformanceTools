@@ -1,7 +1,7 @@
 package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.*;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.Test;
@@ -45,10 +45,10 @@ public class ArrayMemoryTest extends PerformanceTemplate {
     @Override
     public void addTests(TestConfiguration<?> tests) {
         tests.addTest(THOUSAND_ARRAY, (Runnable) () -> {
-            SafeSink.drain(new int[1_000]);
+            Sink.drain(new int[1_000]);
         });
         tests.addTest(EMPTY_ARRAY, (Runnable) () -> {
-            SafeSink.drain(new int[0]);
+            Sink.drain(new int[0]);
         });
     }
 }

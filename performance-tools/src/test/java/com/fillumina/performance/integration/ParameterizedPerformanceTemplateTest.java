@@ -2,7 +2,7 @@ package com.fillumina.performance.integration;
 
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -54,7 +54,7 @@ public class ParameterizedPerformanceTemplateTest
                 for (int i=0; i<array.length; i++) {
                     array[i] = lfsr.next();
                 }
-                SafeSink.drain(array);
+                Sink.drain(array);
             }
         })
         .addTest(SECOND, new Runnable() {
@@ -62,7 +62,7 @@ public class ParameterizedPerformanceTemplateTest
 
             @Override
             public void run() {
-                SafeSink.drain(new int[5 * param]);
+                Sink.drain(new int[5 * param]);
             }
         })
 

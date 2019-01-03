@@ -3,7 +3,7 @@ package com.fillumina.performance.accuracy.speed;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.sample.strgen.SampleLineStringGenerator;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  * Assesses if dead code is effectively removed by Java runtime and if the
- * method to avoid that (using the {@link SafeSink}) is effective.
+ * method to avoid that (using the {@link Sink}) is effective.
  *
  * @author Francesco Illuminati
  */
@@ -51,7 +51,7 @@ public class TestableDeadCodeTest {
                     // it's evicted because x is not used
                     double x = sinTaylor(d);
                     d += 0.01;
-                    SafeSink.drain(d);
+                    Sink.drain(d);
                 }
             })
             .addTest(SINKED, new Runnable() {
@@ -63,7 +63,7 @@ public class TestableDeadCodeTest {
                     double x = sinTaylor(d);
                     d += 0.01;
                     // the + operation time seems negligible
-                    SafeSink.drain(d + x);
+                    Sink.drain(d + x);
                 }
             })
 
@@ -76,7 +76,7 @@ public class TestableDeadCodeTest {
                 public void run() {
                     // simulates the evicted run
                     d += 0.01;
-                    SafeSink.drain(d);
+                    Sink.drain(d);
                 }
             })
             .execute()

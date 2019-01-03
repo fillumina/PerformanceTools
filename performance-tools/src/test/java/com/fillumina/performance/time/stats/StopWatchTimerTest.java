@@ -5,7 +5,7 @@ import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Looper;
-import com.fillumina.performance.util.formatter.PerformanceTimeHelper;
+import com.fillumina.performance.util.AccurateSleeper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -57,19 +57,19 @@ public class StopWatchTimerTest {
     }
 
     void stepOne() {
-        PerformanceTimeHelper.sleepMicroseconds(200);
+        AccurateSleeper.sleepMicroseconds(200);
     }
 
     void stepTwo() {
-        PerformanceTimeHelper.sleepMicroseconds(100);
+        AccurateSleeper.sleepMicroseconds(100);
     }
 
     void stepRepeating() {
-        PerformanceTimeHelper.sleepMicroseconds(100);
+        AccurateSleeper.sleepMicroseconds(100);
     }
 
     void stepThree() {
-        PerformanceTimeHelper.sleepMicroseconds(1_000);
+        AccurateSleeper.sleepMicroseconds(1_000);
     }
 
     @Test

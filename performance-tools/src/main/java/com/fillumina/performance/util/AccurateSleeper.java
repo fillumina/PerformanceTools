@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.formatter;
+package com.fillumina.performance.util;
 
 /**
  * If you are interested in measuring/calculating elapsed time, then always
@@ -14,7 +14,7 @@ package com.fillumina.performance.util.formatter;
  *
  * @author Francesco Illuminati
  */
-public class PerformanceTimeHelper {
+public class AccurateSleeper {
 
     /**
      * It should be more accurate than {@link Thread#sleep(long)}

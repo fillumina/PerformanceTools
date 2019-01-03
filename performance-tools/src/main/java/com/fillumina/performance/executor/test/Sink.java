@@ -10,8 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * <li>{@code SafeSink.drain(5);}
  * <li>{@code int x = 5; SafeSink.drain(x); }
  * </ul>
- * This comes at a cost of some extra speed lost compared to
- * {@link FastSink}.
+ * This features comes at a cost of some extra speed lost.
  * <br>
  * The JVM continuously optimizes executing code at run-time and it could evict
  * code that doesn't have side effects. Because many synthetic benchmarks
@@ -22,8 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO unoptimize method calling that uses memory (SafeSink is not actually memory neutral)
-public class SafeSink {
+public class Sink {
 
     /** Defines a pseudo-random odd value. */
     private static int incrementer = ThreadLocalRandom.current().nextInt() | 1;
@@ -119,7 +117,7 @@ public class SafeSink {
     /** @return the given value with the guarantee that it's not optimized out. */
     public static boolean pass(boolean value) {
         if (impossible(Boolean.hashCode(value))) {
-            return false;
+            return ThreadLocalRandom.current().nextBoolean();
         }
         return value;
     }
@@ -127,7 +125,7 @@ public class SafeSink {
     /** @return the given value with the guarantee that it's not optimized out. */
     public static short pass(short value) {
         if (impossible(Short.hashCode(value))) {
-            return 0;
+            return (short) ThreadLocalRandom.current().nextInt();
         }
         return value;
     }
@@ -143,7 +141,7 @@ public class SafeSink {
     /** @return the given value with the guarantee that it's not optimized out. */
     public static long pass(long value) {
         if (impossible(Long.hashCode(value))) {
-            return 0;
+            return ThreadLocalRandom.current().nextLong();
         }
         return value;
     }

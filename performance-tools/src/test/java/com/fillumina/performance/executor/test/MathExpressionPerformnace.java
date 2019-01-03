@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.test;
 
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import static com.fillumina.performance.executor.test.SafeSink.pass;
+import static com.fillumina.performance.executor.test.Sink.pass;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
@@ -34,13 +34,13 @@ public class MathExpressionPerformnace {
                 tests.addTest("pass", () -> {
                     double x = pass(5);
                     double y = pass(1.2);
-                    FastSink.drain(Math.hypot(x, y));
+                    Sink.drain(Math.hypot(x, y));
                 });
                 tests.addTest("normal", () -> {
-                    FastSink.drain(Math.hypot(x, y));
+                    Sink.drain(Math.hypot(x, y));
                 });
                 tests.addTest("static", () -> {
-                    SafeSink.drain(result);
+                    Sink.drain(result);
                 });
             }
         }.executeWithFullOutput();

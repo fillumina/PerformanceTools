@@ -14,6 +14,6 @@ public class RndRunnable implements Runnable {
 
     @Override
     public void run() {
-        FastSink.drain(rnd.nextInt());
+        Sink.drain(rnd.nextInt());
     }
 }

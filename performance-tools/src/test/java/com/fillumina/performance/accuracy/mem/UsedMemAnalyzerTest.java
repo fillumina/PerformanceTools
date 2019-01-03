@@ -2,7 +2,7 @@ package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.stats.StatsHolder;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
 import com.fillumina.performance.util.stats.Ratio;
 import org.junit.BeforeClass;
@@ -22,8 +22,8 @@ public class UsedMemAnalyzerTest {
     @BeforeClass
     public static void initMemStats() {
         MEMSTATS_HOLDER = MemStatsProducer.createUsed()
-                .addTest(NOMEMORY, (Runnable) () -> { SafeSink.drain(null); })
-                .addTest(ARRAY, (Runnable) () -> { SafeSink.drain(new int[10]); })
+                .addTest(NOMEMORY, (Runnable) () -> { Sink.drain(null); })
+                .addTest(ARRAY, (Runnable) () -> { Sink.drain(new int[10]); })
                 .execute()
                 .getFirstStatsHolder();
     }

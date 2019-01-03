@@ -10,7 +10,7 @@ import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.strgen.AverageTimeStatsTableStringGenerator;
-import static com.fillumina.performance.util.formatter.PerformanceTimeHelper.*;
+import static com.fillumina.performance.util.AccurateSleeper.*;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import org.junit.Test;

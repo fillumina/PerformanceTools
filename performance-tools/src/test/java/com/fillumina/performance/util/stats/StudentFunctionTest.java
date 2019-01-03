@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.stats;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.ExpBinarySearcher;
 import com.fillumina.performance.util.sequence.IntegerSequence;
@@ -25,10 +25,10 @@ public class StudentFunctionTest {
                     .end()
                     .tests()
                         .addTest("original",
-                                () -> SafeSink.drain(
+                                () -> Sink.drain(
                                         StatFunctions.student(0.999, 1E6)))
                         .addTest("cached",
-                                () -> SafeSink.drain(
+                                () -> Sink.drain(
                                         StudentFunction.student(0.999, 1E6)))
                     .end()
                 .end()

@@ -1,6 +1,6 @@
 package com.fillumina.performance.accuracy.mem;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.mem.sample.MemoryEvaluatorInfo;
@@ -30,8 +30,7 @@ public class HugeMemoryTest {
         final String message = info.getDebugString();
         final int expected = size + info.getMinimalAllocableMemory();
         final int tolerance = 0;
-        final long memUsed = MemAnalyzer.used(
-                () -> SafeSink.drain(new byte[size]));
+        final long memUsed = MemAnalyzer.used(() -> Sink.drain(new byte[size]));
 
         assertEquals(message, expected, memUsed, tolerance);
 
