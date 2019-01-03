@@ -2,7 +2,7 @@ package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
 import com.fillumina.performance.util.ExpBinarySearcher;
-import com.fillumina.performance.util.MostUsedValueBag;
+import com.fillumina.performance.util.formatter.TableFormatter;
 import java.io.IOException;
 
 /**
@@ -48,12 +48,7 @@ public class MemoryEvaluatorInfo {
 
     public long getMaxDetectableMemory() {
         if (maxDetectableMemory == Integer.MIN_VALUE) {
-            MostUsedValueBag<Long> maxBag = new MostUsedValueBag<>(10);
-            for (int k=0; k<10; k++) {
-                long max = calculateMaxDetectableMemory();
-                maxBag.add(max);
-            }
-            maxDetectableMemory = maxBag.getMostUsedValue().intValue();
+            maxDetectableMemory = calculateMaxDetectableMemory(System.out);
         }
         return maxDetectableMemory;
     }
@@ -87,7 +82,7 @@ public class MemoryEvaluatorInfo {
                 int mem = (int) UsedMemSampleExecutor.INSTANCE.execute(() -> {
                     byte[] array = new byte[size];
                     // forces the array to not be discarded by optimizations
-                    if (size > 0 && array[0] != 0) {
+                    if (array.hashCode() == 0) {
                         throw new AssertionError();
                     }
                 });
@@ -118,6 +113,15 @@ public class MemoryEvaluatorInfo {
                 }
             }
         });
+    }
+
+    @Override
+    public String toString() {
+        return new TableFormatter().header(getClass().getSimpleName())
+                .param("max detectable memory", getMaxDetectableMemory())
+                .param("minimal allocable memory", getMinimalAllocableMemory())
+                .param("memory padding", getMemoryPadding())
+                .toString();
     }
 
     public static void main(final String[] args) {

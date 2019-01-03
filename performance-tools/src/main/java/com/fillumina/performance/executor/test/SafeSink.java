@@ -22,6 +22,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO unoptimize method calling that uses memory (SafeSink is not actually memory neutral)
 public class SafeSink {
 
     /** Defines a pseudo-random odd value. */

@@ -26,6 +26,24 @@ public class UsedMemSampleExecutor implements MemSampleExecutor {
 
     @Override
     public long execute(int repetitions, Runnable runnable) {
+        // trying to rebase memory evaluator
+        Runnable rn = new Runnable() {
+            @Override
+            public void run() {
+                Object o = new int[0];
+                if (o.hashCode() == 0) {
+                    throw new RuntimeException("the horror!");
+                }
+            }
+        };
+        long baseline = innerExecute(REPETITIONS, rn);
+        long mem = innerExecute(repetitions, runnable);
+        //System.out.println("baseline=" + baseline +
+        //    ", mem=" + mem + ", minMem=" + MC.getMinimalAllocableMemory());
+        return mem - (baseline - MC.getMinimalAllocableMemory());
+    }
+
+    private long innerExecute(int repetitions, Runnable runnable) {
         int i = 0;
         long usedMemory;
         AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
