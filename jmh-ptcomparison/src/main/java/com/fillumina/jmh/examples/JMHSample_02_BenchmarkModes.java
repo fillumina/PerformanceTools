@@ -183,7 +183,8 @@ public class JMHSample_02_BenchmarkModes {
     PerformanceTools always reports its results using both elapsed time and
     number of operations per unit of time. It also reports standard deviation,
     accuracy, confidence, ratio versus slower test (which imho is far more
-    informative and resilient to different systems than synthetic results)
+    informative and resilient to different systems than synthetic results based
+    on absolute time)
     and performs advanced statistical calculations (ANOVA and TukeyHSD) to
     report if the given tests are statistically equals or different (according
     to the required confidence) between each other.

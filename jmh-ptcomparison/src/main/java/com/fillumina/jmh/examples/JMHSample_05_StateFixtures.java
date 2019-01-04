@@ -132,5 +132,5 @@ public class JMHSample_05_StateFixtures {
     }
 
     // PerformanceTools uses annotated life cycle events methods in the
-    // Runnable test. There states can be modified too.
+    // Runnable test. The states can be modified too.
 }

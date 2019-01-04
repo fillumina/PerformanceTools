@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
@@ -274,31 +274,31 @@ public class JMHSample_22_FalseSharing {
                 .tests()
                     .addTest("baseline", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            SafeSink.drain(test.reader(baseline));
+                            Sink.drain(test.reader(baseline));
                         })
                         .addTask("writer", 1, () -> {test.writer(baseline); }))
 
                     .addTest("padded", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            SafeSink.drain(test.reader(padded));
+                            Sink.drain(test.reader(padded));
                         })
                         .addTask("writer", 1, () -> {test.writer(padded); }))
 
                     .addTest("hierarchy", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            SafeSink.drain(test.reader(hierarchy));
+                            Sink.drain(test.reader(hierarchy));
                         })
                         .addTask("writer", 1, () -> {test.writer(hierarchy); }))
 
                     .addTest("contended", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            SafeSink.drain(test.reader(contended));
+                            Sink.drain(test.reader(contended));
                         })
                         .addTask("writer", 1, () -> {test.writer(contended); }))
 
                     .addTest("sparse", new ParallelTest()
                         .addTask("reader", 1, () -> {
-                            SafeSink.drain(test.reader(sparse));
+                            Sink.drain(test.reader(sparse));
                         })
                         .addTask("writer", 1, () -> {test.writer(sparse); }))
 

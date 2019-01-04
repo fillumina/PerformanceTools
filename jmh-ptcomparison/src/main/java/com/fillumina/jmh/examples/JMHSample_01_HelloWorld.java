@@ -108,16 +108,14 @@ public class JMHSample_01_HelloWorld {
     }
 
     /**
-     * Running and empty executeWithoutOutput means that it will be
- probably evicted by the JVM. This is correctly detected
+     * Running and empty test means that it will be
+     * probably evicted by the JVM. This is correctly detected
      * and reported by throwing a {@link InvalidTestException}.
      */
     public static void main_pt(final String[] args) {
         PerformanceBuilder
-            .config()
-                .speedConfig().end()
-                .tests()
-                    .addTest("empty", () -> {})
+            .speedTest()
+                .addTest("empty", () -> {})
                 .end()
             .end()
             .executeWithFullOutput();

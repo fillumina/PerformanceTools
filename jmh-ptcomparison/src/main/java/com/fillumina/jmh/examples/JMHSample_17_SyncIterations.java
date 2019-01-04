@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -152,7 +152,7 @@ public class JMHSample_17_SyncIterations {
                     .setConcurrencyLevel(workers)
                 .end()
                 .tests()
-                    .addTest(() -> { SafeSink.drain(test.test()); })
+                    .addTest(() -> { Sink.drain(test.test()); })
                 .end()
             .end()
             .executeWithFullOutput();

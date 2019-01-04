@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -158,9 +158,9 @@ public class JMHSample_24_Inheritance {
                 .speedConfig()
                 .end()
                 .tests()
-                    .addTest("log", () -> { SafeSink.drain(log.bench()); })
-                    .addTest("sin", () -> { SafeSink.drain(sin.bench()); })
-                    .addTest("cos", () -> { SafeSink.drain(cos.bench()); })
+                    .addTest("log", () -> { Sink.drain(log.bench()); })
+                    .addTest("sin", () -> { Sink.drain(sin.bench()); })
+                    .addTest("cos", () -> { Sink.drain(cos.bench()); })
                 .end()
             .end()
             .executeWithFullOutput();

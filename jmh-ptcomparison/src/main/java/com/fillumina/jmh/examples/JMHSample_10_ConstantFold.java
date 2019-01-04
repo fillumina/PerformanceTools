@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import static com.fillumina.performance.executor.test.SafeSink.drain;
+import static com.fillumina.performance.executor.test.Sink.drain;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;

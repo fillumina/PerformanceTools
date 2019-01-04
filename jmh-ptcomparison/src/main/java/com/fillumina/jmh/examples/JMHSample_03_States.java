@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Scope;
@@ -128,7 +128,7 @@ public class JMHSample_03_States {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        main_jmh(args);
+        //main_jmh(args);
         main_pt(args);
     }
 
@@ -181,6 +181,7 @@ public class JMHSample_03_States {
 
         };
 
+        // TODO fix this test doesn't end
         PerformanceBuilder
                 .config()
                     .speedConfig()
@@ -188,7 +189,7 @@ public class JMHSample_03_States {
                     .end()
                 .tests()
                     .addTest("synchronized", () -> {
-                            SafeSink.drain(safelyShared.increment());
+                            Sink.drain(safelyShared.increment());
                         })
                     .addTest("unsafe", new Runnable() {
                             /**
@@ -198,11 +199,11 @@ public class JMHSample_03_States {
                             private final State shared = new State();
                             @Override
                             public void run() {
-                                SafeSink.drain(shared.increment());
+                                Sink.drain(shared.increment());
                             }
                         })
                     .addTest("thread local", () -> {
-                            SafeSink.drain(threadLocal.get().increment());
+                            Sink.drain(threadLocal.get().increment());
                         })
                     .end()
                 .end()

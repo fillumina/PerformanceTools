@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -154,7 +154,7 @@ public class JMHSample_28_BlackholeHelpers {
     }
 
     /**
-     * The {@link Blackhole}'s PerformanceTools equivalent, {@link SafeSink}, can
+     * The {@link Blackhole}'s PerformanceTools equivalent, {@link Sink}, can
      * be used everywhere.
      */
     public static void main_pt(final String[] args) {
@@ -164,7 +164,7 @@ public class JMHSample_28_BlackholeHelpers {
             @Override
             public void work() {
                 // SafeSink can be used anywhere
-                SafeSink.drain(Math.log(x));
+                Sink.drain(Math.log(x));
             }
         };
 

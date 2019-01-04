@@ -176,13 +176,13 @@ public class JMHSample_07_FixtureLevelInvocation {
      * States are declared using standard Java so there is no need for a
      * specific notation.
      * The JMH example uses a fixture for a state to be executed at each
- executeWithoutOutput invocation with {@link Level#Invocation}. This is not
- supported by PerformanceTools because it will introduce unacceptable
- inaccuracies in the timing (and even JMH recommends to use it only
- with tests lasting more than 1 ms). The solution is to add the
- operation in the executeWithoutOutput itself and (if it is constant time) evaluate
- it in another executeWithoutOutput and subtract its time. It's a convoluted method for
- sure but it's efficient and simple enough.
+     * test invocation with {@link Level#Invocation}. This is not
+     * supported by PerformanceTools because it will introduce unacceptable
+     * inaccuracies in the timing (and even JMH recommends to use it only
+     * with tests lasting more than 1 ms). The solution is to add the
+     * operation in the test itself and (if it is constant time) evaluate
+     * it in another test and subtract its time. It's a convoluted method
+     * but it's efficient and simple enough.
      */
     public static void main_pt(final String[] args) {
         JMHSample_07_FixtureLevelInvocation test =

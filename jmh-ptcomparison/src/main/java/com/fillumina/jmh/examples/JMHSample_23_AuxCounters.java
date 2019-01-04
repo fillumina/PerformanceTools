@@ -30,8 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.time.stats.EventFrequency;
-import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.AuxCounters;
@@ -139,28 +139,30 @@ public class JMHSample_23_AuxCounters {
 
         // these are two ways of doing the same thing
 
-        EventFrequency ef = new EventFrequency();
-        Looper.loop(IntervalUnit.SECONDS.quantity(10),
-                () -> {
-                    float random = (float) Math.random();
-                    float wowSignal = (float) Math.PI / 4;
-                    if (random == wowSignal) {
-                        // WOW, that's unusual.
-                        ef.fire("wow");
-                    }
-                });
-        ef.getPerformances().print();
+//        EventFrequency ef = new EventFrequency();
+//        Looper.loop(IntervalUnit.SECONDS.quantity(1),
+//                () -> {
+//                    float random = (float) Math.random();
+//                    float wowSignal = (float) Math.PI / 4;
+//                    if (random == wowSignal) {
+//                        // WOW, that's unusual.
+//                        ef.fire("wow");
+//                    }
+//                });
+//        ef.getPerformances().print();
 
-        new EventFrequency("one", "two", "total")
-            .loop(IntervalUnit.SECONDS.quantity(5),
+        MixedStatsHolder holder = new EventFrequency("case1", "case2", "total")
+            .warmupAndLoop(IntervalUnit.SECONDS.quantity(1),
+                    IntervalUnit.SECONDS.quantity(5),
                 (event) -> {
                     if (Math.random() < 0.1) {
-                        event.fire("one");
+                        event.fire("case1");
                     } else {
-                        event.fire("two");
+                        event.fire("case2");
                     }
                     event.fire("total");
-                })
-            .print();
+                });
+        holder.print();
+
     }
 }

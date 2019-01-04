@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -111,7 +111,7 @@ public class JMHSample_08_DeadCode {
 
     /**
      * The perspective or PerformanceTools is different from JMH in that if
- a executeWithoutOutput is evicted it is simply reported as such with an exception.
+     * a test is evicted it is simply reported as such with an exception.
      * It is not trying to interfere with JVM mechanisms but only to
      * measure it.
      */
@@ -131,14 +131,14 @@ public class JMHSample_08_DeadCode {
                     .addTest("wrong", () -> { test.measureWrong(); })
                     .addTest("right", () -> { test.measureRight(); })
 
-                    // This executeWithoutOutput use SafeSink.drain() method which is similar
+                    // This test use SafeSink.drain() method which is similar
                     // to JMH BlackHoles in avoiding eviction.
                     .addTest("volatile_fixed", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override
                         public void run() {
-                            SafeSink.drain(Math.log(x));
+                            Sink.drain(Math.log(x));
                         }
                     })
                 .end()

@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.math.BigInteger;
@@ -130,7 +130,7 @@ public class JMHSample_27_Params {
 
                         @Override
                         public void run() {
-                            SafeSink.drain(BigInteger.valueOf(arg)
+                            Sink.drain(BigInteger.valueOf(arg)
                                     .isProbablePrime(certainty));
                         }
                     })
@@ -139,7 +139,7 @@ public class JMHSample_27_Params {
                         .end()
                     .addParameter("arg")
                         .values(1, 31/*, 65, 101, 103*/).end()
-                    .end() // TODO why 2 end()?
+                        .end()
                 .end()
             .end()
             .executeWithFullOutput();

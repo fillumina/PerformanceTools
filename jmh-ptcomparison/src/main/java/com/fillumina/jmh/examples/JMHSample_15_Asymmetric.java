@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
@@ -148,12 +148,12 @@ public class JMHSample_15_Asymmetric {
                 .end()
                 .tests()
                     .addTest(new ParallelTest()
-                        .addTask("inc", 3, () -> { SafeSink.drain(test.inc()); })
-                        .addTask("get", 1, () -> { SafeSink.drain(test.get()); }))
+                        .addTask("inc", 3, () -> { Sink.drain(test.inc()); })
+                        .addTask("get", 1, () -> { Sink.drain(test.get()); }))
                 .end()
             .end()
             .executeWithFullOutput();
 
-        SafeSink.drain(test.counter.get());
+        Sink.drain(test.counter.get());
     }
 }

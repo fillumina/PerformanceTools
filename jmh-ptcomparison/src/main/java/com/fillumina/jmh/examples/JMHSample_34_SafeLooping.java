@@ -30,7 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -213,7 +213,7 @@ public class JMHSample_34_SafeLooping {
                     .tests()
                         .addTest("10", () -> {
                             for (int x : test.xs) {
-                                SafeSink.drain(Math.sin(x));
+                                Sink.drain(Math.sin(x));
                             }
                         })
                     .end()

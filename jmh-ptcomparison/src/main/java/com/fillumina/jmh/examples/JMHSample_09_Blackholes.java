@@ -31,7 +31,7 @@
 package com.fillumina.jmh.examples;
 
 import static com.fillumina.jmh.examples.JMHSample_08_DeadCode.main_jhm;
-import com.fillumina.performance.executor.test.SafeSink;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
@@ -162,7 +162,7 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            SafeSink.drain(Math.cos(x));
+                            Sink.drain(Math.cos(x));
                         }
                     })
                     .addTest("sin + cos", new Runnable() {
@@ -170,7 +170,7 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            SafeSink.drain(Math.cos(x) + Math.sin(x));
+                            Sink.drain(Math.cos(x) + Math.sin(x));
                         }
                     })
                     .addTest("sin & cos", new Runnable() {
@@ -178,8 +178,8 @@ public class JMHSample_09_Blackholes {
 
                         @Override
                         public void run() {
-                            SafeSink.drain(Math.cos(x));
-                            SafeSink.drain(Math.sin(x));
+                            Sink.drain(Math.cos(x));
+                            Sink.drain(Math.sin(x));
                         }
                     })
                 .end()
