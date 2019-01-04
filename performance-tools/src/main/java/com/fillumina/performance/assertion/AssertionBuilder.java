@@ -37,7 +37,8 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public AssertionBuilder(C caller, Consumer<ExperimentAssertion> assertionConsumer) {
+    public AssertionBuilder(C caller,
+            Consumer<ExperimentAssertion> assertionConsumer) {
         super(caller);
         this.assertionConsumer = assertionConsumer;
     }

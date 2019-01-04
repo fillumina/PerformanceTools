@@ -5,6 +5,9 @@ package com.fillumina.performance.util.formatter;
  */
 public class TimeFormat {
     private static final long SECOND = 1_000_000_000;
+    private static final long MILLIS = 1_000_000;
+    private static final long MICROS = 1_000;
+
     private static final long MINUTE = 60 * SECOND;
     private static final long HOUR = 60 * MINUTE;
     private static final String[] Z = {
@@ -19,22 +22,29 @@ public class TimeFormat {
         "00000000",
         "000000000",
     };
+
+    /**
+     * Represents time with the watch form, i.e. 10:12:03.123
+     */
     public static final TimeFormat WATCH =
             new TimeFormat(true, false, ":", ":", "", ".");
 
+    /**
+     * Represents time with the textual form, i.e. 10h 12m 03.123s
+     */
     public static final TimeFormat TEXT =
             new TimeFormat(true, true, "h ", "m ", "s", ".");
 
-    public String second(long nanoseconds) {
-        return formatNanoseconds(nanoseconds, Precision.SECOND);
+    public String second(long seconds) {
+        return formatNanoseconds(seconds * SECOND, Precision.SECOND);
     }
 
-    public String millis(long nanoseconds) {
-        return formatNanoseconds(nanoseconds, Precision.MILLISECOND);
+    public String millis(long millis) {
+        return formatNanoseconds(millis * MILLIS, Precision.MILLISECOND);
     }
 
-    public String micros(long nanoseconds) {
-        return formatNanoseconds(nanoseconds, Precision.MICROSECOND);
+    public String micros(long micros) {
+        return formatNanoseconds(micros * MICROS, Precision.MICROSECOND);
     }
 
     public String nanos(long nanoseconds) {

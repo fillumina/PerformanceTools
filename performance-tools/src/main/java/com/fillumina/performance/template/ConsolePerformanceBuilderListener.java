@@ -2,6 +2,7 @@ package com.fillumina.performance.template;
 
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.formatter.TimeFormat;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -56,7 +57,9 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
             }
 
             newline();
-            println("Performance test total time: " + elapsed.toString());
+            println("Performance test total time: " +
+                    TimeFormat.TEXT.millis(
+                            Math.round(elapsed.as(IntervalUnit.MILLISECONDS))));
         }
 
         if (someAssertionFailed && throwsExceptionOnFailure) {

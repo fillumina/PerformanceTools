@@ -1,6 +1,5 @@
 package com.fillumina.performance.util;
 
-import com.fillumina.performance.util.AnnotationHelper;
 import java.lang.reflect.Field;
 import java.util.List;
 import static org.junit.Assert.assertEquals;

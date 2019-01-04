@@ -3,12 +3,12 @@ package com.fillumina.performance.executor.test;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Sinker that protects against repeating and static values.
+ * Sinker that protects against JVM optimizations of repeating and static values.
  * <br>
  * It allows to iterate on invariant code like:
  * <ul>
- * <li>{@code SafeSink.drain(5);}
- * <li>{@code int x = 5; SafeSink.drain(x); }
+ * <li>{@code Sink.drain(5);}
+ * <li>{@code int x = 5; Sink.drain(x); }
  * </ul>
  * This features comes at a cost of some extra speed lost.
  * <br>
@@ -17,7 +17,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * use such kind of code in tight loops there must be a way to trick the JVM
  * into not evicting them. The trick is to instruct the JVM that some input
  * might trigger an event in a way that it is difficult to detect that such
- * event is impossible.
+ * event is impossible, and that trick must change its internal state so that
+ * JVM doesn't memoize it.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

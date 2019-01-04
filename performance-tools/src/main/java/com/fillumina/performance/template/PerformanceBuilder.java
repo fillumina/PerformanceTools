@@ -1,8 +1,8 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.generator.PerformanceGenerator;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
@@ -26,6 +26,21 @@ public class PerformanceBuilder {
     public static MixedConfigurationBuilder<PerformanceBuilder> config() {
         return new MixedConfigurationBuilder<>(
                 config -> new PerformanceBuilder(config) );
+    }
+
+    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
+            speedTest() {
+        return config().speedConfig().end().tests();
+    }
+
+    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
+            usedMemTest() {
+        return config().usedMemConfig().end().tests();
+    }
+
+    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
+            allocatedMemTest() {
+        return config().allocatedMemConfig().end().tests();
     }
 
     public static class MixedHolder {

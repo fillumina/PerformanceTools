@@ -20,11 +20,11 @@ import java.util.function.Function;
  * Indexed hash map implementation (similar in features to
  * {@link LinkedHashMap} but can index its entries randomly).
  * It allows to extract a list view of its keys and values but is has very
- * slow removal.
+ * slow removal time.
  * Features:
  * <ul>
  * <li>insertion, extraction have O(1) complexity
- * <li>worse case is linear O(N)
+ * <li>worse case (hash clash) for insertion and extraction is linear O(N)
  * <li>removal is linear O(N) VERY INEFFICIENT
  * <li>maintains insertion order
  * <li>views are random access list
@@ -35,7 +35,7 @@ import java.util.function.Function;
  * Drawbacks:
  * <ul>
  * <li>doesn't accept null as key
- * <li>removal time is linear O(N), very inefficient!
+ * <li>removal time is linear O(N)
  * </ul>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

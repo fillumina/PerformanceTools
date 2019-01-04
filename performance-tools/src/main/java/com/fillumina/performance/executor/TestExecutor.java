@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 /**
  * Executes an experiment and return its result.
  *
- * @param I self (to allow sub-classes to call super methods with a fluid interface)
+ * @param I self (to allow sub-classes to call super methods with fluent interface)
  * @param N notifications
  * @param T test
  * @param R result

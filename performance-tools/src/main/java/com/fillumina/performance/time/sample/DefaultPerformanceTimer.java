@@ -15,8 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Computers are not very accurate in measuring short intervals of time
- * and so to improve its accuracy a measure is averaged over several
- * samples.
+ * and so to improve its accuracy a measure is averaged over many samples.
  * <br>
  * Timing tests are subject to many factors that might hinder their accuracy:
  * <ul>

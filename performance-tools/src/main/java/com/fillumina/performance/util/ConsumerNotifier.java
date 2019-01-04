@@ -3,7 +3,7 @@ package com.fillumina.performance.util;
 import java.util.function.Consumer;
 
 /**
- * Manages {@link AssertableConsumer}s that will be notified for
+ * Manages {@link Consumer}s that will be notified for
  * available performances.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
