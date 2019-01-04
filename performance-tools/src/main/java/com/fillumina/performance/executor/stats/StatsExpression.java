@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Allows to create new statistically accurate {@link Measure}s based on
+ * results of actual tests involved in expressions.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -23,7 +25,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
     private final C caller;
     private final Map<TName, ExpressionList> map = new IndexedHashMap<>();
-    private Map<TName,String> stringMap;
+    private Map<TName, String> stringMap;
 
     public StatsExpression() {
         this(null);
@@ -246,6 +248,9 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     }
 
     private static Measure multiply(Measure a, double value) {
+        if (value == 1.0) {
+            return a;
+        }
         return new MeasureTimesValue(a, value);
     }
 }

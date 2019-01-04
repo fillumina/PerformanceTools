@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains the measures of one or more tests.
+ * Contains the measure of one or more tests.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -47,11 +47,11 @@ public class Sample implements StatsTyped, Serializable {
     @SuppressWarnings("unchecked")
     public <U extends Unit<U>> Quantity<U> getQuantity(CharSequence testName)
             throws MeasureNotFoundException {
-        SampleValue testSample = getSampleValue(testName);
-        if (testSample == null) {
+        SampleValue sampleValue = getSampleValue(testName);
+        if (sampleValue == null) {
             throw new MeasureNotFoundException(testName, getTestNames());
         }
-        return (Quantity<U>) testSample.getQuantity();
+        return (Quantity<U>) sampleValue.getQuantity();
     }
 
     public String toCsv() {

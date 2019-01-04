@@ -14,9 +14,6 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Computers are not very accurate in measuring short intervals of time
- * and so to improve its accuracy a measure is averaged over many samples.
- * <br>
  * Timing tests are subject to many factors that might hinder their accuracy:
  * <ul>
  * <li>Hardware type and available resources (FPU, memory quantity, SDD);
@@ -136,7 +133,7 @@ public class DefaultPerformanceTimer
     /**
      * Estimation of how many iterations are completed in the given time.
      * This measure is very approximated (it has also tolerances) and should
-     * not be relied upon. It is used for test tuning.
+     * not be relied upon. It is used internally for test tuning.
      * <br>
      * The test execution order is scrambled to help detecting JVM bias
      * toward first executed test.
@@ -167,7 +164,7 @@ public class DefaultPerformanceTimer
         int size = map.size();
         int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
-        // useful to detect JVM bias toward first executed test.
+        // useful to detect JVM bias toward the first executed test.
         for (int idx : getShuffledIndexes(size)) {
             Map.Entry<TName,Runnable> entry = map.getEntryAtIndex(idx);
             TName name = entry.getKey();

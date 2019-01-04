@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Holds the iteration performance sample value for a single test.
+ * The iteration performance sample value for a single test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

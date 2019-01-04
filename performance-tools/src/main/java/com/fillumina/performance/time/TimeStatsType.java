@@ -12,8 +12,8 @@ public enum TimeStatsType implements StatsType {
 
     final String name;
 
-    TimeStatsType(String value) {
-        this.name = value;
+    TimeStatsType(String name) {
+        this.name = name;
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.fillumina.performance.executor.test;
 import com.fillumina.performance.util.rnd.Lfsr;
 
 /**
+ * It is used to tune and check test evaluators because it is supposed to
+ * elapse quite exactly the double of {@link LfsrRunnable}.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

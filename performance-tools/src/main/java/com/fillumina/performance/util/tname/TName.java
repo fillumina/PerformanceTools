@@ -11,6 +11,7 @@ import java.util.ListIterator;
 
 /**
  * Contains trees of immutable strings each forming a path.
+ * Different trees can be created (same concept as namespaces).
  * Names are weak referenced so they are automatically reclaimed when not needed.
  * The class is synchronized so it is thread safe.
  * TName means TreeName but has been shortened because of its frequent use.

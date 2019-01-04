@@ -123,6 +123,8 @@ public class SpeedConfiguration<C>
         return this;
     }
 
+    // TODO fill out better comments here
+
     public SpeedConfiguration<C> setWorkerNumber(final int value) {
         this.workerNumber = value;
         return this;

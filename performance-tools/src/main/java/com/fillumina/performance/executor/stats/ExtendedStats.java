@@ -40,7 +40,7 @@ public class ExtendedStats extends Stats {
         Map<TName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
         expression.solve(new Stats(type, measures))
                 .forEach((CharSequence s, Measure m) ->
-                map.put(TN.tname(s), new DimensionalOnlineMeasure(unit, m)) );
+                    map.put(TN.tname(s), new DimensionalOnlineMeasure(unit, m)) );
         this.extendedMeasure = Collections.unmodifiableMap(map);
         this.extendedNames = Collections.unmodifiableList(
                 new ArrayList<>(map.keySet()) );

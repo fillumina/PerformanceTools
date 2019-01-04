@@ -14,6 +14,8 @@ import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import java.util.List;
 
 /**
+ * Executes tests based on configurations and returns statisitcs.
+ * It is the main mechanism behind test execution.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -31,6 +33,7 @@ public class PerformanceGenerator {
         return executeMixedTests(conf.getTestConfig(), conf.getProducers());
     }
 
+    /** Executes a list of tests that return various different statistics. */
     public MixedStatsHolder executeMixedTests(
             TestConfiguration<?> testConfig,
             List<ProducerConfiguration> producers) {
@@ -47,6 +50,7 @@ public class PerformanceGenerator {
         return builder.build();
     }
 
+    /** Executes a single test that returns various different statistics. */
     @SuppressWarnings("unchecked")
     public MixedStatsHolder executeSingleTest(
             TestConfiguration<?> testConfig,

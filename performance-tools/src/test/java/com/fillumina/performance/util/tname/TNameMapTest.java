@@ -75,7 +75,11 @@ public class TNameMapTest {
 
         assertEquals(1, map.get(one).getValue(), 0);
         assertEquals(2, map.get(two).getValue(), 0);
+        // that's its power: it can match whatever CharSequence!
+        assertEquals(2, map.get("two").getValue(), 0);
+
         assertEquals(12, map.get(twelve).getValue(), 0);
+        assertEquals(12, map.get("one : two").getValue(), 0);
     }
 
 }

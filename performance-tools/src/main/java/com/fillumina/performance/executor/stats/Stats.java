@@ -1,5 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.Printable;
@@ -18,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  * An {@link AssertableExperiment} representing the Statistics about an experiment.

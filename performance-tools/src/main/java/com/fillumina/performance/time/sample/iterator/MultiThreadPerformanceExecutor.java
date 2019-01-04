@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
  * workers to run a code in a multi-threaded environment.
  * <p>
  * A <b>thread</b> is a code that race with all the other threads as the system
- for an available CPU to be executed on.<br>
+ * for an available CPU to be executed on.<br>
  * A <b>worker</b> is a code that race for an available thread.<br>
  * All threads are executed concurrently (they might be interleaved by the
  * system scheduler if no physical CPU is available) but the workers have to wait
- * until the preceeding workers have finished to start being processed.
+ * until the preceding workers have finished to start being processed.
  * The amount of threads determines how many workers will be executed
  * concurrently, the amount of workers determines how many different task
- * should be performed.
+ * should be executed.
  * <p>
  * <b>NOTES</b>
  * <ul>
@@ -86,9 +86,7 @@ public class MultiThreadPerformanceExecutor
                 new TimeSampleCollector();
 
         Holder.Integer index = new Holder.Integer();
-        tests.entrySet().forEach(entry -> {
-            final TName testName = entry.getKey();
-            final Runnable runnable = entry.getValue();
+        tests.forEach( (TName testName, Runnable runnable) -> {
             final int iteration = iterations[index.getValue()];
             final int totalIterations = iteration * workerNumber;
 
@@ -109,7 +107,8 @@ public class MultiThreadPerformanceExecutor
     }
 
     private long iterateOn(Runnable runnable, int iterations) {
-        final long timeoutMillis = (long)timeout.as(IntervalUnit.MILLISECONDS);
+        final long timeoutMillis =
+                Math.round(timeout.as(IntervalUnit.MILLISECONDS));
         final ExecutorService executor = createExecutor();
 
         final List<IteratingRunnable> tasks =
@@ -120,9 +119,7 @@ public class MultiThreadPerformanceExecutor
 
         final long time = System.nanoTime();
 
-        for (IteratingRunnable task: tasks) {
-            executor.execute(task);
-        }
+        tasks.forEach((task) -> executor.execute(task) );
 
         executor.shutdown();
 

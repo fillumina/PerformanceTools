@@ -10,15 +10,16 @@ import java.util.concurrent.ThreadLocalRandom;
  * <li>{@code Sink.drain(5);}
  * <li>{@code int x = 5; Sink.drain(x); }
  * </ul>
- * This features comes at a cost of some extra speed lost.
+ * This features comes at a cost of some extra speed lost, but the time used
+ * is constant.
  * <br>
- * The JVM continuously optimizes executing code at run-time and it could evict
- * code that doesn't have side effects. Because many synthetic benchmarks
+ * The JVM continuously optimizes executing code at run-time and it tries hard
+ * to evict code that doesn't have side effects. Because many synthetic benchmarks
  * use such kind of code in tight loops there must be a way to trick the JVM
- * into not evicting them. The trick is to instruct the JVM that some input
+ * into not evicting them. The trick is to tell the JVM that some input
  * might trigger an event in a way that it is difficult to detect that such
  * event is impossible, and that trick must change its internal state so that
- * JVM doesn't memoize it.
+ * JVM doesn't memoize it in case of recurring or static inputs.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -84,6 +85,8 @@ public class Sink {
 
     private static boolean impossible(final int value) {
         // lfsr never returns 0, it's always false
+        // it is incremented by 2 so that when it will overload it will not
+        // be 0.
         return lfsrNext(value | (incrementer += 2)) == 0;
     }
 

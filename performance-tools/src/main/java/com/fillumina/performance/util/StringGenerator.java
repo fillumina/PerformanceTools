@@ -11,21 +11,21 @@ import java.io.IOException;
 public interface StringGenerator<T> {
 
     /** @return a String representation for the given object. */
-    void appendTo(Appendable appendable, T assertable)
+    void appendTo(Appendable appendable, T obj)
             throws IOException;
 
     default void appendToCatchingException(
-            Appendable appendable, T assertable) {
+            Appendable appendable, T obj) {
         try {
-            appendTo(appendable, assertable);
+            appendTo(appendable, obj);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    default String toString(T assertable) {
+    default String toString(T obj) {
         StringBuilder buf = new StringBuilder();
-        appendToCatchingException(buf, assertable);
+        appendToCatchingException(buf, obj);
         return buf.toString();
     }
 }

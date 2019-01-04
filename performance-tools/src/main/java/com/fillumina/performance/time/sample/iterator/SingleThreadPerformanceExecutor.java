@@ -14,9 +14,9 @@ import java.util.Map;
 
 /**
  * This {@link PerformanceExecutor} uses a single thread and interleaves
- * the run executions so to average the effect of a disturbance in the
- * performances offered by the system.
- * *
+ * the executions of each test so to average the effect of a disturbance in the
+ * system.
+ *
  * @author Francesco Illuminati
  */
 public class SingleThreadPerformanceExecutor
@@ -26,6 +26,7 @@ public class SingleThreadPerformanceExecutor
     public static final SingleThreadPerformanceExecutor INSTANCE =
             new SingleThreadPerformanceExecutor();
 
+    /** Number of interleaving fractions. */
     private final int fractions;
 
     public SingleThreadPerformanceExecutor() {
@@ -36,10 +37,11 @@ public class SingleThreadPerformanceExecutor
      * Interleaves tests execution so to average disturbing events.
      * There are known drawbacks in executing more than one
      * run at the same time: they could interfere with each other
-     * (directly by contending a common resource or indirectly by influencing
-     * JVM memory manager or code optimization).
+     * (directly by contending common resources or indirectly by influencing
+     * JVM memory manager or code optimization) so use a low value for
+     * fractions (less than 10 depending on the total time of the test).
      *
-     * @param fractions How many times each run switch to the next to average
+     * @param fractions How many times each test switch to the next to average
                   disturbances of the system
      */
     public SingleThreadPerformanceExecutor(final int fractions) {
@@ -52,7 +54,7 @@ public class SingleThreadPerformanceExecutor
      *
      * @param iterations times a run must be executed
      * @param tests      name and code of tests
-     * @return a new instance of {@link AverageTimeSample}
+     * @return a time collector with the sampled values
      */
     @Override
     public TimeSampleBuilder executeIterations(

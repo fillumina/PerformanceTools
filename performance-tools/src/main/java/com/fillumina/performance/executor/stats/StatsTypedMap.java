@@ -24,6 +24,9 @@ public class StatsTypedMap<T extends StatsTyped>
 
     private StatsTypedMap(List<T> list) {
         super();
+        if (list != null) {
+            list.forEach(t -> add(t));
+        }
     }
 
     public StatsTypedMap<T> add(T t) {

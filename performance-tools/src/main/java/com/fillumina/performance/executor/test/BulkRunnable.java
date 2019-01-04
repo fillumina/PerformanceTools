@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.annotation.BeforeSample;
  * A test is often repeated and measured many times in order to improve the
  * precision of the measure but sometimes this technique cannot be employed
  * because the state of the object changes as a result of the test itself
- * making it non repeatable.
+ * making it non repeatable.<br>
  * A benchmark that estimates the speed of removing an element from a map
  * filled at 50% cannot be realized without some clever trick.
  * Adding back the element after deletion would take time that will be wrongly
@@ -50,7 +50,7 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     }
 
     /**
-     * Creates the object to run. It can be called several times
+     * Creates the object to run. It is called several times
      * before actual run execution to create all the needed objects.
      */
     public abstract T createTestObject();
@@ -62,7 +62,8 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     public abstract V createTestValue();
 
     /**
-     * Initializes the object before the execution of the run.
+     * Initializes each object with its value before the execution of the run.
+     * Its time is not accounted in the test.
      *
      * @param t the run object
      * @param v the value used to prepare the object for the run
@@ -70,7 +71,8 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     public abstract void onBeforeSample(T t, V v);
 
     /**
-     * Actually run the object
+     * Actually run the test on the specific passed object.
+     * 
      * @param t the object to run
      */
     public abstract void test(T t);

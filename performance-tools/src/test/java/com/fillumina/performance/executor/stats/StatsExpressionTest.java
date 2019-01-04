@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ExpressionSolverTest {
+public class StatsExpressionTest {
 
     @Test
     public void shouldCreateAnExpressionUsingTNames() {

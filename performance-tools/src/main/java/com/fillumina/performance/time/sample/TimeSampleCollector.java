@@ -14,8 +14,11 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Collects iterations times and creates a {@link AverageTimeSample}
- * out of them.
+ * Collects iterations times and creates two kind of samples out of them:
+ * <ol>
+ * <li>average duration;
+ * <li>throughput: iterations per second.
+ * </ol>
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

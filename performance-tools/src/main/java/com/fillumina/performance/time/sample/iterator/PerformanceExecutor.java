@@ -19,6 +19,6 @@ public interface PerformanceExecutor {
      *              time to execute depending on the implementation.
      */
     TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests, // TODO really needs IndexedHashMap?
+            final IndexedHashMap<TName, Runnable> tests,
             final int[] iterations);
 }

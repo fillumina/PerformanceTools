@@ -17,20 +17,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This executor takes statistics from each thread executing the run
- * so to evaluate if the code under run is effectively parallel.
- * It will also execute the run on a single thread to calculate
- * the parallelization level.
+ * This executor takes statistics from each thread executing the same test.
+ * It will also execute the test on ingle thread as a comparison.
  * <p>
  * This {@link PerformanceExecutor} uses many threads and
  * workers to run a code as a multi-threaded environment.
  * <p>
- * A <b>thread</b> is a code that race with all the other threads in the system
- * for an available CPU to be executed on.<br>
- * A <b>worker</b> is a code that race for an available thread.<br>
+ * A <b>thread</b> is a code that races with all the other threads in the system
+ * for CPU execution time.<br>
+ * A <b>worker</b> is a code that races for an available thread.<br>
  * All threads are executed concurrently (they might be interleaved by the
- * system scheduler if no physical CPU is available for each) but the workers
- * have to wait until the preceeding workers have finished to start being
+ * operative system scheduler) but the workers
+ * have to wait until all the preceding workers have finished to start being
  * processed.
  * <p>
  * <b>NOTES</b>
@@ -86,19 +84,18 @@ public class SingleTestMultiThreadPerformanceExecutor
                     "This executor works only with one single test");
         }
 
-        // get the first run
+        // get the first (and only) run
         final Map.Entry<TName,Runnable> entry =
                 tests.entrySet().iterator().next();
         final TName testName = entry.getKey();
         final Runnable testable = entry.getValue();
         final int iteration = iterations[0];
 
-        final TimeSampleCollector timeCollector =
-                new TimeSampleCollector();
+        final TimeSampleCollector timeCollector = new TimeSampleCollector();
 
         AnnotatedRunnableSetter.INSTANCE.setUp(testable);
 
-        // run first the single thread to use as a baseline
+        // run the single thread test to use as a baseline and to warmup the code
         final RunnableIterator iterator =
                 RunnableIterator.DISPATCHER.getIterator(testable);
         final IteratingRunnable singleTask =
@@ -108,6 +105,7 @@ public class SingleTestMultiThreadPerformanceExecutor
         timeCollector.add(testName.append("single"),
                 singleThreadElapsed, iteration);
 
+        // parallel tests are less accurate and need more time
         final int parallelIterations = iteration * 2;
 
         // run the parallel execution

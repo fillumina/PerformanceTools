@@ -2,8 +2,9 @@ package com.fillumina.performance.time.sample;
 
 /**
  * A single test iteration can be eventually split into different fractions
- * that can be added separately. This class adds different takes to the
- * same iteration sample.
+ * that can be added separately because of test execution interleaving which
+ * helps to average disturbances among all tests.
+ * This class adds different takes to the same iteration sample.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
