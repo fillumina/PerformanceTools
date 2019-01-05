@@ -1,6 +1,8 @@
 package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.TN;
@@ -18,8 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-import com.fillumina.performance.assertion.AssertableExperiment;
-import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -222,18 +222,18 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             }
 
             public TNameMatcher.MatcherBuilder<C> lessThan() {
-                return fluid(RelativeOrder.LESS);
+                return fluent(RelativeOrder.LESS);
             }
 
             public TNameMatcher.MatcherBuilder<C> greaterThan() {
-                return fluid(RelativeOrder.GREATER);
+                return fluent(RelativeOrder.GREATER);
             }
 
             public TNameMatcher.MatcherBuilder<C> equalsTo() {
-                return fluid(RelativeOrder.EQUALS);
+                return fluent(RelativeOrder.EQUALS);
             }
 
-            private TNameMatcher.MatcherBuilder<C> fluid(final RelativeOrder condition) {
+            private TNameMatcher.MatcherBuilder<C> fluent(final RelativeOrder condition) {
                 return TNameMatcher.builder((builtObject) -> {
                     otherMatcher = builtObject;
                     equalityCondition = condition;

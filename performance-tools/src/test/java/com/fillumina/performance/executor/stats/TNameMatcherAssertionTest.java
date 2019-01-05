@@ -38,6 +38,7 @@ public class TNameMatcherAssertionTest {
                 TNameMatcherAssertion.builder();
 
         builder.order(TNameMatcher.builder().string("one").build())
+                // GREATER: 10 > 20!
                 .greaterThan(TNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
@@ -49,7 +50,7 @@ public class TNameMatcherAssertionTest {
     }
 
     @Test
-    public void shouldSetAndConsumeTwoAssertionsUsingFluidInterface() {
+    public void shouldSetAndConsumeTwoAssertionsUsingFluentInterface() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
