@@ -21,10 +21,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * An {@link AssertableExperiment} representing the Statistics about an experiment.
+ * An {@link AssertableExperiment} representing the Statistics about an
+ * experiment including various tests of the same type.
  * In addition of the usual statistics it calculates ANOVA and performs the
- * Tukey HSD post-hoc test on all experiment pairs so to assess the data
- * collected as statistically significant.
+ * Tukey HSD post-hoc test on all experiment pairs so to assess the
+ * statistic significance of results.
  * <p>
  * This class is immutable.
  *
@@ -60,7 +61,7 @@ public class Stats extends Printable<Stats>
             Unit<?> unit) {
         this.type = type;
         this.unit = getArmonizedUnit(measures.values());
-        this.map = createMap(measures, unit);
+        this.map = createNormalizedMap(measures, unit);
         this.refMeasure = new BiggerMeasure(this.map);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
@@ -92,7 +93,7 @@ public class Stats extends Printable<Stats>
         return unit;
     }
 
-    private IndexedHashMap<TName, DimensionalMeasure> createMap(
+    private IndexedHashMap<TName, DimensionalMeasure> createNormalizedMap(
             Map<TName,DimensionalMeasure> measures, Unit<?> unit) {
         IndexedHashMap<TName,DimensionalMeasure> m =
                 new IndexedHashMap<>(measures.size());
@@ -280,7 +281,6 @@ public class Stats extends Printable<Stats>
         return tukeyPrintable;
     }
 
-    // TODO don't think it is a good idea
     private static class TukeyPrintable extends Printable<TukeyPrintable> {
         private final Stats stats;
 

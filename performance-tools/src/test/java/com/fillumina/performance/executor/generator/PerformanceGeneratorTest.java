@@ -146,12 +146,12 @@ public class PerformanceGeneratorTest {
         public PerformanceGeneratorMock() {
             Stats statsA = createStats(TYPE_A, "a", 10.0);
             array[0] = MixedStatsHolder.builder()
-                    .addAssertable(TYPE_A, TN.tname("a"), statsA)
+                    .addStats(TYPE_A, TN.tname("a"), statsA)
                     .build();
 
             Stats statsB = createStats(TYPE_B, "a", 20.0);
             array[1] = MixedStatsHolder.builder()
-                    .addAssertable(TYPE_B, TN.tname("a"), statsB)
+                    .addStats(TYPE_B, TN.tname("a"), statsB)
                     .build();
         }
 

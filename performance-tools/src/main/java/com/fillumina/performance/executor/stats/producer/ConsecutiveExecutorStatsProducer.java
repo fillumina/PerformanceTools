@@ -42,7 +42,7 @@ public class ConsecutiveExecutorStatsProducer
         producer.clearTests();
 
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
-        builder.addAssertable(stats.getStatsType(), getName(), stats);
+        builder.addStats(stats.getStatsType(), getName(), stats);
         return builder.build();
     }
 

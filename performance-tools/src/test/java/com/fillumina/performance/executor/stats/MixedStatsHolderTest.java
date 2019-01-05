@@ -114,9 +114,9 @@ public class MixedStatsHolderTest {
         StatsMock a1 = new StatsMock();
         AssertableMock_1 a2 = new AssertableMock_1();
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addAssertable(StatsMock.TYPE,
+                .addStats(StatsMock.TYPE,
                         TN.tname("one"), a1)
-                .addAssertable(AssertableMock_1.TYPE,
+                .addStats(AssertableMock_1.TYPE,
                         TN.tname("two"), a2)
                 .build();
 
@@ -131,9 +131,9 @@ public class MixedStatsHolderTest {
         StatsMock a1 = new StatsMock();
         AssertableMock_1 a2 = new AssertableMock_1();
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addAssertable(StatsMock.TYPE,
+                .addStats(StatsMock.TYPE,
                         TN.tname("one"), a1)
-                .addAssertable(AssertableMock_1.TYPE,
+                .addStats(AssertableMock_1.TYPE,
                         TN.tname("two"), a2)
                 .build();
 
@@ -148,9 +148,9 @@ public class MixedStatsHolderTest {
         StatsMock a1 = new StatsMock();
         AssertableMock_1 a2 = new AssertableMock_1();
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addAssertable(StatsMock.TYPE,
+                .addStats(StatsMock.TYPE,
                         TN.tname("one"), a1)
-                .addAssertable(AssertableMock_1.TYPE,
+                .addStats(AssertableMock_1.TYPE,
                         TN.tname("two"), a2)
                 .build();
 
@@ -261,7 +261,7 @@ public class MixedStatsHolderTest {
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
         int index = 0;
         for (StatsMock a : array) {
-            builder.addAssertable(a.getType(),
+            builder.addStats(a.getType(),
                     createName(prefix, index),
                     a);
             index++;

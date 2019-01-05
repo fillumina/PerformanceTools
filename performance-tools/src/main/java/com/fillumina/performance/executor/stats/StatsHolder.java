@@ -125,7 +125,7 @@ public class StatsHolder extends Printable<StatsHolder>
         this(stats.getStatsType(), TN.EMPTY, stats, null);
     }
 
-    // TODO remove type, is taken from Stats directly
+    // TODO remove type, it is taken from Stats directly
     public StatsHolder(
             final StatsType type,
             final Stats stats) {

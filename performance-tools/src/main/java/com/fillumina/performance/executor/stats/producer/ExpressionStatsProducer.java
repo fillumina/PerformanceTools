@@ -49,7 +49,7 @@ public class ExpressionStatsProducer extends
                 if (stats != null) {
                     TName name = list.get(list.size() - 1);
                     ExtendedStats eStats = new ExtendedStats(stats, expressions);
-                    builder.addAssertable(type, name, eStats);
+                    builder.addStats(type, name, eStats);
                 }
             });
         });

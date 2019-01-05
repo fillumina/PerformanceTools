@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Container for {@link StatsHolder}s of different types of statistics.
+ * Container for {@link StatsHolder}s of different types.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -24,7 +24,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         private final MixedStatsHolder mixedHolder =
                 new MixedStatsHolder();
 
-        public Builder addAssertable(
+        public Builder addStats(
                 final StatsType type,
                 final TName name,
                 final Stats stats) {
@@ -34,7 +34,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
             return this;
         }
 
-        public Builder addAssertable(final StatsType type,
+        public Builder addStats(final StatsType type,
                 final StatsHolder assertableHolder) {
             assertableHolder.setCaller(mixedHolder);
             mixedHolder.map.put(type, assertableHolder);
