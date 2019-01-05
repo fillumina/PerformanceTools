@@ -6,16 +6,18 @@ import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
+import com.fillumina.performance.executor.stats.producer.AutoconfiguredStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
-import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
-import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import java.util.List;
 
 /**
  * Executes tests based on configurations and returns statistics.
- * It is the main mechanism behind test execution.
+ * It is important to notice that this class represents just one way to use
+ * this API and it provides a complete workflow able to provide statistics out
+ * of user specified executor and tests. The API is designed in a way so that
+ * it can be composed to create whichever workflow is needed.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -41,7 +43,6 @@ public class PerformanceGenerator {
 
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
 
-        // consolidate into a single MixedAssertableHolder
         producers.forEach(conf -> {
             MixedStatsHolder mixedHolder = executeSingleTest(testConfig, conf);
 
@@ -65,19 +66,17 @@ public class PerformanceGenerator {
             return MixedStatsHolder.EMPTY;
         }
 
-        ConfigurableStatsProducer.Strategy strategy = selectStrategy(prodConfig);
-
+        // adds stats generator
         ConfigurableStatsProducer statsProducer =
                 ((SampleProducer<?>) prodConfig.getSampleProducer())
-                .instrumentedBy(
-                        new ConfigurableStatsProducer(prodConfig, strategy));
+                .instrumentedBy(new AutoconfiguredStatsProducer(prodConfig));
 
         // adds listeners
         statsProducer
                 .addSampleProgressionListener(prodConfig.getSampleListener())
                 .addStatsProgressionListener(prodConfig.getStatsListener());
 
-        // adds parameters and sequences
+        // adds consecutive executor, parameters, sequences and expressions
         ExpressionStatsProducer producer = statsProducer
                 .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
@@ -89,18 +88,5 @@ public class PerformanceGenerator {
                 .setName(testConfig.getName())
                 .addTests(testConfig.getTests())
                 .execute();
-    }
-
-    // TODO should be included into configuration... not here!
-    private ConfigurableStatsProducer.Strategy selectStrategy(
-            ProducerConfiguration producerConfig) {
-        final ConfigurableStatsProducer.Strategy strategy;
-        int[] iterations = producerConfig.getIterations();
-        if (iterations != null) {
-            strategy = new FixedSamplesAndIterationsStrategy(producerConfig);
-        } else {
-            strategy = new RequiredMarginStrategy(producerConfig);
-        }
-        return strategy;
     }
 }

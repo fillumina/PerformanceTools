@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.generator;
 
 import com.fillumina.performance.executor.sample.SampleProducer;
-import com.fillumina.performance.executor.stats.producer.ConfigurableStatsProducer;
+import com.fillumina.performance.executor.stats.producer.AutoconfiguredStatsProducer;
 import com.fillumina.performance.executor.stats.producer.ConsecutiveExecutorStatsProducer;
 import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIterationsStrategy;
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
@@ -26,7 +26,7 @@ import com.fillumina.performance.util.Activable;
 public interface ProducerConfiguration
         extends
             Activable,
-            ConfigurableStatsProducer.Configuration,
+            AutoconfiguredStatsProducer.Configuration,
             ConsecutiveExecutorStatsProducer.Configuration,
             FixedSamplesAndIterationsStrategy.Configuration,
             RequiredMarginStrategy.Configuration,

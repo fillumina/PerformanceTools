@@ -13,11 +13,11 @@ import java.util.Map;
 public interface ExpressionSolver {
 
     /**
-     * @return the result of the expression calculated on the given
+     * @return the result of the managed expressions calculated on the given
      *          {@link Stats}.
      */
     Map<TName, Measure> solve(Stats stats);
 
-    /** @return a map of string representations of named tests */
+    /** @return a map of string representations of named expressions. */
     Map<TName, String> getStringExpressions();
 }

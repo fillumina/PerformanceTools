@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Creates a new Stats including calculated results from expressions.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -36,6 +37,9 @@ public class ExtendedStats extends Stats {
             ExpressionSolver expression) {
         super(type, measures);
         this.expression = expression;
+        if (measures.isEmpty()) {
+            throw new RuntimeException("measures cannot be empty");
+        }
         Unit<?> unit = measures.values().iterator().next().getUnit();
         Map<TName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
         expression.solve(new Stats(type, measures))
