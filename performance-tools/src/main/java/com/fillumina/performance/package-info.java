@@ -7,12 +7,13 @@
  * tell how some code will perform in all of them (think about memory
  * or FPU constrains).
  * Then the JVM itself is not unique (there are many producers)
- * and may threat the byte-code at execution time in different ways.
+ * and may threat the byte-code at execution time in slightly different ways.
  * Other than that most of the environments it runs on use
  * multitasking to perform various operations simultaneously and even
  * the Java garbage collector may impact the performance results unpredictably.
  * For these reasons a test must run for a considerable number of iterations
- * so to average all these disturbances and possibly eliminate them.
+ * so to average all these disturbances and possibly eliminate them
+ * statistically.
  * <p>
  * Evaluating how long a (relatively small) code takes to execute is a kind
  * of performance test called <b>micro-benchmark</b> as opposed to the
@@ -20,22 +21,19 @@
  * A micro-benchmark has the disadvantage of making it difficult to compare
  * measures obtained from different systems.
  * <p>
- * Another approach is to take the measurements of two or more different codes
- * and <b>consider the relative speed</b>.
- * This would allow some advantages over a micro-benchmark:
+ * An approach is to take the measurements of two or more different codes
+ * and <b>consider the relative speed ratios</b>.
+ * This would allow some advantages over a simple elapsed time measurement:
  * <ul>
  * <li>The framework overhead is eliminated (all codes under test
- * are subjects to the same overhead);
+ * subject to the same overhead);
  * <li>Percentages are more reproducible and constant between different systems;
  * <li>It's far more informative to know how much a code is faster in
- * respect of another known code than how much time it takes on a certain system;
+ * respect of another than how much time it takes on a certain system;
  * <li>It's more robust against environment disturbances (CPU-time fluctuations).
  * </ul>
  *
- * This is the approach chosen by this API although nothing forbids
- * to specify only one test (so having a micro-benchmark).
- * <p>
- * It has the following features:
+ * PerformanceTooles  has the following features:
  * <ul>
  * <li>It allows to test code in a <b>single threaded and in
  * multi threaded environment</b>;

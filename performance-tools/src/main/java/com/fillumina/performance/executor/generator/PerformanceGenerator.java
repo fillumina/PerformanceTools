@@ -14,7 +14,7 @@ import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import java.util.List;
 
 /**
- * Executes tests based on configurations and returns statisitcs.
+ * Executes tests based on configurations and returns statistics.
  * It is the main mechanism behind test execution.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -29,6 +29,7 @@ public class PerformanceGenerator {
         public List<ProducerConfiguration> getProducers();
     }
 
+    /** Executes a list of tests that return various different statistics. */
     public MixedStatsHolder executeMixedTests(Configuration conf) {
         return executeMixedTests(conf.getTestConfig(), conf.getProducers());
     }
@@ -43,7 +44,10 @@ public class PerformanceGenerator {
         // consolidate into a single MixedAssertableHolder
         producers.forEach(conf -> {
             MixedStatsHolder mixedHolder = executeSingleTest(testConfig, conf);
-            mixedHolder.getStatsMap().forEach((StatsType type, StatsHolder holder) ->
+
+            // consolidate the statistics into a single MixedStatsHolder
+            mixedHolder.getStatsMap().forEach(
+                    (StatsType type, StatsHolder holder) ->
                         builder.addAssertable(type, holder));
         });
 
@@ -56,6 +60,7 @@ public class PerformanceGenerator {
             TestConfiguration<?> testConfig,
             ProducerConfiguration prodConfig) {
 
+        // if the configuration is not active returns empty statistics
         if (!prodConfig.isActive()) {
             return MixedStatsHolder.EMPTY;
         }
@@ -67,22 +72,26 @@ public class PerformanceGenerator {
                 .instrumentedBy(
                         new ConfigurableStatsProducer(prodConfig, strategy));
 
+        // adds listeners
         statsProducer
                 .addSampleProgressionListener(prodConfig.getSampleListener())
                 .addStatsProgressionListener(prodConfig.getStatsListener());
 
+        // adds parameters and sequences
         ExpressionStatsProducer producer = statsProducer
                 .instrumentedBy(new ConsecutiveExecutorStatsProducer(prodConfig))
                 .instrumentedBy(new ParameterizedTestProducer(testConfig))
                 .instrumentedBy(new SequencedTestProducer(testConfig))
                 .instrumentedBy(new ExpressionStatsProducer(testConfig));
 
+        // sets the name and finally adds and executes tests
         return producer
                 .setName(testConfig.getName())
                 .addTests(testConfig.getTests())
                 .execute();
     }
 
+    // TODO should be included into configuration... not here!
     private ConfigurableStatsProducer.Strategy selectStrategy(
             ProducerConfiguration producerConfig) {
         final ConfigurableStatsProducer.Strategy strategy;

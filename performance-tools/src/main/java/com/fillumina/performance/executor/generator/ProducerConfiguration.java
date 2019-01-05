@@ -11,6 +11,15 @@ import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerform
 import com.fillumina.performance.util.Activable;
 
 /**
+ * The configuration of a producer that executes a test and generates
+ * the measurements about it (samples).
+ * Each iteration of the experiment produces a
+ * {@link com.fillumina.performance.sample.Sample} containing the measurements.
+ * The iterations are repeated to generate statistics as
+ * {@link com.fillumina.performance.executor.stats.Stats}.
+ * A configuration can include a sample and a stats listener that will be
+ * notified when a new sample or a new statistics is available. A listener
+ * typically shows info about the experiment.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
