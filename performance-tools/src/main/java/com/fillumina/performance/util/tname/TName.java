@@ -68,6 +68,9 @@ public class TName extends AbstractList<String>
     }
 
     public TName append(Iterable<String> names) {
+        if (names == null) {
+            return this;
+        }
         TName current = this;
         for (String n : names) {
             if (n != null) {
@@ -78,6 +81,9 @@ public class TName extends AbstractList<String>
     }
 
     public TName append(String... names) {
+        if (names == null || names.length == 0) {
+            return this;
+        }
         TName current = this;
         for (String n : names) {
             if (n != null) {
@@ -88,7 +94,7 @@ public class TName extends AbstractList<String>
     }
 
     public synchronized TName append(String name) {
-        if (name == null) {
+        if (name == null || name.isEmpty()) {
             return this;
         }
         if (children != null) {

@@ -12,7 +12,7 @@ public class TN {
     public static final TName EMPTY = TName.createRoot();
 
     public static final TName tname(CharSequence name) {
-        if (name == null) {
+        if (name == null || name.length() == 0) {
             return TN.EMPTY;
         }
         if (name instanceof TName) {

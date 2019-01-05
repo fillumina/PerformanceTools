@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 /**
  * Container for statistics. Each {@link Stats} is composed
- * by a number of tests and their measures. Internally this can be represented
+ * by a number of tests and their measures. Internally this is represented
  * as a map. But in case parameters or sequences (or both) were used
  * statistics are represented by a tree. This wrapper class allows to treat
  * them independently from their internal representation and offers

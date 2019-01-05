@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Container for {@link StatsHolder}s for different types of statistics.
+ * Container for {@link StatsHolder}s of different types of statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
