@@ -10,13 +10,14 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.tname.TNamed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * Container for statistics. Each {@link Stats} is composed
+ * Container for statistics of the same type. Each {@link Stats} is composed
  * by a number of tests and their measures. Internally this is represented
  * as a map. But in case parameters or sequences (or both) were used
  * statistics are represented by a tree. This wrapper class allows to treat
@@ -26,7 +27,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public class StatsHolder extends Printable<StatsHolder>
-        implements StatsTyped, Serializable {
+        implements StatsTyped, TNamed, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
@@ -120,45 +121,21 @@ public class StatsHolder extends Printable<StatsHolder>
         return new Builder(type, TN.notNull(name), stats, stringGenerator);
     }
 
-    public StatsHolder(
-            final Stats stats) {
-        this(stats.getStatsType(), TN.EMPTY, stats, null);
-    }
-
-    // TODO remove type, it is taken from Stats directly
-    public StatsHolder(
-            final StatsType type,
-            final Stats stats) {
-        this(type, TN.EMPTY, stats, null);
+    public StatsHolder(final Stats stats) {
+        this(TN.EMPTY, stats);
     }
 
     public StatsHolder(
-            final StatsType type,
             final TName name,
             final Stats stats) {
-        this(type, name, stats, null);
+        this(name, stats, null);
     }
 
     public StatsHolder(
-            final StatsType type,
-            final String name,
-            final Stats stats) {
-        this(type, TN.tname(name), stats, null);
-    }
-
-    public StatsHolder(
-            final StatsType type,
-            final TName name,
-            final StringGenerator<Stats> formatter) {
-        this(type, name, null, formatter);
-    }
-
-    public StatsHolder(
-            final StatsType type,
             final TName name,
             final Stats stats,
             final StringGenerator<Stats> formatter) {
-        this(type, stats == null ? null : new LinkedTree<>(name, stats), formatter);
+        this(stats.getStatsType(), new LinkedTree<>(name, stats), formatter);
     }
 
     private StatsHolder(
@@ -191,10 +168,11 @@ public class StatsHolder extends Printable<StatsHolder>
 
     /** @return true if no statistics available. */
     public boolean isEmpty() {
-        return tree == null || tree.isNull();
+        return tree == null || (tree.isEmpty() && tree.getValue() == null);
     }
 
     /** @return the name of the test. */
+    @Override
     public TName getName() {
         return tree.getKey();
     }
@@ -319,8 +297,8 @@ public class StatsHolder extends Printable<StatsHolder>
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 17 * hash + Objects.hashCode(this.tree);
-        hash = 17 * hash + Objects.hashCode(this.formatter);
+        hash = 41 * hash + Objects.hashCode(this.statsType);
+        hash = 41 * hash + Objects.hashCode(this.tree);
         return hash;
     }
 
@@ -335,15 +313,11 @@ public class StatsHolder extends Printable<StatsHolder>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        @SuppressWarnings("unchecked")
         final StatsHolder other = (StatsHolder) obj;
         if (!Objects.equals(this.statsType, other.statsType)) {
             return false;
         }
         if (!Objects.equals(this.tree, other.tree)) {
-            return false;
-        }
-        if (!Objects.equals(this.formatter, other.formatter)) {
             return false;
         }
         return true;

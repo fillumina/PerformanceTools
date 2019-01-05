@@ -5,8 +5,8 @@ import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.ExtendedStats;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsHolder;
+import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.tname.TName;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -49,7 +49,7 @@ public class ExpressionStatsProducer extends
                 if (stats != null) {
                     TName name = list.get(list.size() - 1);
                     ExtendedStats eStats = new ExtendedStats(stats, expressions);
-                    builder.addStats(type, name, eStats);
+                    builder.addStats(name, eStats);
                 }
             });
         });

@@ -3,7 +3,6 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
-import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.io.IOException;
@@ -34,9 +33,7 @@ public class AssertionableResultTest {
     @Test
     public void shouldReturnTheGivenAssertHolder() {
         final Stats stats = createStats("one");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                stats);
+        StatsHolder holder = new StatsHolder(stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()
@@ -62,7 +59,7 @@ public class AssertionableResultTest {
         };
 
         final Stats stats = createStats("one");
-        StatsHolder holder = new StatsHolder(MockStatsType.INSTANCE, stats);
+        StatsHolder holder = new StatsHolder(stats);
 
         AssertionableResult<?> result =
                 AssertionableResult.builder()
@@ -92,9 +89,7 @@ public class AssertionableResultTest {
         };
 
         final Stats stats = createStats("one");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                stats);
+        StatsHolder holder = new StatsHolder(stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()
@@ -124,7 +119,7 @@ public class AssertionableResultTest {
         };
 
         final Stats stats = createStats("one");
-        StatsHolder holder = new StatsHolder(MockStatsType.INSTANCE, stats);
+        StatsHolder holder = new StatsHolder(stats);
 
         AssertionableResult<?> result = AssertionableResult.builder()
                         .addAssertion(assertion)
@@ -191,9 +186,7 @@ public class AssertionableResultTest {
         };
 
         final Stats stats = createStats("one");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                stats);
+        StatsHolder holder = new StatsHolder(stats);
 
         AssertionableResult<?> aResult =
                 AssertionableResult.builder()

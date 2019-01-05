@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.Magnitude;
@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -21,51 +20,14 @@ import com.fillumina.performance.assertion.AssertableExperiment;
  */
 public class MixedStatsHolderTest {
 
-    private static class AssertableMock_1 extends StatsMock {
-        public static final StatsType TYPE = new MockStatsType("1");
-        @Override public StatsType getType() { return TYPE; }
-    }
-    private static class AssertableMock_2 extends StatsMock {
-        public static final StatsType TYPE = new MockStatsType("2");
-        @Override public StatsType getType() { return TYPE; }
-    }
-    private static class AssertableMock_3 extends StatsMock {
-        public static final StatsType TYPE = new MockStatsType("3");
-        @Override public StatsType getType() { return TYPE; }
-    }
-
-    private static class StatsMock extends Stats {
-        public static final StatsType TYPE = new MockStatsType("0");
-        private static final long serialVersionUID = 1L;
-        private final String name;
-
-        public StatsMock() {
-            this("ANONYMOUS");
-        }
-
-        public StatsMock(String name) {
-            super(new StatsMockBuilder()
+    private Stats createTypedStatsMock(String typeName) {
+        StatsType type = new StatsTypeImpl(typeName);
+        return new StatsMockBuilder(type)
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
                     .buildWithCoincidentalValues(Magnitude.UNIT)
                     .getFirstStatsHolder()
                     .getStats()
-                    .as(Magnitude.UNIT));
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public StatsType getType() {
-            return TYPE;
-        }
-    }
-
-    @Test
-    public void shouldReturnTheExtendedType() {
-        AssertableMock_1 a = new AssertableMock_1();
-        assertEquals(AssertableMock_1.TYPE, a.getType());
+                    .as(Magnitude.UNIT);
     }
 
     @Test
@@ -82,9 +44,9 @@ public class MixedStatsHolderTest {
 
     @Test
     public void shouldReturnTheGivenHolder() {
-        StatsHolder holder =
-                StatsHolder.builder(MockStatsType.INSTANCE, "root")
-                        .test("one", new StatsMock("1"))
+        Stats stats = createTypedStatsMock("1");
+        StatsHolder holder = StatsHolder.builder(stats.getStatsType(), "root")
+                        .test("one", stats)
                         .build();
 
         MixedStatsHolder mixedHolder = new MixedStatsHolder(holder);
@@ -93,82 +55,77 @@ public class MixedStatsHolderTest {
     }
 
     @Test
-    public void shouldReturnTheGivenHoldersAccordingToClass() {
-        StatsHolder h1 = StatsHolder.builder(StatsMock.TYPE, "root")
-                        .test("one", new StatsMock())
+    public void shouldReturnTheGivenHoldersAccordingToType() {
+        Stats stats1 = createTypedStatsMock("1");
+        StatsHolder h1 = StatsHolder.builder(stats1.getStatsType(), "root")
+                        .test("one", stats1)
                         .build();
 
-        StatsHolder h2 =
-                StatsHolder.builder(AssertableMock_1.TYPE, "root")
-                        .test("one", new AssertableMock_1())
+        Stats stats2 = createTypedStatsMock("2");
+        StatsHolder h2 = StatsHolder.builder(stats2.getStatsType(), "root")
+                        .test("one", stats2)
                         .build();
 
         MixedStatsHolder mixedHolder = new MixedStatsHolder(h1, h2);
 
-        assertEquals(h1, mixedHolder.getStatsHolder(StatsMock.TYPE));
-        assertEquals(h2, mixedHolder.getStatsHolder(AssertableMock_1.TYPE));
+        assertEquals(h1, mixedHolder.getStatsHolder(stats1.getStatsType()));
+        assertEquals(h2, mixedHolder.getStatsHolder(stats2.getStatsType()));
     }
 
     @Test
-    public void shouldBuildFromAssertables() {
-        StatsMock a1 = new StatsMock();
-        AssertableMock_1 a2 = new AssertableMock_1();
+    public void shouldBuildFromStats() {
+        Stats stats1 = createTypedStatsMock("1");
+        Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(StatsMock.TYPE,
-                        TN.tname("one"), a1)
-                .addStats(AssertableMock_1.TYPE,
-                        TN.tname("two"), a2)
+                .addStats(TN.tname("one"), stats1)
+                .addStats(TN.tname("two"), stats2)
                 .build();
 
-        assertEquals(a1,
-                mixedHolder.getStatsHolder(StatsMock.TYPE).getStats());
-        assertEquals(a2,
-                mixedHolder.getStatsHolder(AssertableMock_1.TYPE).getStats());
+        assertEquals(stats1,
+                mixedHolder.getStatsHolder(stats1.getStatsType()).getStats());
+        assertEquals(stats2,
+                mixedHolder.getStatsHolder(stats2.getStatsType()).getStats());
     }
 
     @Test
     public void shouldReturnTheRegisteredTypes() {
-        StatsMock a1 = new StatsMock();
-        AssertableMock_1 a2 = new AssertableMock_1();
+        Stats stats1 = createTypedStatsMock("1");
+        Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(StatsMock.TYPE,
-                        TN.tname("one"), a1)
-                .addStats(AssertableMock_1.TYPE,
-                        TN.tname("two"), a2)
+                .addStats(TN.tname("one"), stats1)
+                .addStats(TN.tname("two"), stats2)
                 .build();
 
         Set<StatsType> set = mixedHolder.getTypes();
         assertTrue(set.containsAll(Arrays.asList(
-                StatsMock.TYPE, AssertableMock_1.TYPE
+                stats1.getStatsType(), stats2.getStatsType()
         )));
     }
 
     @Test
     public void shouldReturnTheStatsMap() {
-        StatsMock a1 = new StatsMock();
-        AssertableMock_1 a2 = new AssertableMock_1();
+        Stats stats1 = createTypedStatsMock("1");
+        Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(StatsMock.TYPE,
-                        TN.tname("one"), a1)
-                .addStats(AssertableMock_1.TYPE,
-                        TN.tname("two"), a2)
+                .addStats(TN.tname("one"), stats1)
+                .addStats(TN.tname("two"), stats2)
                 .build();
 
         Map<StatsType, StatsHolder> map = mixedHolder.getStatsMap();
 
         assertTrue(map.keySet().containsAll(Arrays.asList(
-                StatsMock.TYPE, AssertableMock_1.TYPE
+                stats1.getStatsType(), stats2.getStatsType()
         )));
 
         assertTrue(map.values().stream().map((t) -> t.getStats())
                 .collect(Collectors.toCollection(ArrayList::new))
-                .containsAll(Arrays.asList(a1, a2)) );
+                .containsAll(Arrays.asList(stats1, stats2)) );
     }
 
     @Test
-    public void shouldJoinOneMixedAssertableHolders() {
-        AssertableMock_1 a1 = new AssertableMock_1();
-        MixedStatsHolder one = create("one_", a1);
+    public void shouldJoinOneMixedStatsHolders() {
+        Stats stats1 = createTypedStatsMock("1");
+        MixedStatsHolder one = create("one_", stats1);
 
         TName rootName = TN.tname("root");
 
@@ -176,43 +133,43 @@ public class MixedStatsHolderTest {
                 .addSubExperiment(one)
                 .join();
 
-        assertEquals(a1,
-                getAssertable(root, AssertableMock_1.TYPE,
+        assertEquals(stats1,
+                getAssertable(root, stats1.getStatsType(),
                         createName("one_", 0)));
     }
 
     @Test
-    public void shouldJoinTwoMixedAssertableHolders() {
-        AssertableMock_1 a1 = new AssertableMock_1();
-        MixedStatsHolder one = create("one_", a1);
-        AssertableMock_2 a2 = new AssertableMock_2();
-        MixedStatsHolder two = create("two_", a2);
+    public void shouldJoinTwoMixedStatsHolders() {
+        Stats stats1 = createTypedStatsMock("1");
+        Stats stats2 = createTypedStatsMock("2");
+        MixedStatsHolder one = create("one_", stats1);
+        MixedStatsHolder two = create("two_", stats2);
 
         TName rootName = TN.tname("root");
 
-        MixedStatsHolder root = MixedStatsHolder.joiner(rootName)
+        MixedStatsHolder mixedStatsHolder = MixedStatsHolder.joiner(rootName)
                 .addSubExperiment(one)
                 .addSubExperiment(two)
                 .join();
 
-        assertEquals(a1,
-                getAssertable(root, AssertableMock_1.TYPE,
+        assertEquals(stats1,
+                getAssertable(mixedStatsHolder, stats1.getStatsType(),
                         createName("one_", 0)));
 
-        assertEquals(a2,
-                getAssertable(root, AssertableMock_2.TYPE,
+        assertEquals(stats2,
+                getAssertable(mixedStatsHolder, stats2.getStatsType(),
                         createName("two_", 0)));
     }
 
     @Test
-    public void shouldJoinTwoMixedAssertableHoldersWithSameStats() {
-        AssertableMock_1 a1 = new AssertableMock_1();
-        AssertableMock_2 a2 = new AssertableMock_2();
+    public void shouldJoinTwoMixedStatsHoldersWithSameStats() {
+        Stats a1 = createTypedStatsMock("a1");
+        Stats a2 = createTypedStatsMock("a2");
         MixedStatsHolder one = create("one_", a1, a2);
 
-        AssertableMock_1 b1 = new AssertableMock_1();
-        AssertableMock_2 b2 = new AssertableMock_2();
-        AssertableMock_3 b3 = new AssertableMock_3();
+        Stats b1 = createTypedStatsMock("b1");
+        Stats b2 = createTypedStatsMock("b2");
+        Stats b3 = createTypedStatsMock("b3");
         MixedStatsHolder two = create("two_", b1, b2, b3);
 
         TName rootName = TN.tname("root");
@@ -223,30 +180,30 @@ public class MixedStatsHolderTest {
                 .join();
 
         assertEquals(a1,
-                getAssertable(root, AssertableMock_1.TYPE,
+                getAssertable(root, a1.getStatsType(),
                         createName("one_", 0)));
 
         assertEquals(a2,
-                getAssertable(root, AssertableMock_2.TYPE,
+                getAssertable(root, a2.getStatsType(),
                         createName("one_", 1)));
 
         assertEquals(b1,
-                getAssertable(root, AssertableMock_1.TYPE,
+                getAssertable(root, b1.getStatsType(),
                         createName("two_", 0)));
 
         assertEquals(b2,
-                getAssertable(root, AssertableMock_2.TYPE,
+                getAssertable(root, b2.getStatsType(),
                         createName("two_", 1)));
 
         assertEquals(b3,
-                getAssertable(root, AssertableMock_3.TYPE,
+                getAssertable(root, b3.getStatsType(),
                         createName("two_", 2)));
     }
 
     @Test
     public void shouldSetTheGivenRootName() {
-        AssertableMock_1 a1 = new AssertableMock_1();
-        MixedStatsHolder one = create("one_", a1);
+        Stats s = createTypedStatsMock("2");
+        MixedStatsHolder one = create("one_", s);
 
         TName rootName = TN.tname("root");
 
@@ -254,16 +211,14 @@ public class MixedStatsHolderTest {
                 .addSubExperiment(one)
                 .join();
 
-        assertEquals(rootName, root.getStatsHolder(AssertableMock_1.TYPE).getName());
+        assertEquals(rootName, root.getStatsHolder(s.getStatsType()).getName());
     }
 
-    private MixedStatsHolder create(String prefix, StatsMock... array) {
+    private MixedStatsHolder create(String prefix, Stats... array) {
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
         int index = 0;
-        for (StatsMock a : array) {
-            builder.addStats(a.getType(),
-                    createName(prefix, index),
-                    a);
+        for (Stats a : array) {
+            builder.addStats(createName(prefix, index), a);
             index++;
         }
         return builder.build();

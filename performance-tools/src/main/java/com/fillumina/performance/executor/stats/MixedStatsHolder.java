@@ -11,7 +11,8 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * Container for {@link StatsHolder}s of different types.
+ * Container for {@link StatsHolder}s of different types with builders that
+ * helps creating and merging them.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -24,20 +25,16 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         private final MixedStatsHolder mixedHolder =
                 new MixedStatsHolder();
 
-        public Builder addStats(
-                final StatsType type,
-                final TName name,
-                final Stats stats) {
-            StatsHolder statsHolder = new StatsHolder(type, name, stats);
+        public Builder addStats(final TName name, final Stats stats) {
+            StatsHolder statsHolder = new StatsHolder(name, stats);
             statsHolder.setCaller(mixedHolder);
-            mixedHolder.map.put(type, statsHolder);
+            mixedHolder.map.put(statsHolder.getStatsType(), statsHolder);
             return this;
         }
 
-        public Builder addStats(final StatsType type,
-                final StatsHolder assertableHolder) {
+        public Builder addStats(final StatsHolder assertableHolder) {
             assertableHolder.setCaller(mixedHolder);
-            mixedHolder.map.put(type, assertableHolder);
+            mixedHolder.map.put(assertableHolder.getStatsType(), assertableHolder);
             return this;
         }
 
@@ -59,21 +56,17 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
             this.name = name;
         }
 
-        public Joiner addSubExperiment(
-                MixedStatsHolder mixedHolder) {
+        public Joiner addSubExperiment(MixedStatsHolder mixedHolder) {
             if (mixedHolder != null) {
-                mixedHolder.getStatsMap().entrySet().forEach((e) -> {
-                    StatsType type = e.getKey();
-                    StatsHolder stats = e.getValue();
-                    getBuilder(type).addSubExperiment(stats);
-                });
+                mixedHolder.getStatsMap().forEach(
+                    (StatsType type, StatsHolder stats) ->
+                        getBuilder(type).addSubExperiment(stats));
             }
             return this;
         }
 
         @SuppressWarnings("unchecked")
-        private StatsHolder.Builder getBuilder(
-                StatsType t) {
+        private StatsHolder.Builder getBuilder(StatsType t) {
             StatsHolder.Builder builder = map.get(t);
             if (builder == null) {
                 builder = StatsHolder.builder(t, name);

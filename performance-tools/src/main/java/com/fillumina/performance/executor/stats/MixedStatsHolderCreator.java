@@ -43,7 +43,7 @@ public class MixedStatsHolderCreator {
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
         buildersMap.forEach( (StatsType type, StatsCreator statsBuilder) -> {
                 Stats stats = statsBuilder.createStats(filter);
-                builder.addStats(type, name, stats);
+                builder.addStats(name, stats);
         });
         return builder.build();
     }

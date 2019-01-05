@@ -49,7 +49,7 @@ public class PerformanceGenerator {
             // consolidate the statistics into a single MixedStatsHolder
             mixedHolder.getStatsMap().forEach(
                     (StatsType type, StatsHolder holder) ->
-                        builder.addStats(type, holder));
+                        builder.addStats(holder));
         });
 
         return builder.build();

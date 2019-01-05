@@ -1,5 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.MockStatsType;
@@ -19,7 +20,6 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -27,104 +27,86 @@ import com.fillumina.performance.assertion.AssertableExperiment;
  */
 public class StatsHolderTest {
 
-    private static class StatsMock extends Stats {
-        private static final long serialVersionUID = 1L;
-        private final String name;
-
-        public StatsMock(String name) {
-            super(new StatsMockBuilder()
+    private Stats createTypedStatsMock(String typeName) {
+        StatsType type = new StatsTypeImpl(typeName);
+        return new StatsMockBuilder(type)
                     .addTest("test").mean(10.0).stdev(2.0).endTest()
                     .buildWithCoincidentalValues(Magnitude.UNIT)
                     .getFirstStatsHolder()
                     .getStats()
-                    .as(Magnitude.UNIT));
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
+                    .as(Magnitude.UNIT);
     }
 
     @Test
-    public void shouldBeEmptyIfNoAssertableIsGiven() {
-        StatsHolder holder = new StatsHolder(MockStatsType.INSTANCE, null);
+    public void shouldBeEmptyIfNoStatsIsGiven() {
+        StatsHolder holder =
+                StatsHolder.builder(MockStatsType.INSTANCE, (String)null).build();
 
         assertTrue(holder.isEmpty());
     }
 
     @Test
-    public void shouldBeNotEmptyIfAssertableIsGiven() {
-        final StatsMock assertable = new StatsMock("one");
+    public void shouldBeNotEmptyIfStatsIsGiven() {
+        final Stats stats = createTypedStatsMock("one");
 
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE,
-                assertable);
+        StatsHolder holder = new StatsHolder(stats);
 
         assertFalse(holder.isEmpty());
     }
 
     @Test
-    public void shouldReturnGivenNameAndAssertable() {
-        final StatsMock assertable = new StatsMock("leaf");
+    public void shouldReturnGivenNameAndStats() {
+        final Stats stats = createTypedStatsMock("leaf");
         final TName name = TN.tname("root");
-        StatsHolder holder = new StatsHolder(
-                MockStatsType.INSTANCE, name, assertable);
+        StatsHolder holder = new StatsHolder(name, stats);
 
         assertEquals(name, holder.getName());
-        assertEquals(assertable, holder.getStats());
+        assertEquals(stats, holder.getStats());
     }
 
     @Test
-    public void shouldTwoHoldersContainingSameAssertableBeEqual() {
-        final StatsMock assertable = new StatsMock("leaf");
-        StatsHolder holder1 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", assertable);
-        StatsHolder holder2 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", assertable);
+    public void shouldTwoHoldersContainingSameStatsBeEqual() {
+        final Stats stats = createTypedStatsMock("leaf");
+        StatsHolder holder1 = new StatsHolder(stats);
+        StatsHolder holder2 = new StatsHolder(stats);
 
         assertEquals(holder1, holder2);
     }
 
     @Test
-    public void shouldTwoHoldersContainingDifferentAssertableBeNotEqual() {
-        final StatsMock leaf = new StatsMock("leaf");
-        StatsHolder holder1 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", leaf);
-        StatsHolder holder2 =
-                new StatsHolder(MockStatsType.INSTANCE, "S", leaf);
+    public void shouldTwoHoldersContainingDifferentStatsTypeBeNotEqual() {
+        final Stats s1 = createTypedStatsMock("1");
+        final Stats s2 = createTypedStatsMock("2");
+        StatsHolder holder1 = new StatsHolder(s1);
+        StatsHolder holder2 = new StatsHolder(s2);
 
         assertNotEquals(holder1, holder2);
     }
 
     @Test
     public void shouldHaveSameHashCode() {
-        final StatsMock leaf = new StatsMock("leaf");
-        StatsHolder holder1 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", leaf);
-        StatsHolder holder2 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", leaf);
+        final Stats stats = createTypedStatsMock("leaf");
+        StatsHolder holder1 = new StatsHolder(stats);
+        StatsHolder holder2 = new StatsHolder(stats);
 
         assertEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
 
     @Test
     public void shouldNotHaveSameHashCode() {
-        final StatsMock leaf = new StatsMock("leaf");
-        StatsHolder holder1 =
-                new StatsHolder(MockStatsType.INSTANCE, "L", leaf);
-        StatsHolder holder2 =
-                new StatsHolder(MockStatsType.INSTANCE, "S", leaf);
+        final Stats s1 = createTypedStatsMock("1");
+        final Stats s2 = createTypedStatsMock("2");
+        StatsHolder holder1 = new StatsHolder(s1);
+        StatsHolder holder2 = new StatsHolder(s2);
 
         assertNotEquals(holder1.hashCode(), holder2.hashCode(), 0);
     }
 
     @Test
     public void shouldAddSubExperiment() {
-        StatsMock subExperimentAssertable = new StatsMock("leaf");
-        StatsHolder subExperiment =
-                new StatsHolder(MockStatsType.INSTANCE, "L",
-                        subExperimentAssertable);
+        TName name = TN.tname("L");
+        Stats stats = createTypedStatsMock("leaf");
+        StatsHolder subExperiment = new StatsHolder(name, stats);
 
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE)
@@ -133,19 +115,18 @@ public class StatsHolderTest {
 
         LinkedTree<TName, Stats> tree = holder.getTree();
 
-        LinkedTree<TName, Stats> subTree =
-                tree.getTree(TN.tname("L"));
-        assertEquals("leaf", ((StatsMock)subTree.getValue()).getName());
+        LinkedTree<TName, Stats> subTree = tree.getTree(name);
+        assertEquals(stats, subTree.getValue());
     }
 
     @Test
-    public void shouldGetTheAssertableAtPath() {
+    public void shouldGetTheStatsAtPath() {
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
                         .subExperiment("subroot")
-                            .test("one", new StatsMock("1"))
-                            .test("two", new StatsMock("2"))
-                            .test("three", new StatsMock("3"))
+                            .test("one", createTypedStatsMock("1"))
+                            .test("two", createTypedStatsMock("2"))
+                            .test("three", createTypedStatsMock("3"))
                         .build();
 
         Stats a = holder.getStatsAtPath("root", "subroot", "one");
@@ -154,13 +135,13 @@ public class StatsHolderTest {
     }
 
     @Test
-    public void shouldGetTheAssertableByPathOmittingRoot() {
+    public void shouldGetTheStatsByPathOmittingRoot() {
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
                         .subExperiment("subroot")
-                            .test("one", new StatsMock("1"))
-                            .test("two", new StatsMock("2"))
-                            .test("three", new StatsMock("3"))
+                            .test("one", createTypedStatsMock("1"))
+                            .test("two", createTypedStatsMock("2"))
+                            .test("three", createTypedStatsMock("3"))
                         .build();
 
         Stats a = holder.getStatsAtPath("subroot", "two");
@@ -171,12 +152,16 @@ public class StatsHolderTest {
 
     @Test
     public void shouldCreateTreeWithBuilder() {
+        final Stats s1 = createTypedStatsMock("1");
+        final Stats s2 = createTypedStatsMock("2");
+        final Stats s3 = createTypedStatsMock("3");
+
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
                         .subExperiment("subroot")
-                            .test("one", new StatsMock("1"))
-                            .test("two", new StatsMock("2"))
-                            .test("three", new StatsMock("3"))
+                            .test("one", s1)
+                            .test("two", s2)
+                            .test("three", s3)
                         .build();
 
         LinkedTree<TName, Stats> root = holder.getTree();
@@ -190,32 +175,28 @@ public class StatsHolderTest {
         assertEquals(3, subroot.size());
         assertEquals("subroot", subroot.getKey().getLastName());
 
-        assertEquals("1",
-                ((StatsMock)subroot.get(TN.tname("root", "subroot", "one"))).getName());
-        assertEquals("2",
-                ((StatsMock)subroot.get(TN.tname("root", "subroot", "two"))).getName());
-        assertEquals("3",
-                ((StatsMock)subroot.get(TN.tname("root", "subroot", "three"))).getName());
+        assertEquals(s1, subroot.get(TN.tname("root", "subroot", "one")));
+        assertEquals(s2, subroot.get(TN.tname("root", "subroot", "two")));
+        assertEquals(s3, subroot.get(TN.tname("root", "subroot", "three")));
     }
 
     @Test
-    public void shouldUseAnAssertable() {
-        StatsMock assertable = new StatsMock("one");
+    public void shouldUseAStats() {
+        Stats stats = createTypedStatsMock("one");
 
-        StatsHolder holder =
-                new StatsHolder(MockStatsType.INSTANCE, assertable);
+        StatsHolder holder = new StatsHolder(stats);
 
-        Holder<String> str = new Holder<>();
-        holder.use(t -> str.setValue(((StatsMock)t).getName()) );
+        Holder<Stats> h = new Holder<>();
+        holder.use(t -> h.setValue(t) );
 
-        assertEquals("one", str.getValue());
+        assertEquals(stats, h.getValue());
     }
 
     @Test
     public void shouldPrintATree() {
-        StatsMock assertable1 = new StatsMock("1");
-        StatsMock assertable2 = new StatsMock("2");
-        StatsMock assertable3 = new StatsMock("3");
+        Stats assertable1 = createTypedStatsMock("1");
+        Stats assertable2 = createTypedStatsMock("2");
+        Stats assertable3 = createTypedStatsMock("3");
 
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
@@ -305,19 +286,19 @@ public class StatsHolderTest {
     @Test
     public void shouldReturnAssertableType() {
         StatsHolder holder =
-                new StatsHolder(MockStatsType.INSTANCE, null);
+                StatsHolder.builder(MockStatsType.INSTANCE, "root").build();
 
         assertEquals(MockStatsType.INSTANCE, holder.getStatsType());
     }
 
     @Test
     public void shouldGetFlattenedMap() {
-        StatsMock assertable1 = new StatsMock("1");
-        StatsMock assertable2 = new StatsMock("2");
-        StatsMock assertable3 = new StatsMock("3");
-        StatsMock assertable4 = new StatsMock("4");
-        StatsMock assertable5 = new StatsMock("5");
-        StatsMock assertable6 = new StatsMock("6");
+        Stats assertable1 = createTypedStatsMock("1");
+        Stats assertable2 = createTypedStatsMock("2");
+        Stats assertable3 = createTypedStatsMock("3");
+        Stats assertable4 = createTypedStatsMock("4");
+        Stats assertable5 = createTypedStatsMock("5");
+        Stats assertable6 = createTypedStatsMock("6");
 
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
@@ -352,12 +333,12 @@ public class StatsHolderTest {
 
     @Test
     public void shouldCheckAssertion() {
-        StatsMock assertable1 = new StatsMock("1");
-        StatsMock assertable2 = new StatsMock("2");
-        StatsMock assertable3 = new StatsMock("3");
-        StatsMock assertable4 = new StatsMock("4");
-        StatsMock assertable5 = new StatsMock("5");
-        StatsMock assertable6 = new StatsMock("6");
+        Stats assertable1 = createTypedStatsMock("1");
+        Stats assertable2 = createTypedStatsMock("2");
+        Stats assertable3 = createTypedStatsMock("3");
+        Stats assertable4 = createTypedStatsMock("4");
+        Stats assertable5 = createTypedStatsMock("5");
+        Stats assertable6 = createTypedStatsMock("6");
 
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")
@@ -388,12 +369,12 @@ public class StatsHolderTest {
 
     @Test
     public void shouldCheckAndAppendAssertion() {
-        StatsMock assertable1 = new StatsMock("1");
-        StatsMock assertable2 = new StatsMock("2");
-        StatsMock assertable3 = new StatsMock("3");
-        StatsMock assertable4 = new StatsMock("4");
-        StatsMock assertable5 = new StatsMock("5");
-        StatsMock assertable6 = new StatsMock("6");
+        Stats assertable1 = createTypedStatsMock("1");
+        Stats assertable2 = createTypedStatsMock("2");
+        Stats assertable3 = createTypedStatsMock("3");
+        Stats assertable4 = createTypedStatsMock("4");
+        Stats assertable5 = createTypedStatsMock("5");
+        Stats assertable6 = createTypedStatsMock("6");
 
         StatsHolder holder =
                 StatsHolder.builder(MockStatsType.INSTANCE, "root")

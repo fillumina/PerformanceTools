@@ -30,10 +30,6 @@ public class StatsMockBuilder {
         return create(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
     }
 
-    public static Stats create(TName title, Object... objs) {
-        return create(MockStatsType.INSTANCE, title, Magnitude.UNIT, objs);
-    }
-
     public static Stats create(
             StatsType statsType,
             TName title,
