@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  */
 public class ConsumerNotifierImpl
             <I extends ConsumerNotifierImpl<I,C>, C>
-        implements ConsumerNotifier<I,C> {
+        implements ConsumerContainer<I,C> {
 
     private final List<Consumer<? super C>> consumers =
             new CopyOnWriteArrayList<>();

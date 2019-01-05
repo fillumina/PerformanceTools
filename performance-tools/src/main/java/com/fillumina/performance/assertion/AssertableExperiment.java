@@ -4,11 +4,10 @@ import com.fillumina.performance.util.stats.Measure;
 import java.util.Collection;
 
 /**
- * Contains named measurements that can be checked by {@link Assertion}s.
+ * Contains named measurements that can be checked by
+ * {@link ExperimentAssertion}s.
  * <p>
- * It's a collection of measures relative to similar experiments
- * (i.e. same test code on different algorithms) that will be
- * analyzed to produce statistically accurate results.
+ * It's a collection of measures relative to named experiments.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -20,7 +19,7 @@ public interface AssertableExperiment {
     /** @return the named measure or null if it doesn't exist. */
     Measure getMeasure(CharSequence name);
 
-    /** @return true if doesn't contain any measure. */
+    /** @return true if it doesn't contain any measure. */
     default boolean isEmpty() {
         return getNames().isEmpty();
     }

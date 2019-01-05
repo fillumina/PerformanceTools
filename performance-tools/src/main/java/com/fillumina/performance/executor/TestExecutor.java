@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.util.ConsumerNotifier;
 import com.fillumina.performance.util.tname.TNamed;
 import com.fillumina.performance.util.tname.TNominable;
 import java.util.function.Supplier;
+import com.fillumina.performance.util.ConsumerContainer;
 
 /**
  * Executes an experiment and return its result.
@@ -19,7 +19,7 @@ public interface TestExecutor<I extends TestExecutor<I,N,T,R>, N, T, R>
         extends
             Supplier<R>,
             TestContainer<I,T>,
-            ConsumerNotifier<I,N>,
+            ConsumerContainer<I,N>,
             TNominable<I>,
             TNamed {
 
