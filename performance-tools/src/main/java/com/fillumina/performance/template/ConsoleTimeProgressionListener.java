@@ -63,7 +63,7 @@ public class ConsoleTimeProgressionListener
                 totalSamplesStr.length() - sampleStr.length()))
                 .append(sampleStr).append(" / ")
                 .append(totalSamplesStr)
-                .append(" ETC=") // Estimated Time to Complete
+                .append(" ETA=") // Estimated Time to Complete
                 .append(etc)
                 .append(" \titerations= ");
 

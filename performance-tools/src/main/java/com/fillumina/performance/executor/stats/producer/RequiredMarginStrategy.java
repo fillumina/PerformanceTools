@@ -21,7 +21,7 @@ public class RequiredMarginStrategy
     private final Ratio confidence;
     private final int minSamples;
 
-    private String message = null;
+    private String message = "required";
 
     public interface Configuration {
         int getSamples();
