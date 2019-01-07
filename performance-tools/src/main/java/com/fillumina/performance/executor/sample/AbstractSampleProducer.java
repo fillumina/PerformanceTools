@@ -6,6 +6,8 @@ import com.fillumina.performance.util.instrument.Instrumenter;
 import java.util.Map;
 
 /**
+ * Defines the sample producer that will be used by the API to produce
+ * statistics.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

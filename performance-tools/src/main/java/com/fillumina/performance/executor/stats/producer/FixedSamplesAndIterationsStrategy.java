@@ -5,12 +5,7 @@ import com.fillumina.performance.util.collection.UnmodifiableIntList;
 import java.util.Collection;
 
 /**
- * Calculates the performance of tests executed a fixed number of times.
- * <p>
- * The progression defines a sequence of {@code iterations} values each
- * of them will be executed a number of times defined by the {@code sample} value.
- * The performances reported are the average performances of
- * the last iteration step executed.
+ * Executed the test a fixed number of times.
  *
  * @author Francesco Illuminati
  */

@@ -50,7 +50,7 @@ public class NotConvergingTest {
 
         };
 
-        // TODO fix this test doesn't end
+        // TODO ok it converges but ETA is very unstable
         PerformanceBuilder
                 .config()
                     .speedConfig()
@@ -77,6 +77,8 @@ public class NotConvergingTest {
                     .end()
                 .end()
             .executeWithFullOutput();
+
+        // TODO tukey probably wrong for throughput
     }
 
 }

@@ -79,21 +79,23 @@ public class RequiredMarginStrategy
             new RequiredMarginStrategy(maxAllowedMargin));
     }
 
+    public RequiredMarginStrategy() {
+        this(DEFAULT_MARGIN);
+    }
+
     public RequiredMarginStrategy(Configuration config) {
         this(config.getMaxAllowedMargin(),
                 calculateSamples(config.getSamples(), DEFAULT_SAMPLES),
                 config.getConfidence());
     }
 
-    public RequiredMarginStrategy() {
-        this(DEFAULT_MARGIN);
-    }
-
     public RequiredMarginStrategy(Ratio maxAllowedMargin) {
         this(maxAllowedMargin, DEFAULT_SAMPLES, DEFAULT_CONFIDENCE);
     }
 
-    public RequiredMarginStrategy(Ratio maxAllowedMargin, int minSamples,
+    public RequiredMarginStrategy(
+            Ratio maxAllowedMargin,
+            int minSamples,
             Ratio confidence) {
         this.maxRequiredPercentageMargin = maxAllowedMargin;
         this.minSamples = minSamples;
@@ -119,22 +121,24 @@ public class RequiredMarginStrategy
 
     @Override
     public double errorToStopTakingSamplesCondition(SampleProgressionStatus status) {
-        message = null;
+        message = "required";
 
         // take at least a minimum number of samples
         if (status.getExecutedSamples() < minSamples) {
-            return 1.5 * minSamples - status.getExecutedSamples();
+            return 1.0 - status.getExecutedSamples() * 1.0 / minSamples;
         }
 
         Ratio maxMargin =
                 getMaxPercentageMargin(status.getLastStats(), confidence);
+
         if (maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
-            message = "percentage ratio " +
-                    maxMargin.toString() +
-                    " too high, required less than " +
-                    maxRequiredPercentageMargin.toString();
-            return maxRequiredPercentageMargin.getDecimal() -
-                    maxMargin.getDecimal();
+            double error = maxMargin.getDecimal() -
+                    maxRequiredPercentageMargin.getDecimal();
+
+            message = "max_ratio= " + maxMargin.toString() +
+                    "  error=" + error;
+
+            return error;
         }
 
         return 0.0; // stop taking samples
@@ -142,8 +146,7 @@ public class RequiredMarginStrategy
 
     protected static Ratio getMaxPercentageMargin(
             MixedStatsHolder mixedHolder, Ratio confidence) {
-        Collection<StatsHolder> holders =
-                mixedHolder.getStatsMap().values();
+        Collection<StatsHolder> holders = mixedHolder.getStatsMap().values();
 
         Ratio max = Ratio.ZERO;
         for (StatsHolder h : holders) {

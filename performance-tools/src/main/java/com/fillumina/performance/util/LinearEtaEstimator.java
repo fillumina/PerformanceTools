@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.stats.FixedSampleMean;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 
@@ -15,22 +16,32 @@ public class LinearEtaEstimator {
             Quantity.from(0, IntervalUnit.SECONDS);
 
     private final StopWatch stopWatch = new StopWatch();
+    private final StopWatch beginning = new StopWatch();
+    private FixedSampleMean target;
     private double prevError;
 
     public void start() {
         prevError = 0.0;
         stopWatch.start();
+
+        beginning.start();
+        target = new FixedSampleMean(5);
     }
 
     public Quantity<IntervalUnit> getEta(double error) {
         if (error == 0) {
             return ZERO;
         }
-        double elapsed = stopWatch.getNanosecondsSinceStart();
+        double elapsedNs = stopWatch.getNanosecondsSinceStart();
         double slope = error / (prevError - error);
-        double estimated = elapsed * slope;
+        double estimatedNs = elapsedNs * slope;
+
+        final long totalTimeNs = beginning.getNanosecondsSinceStart();
+        target.addSample(estimatedNs + totalTimeNs);
+
         stopWatch.start();
         prevError = error;
-        return Quantity.from(estimated, IntervalUnit.NANOSECONDS);
+        final double etaNs = target.getMean() - totalTimeNs;
+        return Quantity.from(etaNs, IntervalUnit.NANOSECONDS);
     }
 }

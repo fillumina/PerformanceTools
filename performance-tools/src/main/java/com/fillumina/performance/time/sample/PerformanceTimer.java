@@ -3,7 +3,7 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.executor.sample.SampleProducer;
 
 /**
- * A {@link AssertableProducer} that executes tests and returns their
+ * A {@link SampleProducer} that executes tests and returns their
  * execution time.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

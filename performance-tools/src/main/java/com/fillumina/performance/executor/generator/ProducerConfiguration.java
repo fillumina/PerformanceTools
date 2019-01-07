@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.stats.producer.FixedSamplesAndIteratio
 import com.fillumina.performance.executor.stats.producer.RequiredMarginStrategy;
 import com.fillumina.performance.executor.stats.producer.SampleProgressionStatusListener;
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
-import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
+import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.util.Activable;
 
 /**
@@ -30,7 +30,7 @@ public interface ProducerConfiguration
             ConsecutiveExecutorStatsProducer.Configuration,
             FixedSamplesAndIterationsStrategy.Configuration,
             RequiredMarginStrategy.Configuration,
-            SelectorMultiThreadPerformanceExecutor.Configuration {
+            PerformanceTimerFactory.Configuration {
 
     SampleProducer<?> getSampleProducer();
 

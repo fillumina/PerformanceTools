@@ -9,6 +9,8 @@ import com.fillumina.performance.util.tname.TName;
 
 /**
  * Executes tests sequentially and returns them as an aggregate statistics.
+ * The default executor executes them in an interleaved way to average
+ * disturbances but this is not always possible or desirable.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -35,8 +37,7 @@ public class ConsecutiveExecutorStatsProducer
             return executeProducer();
         }
 
-        TestExecutor<?,?,Runnable,MixedStatsHolder> producer =
-                getProducer();
+        TestExecutor<?,?,Runnable,MixedStatsHolder> producer = getProducer();
 
         Stats stats = executeConsecutively(producer);
         producer.clearTests();
@@ -49,10 +50,7 @@ public class ConsecutiveExecutorStatsProducer
     private Stats executeConsecutively(
             TestExecutor<?, ?, Runnable, MixedStatsHolder> producer) {
         final Holder<Stats> joinStats = new Holder<>();
-        getTests().entrySet().forEach(entry -> {
-            final TName name = entry.getKey();
-            final Runnable test = entry.getValue();
-
+        getTests().forEach((TName name, Runnable test) -> {
             producer.clearTests();
             producer.setName(name);
             producer.addTest(name, test);
@@ -60,8 +58,8 @@ public class ConsecutiveExecutorStatsProducer
             MixedStatsHolder mixedHolder = producer.get();
 
             mixedHolder.getStatsMap().values().stream()
-                    .map((holder) -> holder.getStats())
-                    .forEachOrdered((stats) -> {
+                    .map(holder -> holder.getStats())
+                    .forEachOrdered(stats -> {
                         if (joinStats.isNull()) {
                             joinStats.setValue(stats);
                         } else {

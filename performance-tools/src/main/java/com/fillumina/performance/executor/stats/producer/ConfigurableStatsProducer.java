@@ -1,7 +1,9 @@
 package com.fillumina.performance.executor.stats.producer;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.executor.sample.Sample;
+import com.fillumina.performance.executor.sample.SampleProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.executor.stats.Stats;
@@ -16,11 +18,11 @@ import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
+import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -86,6 +88,9 @@ public class ConfigurableStatsProducer
         }
     }
 
+    /**
+     * Defines a strategy that determines if a new sample is needed.
+     */
     public interface Strategy {
 
         /**
@@ -96,7 +101,8 @@ public class ConfigurableStatsProducer
 
         /**
          * @return the expected number of samples to take (effective number is
-         * decided by {@link #continueTakingSamples(SampleProgressionStatus)}.
+         * decided by
+         * {@link #errorToStopTakingSamplesCondition(SampleProgressionStatus)}.
          * This value is used by ETA calculations.
          */
         int getExpectedNumberOfSamples();
@@ -172,10 +178,11 @@ public class ConfigurableStatsProducer
         if (getTests().isEmpty()) {
             throw new IllegalStateException("no test registered");
         }
-        getSampleProducer().clearTests();
-        getTests().entrySet().forEach((entry) -> {
-            getSampleProducer().addTest(entry.getKey(), entry.getValue());
-        });
+        final SampleProducer<?> sampleProducer = getSampleProducer();
+        sampleProducer.clearTests();
+        getTests().forEach(
+                (TName name, Runnable test) ->
+                                    sampleProducer.addTest(name, test) );
     }
 
     @SuppressWarnings("unchecked")
@@ -209,6 +216,7 @@ public class ConfigurableStatsProducer
 
                 Map<StatsType,Sample> resultSampleMap =
                         executeTests(iterationsPerSample.toIntArray());
+
                 creator.addSample(resultSampleMap);
 
                 sampleCounter++;
@@ -239,8 +247,7 @@ public class ConfigurableStatsProducer
             statsMap = getAllAssertables(mixedHolder);
             statsColl = statsMap.values();
             toBeRepeated = strategy.repeatExecution(statsColl);
-            notifyStatsListeners(
-                    new StatsProgressionStatus(getName(), statsColl,
+            notifyStatsListeners(new StatsProgressionStatus(getName(), statsColl,
                         strategy.getStatusMessage()));
 
             repetitions++;

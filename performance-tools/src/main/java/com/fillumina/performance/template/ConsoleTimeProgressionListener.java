@@ -45,10 +45,10 @@ public class ConsoleTimeProgressionListener
         StringBuilder buf = new StringBuilder();
         Quantity<IntervalUnit> etaQuantity = LinearEtaEstimator.ZERO;
         int sample = status.getExecutedSamples();
-        if (sample > 1) {
-            etaQuantity = eta.getEta(status.getError());
-        } else {
+        if (sample == 1 || sample == status.getTotalSamples()) {
             eta.start();
+        } else if (sample > 1) {
+            etaQuantity = eta.getEta(status.getError());
         }
         String totalSamplesStr = Integer.toString(status.getTotalSamples());
         String sampleStr = Integer.toString(sample);
@@ -73,6 +73,9 @@ public class ConsoleTimeProgressionListener
             cf.append(sv.toStringValue());
         }
         buf.append(cf.toString());
+
+        buf.append("   ").append(status.getStatusMessage());
+
         switch (status.getTimeSpentCoolingCpuMs()) {
             case -1:
                 // no check has been done

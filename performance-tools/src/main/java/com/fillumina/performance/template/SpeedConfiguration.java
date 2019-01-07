@@ -337,6 +337,11 @@ public class SpeedConfiguration<C>
             }
 
             @Override
+            public long getSampleTimeMs() {
+                return millisecondsPerSample;
+            }
+
+            @Override
             public Ratio getMaxAllowedMargin() {
                 return maxPercentageMargin;
             }

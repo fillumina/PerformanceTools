@@ -25,10 +25,16 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
  */
 public class PerformanceTimerFactory {
 
+    public interface Configuration
+            extends SelectorMultiThreadPerformanceExecutor.Configuration {
+        long getSampleTimeMs();
+    }
+
     public static DefaultPerformanceTimer createPerformanceTimer(
-            SelectorMultiThreadPerformanceExecutor.Configuration conf) {
+            Configuration conf) {
         return new DefaultPerformanceTimer(
-                new SelectorMultiThreadPerformanceExecutor(conf));
+                new SelectorMultiThreadPerformanceExecutor(conf))
+                .setSampleTimeMs(conf.getSampleTimeMs());
     }
 
     /**
