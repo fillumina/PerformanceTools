@@ -21,7 +21,7 @@ public class LinearEtaEstimatorTest {
     @Test
     public void shouldEstimateTheTimeOfArrival() {
         LinearEtaEstimator estimator = new LinearEtaEstimator();
-        //estimator.start();
+        estimator.start();
         for (int i=0; i<20; i++) {
             final double eta = estimator.getEta(20-i)
                     .as(IntervalUnit.MILLISECONDS);
@@ -34,7 +34,7 @@ public class LinearEtaEstimatorTest {
             Sleeper.sleepMillis(sleepTime);
             if (i != 0) {
                 AssertHelper.assertEqualsWithinPercentage("different",
-                        (20 - i) * sleepTime, eta, Ratio.percentage(7));
+                        (20 - i) * sleepTime, eta, Ratio.percentage(50));
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.fillumina.performance.util;
 
+import com.fillumina.performance.util.collection.CircularBuffer;
+import com.fillumina.performance.util.stats.Point;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 
@@ -16,35 +18,39 @@ public class LinearEtaEstimator {
 
     private final StopWatch stopWatch = new StopWatch();
     private long  totalTimeNs;
-    private History history;
+    private CircularBuffer<PastValue> history;
     private PastValue first;
 
     public void start() {
         stopWatch.start();
         totalTimeNs = 0;
-        history = new History(10);
+        history = new CircularBuffer<>(10);
         first = null;
     }
 
     public Quantity<IntervalUnit> getEta(double error) {
-        double elapsedNs = stopWatch.getNanosecondsSinceStart();
-        stopWatch.start();
-        double estimatedNs = getEtaNs(error, elapsedNs);
-        return Quantity.from(estimatedNs, IntervalUnit.NANOSECONDS);
-    }
-
-    private double getEtaNs(double error, double itElapsedNs) {
         if (error == 0) {
-            return 0;
+            return ZERO;
         }
 
-        totalTimeNs += itElapsedNs;
+        double elapsedNs = stopWatch.getNanosecondsSinceStart();
+        totalTimeNs += elapsedNs;
+        stopWatch.start();
 
-        PastValue past = history.get();
+        PastValue past = history.putAndGetOlder(new PastValue(totalTimeNs, error));
 
+        double approxEtaNs = getApproxLinearEtaNs(error, totalTimeNs, past);
+        Quantity<IntervalUnit> approxEta =
+                Quantity.from(approxEtaNs, IntervalUnit.NANOSECONDS);
+
+        return approxEta;
+    }
+
+    private double getApproxLinearEtaNs(double error, long totalTimeNs,
+            PastValue past) {
         if (past == null) {
             if (first == null) {
-                first = new PastValue(error, totalTimeNs);
+                first = new PastValue(totalTimeNs, error);
                 return 0;
             }
             past = first;
@@ -53,37 +59,31 @@ public class LinearEtaEstimator {
         double slope = error / (past.error - error);
         double linearEtaNs = (totalTimeNs - past.time) * slope;
 
-        history.add(new PastValue(error, totalTimeNs));
-
         return linearEtaNs;
     }
 
-    private static class PastValue {
+    static class PastValue implements Point {
         private final double error;
         private final long time;
 
-        public PastValue(double error, long time) {
+        public PastValue(long time, double error) {
             this.error = error;
             this.time = time;
         }
-    }
 
-    private static class History {
-        private PastValue[] data;
-        private int index;
-
-        public History(int size) {
-            data = new PastValue[size];
+        @Override
+        public double getX() {
+            return time;
         }
 
-        public void add(PastValue value) {
-            data[index] = value;
-            index = (index + 1) % data.length;
+        @Override
+        public double getY() {
+            return error;
         }
 
-        public PastValue get() {
-            return data[index];
+        @Override
+        public String toString() {
+            return "{error=" + error + ", time=" + time + '}';
         }
     }
-
 }

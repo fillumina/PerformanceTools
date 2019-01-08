@@ -1,5 +1,7 @@
 package com.fillumina.performance.util.stats;
 
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -10,31 +12,15 @@ import org.junit.Test;
  */
 public class PowerFittingTest {
 
-    public static class P implements PowerFitting.Point {
-        private final double x,y;
-
-        public P(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public double getY() {
-            return y;
-        }
-    }
 
     @Test
     public void shouldCreateRightParamenters() {
-        P[] data = new P[5];
-        data[0] = new P(1, 7);
-        data[1] = new P(2, 6);
-        data[2] = new P(3, 5.5);
-        data[3] = new P(4, 5);
-        data[4] = new P(5, 4.9);
+        List<PointImpl> data = new ArrayList<>(5);
+        data.add(new PointImpl(1, 7));
+        data.add(new PointImpl(2, 6));
+        data.add(new PointImpl(3, 5.5));
+        data.add(new PointImpl(4, 5));
+        data.add(new PointImpl(5, 4.9));
 
         PowerFitting pf = new PowerFitting(data);
         double a = pf.getA();
@@ -46,12 +32,12 @@ public class PowerFittingTest {
 
     @Test
     public void shouldGiveTheRightY() {
-        P[] data = new P[5];
-        data[0] = new P(1, 7);
-        data[1] = new P(2, 6);
-        data[2] = new P(3, 5.5);
-        data[3] = new P(4, 5);
-        data[4] = new P(5, 4.9);
+        List<PointImpl> data = new ArrayList<>(5);
+        data.add(new PointImpl(1, 7));
+        data.add(new PointImpl(2, 6));
+        data.add(new PointImpl(3, 5.5));
+        data.add(new PointImpl(4, 5));
+        data.add(new PointImpl(5, 4.9));
 
         PowerFitting pf = new PowerFitting(data);
 

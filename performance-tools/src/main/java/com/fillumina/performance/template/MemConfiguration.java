@@ -148,6 +148,11 @@ public class MemConfiguration<C>
             }
 
             @Override
+            public long getSampleTimeMs() {
+                return -1;
+            }
+
+            @Override
             public Ratio getConfidence() {
                 return confidence;
             }

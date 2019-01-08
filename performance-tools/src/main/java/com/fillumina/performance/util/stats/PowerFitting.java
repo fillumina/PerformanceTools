@@ -1,8 +1,7 @@
 package com.fillumina.performance.util.stats;
 
 import static java.lang.Math.log;
-import static java.lang.Math.pow;
-import java.util.function.Function;
+import java.util.Collection;
 
 /**
  * Given the points the class calculates the power function that fits:
@@ -14,20 +13,27 @@ import java.util.function.Function;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class PowerFitting {
+public class PowerFitting implements FittingCurve {
 
-    public static interface Point {
-        double getX();
-        double getY();
-    }
-
-    private final Point[] data;     // actual points
     private final double a, b;
 
-    public PowerFitting(Point[] data) {
-        this.data = data;
-        this.b = calculateB();
-        this.a = calculateA(b);
+    public PowerFitting(Collection<? extends Point> list) {
+        final double n = list.size();
+        double sumLogXLogY = 0, sumLogX = 0, sumLogY = 0, sumLogXPow2 = 0;
+        for (Point p : list) {
+            double lx = log(p.getX());
+            double ly = log(p.getY());
+
+            sumLogXLogY += lx * ly;
+            sumLogX += lx;
+            sumLogY += ly;
+            sumLogXPow2 += lx * lx;
+        }
+
+        this.b = (n * sumLogXLogY - sumLogX * sumLogY) /
+                (n * sumLogXPow2 - sumLogX * sumLogX);
+
+        this.a = Math.exp((sumLogY - b * sumLogX) / n);
     }
 
     public double getA() {
@@ -38,40 +44,18 @@ public class PowerFitting {
         return b;
     }
 
+    @Override
     public double calculateXGivingY(double y) {
         return Math.pow(y/a, 1/b);
     }
 
+    @Override
     public double calculateYGivingX(double x) {
         return a * Math.pow(x, b);
     }
 
-    private double calculateB() {
-        final double n = data.length;
-
-        double num = n * sum(p -> log(p.getX()) * log(p.getY())) -
-                sum(p -> log(p.getX())) * sum(p -> log(p.getY()));
-
-        double den = n * sum(p -> pow(log(p.getX()), 2)) -
-                pow(sum(p -> log(p.getX())), 2);
-
-        return num / den;
-    }
-
-    private double calculateA(double b) {
-        final double n = data.length;
-
-        double a = (sum(p -> log(p.getY())) - b * sum(p -> log(p.getX()))) / n;
-
-        return Math.exp(a);
-    }
-
-    private double sum(Function<Point, Double> fun) {
-        double sum = 0;
-        for (Point p : data) {
-
-            sum += fun.apply(p);
-        }
-        return sum;
+    @Override
+    public String toString() {
+        return "y = " + getA() + " * x ^ " + getB();
     }
 }

@@ -34,6 +34,7 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     private Ratio maxAllowedMargin = Ratio.percentage(5);
     private int concurrencyLevel = 0;
     private int workerNumber = 0;
+    private long sampleTimeMs;
 
     public ProducerConfigurationImpl(SampleProducer<?> sampleProducer) {
         this.sampleProducer = sampleProducer;
@@ -118,6 +119,11 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
         return this;
     }
 
+    public ProducerConfigurationImpl sampleTimeMs(final int value) {
+        this.sampleTimeMs = value;
+        return this;
+    }
+
     @Override
     public Ratio getConfidence() {
         return confidence;
@@ -191,6 +197,11 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     @Override
     public int getConcurrencyLevel() {
         return concurrencyLevel;
+    }
+
+    @Override
+    public long getSampleTimeMs() {
+        return sampleTimeMs;
     }
 
     @Override
