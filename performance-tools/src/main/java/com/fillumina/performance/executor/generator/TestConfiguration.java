@@ -111,6 +111,10 @@ public class TestConfiguration<C>
         return this;
     }
 
+    /**
+     * Parameters modify tests on the same experiment. All tests with
+     * different parameters will be in the same statistic.
+     */
     public SubTreeBuilder<TestConfiguration<C>> parameters() {
         return new SubTreeBuilder<>(this, parameters);
     }
@@ -125,6 +129,10 @@ public class TestConfiguration<C>
         return parameters;
     }
 
+    /**
+     * Sequences defines parameter that are assigned to different
+     * experiments and will be in different statistic.
+     */
     public SubTreeBuilder<TestConfiguration<C>> sequences() {
         return new SubTreeBuilder<>(this, sequences);
     }
@@ -158,11 +166,16 @@ public class TestConfiguration<C>
 
     private String toStringExpressions(
             StatsExpression<TestConfiguration<C>> statsExpression) {
-        TableFormatter table = new TableFormatter();
-        table.line("expressions:");
-        statsExpression.getStringExpressions().forEach((TName name, String s) ->
-                table.param(name.toString(), s) );
-        return table.toString();
+        final Map<TName, String> expressions =
+                statsExpression.getStringExpressions();
+        if (!expressions.isEmpty()) {
+            TableFormatter table = new TableFormatter();
+            table.line("expressions:");
+            expressions.forEach((TName name, String s) ->
+                    table.param(name.toString(), s) );
+            return table.toString();
+        }
+        return "";
     }
 
     public static String toStringTests(IndexedHashMap<TName,Runnable> tests) {

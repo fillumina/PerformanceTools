@@ -107,6 +107,7 @@ public class MemStatsTableStringGenerator
         final TableFormatter memoryTable = new TableFormatter("  ");
         memoryTable
             .cell("test name")
+            .cell("percentage")
             .cell("mean (samples used)")
             .cell("conf")
             .cell("stdev")
@@ -117,6 +118,7 @@ public class MemStatsTableStringGenerator
             Unit<?> unit = m.getUnit();
             memoryTable
                 .cell(n.getLastName())
+                .cell(stats.getRatioWithRef(n, confidence).toStringAsPercentage())
                 .cell(m.toStringForConfidence(confidence))
                 .cell(confidence.toString())
                 .cell(unit.toString(m.getUnbiasedStandardDeviation(), 0))

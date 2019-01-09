@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * A sequence repeat the test with the new values.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

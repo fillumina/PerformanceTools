@@ -60,7 +60,8 @@ public class MixedConfigurationBuilder<C>
                 MemStatsType.ALLOCATED);
 
         // sets the test order
-        mixedAssertionableResultBuilder = MixedAssertionableResult.builder(TimeStatsType.AVERAGE,
+        mixedAssertionableResultBuilder = MixedAssertionableResult.builder(
+                TimeStatsType.AVERAGE,
                 TimeStatsType.THROUGHPUT,
                 MemStatsType.USED,
                 MemStatsType.ALLOCATED
@@ -132,8 +133,8 @@ public class MixedConfigurationBuilder<C>
     }
 
     public MixedConfigurationBuilder<C> setThrowExceptionIfFailingAssertion(
-            boolean throwExceptionIfFailingAssertion) {
-        this.throwExceptionIfFailingAssertion = throwExceptionIfFailingAssertion;
+            boolean value) {
+        this.throwExceptionIfFailingAssertion = value;
         return this;
     }
 
@@ -153,7 +154,7 @@ public class MixedConfigurationBuilder<C>
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
-        appendObject(buf, "Test", testConfigurator.toString(testName.toString()));
+        appendObject(buf, "Plan", testConfigurator.toString(testName.toString()));
         appendActivable(buf, "Speed", speedConfigurator);
         appendActivable(buf, "Used Memory", usedMemConfigurator);
         appendActivable(buf, "Allocated Memory", allocatedMemConfigurator);

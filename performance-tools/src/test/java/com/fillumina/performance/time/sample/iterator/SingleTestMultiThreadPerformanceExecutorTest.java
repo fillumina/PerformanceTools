@@ -10,8 +10,8 @@ import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Map;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -45,7 +45,7 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
     @Test
     public void shouldExecuteOneTests() {
         SingleTestMultiThreadPerformanceExecutor executor =
-                new SingleTestMultiThreadPerformanceExecutor(1, 1, DAYS_1);
+                new SingleTestMultiThreadPerformanceExecutor(2, 2, DAYS_1);
 
         IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
         testMap.put(TN.tname("alpha"), new LfsrRunnable());
@@ -55,19 +55,30 @@ public class SingleTestMultiThreadPerformanceExecutorTest {
                 .buildAverageTimeSample();
         Map<TName,SampleValue> timeMap = sample.getValuesMap();
 
-        assertEquals(3, timeMap.size());
+        assertEquals(4, timeMap.size());
 
+        // peformance of the test executed in single thread
         double single = timeMap
-                        .get(TN.tname("alpha","single"))
+                        .get(TN.tname("alpha", "single"))
                         .getQuantity().as(AverageTimeUnit.NANOSECONDS);
+
+        // performance of the test excecuted in parallel
         double parallel = timeMap
                         .get(TN.tname("alpha", "parallel"))
                         .getQuantity().as(AverageTimeUnit.NANOSECONDS);
-        double thread = timeMap
+
+        // performnace of a single thread while executed in parallel
+        double thread0 = timeMap
                         .get(TN.tname("alpha", "0"))
                         .getQuantity().as(AverageTimeUnit.NANOSECONDS);
+        double thread1 = timeMap
+                        .get(TN.tname("alpha", "1"))
+                        .getQuantity().as(AverageTimeUnit.NANOSECONDS);
 
-        assertTrue(sample.toString(), thread < single);
-        assertTrue(sample.toString(), thread < parallel);
+        Assert.assertNotEquals(0, single);
+        Assert.assertNotEquals(0, thread0);
+        Assert.assertNotEquals(0, thread1);
+        Assert.assertNotEquals(0, parallel);
+
     }
 }

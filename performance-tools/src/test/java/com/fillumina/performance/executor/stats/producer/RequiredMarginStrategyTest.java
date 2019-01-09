@@ -50,7 +50,6 @@ public class RequiredMarginStrategyTest {
         final Ratio margin = Ratio.percentage(7);
 
         RequiredMarginStrategy strategy = RequiredMarginStrategy.builder()
-                .samples(5)
                 .maxAllowedMargin(requiredMargin)
                 .build();
 
@@ -90,12 +89,12 @@ public class RequiredMarginStrategyTest {
     private MixedStatsHolder createMixedAssertableHolderWithMargin(
             Ratio requiredMargin) {
         Holder<MixedStatsHolder> holder = new Holder<>();
-        ExpBinarySearcher.search(0, 200, (o) -> {
-            MixedStatsHolder mah = createMixedAssertableHolder(o);
+        ExpBinarySearcher.search(0, 200, o -> {
+            MixedStatsHolder msh = createMixedAssertableHolder(o);
             Ratio maxMargin = RequiredMarginStrategy
-                    .getMaxPercentageMargin(mah, Ratio.P_999);
+                    .getMaxPercentageMargin(msh, Ratio.P_999);
             //System.out.println("d=" + o + "\tmargin=" + maxMargin.toString());
-            holder.setValue(mah);
+            holder.setValue(msh);
             return maxMargin.compareTo(requiredMargin);
         });
         return holder.getValue();

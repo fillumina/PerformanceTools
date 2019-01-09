@@ -220,7 +220,7 @@ public class MemConfiguration<C>
 
             @Override
             public boolean isConsecutiveExecution() {
-                return false; // TODO would try non consecutive?
+                return false;
             }
 
             @Override

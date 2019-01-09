@@ -20,6 +20,7 @@ public class RequiredMarginStrategy
     private final Ratio maxRequiredPercentageMargin;
     private final Ratio confidence;
     private final int minSamples;
+    private final boolean fixedSamples;
 
     private String message = "required";
 
@@ -85,7 +86,8 @@ public class RequiredMarginStrategy
 
     public RequiredMarginStrategy(Configuration config) {
         this(config.getMaxAllowedMargin(),
-                calculateSamples(config.getSamples(), DEFAULT_SAMPLES),
+                //calculateSamples(config.getSamples(), DEFAULT_SAMPLES),
+                config.getSamples(),
                 config.getConfidence());
     }
 
@@ -98,8 +100,9 @@ public class RequiredMarginStrategy
             int minSamples,
             Ratio confidence) {
         this.maxRequiredPercentageMargin = maxAllowedMargin;
-        this.minSamples = minSamples;
+        this.minSamples = calculateSamples(minSamples, DEFAULT_SAMPLES);
         this.confidence = confidence;
+        this.fixedSamples = minSamples > 0;
     }
 
     private static int calculateSamples(int givenSamples, int defaultSamples) {
@@ -131,7 +134,8 @@ public class RequiredMarginStrategy
         Ratio maxMargin =
                 getMaxPercentageMargin(status.getLastStats(), confidence);
 
-        if (maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
+        if (!fixedSamples &&
+                maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
             double error = maxMargin.getDecimal() -
                     maxRequiredPercentageMargin.getDecimal();
 

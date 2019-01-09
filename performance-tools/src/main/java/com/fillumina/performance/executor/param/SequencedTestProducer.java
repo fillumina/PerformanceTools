@@ -10,6 +10,9 @@ import com.fillumina.performance.util.tname.TName;
 import java.util.Map.Entry;
 
 /**
+ * Tests with different sequence values are executed separately and
+ * results are presented on different statistic. i.e. a sequence might be
+ * the size of a map to be tested.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -40,7 +43,7 @@ public class SequencedTestProducer
 
         assertTestsPresent();
 
-        //      test name,          options
+        //          test name,          options
         IndexedHashMap<TName, IndexedHashMap<TName, Runnable>> sequencedTestMap =
                 new IndexedHashMap<>();
 

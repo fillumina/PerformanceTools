@@ -103,6 +103,9 @@ public abstract class Measure {
     }
 
     public double getMarginOfError(Ratio confidence) {
+        if (getCount() == 1) {
+            return 0; // possibly true, but I'm unsure. Anyway it works.
+        }
         return getStandardError() * StatFunctions.zeta(confidence.getDecimal());
     }
 
@@ -113,8 +116,17 @@ public abstract class Measure {
     }
 
     public String toStringForConfidence(Ratio confidence) {
-        return String.format(Locale.US, "%,.4f +/- %,.4f (%,d samples)",
-            getMean(), getMarginOfError(confidence), getCount());
+        final long count = getCount();
+        final double marginOfError = getMarginOfError(confidence);
+        switch ((int)count) {
+            case 0:
+                return "(no data)";
+            case 1:
+                return String.format(Locale.US, "%,.4f (1 sample)", getMean());
+            default:
+                return String.format(Locale.US, "%,.4f +/- %,.4f (%,d samples)",
+                    getMean(), marginOfError, count);
+        }
     }
 
     /**

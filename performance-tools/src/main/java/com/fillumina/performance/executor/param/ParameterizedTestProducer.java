@@ -1,14 +1,17 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 
 /**
+ * Tests with different parameter values are executed together and their
+ * results are presented on a single statistic.
+ * i.e. a parameter could be different types of map to be compared.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

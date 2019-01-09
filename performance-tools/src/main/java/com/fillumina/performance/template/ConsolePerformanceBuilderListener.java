@@ -33,8 +33,6 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
         if (Verbosity.NO_OUTPUT.isLessThan(verbosity)) {
             println(TableFormatter.title("CONFIGURATION", '='));
             println(configuration.toString());
-            newline();
-            newline();
             println(TableFormatter.title("EXECUTION", '='));
         }
     }
@@ -71,10 +69,8 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
 
     private void printResults(MixedConfiguration configuration,
             MixedAssertionableResult<?> mixedResult) {
-        newline();
         printResultTitle(configuration);
         println(configuration.toString());
-        newline();
         mixedResult.appendResultsAndAssertionsTo(getAppendable());
     }
 

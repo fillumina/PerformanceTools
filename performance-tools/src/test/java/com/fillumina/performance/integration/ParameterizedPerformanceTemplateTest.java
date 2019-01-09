@@ -9,10 +9,11 @@ import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.IntervalUnit;
 import org.junit.Test;
 
 /**
+ * Compares the speed and memory usage of two tests using also a sequence
+ * to test different loads.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -34,11 +35,11 @@ public class ParameterizedPerformanceTemplateTest
     public void config(MixedConfigurationBuilder<?> config) {
         config
                 .speedConfig()
-                    .setStatsTimeout(IntervalUnit.HOURS.quantity(1))
                     .setSamples(5)
-                    .end()
+                .end()
                 .usedMemConfig()
-                    .end();
+                    .setSamples(1)
+                .end();
     }
 
     @Override
@@ -46,7 +47,8 @@ public class ParameterizedPerformanceTemplateTest
         tests.addTest(FIRST, new Runnable() {
             private final Lfsr lfsr = new Lfsr();
 
-            @Param int param;
+            @Param
+            private int param;
 
             @Override
             public void run() {
@@ -58,7 +60,8 @@ public class ParameterizedPerformanceTemplateTest
             }
         })
         .addTest(SECOND, new Runnable() {
-            @Param int param;
+            @Param
+            private int param;
 
             @Override
             public void run() {
@@ -76,11 +79,11 @@ public class ParameterizedPerformanceTemplateTest
         assertions
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
-//                    .forTest(FIRST).order("param_1").greaterThan("param_2")
                     .forTest(FIRST).order("param_1").lessThan("param_2")
-//                    .forTest().value("pippero", "depipperis").equalsTo(12.3)
                 .end()
-                .usedMemory().value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4);
+                .usedMemory()
+                    .value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4)
+                .end();
     }
 
 }

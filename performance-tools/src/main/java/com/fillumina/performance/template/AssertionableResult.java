@@ -1,10 +1,13 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
@@ -15,8 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import com.fillumina.performance.assertion.AssertableExperiment;
-import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  * Container for:
@@ -90,10 +91,9 @@ public class AssertionableResult<C>
     }
 
     public void appendFailedAssertions(Appendable appendable) {
-        getFailedAssertions().entrySet().forEach(entry -> {
+        getFailedAssertions().forEach( (AssertableExperiment assertable,
+                    List<ExperimentAssertion> failedAssertions) -> {
                 try {
-                    AssertableExperiment assertable = entry.getKey();
-                    List<ExperimentAssertion> failedAssertions = entry.getValue();
                     for (ExperimentAssertion a : failedAssertions) {
                         a.appendTo(appendable, assertable);
                     }
@@ -104,7 +104,8 @@ public class AssertionableResult<C>
         });
     }
 
-    public static final AssertableExperiment UNCHECKED = new AssertableExperiment() {
+    public static final AssertableExperiment UNCHECKED =
+            new AssertableExperiment() {
         @Override public Collection<? extends CharSequence> getNames() {
             return Collections.<CharSequence>emptyList();
         }
@@ -112,18 +113,24 @@ public class AssertionableResult<C>
         @Override public String toString() { return "UNCHECKED"; }
     };
 
-    public Map<AssertableExperiment, List<ExperimentAssertion>> getFailedAssertions() {
+    public Map<AssertableExperiment, List<ExperimentAssertion>>
+            getFailedAssertions() {
         if (assertions == null) {
-            return Collections.<AssertableExperiment, List<ExperimentAssertion>>emptyMap();
+            return Collections.<AssertableExperiment,
+                    List<ExperimentAssertion>>emptyMap();
         }
-        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions = new IndexedHashMap<>();
+        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
+                new IndexedHashMap<>();
         UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        for (AssertableExperiment assertable : getFlattenedAssertableMap().values()) {
+        for (AssertableExperiment assertable :
+                getFlattenedAssertableMap().values()) {
             assertions.forEach(assertion -> {
-                assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
+                assertion.checkAndReport(assertable,
+                        failedAssertions, unusedAssertion);
             });
         }
-        List<ExperimentAssertion> unusedAssertionList = unusedAssertion.getUnusedAssertionList();
+        List<ExperimentAssertion> unusedAssertionList =
+                unusedAssertion.getUnusedAssertionList();
         if (!unusedAssertionList.isEmpty()) {
             failedAssertions.put(UNCHECKED, unusedAssertionList);
         }
@@ -132,28 +139,36 @@ public class AssertionableResult<C>
 
     public void appendNamedTestResults(Appendable appendable, TName name) {
         AssertableExperiment assertable = getFlattenedAssertableMap().get(name);
+        Holder.Boolean assertionsShowed = new Holder.Boolean(false);
         if (assertable != null) {
             viewer.appendToCatchingException(appendable, assertable);
             if (assertions != null && !assertions.isEmpty()) {
                 assertions.forEach(assertion -> {
-                    try {
-                        if (!assertion.satisfy(assertable)) {
-                            appendable.append("FAILED! ");
-                        }
-                    } catch (IOException e) {
-                        // do nothing
+                    if (!assertion.satisfy(assertable)) {
+                        append(appendable, "FAILED! ");
                     }
                     try {
-                        assertion.appendToCatchingException(
-                                appendable,
+                        if (!assertionsShowed.getValue()) {
+                            assertionsShowed.setValue(true);
+                            newline(appendable);
+                        }
+                        assertion.appendToCatchingException(appendable,
                                 assertable);
                         newline(appendable);
                     } catch (MeasureNotFoundException ex) {
                         // do nothing
                     }
                 });
-                newline(appendable);
             }
+            newline(appendable);
+        }
+    }
+
+    private void append(Appendable appendable, String message) {
+        try {
+            appendable.append(message);
+        } catch (IOException e) {
+            // do nothing
         }
     }
 

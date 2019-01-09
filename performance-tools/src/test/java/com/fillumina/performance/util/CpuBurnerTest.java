@@ -52,7 +52,7 @@ public class CpuBurnerTest {
 
         SimpleLinearRegression slr = regressionBuilder.build();
 
-        AssertHelper.assertEqualsWithinPercentage(
+        ToleranceAssertion.assertEquals(
                 "expected linear correlation but was " + slr.toString(),
                 1.0, slr.getRSquared(), Ratio.percentage(5));
     }

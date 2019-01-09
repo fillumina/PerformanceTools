@@ -124,7 +124,6 @@ public class MixedAssertionableResult<C> {
 
             for (TName name : names) {
                 newline();
-                newline();
                 appendTitle(name.toString(), '-');
 
                 for (AssertionableResult<?> aResult : map.values()) {

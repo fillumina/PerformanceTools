@@ -45,7 +45,6 @@ public class QuantityList
 
         public QuantityList build() {
             if (list.isEmpty()) {
-                // TODO not sure if it makes any sense
                 return QuantityList.EMPTY;
             }
             Unit<?> bestUnit = baseUnit.bestUnit(min, max);

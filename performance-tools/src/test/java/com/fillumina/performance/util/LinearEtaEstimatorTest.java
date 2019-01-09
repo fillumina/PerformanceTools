@@ -33,7 +33,7 @@ public class LinearEtaEstimatorTest {
             }
             Sleeper.sleepMillis(sleepTime);
             if (i != 0) {
-                AssertHelper.assertEqualsWithinPercentage("different",
+                ToleranceAssertion.assertEquals("different",
                         (20 - i) * sleepTime, eta, Ratio.percentage(50));
             }
         }

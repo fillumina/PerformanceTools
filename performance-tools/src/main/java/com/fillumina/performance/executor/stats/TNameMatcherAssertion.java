@@ -114,7 +114,8 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             Consumer<ExperimentAssertion> consumer) {
         List<TName> tnames = extractFullNames(assertable);
         for (Evaluator evaluator : evaluators) {
-            List<ExperimentAssertion> assertions = evaluator.createAssertions(tnames);
+            List<ExperimentAssertion> assertions =
+                    evaluator.createAssertions(tnames);
             for (ExperimentAssertion a : assertions) {
                 consumer.accept(a);
             }

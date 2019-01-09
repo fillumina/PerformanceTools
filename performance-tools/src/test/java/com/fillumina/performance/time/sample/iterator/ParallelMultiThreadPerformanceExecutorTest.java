@@ -73,23 +73,21 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         int aWorkers = 1;
         int bWorkers = 3;
 
-        testMap.put(TN.tname("asymmetric"), new ParallelTest()
-                    .addTask("a", aWorkers,
-                            () -> aCounter.getAndIncrement() )
-                    .addTask("b", bWorkers,
-                            () -> bCounter.getAndIncrement() ) );
+        testMap.put(TN.tname("asymmetric"),
+                new ParallelTest()
+                    .addTask("a", aWorkers, () -> aCounter.getAndIncrement() )
+                    .addTask("b", bWorkers, () -> bCounter.getAndIncrement() ) );
 
         int[] iterations = new int[]{10_000};
 
         executor.executeIterations(testMap, iterations);
 
-        double aNormalizedResult = bWorkers * aCounter.get();
-        double bNormalizedResult = aWorkers * bCounter.get();
+        double aNormalizedResult = aCounter.get() / aWorkers;
+        double bNormalizedResult = bCounter.get() / bWorkers;
 
         // it's huge, I understand
         double error = bNormalizedResult * 0.25;
 
-        // the tests will be executed in parallel
         assertEquals("count_1=" + aNormalizedResult +
                     ", count_2=" + bNormalizedResult +
                     ", error=" + error,
@@ -121,7 +119,8 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         });
 
         pt.execute().forEach((type, sample) -> {
-            System.out.println("\n" + type.toString() + ":\n" + sample.toString());
+            System.out.println("\n" + type.toString() + ":\n" +
+                    sample.toString());
         });
     }
 }

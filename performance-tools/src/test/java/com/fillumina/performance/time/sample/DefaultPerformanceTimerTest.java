@@ -8,7 +8,7 @@ import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.mock.SpeedSampleMock;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
-import com.fillumina.performance.util.AssertHelper;
+import com.fillumina.performance.util.ToleranceAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -292,7 +292,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldBeClose() {
-        AssertHelper.assertEqualsWithinPercentage(275149471.0, 275171084.0,
+        ToleranceAssertion.assertEquals(275149471.0, 275171084.0,
                 Ratio.percentage(10));
     }
 }

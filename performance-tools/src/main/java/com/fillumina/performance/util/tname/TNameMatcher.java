@@ -8,8 +8,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * A matcher that matches {@link TName}s. It allows to search into a tree
- * or {@link TName}s for paths satisfying a specific query.
+ * A matcher that matches {@link TName}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

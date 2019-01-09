@@ -50,7 +50,6 @@ public class NotConvergingTest {
 
         };
 
-        // TODO ok it converges but ETA is very unstable
         PerformanceBuilder
                 .config()
                     .speedConfig()

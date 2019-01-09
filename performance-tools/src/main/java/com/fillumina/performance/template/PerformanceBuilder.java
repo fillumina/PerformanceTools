@@ -106,14 +106,14 @@ public class PerformanceBuilder {
 
         listener.onConfiguration(config);
 
-        StopWatch timer = new StopWatch();
-        timer.start();
+        StopWatch timer = new StopWatch().start();
 
         MixedStatsHolder mixedAssertableHolder =
                 PerformanceGenerator.INSTANCE.executeMixedTests(config);
 
         Quantity<IntervalUnit> elapsed =
-                IntervalUnit.NANOSECONDS.quantity(timer.getNanosecondsSinceStart());
+                IntervalUnit.NANOSECONDS.quantity(
+                        timer.getNanosecondsSinceStart());
 
         MixedAssertionableResult.Builder builder =
                 config.getMixedAssertionableResultBuilder();

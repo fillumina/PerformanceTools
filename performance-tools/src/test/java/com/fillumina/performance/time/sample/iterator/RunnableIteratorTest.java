@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.executor.test.LfsrRunnable;
 import com.fillumina.performance.executor.test.RndRunnable;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
 import static org.junit.Assert.assertEquals;
@@ -14,7 +14,6 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO shorten?
 public class RunnableIteratorTest {
 
     private final Dispatcher dispatcher = RunnableIterator.DISPATCHER;

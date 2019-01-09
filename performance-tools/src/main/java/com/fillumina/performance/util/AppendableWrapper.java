@@ -62,7 +62,7 @@ public class AppendableWrapper {
     }
 
     public AppendableWrapper newline() {
-        return AppendableWrapper.this.print(System.lineSeparator());
+        return AppendableWrapper.this.println("");
     }
 
     public Appendable getAppendable() {

@@ -72,6 +72,8 @@ public class StatsProducerMock<T>
     }
 
     /**
+     * Returns the tree containing the results of each test. It is useful
+     * to gain execution info to be analized later.
      * <ul>
      * <li>first tree branch is the stats producer executions counter
      * (calls to {@link #get()} or {@link #execute()}).

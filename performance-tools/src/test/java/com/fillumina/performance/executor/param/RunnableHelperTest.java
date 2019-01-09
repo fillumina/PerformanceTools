@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.param.RunnableHelper;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.param.RunnableHelper.Cloner;
 import java.util.Date;

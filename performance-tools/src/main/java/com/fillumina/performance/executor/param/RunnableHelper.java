@@ -25,14 +25,14 @@ class RunnableHelper {
         this.clazz = runnable.getClass();
         this.fieldMap = new HashMap<>();
         List<Field> fields = AnnotationHelper.getFields(runnable, annotation);
-        for (Field f : fields) {
+        fields.forEach(f -> {
             Annotation annotationInstance = f.getAnnotation(annotation);
             String name = getValue(annotationInstance);
             if ("".equals(name)) {
                 name = f.getName();
             }
             fieldMap.put(name, f);
-        }
+        });
     }
 
     private String getValue(Annotation annotation) {
@@ -53,8 +53,7 @@ class RunnableHelper {
             f.setAccessible(true);
             f.set(target, paramValue);
         } catch (NullPointerException e) {
-            throw new RuntimeException("not existent parameter '" + name + "'",
-                    e);
+            throw new RuntimeException("parameter not found: '" + name + "'", e);
         } catch (IllegalArgumentException | IllegalAccessException ex) {
             throw new RuntimeException("cannot set field " + f, ex);
         }
@@ -90,11 +89,8 @@ class RunnableHelper {
         }
 
         public Cloner setParameters(Map<String, Object> parameters) {
-            parameters.entrySet().forEach((entry) -> {
-                final String paramName = entry.getKey();
-                final Object paramValue = entry.getValue();
-                set(paramName, paramValue);
-            });
+            parameters.forEach((String paramName, Object paramValue) ->
+                set(paramName, paramValue) );
             return this;
         }
 
