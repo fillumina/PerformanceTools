@@ -183,10 +183,10 @@ public class StatsHolderTest {
     @Test
     public void shouldUseAStats() {
         Stats stats = createTypedStatsMock("one");
-
         StatsHolder holder = new StatsHolder(stats);
 
         Holder<Stats> h = new Holder<>();
+
         holder.use(t -> h.setValue(t) );
 
         assertEquals(stats, h.getValue());

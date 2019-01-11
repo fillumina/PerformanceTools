@@ -32,6 +32,12 @@ public class SubTreeBuilder<C>
         this.root = root;
     }
 
+    /**
+     * The name of the field annotated with
+     * {@link com.fillumina.performance.executor.annotation.Param}
+     * or {@link com.fillumina.performance.executor.annotation.Sequence}
+     * or the value of the 'value' parameter of these annotations.
+     */
     public Value name(String name) {
         return new Value(name, root.add(name, null));
     }
@@ -45,6 +51,13 @@ public class SubTreeBuilder<C>
             this.current = current;
         }
 
+        /**
+         * The name of this specific parameter to be referred in tests
+         * and {@link ExperimentAssertion}s.
+         *
+         * @param obj
+         * @return
+         */
         private String name(Object obj) {
             String str = Objects.toString(obj);
             return name != null ? name + "_" + str : str;

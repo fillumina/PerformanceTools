@@ -226,7 +226,8 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     /**
-     * Pass the performance directly to the consumer.
+     * Traverses all {@link AssertableExperiment}s and passes them directly to
+     * the given consumer.
      *
      * @param consumers
      * @return {@code this}
@@ -246,6 +247,13 @@ public class StatsHolder extends Printable<StatsHolder>
                 });
     }
 
+    /**
+     * Traverses all {@link AssertableExperiment}s and check them against the
+     * given {@link ExperimentAssertion}.
+     *
+     * @param assertion
+     * @return
+     */
     public StatsHolder check(ExperimentAssertion assertion) {
         if (assertion != null) {
             traverseLeaves((TName name, Stats stats) -> {
