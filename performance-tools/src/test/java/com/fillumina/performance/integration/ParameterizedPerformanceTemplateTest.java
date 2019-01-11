@@ -35,10 +35,10 @@ public class ParameterizedPerformanceTemplateTest
     public void config(MixedConfigurationBuilder<?> config) {
         config
                 .speedConfig()
-                    .setSamples(5)
+                    .setFixedSamples(5)
                 .end()
                 .usedMemConfig()
-                    .setSamples(1)
+                    .setFixedSamples(1)
                 .end();
     }
 

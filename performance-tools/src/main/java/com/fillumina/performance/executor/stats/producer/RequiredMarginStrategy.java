@@ -26,6 +26,7 @@ public class RequiredMarginStrategy
 
     public interface Configuration {
         int getSamples();
+        boolean isSamplesFixed();
         Ratio getMaxAllowedMargin();
         Ratio getConfidence();
     }
@@ -34,6 +35,7 @@ public class RequiredMarginStrategy
             extends ConfigurableStatsProducer.Builder<Builder> {
         private Ratio maxMargin = DEFAULT_MARGIN;
         private int samples = DEFAULT_SAMPLES;
+        private boolean fixedSamples = false;
         private Ratio confidence = DEFAULT_CONFIDENCE;
 
         /** Minimum number of samples to be taken. */
@@ -52,9 +54,15 @@ public class RequiredMarginStrategy
             return this;
         }
 
+        public Builder fixedSampels(final boolean value) {
+            this.fixedSamples = value;
+            return this;
+        }
+
         private Configuration createConfiguration() {
             return new Configuration() {
                 @Override public int getSamples() { return samples; }
+                @Override public boolean isSamplesFixed() { return fixedSamples; }
                 @Override public Ratio getMaxAllowedMargin() { return maxMargin; }
                 @Override public Ratio getConfidence() { return confidence; }
             };
@@ -86,23 +94,24 @@ public class RequiredMarginStrategy
 
     public RequiredMarginStrategy(Configuration config) {
         this(config.getMaxAllowedMargin(),
-                //calculateSamples(config.getSamples(), DEFAULT_SAMPLES),
                 config.getSamples(),
+                config.isSamplesFixed(),
                 config.getConfidence());
     }
 
     public RequiredMarginStrategy(Ratio maxAllowedMargin) {
-        this(maxAllowedMargin, DEFAULT_SAMPLES, DEFAULT_CONFIDENCE);
+        this(maxAllowedMargin, DEFAULT_SAMPLES, false, DEFAULT_CONFIDENCE);
     }
 
     public RequiredMarginStrategy(
             Ratio maxAllowedMargin,
             int minSamples,
+            boolean fixedSamples,
             Ratio confidence) {
         this.maxRequiredPercentageMargin = maxAllowedMargin;
         this.minSamples = calculateSamples(minSamples, DEFAULT_SAMPLES);
         this.confidence = confidence;
-        this.fixedSamples = minSamples > 0;
+        this.fixedSamples = fixedSamples;
     }
 
     private static int calculateSamples(int givenSamples, int defaultSamples) {

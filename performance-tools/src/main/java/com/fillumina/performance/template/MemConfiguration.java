@@ -37,6 +37,7 @@ public class MemConfiguration<C>
 
     private boolean active = false;
     private int samples = 7;
+    private boolean fixedSamples = true;
     private StringGenerator<Stats> stringGenerator =
             MemStatsTableStringGenerator.INSTANCE;
     private Ratio confidence = Ratio.P_99;
@@ -112,6 +113,12 @@ public class MemConfiguration<C>
     public MemConfiguration<C> setStatsListener(
             StatsProgressionStatusListener statsListener) {
         this.statsListener = statsListener;
+        return this;
+    }
+
+    public MemConfiguration<C> setFixedSamples(final int value) {
+        setSamples(value);
+        this.fixedSamples = true;
         return this;
     }
 
@@ -201,6 +208,11 @@ public class MemConfiguration<C>
             @Override
             public int getSamples() {
                 return samples;
+            }
+
+            @Override
+            public boolean isSamplesFixed() {
+                return fixedSamples;
             }
 
             @Override

@@ -32,7 +32,7 @@ public class UsedMemoryTemplateTest extends PerformanceTemplate {
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.usedMemConfig().setSamples(1);
+        config.usedMemConfig().setFixedSamples(1);
     }
 
     @Override

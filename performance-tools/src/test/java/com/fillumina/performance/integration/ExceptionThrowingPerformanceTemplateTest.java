@@ -30,7 +30,7 @@ public class ExceptionThrowingPerformanceTemplateTest
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speedConfig().setSamples(5);
+        config.speedConfig().setFixedSamples(5);
     }
 
     @Override

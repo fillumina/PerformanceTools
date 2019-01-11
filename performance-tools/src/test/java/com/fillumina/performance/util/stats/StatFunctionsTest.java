@@ -2,6 +2,7 @@ package com.fillumina.performance.util.stats;
 
 import static com.fillumina.performance.util.stats.StatFunctions.*;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -11,7 +12,7 @@ import org.junit.Test;
  *  Wikipedia: Distribuzione di Student (Italian)</a>
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO could it be possible to shorten the test duration?
+@Ignore
 public class StatFunctionsTest {
 
     @Test

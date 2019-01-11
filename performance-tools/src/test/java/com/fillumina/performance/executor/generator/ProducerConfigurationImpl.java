@@ -31,6 +31,7 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     private int[] iterations;
     private int warmupSamples = 0;
     private int samples = 33;
+    private boolean fixedSamples = false;
     private Ratio maxAllowedMargin = Ratio.percentage(5);
     private int concurrencyLevel = 0;
     private int workerNumber = 0;
@@ -101,6 +102,11 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
 
     public ProducerConfigurationImpl samples(final int value) {
         this.samples = value;
+        return this;
+    }
+
+    public ProducerConfigurationImpl fixedSamples(final boolean value) {
+        this.fixedSamples = value;
         return this;
     }
 
@@ -187,6 +193,11 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     @Override
     public int getSamples() {
         return samples;
+    }
+
+    @Override
+    public boolean isSamplesFixed() {
+        return fixedSamples;
     }
 
     @Override

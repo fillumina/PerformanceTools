@@ -5,13 +5,14 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.SimpleLinearRegression;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * WARNING: very long test
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// TODO could it be possible to shorten the test duration?
+@Ignore
 public class CpuBurnerTest {
 
     public static void main(final String[] args) {

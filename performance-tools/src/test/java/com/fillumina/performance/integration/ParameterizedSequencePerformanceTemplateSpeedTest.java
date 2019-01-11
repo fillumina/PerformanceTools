@@ -33,7 +33,7 @@ public class ParameterizedSequencePerformanceTemplateSpeedTest
     public void config(MixedConfigurationBuilder<?> config) {
         config.setName(getClass().getSimpleName())
                 .speedConfig()
-                    .setSamples(5);
+                    .setFixedSamples(5);
     }
 
     @Override

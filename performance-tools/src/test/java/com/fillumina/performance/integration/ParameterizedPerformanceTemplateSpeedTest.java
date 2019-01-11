@@ -31,7 +31,7 @@ public class ParameterizedPerformanceTemplateSpeedTest
     public void config(MixedConfigurationBuilder<?> config) {
         config.setName(getClass().getSimpleName())
                 .speedConfig()
-                    .setSamples(5);
+                    .setFixedSamples(5);
     }
 
     @Override
@@ -70,10 +70,10 @@ public class ParameterizedPerformanceTemplateSpeedTest
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
         assertions.avgTime()
                 .with().all().end()
-                    .tolerance(Ratio.percentage(5))
+                    .tolerance(Ratio.percentage(10))
                     .order("one").lessThan("three")
                 .forTest("single")
-                    .tolerance(Ratio.percentage(5))
+                    .tolerance(Ratio.percentage(10))
                     .percentage("three").equalsTo(Ratio.percentage(100))
                     .percentage("one").equalsTo(Ratio.percentage(33))
                 .end();

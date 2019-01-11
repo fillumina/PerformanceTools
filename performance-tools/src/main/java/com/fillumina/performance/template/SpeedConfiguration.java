@@ -53,6 +53,7 @@ public class SpeedConfiguration<C>
     private boolean coolDownCpu = true;
     private int warmupSamples = 0;
     private int samples = 33;
+    private boolean fixedSamples = false;
     private int millisecondsPerSample = 250;
     private Ratio maxPercentageMargin = Ratio.percentage(5.0);
     private int[] iterations;
@@ -163,6 +164,12 @@ public class SpeedConfiguration<C>
 
     public SpeedConfiguration<C> setIterations(final int... value) {
         this.iterations = value;
+        return this;
+    }
+
+    public SpeedConfiguration<C> setFixedSamples(final int value) {
+        setSamples(value);
+        this.fixedSamples = true;
         return this;
     }
 
@@ -334,6 +341,11 @@ public class SpeedConfiguration<C>
             @Override
             public int getSamples() {
                 return samples;
+            }
+
+            @Override
+            public boolean isSamplesFixed() {
+                return fixedSamples;
             }
 
             @Override

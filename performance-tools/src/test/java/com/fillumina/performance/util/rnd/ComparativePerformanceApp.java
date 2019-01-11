@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ComparativePerformanceTest {
+public class ComparativePerformanceApp {
 
     public static void main(final String[] args) {
         new PerformanceTemplate() {

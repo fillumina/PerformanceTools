@@ -24,9 +24,8 @@ import com.fillumina.performance.executor.annotation.BeforeSample;
  * @param V type of the value to be passed
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class BulkRunnable<T,V> implements Runnable {
+public abstract class BulkRunnable<T> implements Runnable {
     private T[] objects;
-    private V value;
     private int counter;
 
     @BeforeSample
@@ -34,11 +33,9 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     public final void onBeforeSample(int iterations) {
         objects = (T[]) new Object[iterations];
         for (int i=0; i<iterations; i++) {
-            objects[i] = createTestObject();
-        }
-        value = createTestValue();
-        for (int i=0, len=objects.length; i<len; i++) {
-            onBeforeSample(objects[i], value);
+            final T o = createTestObject();
+            objects[i] = o;
+            onBeforeSample(o);
         }
         counter = 0;
     }
@@ -56,23 +53,17 @@ public abstract class BulkRunnable<T,V> implements Runnable {
     public abstract T createTestObject();
 
     /**
-     * Creates the values to be passed to the various objects before the
-     * run execution.
-     */
-    public abstract V createTestValue();
-
-    /**
-     * Initializes each object with its value before the execution of the run.
+     * Initializes each object before the execution of the each sample.
      * Its time is not accounted in the test.
      *
      * @param t the run object
      * @param v the value used to prepare the object for the run
      */
-    public abstract void onBeforeSample(T t, V v);
+    public abstract void onBeforeSample(T t);
 
     /**
      * Actually run the test on the specific passed object.
-     * 
+     *
      * @param t the object to run
      */
     public abstract void test(T t);

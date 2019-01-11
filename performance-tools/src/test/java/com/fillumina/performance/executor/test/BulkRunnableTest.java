@@ -3,8 +3,6 @@ package com.fillumina.performance.executor.test;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -15,7 +13,7 @@ public class BulkRunnableTest {
     private static final String TEST_VALUE = "test value";
 
     private static class BulkRunnableImpl
-            extends BulkRunnable<List<String>, String> {
+            extends BulkRunnable<List<String>> {
         private int counter;
 
         @Override
@@ -24,20 +22,14 @@ public class BulkRunnableTest {
         }
 
         @Override
-        public String createTestValue() {
-            return TEST_VALUE;
-        }
-
-        @Override
-        public void onBeforeSample(List<String> list, String v) {
-            assertTrue(list.isEmpty());
-            list.add(v);
+        public void onBeforeSample(List<String> list) {
+            list.add(TEST_VALUE);
         }
 
         @Override
         public void test(List<String> list) {
             counter++;
-            assertFalse(list.isEmpty());
+            assertEquals(1, list.size());
         }
     }
 
