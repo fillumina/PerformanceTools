@@ -32,6 +32,11 @@ public interface Unit<U extends Unit<U>> extends Comparable<U> {
         return new Quantity<>(value, (U)this);
     }
 
+    @SuppressWarnings("unchecked")
+    default Quantity<U> zero() {
+        return new Quantity<>(0, (U)this);
+    }
+
     default double getConversionFactorTo(Unit<?> unit) {
         assertSameTypeWith(unit);
         return getFactor() / unit.getFactor();
@@ -124,6 +129,9 @@ public interface Unit<U extends Unit<U>> extends Comparable<U> {
     @SuppressWarnings("unchecked")
     default U bestUnit(double value) {
         List<U> list = valueList();
+        if (list.size() == 1) {
+            return list.get(0);
+        }
         U unit = null;
         for (int i=1,l=list.size(); i<l; i++) {
             unit = list.get(i);

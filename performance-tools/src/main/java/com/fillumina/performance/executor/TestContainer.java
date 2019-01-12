@@ -39,10 +39,10 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
         return (I) this;
     }
 
-    /** Adds some tests. */
+    /** Adds some named tests. */
     I addTests(Map<TName,T> tests);
 
-    /** Adds a single test (name generation is implementation dependant). */
+    /** Adds a single test (name generation is implementation dependent). */
     I addTest(final T test);
 
     /** Adds a named test. */

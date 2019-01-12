@@ -27,7 +27,7 @@ public class CallBackBuilderTest {
             super(setter);
         }
 
-        public CallBackBuilderImpl<T> setName(String name) {
+        public CallBackBuilderImpl<T> name(String name) {
             this.name = name;
             return this;
         }
@@ -58,7 +58,7 @@ public class CallBackBuilderTest {
 
     @Test
     public void shouldCreateACar() {
-        Car car = Car.builder().setName("Alfa Romeo").end();
+        Car car = Car.builder().name("Alfa Romeo").end();
         
         assertEquals("Alfa Romeo", car.getName());
     }
@@ -66,7 +66,7 @@ public class CallBackBuilderTest {
     @Test
     public void shouldReturnTheBuiltObjectUsingTheDefaultConstructor() {
         CallBackBuilderImpl<String> builder = new CallBackBuilderImpl<>();
-        builder.setName("alpha");
+        builder.name("alpha");
 
         assertEquals("alpha", builder.build());
     }
@@ -74,7 +74,7 @@ public class CallBackBuilderTest {
     @Test
     public void shouldReturnTheBuiltObjectUsingEndWithTheDefaultConstructor() {
         CallBackBuilderImpl<String> builder = new CallBackBuilderImpl<>();
-        builder.setName("alpha");
+        builder.name("alpha");
 
         assertEquals("alpha", builder.end());
     }
@@ -97,7 +97,7 @@ public class CallBackBuilderTest {
                     return caller;
                 });
 
-        builder.setName("alpha");
+        builder.name("alpha");
 
         assertTrue(caller == builder.end());
         assertEquals("alpha", str.get());

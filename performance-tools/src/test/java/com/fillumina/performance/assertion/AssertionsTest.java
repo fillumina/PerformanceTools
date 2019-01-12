@@ -78,7 +78,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertValue("half").sameAs(50);
+                .assertValue("half").equalsTo(50);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -91,7 +91,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertValue("half").sameAs(78);
+                .assertValue("half").equalsTo(78);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);

@@ -1,13 +1,14 @@
 package com.fillumina.performance.accuracy.mem;
 
 import com.fillumina.performance.assertion.Assertions;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -32,8 +33,8 @@ public class UsedMemAnalyzerTest {
     public void shouldCheckMultipleAssertion() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(NOMEMORY).sameAs(0)
-                .assertValue(ARRAY).sameAs(16 + 4 * 10)
+                .assertValue(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
+                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
                 .assertOrder(NOMEMORY).lessThan(ARRAY);
 
         MEMSTATS_HOLDER.check(assertion);
@@ -52,7 +53,7 @@ public class UsedMemAnalyzerTest {
     public void shouldAssertValueWithinTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ARRAY).sameAs(16 + 4 * 10 + 1);
+                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 1));
 
         MEMSTATS_HOLDER.check(assertion);
     }
@@ -61,7 +62,7 @@ public class UsedMemAnalyzerTest {
     public void shouldNotAssertValueOutsideTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ARRAY).sameAs(16 + 4 * 10 + 10);
+                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 10));
 
         MEMSTATS_HOLDER.check(assertion);
     }

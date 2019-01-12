@@ -7,6 +7,8 @@ import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.rnd.Lfsr;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
+import com.fillumina.performance.util.unit.ThroughputUnit;
 import org.junit.Test;
 
 
@@ -55,8 +57,13 @@ public class ExceptionThrowingPerformanceTemplateTest
     @Override
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
         // these assertions aren't satisfied (they refers to the same test)
-        assertions.avgTime().value("test", "one_1").equalsTo(-1).end();
-        assertions.throughput().forTest("test").value("one_1").equalsTo(-2).end();
+        assertions.avgTime()
+                .value("test", "one_1")
+                .equalsTo(AverageTimeUnit.SECONDS.quantity(-1)).end();
+        assertions.throughput()
+                .forTest("test")
+                .value("one_1")
+                .equalsTo(ThroughputUnit.OP.quantity(-2)).end();
     }
 
 }

@@ -8,6 +8,7 @@ import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.Test;
 
 /**
@@ -73,7 +74,7 @@ public class ParameterizedSequencePerformanceTemplateTest
                 .forTest("size_1", TEST)
                     .tolerance(Ratio.percentage(5))
                     .order("byte").lessThan("double")
-                    .value("byte").equalsTo(120)
+                    .value("byte").equalsTo(MemUnit.B.quantity(120))
                 .forTest("size_2", TEST)
                     .tolerance(Ratio.percentage(5))
                     .order("byte").lessThan("double")
@@ -81,8 +82,8 @@ public class ParameterizedSequencePerformanceTemplateTest
             .allocatedMemory()
                 .with().all().end()
                     .tolerance(Ratio.percentage(5))
-                    .value("byte").equalsTo(0)
-                    .value("double").equalsTo(0)
+                    .value("byte").equalsTo(MemUnit.B.zero())
+                    .value("double").equalsTo(MemUnit.B.zero())
                 .end()
             .build();
     }

@@ -7,6 +7,7 @@ import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +81,7 @@ public class UsedMemoryTemplateTest extends PerformanceTemplate {
                     .order(HASH_MAP).greaterThan(LINKED_TREE)
                 .forTest(VALUE_3)
                     .percentage(LINKED_TREE).lessThan(Ratio.percentage(50))
-                    .value(HASH_MAP).equalsTo(2_048.0)
+                    .value(HASH_MAP).equalsTo(MemUnit.B.quantity(2_048.0))
                 .end();
     }
 

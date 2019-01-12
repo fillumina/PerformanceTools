@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.*;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.Test;
 
 /**
@@ -25,19 +26,6 @@ public class ArrayMemoryTest extends PerformanceTemplate {
     }
 
     @Override
-    public void addAssertions(MixedAssertionBuilder<?> assertion) {
-        assertion
-                .tolerance(Ratio.percentage(0))
-                .usedMemory()
-                    .value(THOUSAND_ARRAY).equalsTo(4 * 1_000 + 16)
-                    .value(EMPTY_ARRAY).equalsTo(16)
-                    .end()
-                .allocatedMemory()
-                    .value(THOUSAND_ARRAY).equalsTo(0)
-                    .value(EMPTY_ARRAY).equalsTo(0);
-    }
-
-    @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config.usedMemConfig();
     }
@@ -50,5 +38,20 @@ public class ArrayMemoryTest extends PerformanceTemplate {
         tests.addTest(EMPTY_ARRAY, (Runnable) () -> {
             Sink.drain(new int[0]);
         });
+    }
+
+    @Override
+    public void addAssertions(MixedAssertionBuilder<?> assertion) {
+        assertion
+                .tolerance(Ratio.percentage(0))
+                .usedMemory()
+                    .value(THOUSAND_ARRAY)
+                    .equalsTo(MemUnit.B.quantity(4 * 1_000 + 16))
+                    .value(EMPTY_ARRAY)
+                    .equalsTo(MemUnit.B.quantity(16))
+                    .end()
+                .allocatedMemory()
+                    .value(THOUSAND_ARRAY).equalsTo(MemUnit.B.zero())
+                    .value(EMPTY_ARRAY).equalsTo(MemUnit.B.zero());
     }
 }

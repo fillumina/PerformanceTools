@@ -85,15 +85,30 @@ public class MixedConfigurationBuilder<C>
         return this;
     }
 
+    /**
+     * Configures the assertions.
+     * Remember to <b>always end the builder with the
+     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * @return
+     */
     public MixedAssertionBuilder<MixedConfigurationBuilder<C>> assertions() {
         return new MixedAssertionBuilder<>(mixedAssertionableResultBuilder, this);
     }
 
+    /**
+     * Configure the tests with eventual parameters and sequences.
+     * Remember to <b>always end the builder with the
+     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     */
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
         return testConfigurator;
     }
 
-    /** Configures the speedConfig test. */
+    /**
+     * Configures the speedConfig test.
+     * Remember to <b>always end the builder with the
+     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     */
     public SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfig() {
         speedConfigurator.setActive(true);
         return speedConfigurator;
@@ -102,6 +117,8 @@ public class MixedConfigurationBuilder<C>
     /**
      * Configures the used memory test. Used memory is the total memory
      * heap used by the test including those which is freed afterwards.
+     * Remember to <b>always end the builder with the
+     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
      */
     public MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfig() {
         usedMemConfigurator.setActive(true);
@@ -111,6 +128,8 @@ public class MixedConfigurationBuilder<C>
     /**
      * Configures the allocated memory test. Allocated memory is the
      * memory which stays allocated after the test has finished.
+     * Remember to <b>always end the builder with the
+     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
      */
     public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfig() {
         allocatedMemConfigurator.setActive(true);

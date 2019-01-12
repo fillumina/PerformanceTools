@@ -4,6 +4,8 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 
 /**
@@ -17,13 +19,13 @@ class ValueAssertion
 
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
-    private final double expectedValue;
+    private final Quantity<?> expectedValue;
     private final Ratio tolerance;
     private final RelativeOrder condition;
 
     public ValueAssertion(final CharSequence testName,
             final RelativeOrder condition,
-            final double expectedValue,
+            final Quantity<?> expectedValue,
             final Ratio tolerance) {
         this.testName = testName;
         this.condition = condition;
@@ -40,7 +42,7 @@ class ValueAssertion
 
     public void check(final AssertableExperiment assertable, final Ratio tolerance) {
         if (assertable != null) {
-            Measure actualValue = assertable.getMeasure(testName);
+            DimensionalMeasure actualValue = assertable.getMeasure(testName);
 
             if (actualValue == null) {
                 throw new MeasureNotFoundException(testName);

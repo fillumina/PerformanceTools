@@ -26,6 +26,7 @@ public abstract class AbstractTestExecutor
     private final IndexedHashMap<TName, T> tests = new IndexedHashMap<>();
     private TName name = TN.EMPTY;
 
+    /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addConsumerIf(boolean condition, Consumer<? super N> consumer) {
@@ -35,6 +36,7 @@ public abstract class AbstractTestExecutor
         return (I) this;
     }
 
+    /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addConsumer(Consumer<? super N> consumer) {
@@ -104,11 +106,13 @@ public abstract class AbstractTestExecutor
         return (I) this;
     }
 
+    /** @inheritDoc */
     @Override
     public I addTest(T test) {
         return addTest(UNNAMED_TEST_PREFIX + tests.size() , test);
     }
 
+    /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addTests(Map<TName,T> tests) {
@@ -116,11 +120,13 @@ public abstract class AbstractTestExecutor
         return (I) this;
     }
 
+    /** @inheritDoc */
     @Override
     public I addTest(String name, T test) {
         return addTest(TN.tname(name), test);
     }
 
+    /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I addTest(TName name, T test) {
@@ -131,17 +137,20 @@ public abstract class AbstractTestExecutor
         return (I) this;
     }
 
+    /** @inheritDoc */
     @Override
     public I ignoreTest(String name, T test) {
         return ignoreTest(TN.tname(name), test);
     }
 
+    /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public I ignoreTest(final TName name, final T test) {
         return (I) this;
     }
 
+    /** @inheritDoc */
     @Override
     public IndexedHashMap<TName, T> getTests() {
         return tests.unmodifiableView();

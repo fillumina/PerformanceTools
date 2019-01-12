@@ -10,8 +10,8 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,7 +109,8 @@ public class AssertionableResult<C>
         @Override public Collection<? extends CharSequence> getNames() {
             return Collections.<CharSequence>emptyList();
         }
-        @Override public Measure getMeasure(CharSequence name) { return null; }
+        @Override public DimensionalMeasure getMeasure(CharSequence name) {
+            return null; }
         @Override public String toString() { return "UNCHECKED"; }
     };
 

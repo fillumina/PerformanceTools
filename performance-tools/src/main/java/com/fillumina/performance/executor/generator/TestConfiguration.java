@@ -76,35 +76,41 @@ public class TestConfiguration<C>
         return this;
     }
 
+    /** @IheritDoc */
     @Override
     @SuppressWarnings("unchecked")
     public TestConfiguration<C> ignoreTest(String name, Runnable test) {
         return this;
     }
 
+    /** @IheritDoc */
     @Override
     public TestConfiguration<C> ignoreTest(TName name, Runnable test) {
         return this;
     }
 
+    /** @IheritDoc */
     @Override
     public TestConfiguration<C> addTest(Runnable test) {
         return addTest(AbstractTestExecutor.UNNAMED_TEST_PREFIX +
                 Integer.toString(tests.size()), test);
     }
 
+    /** @IheritDoc */
     @Override
     public TestConfiguration<C> addTest(String name, Runnable test) {
         tests.put(TN.tname(name), test);
         return this;
     }
 
+    /** @IheritDoc */
     @Override
     public TestConfiguration<C> addTest(TName name, Runnable test) {
         tests.put(name, test);
         return this;
     }
 
+    /** @IheritDoc */
     @Override
     public TestConfiguration<C> clearTests() {
         tests.clear();

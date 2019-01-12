@@ -17,7 +17,8 @@ package com.fillumina.performance.util;
             super(setter);
         }
 
-        public NamedBuilder<T> setName(String name) {
+        // builders usually use this fluent notation instead of setters.
+        public NamedBuilder<T> name(String name) {
             this.name = name;
             return this;
         }
@@ -44,7 +45,7 @@ package com.fillumina.performance.util;
 
     // test
     public void shouldCreateACar() {
-        Car car = Car.builder().setName("Alfa Romeo").end();
+        Car car = Car.builder().name("Alfa Romeo").end();
 
         assertEquals("Alfa Romeo", car.getName());
     }
@@ -85,8 +86,12 @@ public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {
         }
     }
 
-    // end() was preferred to build() because of how it shows in a
-    // complex fluid interface builder.
+    /**
+     * Ends the current builder (there could be a chain of them) and assign
+     * it.
+     * <b>Always end the builder with this method otherwise the object might
+     * not be properly configured or assigned.</b>
+     */
     @Override
     public C end() {
         return setter.setBuiltObjectAndReturn(build());

@@ -68,6 +68,11 @@ public class MixedAssertionBuilder<C>
                 });
     }
 
+    /**
+     * Asserts against average time employed by tests.
+     * Remember to
+     * @return
+     */
     public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> avgTime() {
         return addAssertionMatcher(TimeStatsType.AVERAGE);
     }

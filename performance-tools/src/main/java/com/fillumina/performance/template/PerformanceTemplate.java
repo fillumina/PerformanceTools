@@ -46,6 +46,8 @@ public abstract class PerformanceTemplate {
      * config.setBaseIterations(1_000)
      *       .setMaxStandardDeviation(5);
      * </pre>
+     *
+     * @param config uses its method to configure the experiment.
      */
     public abstract void config(final MixedConfigurationBuilder<?> config);
 

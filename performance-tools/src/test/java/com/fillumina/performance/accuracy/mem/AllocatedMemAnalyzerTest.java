@@ -3,11 +3,12 @@ package com.fillumina.performance.accuracy.mem;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.executor.test.LfsrRunnable;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.mem.stats.MemStatsProducer;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -40,9 +41,9 @@ public class AllocatedMemAnalyzerTest {
     @Test
     public void shouldCheckMultipleAssertion() {
         ExperimentAssertion assertion = Assertions.withTolerance(Ratio.ZERO)
-                .assertValue(NOMEMORY).sameAs(0)
-                .assertValue(NOALLOCATED).sameAs(0)
-                .assertValue(ALLOCATED).sameAs(16 + 4 * 10)
+                .assertValue(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
+                .assertValue(NOALLOCATED).equalsTo(MemUnit.B.quantity(0))
+                .assertValue(ALLOCATED).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
                 .assertOrder(NOMEMORY).sameAs(NOALLOCATED)
                 .assertOrder(NOMEMORY).lessThan(ALLOCATED);
 
@@ -62,7 +63,8 @@ public class AllocatedMemAnalyzerTest {
     public void shouldAssertValueWithinTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 1);
+                .assertValue(ALLOCATED)
+                        .equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 1));
 
         assertion.check(MEMSTATS);
     }
@@ -71,7 +73,8 @@ public class AllocatedMemAnalyzerTest {
     public void shouldNotAssertValueOutsideTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ALLOCATED).sameAs(16 + 4 * 10 + 10);
+                .assertValue(ALLOCATED)
+                        .equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 10));
 
         assertion.check(MEMSTATS);
     }

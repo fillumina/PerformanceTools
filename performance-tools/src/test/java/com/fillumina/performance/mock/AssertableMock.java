@@ -1,15 +1,20 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.assertion.AbstractAssertable;
+import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.unit.Absolute;
+import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import com.fillumina.performance.assertion.AssertableExperiment;
 
 /**
  *
@@ -20,6 +25,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
 
     private final String name;
     private final Map<CharSequence, Measure> map = new IndexedHashMap<>();
+    private final Unit<?> unit;
 
     /**
      * Use as:
@@ -36,24 +42,22 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
      * </ol>
      */
     public static AssertableMock create(Object... o) {
-        int start = (o.length & 1);
-        String name = (start == 1) ? (String) o[0] : "test";
-        IndexedHashMap<CharSequence,Measure> map = new IndexedHashMap<>();
-        for (int i=start; i<o.length; i+=2) {
-            double value = Double.valueOf(o[i+1].toString());
-            map.put((CharSequence)o[i], new OnlineMeasure(value));
-        }
-        return new AssertableMock(name, map);
+        return createWithName(((o.length & 1) == 1) ? (String) o[0] : "test", o);
     }
 
     public static AssertableMock createWithName(String name, Object... o) {
+        return createWithNameAdUnit(name, Absolute.UNIT, o);
+    }
+
+    public static AssertableMock createWithNameAdUnit(String name, Unit<?> unit,
+            Object... o) {
         int start = (o.length & 1);
         IndexedHashMap<CharSequence,Measure> map = new IndexedHashMap<>();
         for (int i=start; i<o.length; i+=2) {
             double value = Double.valueOf(o[i+1].toString());
             map.put((CharSequence)o[i], new OnlineMeasure(value));
         }
-        return new AssertableMock(name, map);
+        return new AssertableMock(name, map, unit);
     }
 
     public AssertableMock() {
@@ -61,12 +65,18 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
     }
 
     public AssertableMock(String name) {
-        this.name = name;
+        this(name, Collections.<CharSequence,Measure>emptyMap(), Absolute.UNIT);
     }
 
     public AssertableMock(String name, Map<CharSequence, Measure> map) {
+        this(name, map, Absolute.UNIT);
+    }
+
+    public AssertableMock(String name, Map<CharSequence, Measure> map,
+            Unit<?> unit) {
         this.name = name;
         this.map.putAll(map);
+        this.unit = unit;
     }
 
     public String getName() {
@@ -79,7 +89,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
     }
 
     @Override
-    public Measure getMeasure(CharSequence testName) {
+    public DimensionalMeasure getMeasure(CharSequence testName) {
         String nstr = testName.toString();
         Optional<CharSequence> result = map.keySet().stream()
                     .filter(t -> t.equals(testName) || nstr.equals(t.toString()))
@@ -87,7 +97,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
         if (!result.isPresent()) {
             throw new MeasureNotFoundException(testName, map.keySet());
         }
-        return map.get(result.get());
+        return new DefaultDimensionalMeasure(map.get(result.get()), unit);
     }
 
     @Override

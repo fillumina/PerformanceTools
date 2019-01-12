@@ -10,6 +10,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.unit.Absolute;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
 import java.util.List;
@@ -241,14 +242,14 @@ public class StatsHolderTest {
         StatsHolder holder =
                 StatsHolder.builder(type, "root")
                         .subExperiment("subroot")
-                            .test("one", StatsMockBuilder.create(type,
-                                    one, Magnitude.UNIT,
+                            .test("one", StatsMockBuilder.createWithTypes(type,
+                                    one, Absolute.UNIT,
                                     "first", 10.0, "second", 20.0 ))
-                            .test("two", StatsMockBuilder.create(type,
-                                    two, Magnitude.UNIT,
+                            .test("two", StatsMockBuilder.createWithTypes(type,
+                                    two, Absolute.UNIT,
                                      "first", 10.0, "second", 20.0 ))
-                            .test("three", StatsMockBuilder.create(type,
-                                    three, Magnitude.UNIT,
+                            .test("three", StatsMockBuilder.createWithTypes(type,
+                                    three, Absolute.UNIT,
                                      "first", 10.0, "second", 20.0 ))
                         .build();
 

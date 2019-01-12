@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.Absolute;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -21,7 +22,7 @@ public class ValueAssertionErrorTest {
                 new ValueAssertion(
                         "first",
                         RelativeOrder.EQUALS,
-                        23,
+                        Absolute.UNIT.quantity(23),
                         Ratio.percentage(3));
 
         AssertableMock assertable = AssertableMock.create(
@@ -33,7 +34,7 @@ public class ValueAssertionErrorTest {
 
         } catch (ValueAssertionError e) {
             assertEquals("first", e.getTestName().toString());
-            assertEquals(23, e.getExpected(),0);
+            assertEquals(23, e.getExpected().getValue(),0);
             assertEquals(12.3, e.getActualValue().getMean(), 1E-4);
             assertEquals(3, e.getTolerance().getPercentage(), 0);
 

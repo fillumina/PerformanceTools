@@ -14,6 +14,8 @@ import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.unit.Absolute;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -390,7 +392,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             private final TNameMatcher nameMatcher;
             private final Ratio tolerance;
             private RelativeOrder equalityCondition;
-            private double value;
+            private Quantity<?> value;
 
             public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
@@ -398,18 +400,36 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             }
 
             public Builder<C> lessThan(double value) {
-                this.value = value;
+                this.value = Absolute.UNIT.quantity(value);
                 equalityCondition = RelativeOrder.LESS;
                 return addToEvaluators(this);
             }
 
             public Builder<C> greaterThan(double value) {
-                this.value = value;
+                this.value = Absolute.UNIT.quantity(value);
                 equalityCondition = RelativeOrder.GREATER;
                 return addToEvaluators(this);
             }
 
             public Builder<C> equalsTo(double value) {
+                this.value = Absolute.UNIT.quantity(value);
+                equalityCondition = RelativeOrder.EQUALS;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> lessThan(Quantity<?> value) {
+                this.value = value;
+                equalityCondition = RelativeOrder.LESS;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> greaterThan(Quantity<?> value) {
+                this.value = value;
+                equalityCondition = RelativeOrder.GREATER;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> equalsTo(Quantity<?> value) {
                 this.value = value;
                 equalityCondition = RelativeOrder.EQUALS;
                 return addToEvaluators(this);

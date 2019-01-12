@@ -2,6 +2,8 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.Absolute;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 
 /**
@@ -28,29 +30,49 @@ public class ValueAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     public I is(RelativeOrder equality, double expected) {
+        return is(equality, Absolute.UNIT.quantity(expected));
+    }
+
+    public I is(RelativeOrder equality, Quantity<?> expected) {
         switch(equality) {
-            case EQUALS: return sameAs(expected);
+            case EQUALS: return ValueAssertionBuilder.this.equalsTo(expected);
             case LESS: return lessThan(expected);
             case GREATER: return greaterThan(expected);
         }
         throw new AssertionError("unexpected case: " + equality);
     }
 
-    public I sameAs(final double expectedValue) {
+    /** It compares against {@link Absolute} quantities only. */
+    public I equalsTo(final double expectedValue) {
+        return ValueAssertionBuilder.this.equalsTo(
+                Absolute.UNIT.quantity(expectedValue));
+    }
+
+    /** It compares against {@link Absolute} quantities only. */
+    public I lessThan(final double expectedValue) {
+        return lessThan(Absolute.UNIT.quantity(expectedValue));
+    }
+
+    /** It compares against {@link Absolute} quantities only. */
+    public I greaterThan(final double expectedValue) {
+        return greaterThan(Absolute.UNIT.quantity(expectedValue));
+    }
+
+    public I equalsTo(final Quantity<?> expectedValue) {
         return assertPerformance.addAssertion(new ValueAssertion(name,
                         RelativeOrder.EQUALS,
                         expectedValue,
                         tolerance));
     }
 
-    public I lessThan(final double expectedValue) {
+    public I lessThan(final Quantity<?> expectedValue) {
         return assertPerformance.addAssertion(new ValueAssertion(name,
                         RelativeOrder.LESS,
                         expectedValue,
                         tolerance));
     }
 
-    public I greaterThan(final double expectedValue) {
+    public I greaterThan(final Quantity<?> expectedValue) {
         return assertPerformance.addAssertion(new ValueAssertion(name,
                         RelativeOrder.GREATER,
                         expectedValue,

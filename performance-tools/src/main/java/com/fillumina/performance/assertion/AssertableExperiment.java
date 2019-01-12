@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Collection;
 
 /**
@@ -17,7 +18,7 @@ public interface AssertableExperiment {
     Collection<? extends CharSequence> getNames();
 
     /** @return the named measure or null if it doesn't exist. */
-    Measure getMeasure(CharSequence name);
+    DimensionalMeasure getMeasure(CharSequence name);
 
     /** @return true if it doesn't contain any measure. */
     default boolean isEmpty() {

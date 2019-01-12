@@ -9,6 +9,7 @@ import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.Test;
 
 /**
@@ -82,7 +83,8 @@ public class ParameterizedPerformanceTemplateTest
                     .forTest(FIRST).order("param_1").lessThan("param_2")
                 .end()
                 .usedMemory()
-                    .value(SECOND, "param_1").equalsTo(16 + 5 * 4 + 4)
+                    .value(SECOND, "param_1")
+                    .equalsTo(MemUnit.B.quantity(16 + 5 * 4 + 4))
                 .end();
     }
 

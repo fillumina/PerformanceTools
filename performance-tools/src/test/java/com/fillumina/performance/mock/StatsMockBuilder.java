@@ -27,10 +27,10 @@ public class StatsMockBuilder {
     private Ratio confidence = Ratio.P_95;
 
     public static Stats create(Object... objs) {
-        return create(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
+        return createWithTypes(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
     }
 
-    public static Stats create(
+    public static Stats createWithTypes(
             StatsType statsType,
             TName title,
             Unit<?> unit,

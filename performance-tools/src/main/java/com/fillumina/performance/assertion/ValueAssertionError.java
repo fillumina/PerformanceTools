@@ -5,6 +5,9 @@ import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Quantity;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.function.BiPredicate;
 
 /**
@@ -14,21 +17,21 @@ import java.util.function.BiPredicate;
 public class ValueAssertionError extends AbstractAssertionError {
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
-    private final Measure actualValue;
-    private final double expected;
+    private final DimensionalMeasure actualValue;
+    private final Quantity<?> expected;
     private final AssertableExperiment assertableMultiTest;
 
     public ValueAssertionError(
             CharSequence testName,
-            Measure actualValue,
-            double expectedPercentage,
+            DimensionalMeasure actualValue,
+            Quantity<?> expectedValue,
             Ratio tolerance,
             RelativeOrder requiredCondition,
             AssertableExperiment assertableMultiTest) {
         super(requiredCondition, tolerance);
         this.testName = testName;
         this.actualValue = actualValue;
-        this.expected = expectedPercentage;
+        this.expected = expectedValue;
         this.assertableMultiTest = assertableMultiTest;
     }
 
@@ -38,10 +41,19 @@ public class ValueAssertionError extends AbstractAssertionError {
                 actualValue.getConfidenceInterval(Ratio.P_99);
         double lower = interval.getLowerBound();
         double upper = interval.getUpperBound();
-        
+
+        Unit<?> actualUnit = actualValue.getUnit();
+        Unit<?> expectedUnit = expected.getUnit();
+        if (!actualUnit.isSameType(expectedUnit)) {
+            throw new RuntimeException("value specified in the wrong unit, was " +
+                    actualUnit.getUnitName() + " but " +
+                    expectedUnit.getUnitName() + " was expected");
+        }
+        double expectedFigure = expected.as(actualUnit);
+
         return (condition, tolerance) -> {
             ToleranceEvaluator.Value expectedValue =
-                    new ToleranceEvaluator(tolerance).value(expected);
+                    new ToleranceEvaluator(tolerance).value(expectedFigure);
             switch (condition) {
                 case EQUALS:
                     return expectedValue.between(lower, upper);
@@ -66,7 +78,7 @@ public class ValueAssertionError extends AbstractAssertionError {
         return actualValue;
     }
 
-    public double getExpected() {
+    public Quantity<?> getExpected() {
         return expected;
     }
 
