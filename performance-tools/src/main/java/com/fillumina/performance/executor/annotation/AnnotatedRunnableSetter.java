@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.annotation;
 
-import com.fillumina.performance.util.AnnotationHelper;
+import com.fillumina.performance.util.reflection.AnnotationHelper;
 
 /**
  * Ancillary class used to access package accessors of {@link Testable}.

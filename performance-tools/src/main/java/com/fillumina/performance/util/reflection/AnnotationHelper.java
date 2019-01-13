@@ -1,10 +1,11 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.reflection;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -12,6 +13,32 @@ import java.util.List;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AnnotationHelper {
+
+    public static HashMap<String,Field> createAssignableFieldsMap(
+            Class<? extends Annotation> annotation, Object object) {
+        HashMap<String,Field> fieldMap = new HashMap<>();
+        List<Field> fields = AnnotationHelper.getFields(object, annotation);
+        fields.forEach(f -> {
+            Annotation annotationInstance = f.getAnnotation(annotation);
+            String name = getAnnotationValue(annotationInstance, "value");
+            if ("".equals(name)) {
+                name = f.getName();
+            }
+            fieldMap.put(name, f);
+        });
+        return fieldMap;
+    }
+
+    public static String getAnnotationValue(Annotation annotation, String name) {
+        try {
+            return (String) annotation.getClass().getMethod(name)
+                    .invoke(annotation);
+        } catch (NoSuchMethodException | SecurityException |
+                IllegalAccessException | IllegalArgumentException |
+                InvocationTargetException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static void setField(Object target,
             Field field,

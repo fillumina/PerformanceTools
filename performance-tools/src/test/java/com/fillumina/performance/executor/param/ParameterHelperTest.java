@@ -5,7 +5,6 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -19,12 +18,21 @@ import org.junit.Test;
 public class ParameterHelperTest {
 
     public static class ParameterizedRunnable implements Runnable {
+        // to see if it passes through constructor
+        private double height;
+
+        // to see if it initializes private inner values
+        private char c = 'h';
 
         @Param
         private String name;
 
         @Param("size")
         private int intvalue;
+
+        public ParameterizedRunnable() {
+            height = 123.45;
+        }
 
         public String getName() {
             return name;
@@ -54,16 +62,15 @@ public class ParameterHelperTest {
 
         //System.out.println(params.toString());
 
-        IndexedHashMap<TName,Runnable> lmap =
-                ParameterHelper.createParameterizedRunnable(
-                        new ParameterizedRunnable(),
-                        params, Param.class);
+        IndexedHashMap<TName,Runnable> pmap =
+                ParameterHelper.createParameterizedRunnables(
+                        Param.class, params, new ParameterizedRunnable());
 
         //System.out.println(lmap.toString());
 
-        assertEquals(6, lmap.size());
+        assertEquals(6, pmap.size());
 
-        Iterator<Entry<TName,Runnable>> it = lmap.iterator();
+        Iterator<Entry<TName,Runnable>> it = pmap.iterator();
         assertEquals("Bob-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Tom-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Bob-100", it.next().getKey().toStringWithSeparator("-"));
@@ -72,17 +79,15 @@ public class ParameterHelperTest {
         assertEquals("Tom-1000", it.next().getKey().toStringWithSeparator("-"));
         assertFalse(it.hasNext());
 
-        for (Map.Entry<TName, Runnable> entry: lmap) {
-            TName sp = entry.getKey();
-            ParameterizedRunnable runnable =
-                    (ParameterizedRunnable) entry.getValue();
+        pmap.forEach((TName tname, Runnable runnable) -> {
+            ParameterizedRunnable prunnable = (ParameterizedRunnable) runnable;
 
-            String name = sp.getFirstName();
-            assertEquals(name, runnable.getName());
+            String name = tname.getFirstName();
+            assertEquals(name, prunnable.getName());
 
-            int size = Integer.valueOf(sp.getLastName());
-            assertEquals(size, runnable.getSize());
-        }
+            int size = Integer.valueOf(tname.getLastName());
+            assertEquals(size, prunnable.getSize());
+        });
     }
 
     @Test
@@ -111,15 +116,17 @@ public class ParameterHelperTest {
         RunnableHelper setter =
                 new RunnableHelper(runnable, Param.class);
 
-        IndexedHashMap<String,Object> parameters = IndexedHashMap.<String,Object>create(
+        IndexedHashMap<String,Object> parameters =
+                IndexedHashMap.<String,Object>create(
                         "name", "Pippo",
                         "size", 123);
 
         ParameterizedRunnable result = (ParameterizedRunnable)
-                ParameterHelper
-                        .setParameters(setter.doClone(), parameters);
+                setter.cloneAndSetParameters(parameters);
 
         assertEquals("Pippo", result.getName());
         assertEquals(123, result.getSize());
+        assertEquals(123.45, result.height, 0);
+        assertEquals('h', result.c, 0);
     }
 }

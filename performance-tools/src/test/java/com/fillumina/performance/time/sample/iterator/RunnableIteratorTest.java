@@ -5,6 +5,8 @@ import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
+import com.fillumina.performance.util.ToleranceAssertion;
+import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -215,9 +217,12 @@ public class RunnableIteratorTest {
 
     @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
-        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(() -> { Sink.drain(measure(k1)); });
-        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(() -> { Sink.drain(measure(k2)); });
+        RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
+                () -> { Sink.drain(measure(k1)); });
+        RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
+                () -> { Sink.drain(measure(k2)); });
 
+        // not too many iterations otherwise optimization would kick in
         final int iteration = 100_000_000;
         final int repetitions = 3;
 
@@ -235,9 +240,10 @@ public class RunnableIteratorTest {
         print("a=" + la2);
 
         /*
-        second execution is faster than first because of optimizations.
+        la2 should be slightly faster because of optimizations
         */
-        assertTrue("la1=" + la1 + " <= la2=" + la2, la1 > la2);
+        ToleranceAssertion.assertLess("la1=" + la1 + " <= la2=" + la2,
+                la1, la2, Ratio.percentage(10));
     }
 
     private long loop(RunnableIterator iterator, int iterations, int repetitions) {

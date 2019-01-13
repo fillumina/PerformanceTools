@@ -11,7 +11,6 @@ import com.fillumina.performance.util.tname.TName;
 /**
  * Tests with different parameter values are executed together and their
  * results are presented on a single statistic.
- * i.e. a parameter could be different types of map to be compared.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -51,8 +50,8 @@ public class ParameterizedTestProducer
             producer.setName(composedName);
 
             IndexedHashMap<TName, Runnable> runnableMap =
-                    ParameterHelper.createParameterizedRunnable(
-                                runnable, params, Param.class);
+                    ParameterHelper.createParameterizedRunnables(
+                            Param.class, params, runnable);
 
             runnableMap.forEach( (TName tname, Runnable test) ->
                 producer.addTest(createTestName(composedName, tname), test));

@@ -1,14 +1,12 @@
 package com.fillumina.performance.executor.param;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.param.RunnableHelper.Cloner;
 import com.fillumina.performance.util.Combinator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 import java.lang.annotation.Annotation;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  *
@@ -16,15 +14,23 @@ import java.util.Map.Entry;
  */
 public class ParameterHelper {
 
-    static IndexedHashMap<TName, Runnable> createParameterizedRunnable(
-            Runnable baseRunnable,
+    /**
+     * Takes parameters values from {@code params} and creates a map
+     * containing named runnables assigned with those parameters
+     *
+     * @param annotation    the annotation added to the parameters to change
+     * @param params        the tree of values to assign
+     * @param baseRunnable  the base object to be clones and assigned
+     * @return              a map of named parameters assigned clones
+     */
+    static IndexedHashMap<TName, Runnable> createParameterizedRunnables(
+            Class<? extends Annotation> annotation,
             LinkedTree<String, Object> params,
-            Class<? extends Annotation> annotation) {
+            Runnable baseRunnable) {
 
         int[] max = calculateBranchesDepth(params);
 
-        RunnableHelper paramSetter =
-                new RunnableHelper(baseRunnable, annotation);
+        RunnableHelper paramSetter = new RunnableHelper(baseRunnable, annotation);
 
         IndexedHashMap<TName,Runnable> linkedMap = new IndexedHashMap<>();
         for (Combinator.IntArrayCursorList combination : new Combinator(max)) {
@@ -32,7 +38,7 @@ public class ParameterHelper {
             IndexedHashMap<String, Object> parameters = new IndexedHashMap<>();
             for (int i=0; i<combination.size(); i++) {
                 LinkedTree<String, Object> options = params.getTreeAtIndex(i);
-                final Map.Entry<String, Object> selectedOption =
+                Map.Entry<String, Object> selectedOption =
                         options.getTreeAtIndex(combination.getInt(i));
 
                 String paramName = options.getKey();
@@ -58,15 +64,4 @@ public class ParameterHelper {
         }
         return max;
     }
-
-    static Runnable setParameters(Cloner cloner,
-            IndexedHashMap<String, Object> parameters) {
-        for (Entry<String, Object> entry : parameters) {
-            final String paramName = entry.getKey();
-            final Object paramValue = entry.getValue();
-            cloner.set(paramName, paramValue);
-        }
-        return cloner.get();
-    }
-
 }

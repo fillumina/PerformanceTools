@@ -1,12 +1,9 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.util.AnnotationHelper;
-import com.fillumina.performance.util.ReflectionHelper;
+import com.fillumina.performance.util.reflection.AnnotationHelper;
+import com.fillumina.performance.util.reflection.ReflectionHelper;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,44 +11,22 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 class RunnableHelper {
-
     private final Runnable original;
-    private final Class<? extends Runnable> clazz;
     private final Map<String,Field> fieldMap;
 
     public RunnableHelper(Runnable runnable,
             Class<? extends Annotation> annotation) {
         this.original = runnable;
-        this.clazz = runnable.getClass();
-        this.fieldMap = new HashMap<>();
-        List<Field> fields = AnnotationHelper.getFields(runnable, annotation);
-        fields.forEach(f -> {
-            Annotation annotationInstance = f.getAnnotation(annotation);
-            String name = getValue(annotationInstance);
-            if ("".equals(name)) {
-                name = f.getName();
-            }
-            fieldMap.put(name, f);
-        });
+        this.fieldMap = AnnotationHelper
+                .createAssignableFieldsMap(annotation, runnable);
     }
 
-    private String getValue(Annotation annotation) {
-        try {
-            return (String) annotation.getClass().getMethod("value")
-                    .invoke(annotation);
-        } catch (NoSuchMethodException | SecurityException |
-                IllegalAccessException | IllegalArgumentException |
-                InvocationTargetException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public void set(Object target, String name, Object paramValue) {
+    public void set(Object target, String name, Object value) {
         Field f = null;
         try {
             f = fieldMap.get(name);
             f.setAccessible(true);
-            f.set(target, paramValue);
+            f.set(target, value);
         } catch (NullPointerException e) {
             throw new RuntimeException("parameter not found: '" + name + "'", e);
         } catch (IllegalArgumentException | IllegalAccessException ex) {
@@ -71,17 +46,7 @@ class RunnableHelper {
         private final Runnable clone;
 
         private Cloner() {
-            this.clone = newInstance();
-            for (Field f : ReflectionHelper.getAllFields(clazz)) {
-                f.setAccessible(true);
-                try {
-                    Object value = f.get(original);
-                    f.set(clone, value);
-                } catch (IllegalArgumentException |
-                        IllegalAccessException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+            this.clone = ReflectionHelper.clone(original);
         }
 
         public Runnable get() {
@@ -97,10 +62,6 @@ class RunnableHelper {
         public Cloner set(String name, Object paramValue) {
             RunnableHelper.this.set(clone, name, paramValue);
             return this;
-        }
-
-        private Runnable newInstance() {
-            return (Runnable) ReflectionHelper.newInstance(original);
         }
     }
 }

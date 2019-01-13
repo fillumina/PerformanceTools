@@ -49,8 +49,8 @@ public class SequencedTestProducer
 
         getTests().forEach((TName testName, Runnable runnable) -> {
             IndexedHashMap<TName, Runnable> runnableList =
-                    ParameterHelper.createParameterizedRunnable(
-                            runnable, sequences, Sequence.class);
+                    ParameterHelper.createParameterizedRunnables(
+                            Sequence.class, sequences, runnable);
 
             sequencedTestMap.put(testName, runnableList);
         });
@@ -65,7 +65,8 @@ public class SequencedTestProducer
         for (int i=0; i<sequenceSize; i++) {
             final int index = i;
             producer.clearTests();
-            sequencedTestMap.forEach((TName testName, IndexedHashMap<TName, Runnable> map) -> {
+            sequencedTestMap.forEach(
+                    (TName testName, IndexedHashMap<TName, Runnable> map) -> {
                 final Entry<TName, Runnable> paramTestEntry =
                         map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();

@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsProducerMock;
-import com.fillumina.performance.util.ReflectionHelper;
+import com.fillumina.performance.util.reflection.ReflectionHelper;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;

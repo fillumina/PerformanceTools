@@ -173,7 +173,8 @@ public class MixedConfigurationBuilder<C>
         checkIfAllInactive();
         StringBuilder buf = new StringBuilder();
         buf.append(Platform.INSTANCE.toString()).append(System.lineSeparator());
-        appendObject(buf, "Plan", testConfigurator.toString(testName.toString()));
+        appendObject(buf, "Experiment Plan",
+                testConfigurator.toString(testName.toString()));
         appendActivable(buf, "Speed", speedConfigurator);
         appendActivable(buf, "Used Memory", usedMemConfigurator);
         appendActivable(buf, "Allocated Memory", allocatedMemConfigurator);

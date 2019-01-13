@@ -1,5 +1,7 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.reflection;
 
+import com.fillumina.performance.util.FieldAnnotation;
+import com.fillumina.performance.util.MethodAnnotation;
 import java.lang.reflect.Field;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
