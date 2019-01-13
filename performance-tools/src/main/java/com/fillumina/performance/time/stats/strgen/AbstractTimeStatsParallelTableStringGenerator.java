@@ -72,8 +72,7 @@ public abstract class
             TName n = e.getKey();
             DimensionalMeasure elapsed = e.getValue();
             Unit<?> unit = elapsed.getUnit();
-            double stdev =
-                    unit.convertFromBase(elapsed.getUnbiasedStandardDeviation());
+            double stdev = elapsed.getUnbiasedStandardDeviation();
             // http://www.webassign.net/question_assets/unccolphysmechl1/measurements/manual.html
             Ratio fractionalUncertainty =
                     elapsed.getFractionalUncertainty(confidence);

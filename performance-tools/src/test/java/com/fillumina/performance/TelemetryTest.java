@@ -186,8 +186,8 @@ public class TelemetryTest {
         // This will make the executor accept no new threads
         // and finish all existing threads in the queue
         executor.shutdown();
-        // Wait until all threads are finish
 
+        // Wait until all threads are finish
         executor.awaitTermination(130, TimeUnit.MILLISECONDS);
 
         Map<String,MixedStatsHolder> map = Telemetry.getStatsFromAllThreads();

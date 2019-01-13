@@ -44,8 +44,7 @@ public abstract class
         DimensionalMeasure measure =
                 stats.getMeasureMap().values().iterator().next();
         final Unit<?> unit = measure.getUnit();
-        final double stdev =
-                unit.convertFromBase(measure.getUnbiasedStandardDeviation());
+        final double stdev = measure.getUnbiasedStandardDeviation();
         TableFormatter performanceTable = new TableFormatter("  ");
         long iterationPerSample = measure.getCount();
         createTable(performanceTable, measure, iterationPerSample, unit, stdev,
