@@ -1,22 +1,23 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.TimedRunnable;
+import com.fillumina.performance.util.unit.AverageTimeUnit;
 import org.junit.Test;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SinglePerformanceTemplateTest
+public class SingleTestPerformanceTemplateTest
         extends PerformanceTemplate {
 
 
     public static void main(final String[] args) {
-        new SinglePerformanceTemplateTest().executeWithFullOutput();
+        new SingleTestPerformanceTemplateTest().executeWithFullOutput();
     }
 
     @Test
@@ -25,18 +26,23 @@ public class SinglePerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(MixedAssertion<?> assertions) {
-    }
-
-    @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speedTestOnly()
+        config.speedConfig()
                 .setSamples(5);
     }
 
     @Override
     public void addTests(TestConfiguration<?> tests) {
-//        tests.addTest("run", new LfsrTest());
         tests.addTest("test", new TimedRunnable(5));
     }
+
+    @Override
+    public void addAssertions(MixedAssertionBuilder<?> assertions) {
+        // TODO what unit does it use??? fix that
+        assertions.avgTime()
+                .value("test")
+                .lessThan(AverageTimeUnit.MILLISECONDS.quantity(8))
+            .end();
+    }
+
 }

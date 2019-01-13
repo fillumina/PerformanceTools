@@ -1,11 +1,11 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.infrastructure.BulkRunnable;
-import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.test.BulkRunnable;
+import com.fillumina.performance.executor.test.Sink;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.TestConfiguration;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,6 +15,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Test;
 
 /**
+ * Tests the removal time of an element from an map. It's tricky to test
+ * because once you remove an element the map changes and the next
+ * iteration will non measure the same operation anymore. Even more to
+ * perform the required number of removal needed to have a significant sample
+ * time it means the map should be huge in size. These might not be what
+ * really you need.<br>
+ * To accomplish a repeatable accurate test you can remove the same element from
+ * an array of identical maps all initialized the same and here is how you can
+ * do that.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -33,11 +42,9 @@ public class BulkPerformanceTemplateTest
     @Override
     public void config(MixedConfigurationBuilder<?> configuration) {
         configuration
-                .setName("BulkPerformanceTemplateTest")
-                .speedTestOnly()
+                .setName(getClass().getSimpleName())
+                .speedConfig()
                     .setMillisecondsPerSample(50)
-                // TODO allow to fix the number of iterations!
-//                    .setBulkSpecificConfig()
                     .setMaxPercentageMargin(Ratio.percentage(7));
     }
 
@@ -58,62 +65,30 @@ public class BulkPerformanceTemplateTest
     }
 
     @Override
-    public void addAssertions(MixedAssertion<?> assertion) {
+    public void addAssertions(MixedAssertionBuilder<?> assertion) {
     }
 
     private static abstract class AbstractMapBulkTestable
-            extends BulkRunnable<Map<Integer, String>, int[]> {
+            extends BulkRunnable<Map<Integer, String>> {
         private static final int ELEMENT_TO_REMOVE = 107;
         private static final String ELEMENT_TO_REMOVE_STR = ""+ELEMENT_TO_REMOVE;
+        private int[] values;
 
-        @Override
-        public int[] createTestValue() {
-            int[] values = createRandomIntArray(8, 100);
+        AbstractMapBulkTestable() {
+            values = createRandomIntArray(8, 100);
             values[7] = ELEMENT_TO_REMOVE;
-            return values;
-        }
-
-        private int[] createRandomIntArray(int size, int max) {
-            Random rnd = ThreadLocalRandom.current();
-            int[] values = new int[max];
-            for (int i=0; i<max; i++) {
-                values[i] = i;
-            }
-            // randomize the array
-            int a, b, t;
-            for (int i=0; i<max; i++) {
-                a = rnd.nextInt(max);
-                b = rnd.nextInt(max);
-                t = values[a];
-                values[a] = values[b];
-                values[b] = t;
-            }
-            int[] result = new int[size];
-            System.arraycopy(values, 0, result, 0, size);
-            return result;
         }
 
         @Override
-        public void onBeforeSample(Map<Integer,String> map, int[] values) {
+        public void onBeforeSample(Map<Integer,String> map) {
             if (map.isEmpty()) {
-                fillMapWithValues(map, values);
+                for (int v : values) {
+                    map.put(v, ""+v);
+                }
             } else {
                 map.put(ELEMENT_TO_REMOVE, ELEMENT_TO_REMOVE_STR);
             }
             assertMapSize(map, 8);
-        }
-
-        private void fillMapWithValues(Map<Integer, String> map, int[] values) {
-            for (int v : values) {
-                map.put(v, ""+v);
-            }
-        }
-
-        private void assertMapSize(Map<Integer, String> map, final int size) {
-            if (map.size() != size) {
-                throw new AssertionError(
-                        "map size differs from " + size + ", " + map.toString());
-            }
         }
 
         @Override
@@ -122,4 +97,30 @@ public class BulkPerformanceTemplateTest
         }
     }
 
+    private static void assertMapSize(Map<Integer, String> map, final int size) {
+        if (map.size() != size) {
+            throw new AssertionError(
+                    "map size differs from " + size + ", " + map.toString());
+        }
+    }
+
+    private static int[] createRandomIntArray(int size, int max) {
+        Random rnd = ThreadLocalRandom.current();
+        int[] values = new int[max];
+        for (int i=0; i<max; i++) {
+            values[i] = i;
+        }
+        // randomize the array
+        int a, b, t;
+        for (int i=0; i<max; i++) {
+            a = rnd.nextInt(max);
+            b = rnd.nextInt(max);
+            t = values[a];
+            values[a] = values[b];
+            values[b] = t;
+        }
+        int[] result = new int[size];
+        System.arraycopy(values, 0, result, 0, size);
+        return result;
+    }
 }

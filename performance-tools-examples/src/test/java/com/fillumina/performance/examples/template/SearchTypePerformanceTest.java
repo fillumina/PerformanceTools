@@ -2,13 +2,12 @@ package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.examples.PrintOut;
 import com.fillumina.performance.examples.template.SearchTypePerformanceTest.Searcher;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.suite.ParameterContainer;
-import com.fillumina.performance.suite.ParameterizedSequenceTestable;
-import com.fillumina.performance.suite.SequenceContainer;
-import com.fillumina.performance.template.ParameterizedSequenceMixedAssertion;
+import com.fillumina.performance.executor.annotation.Param;
+import com.fillumina.performance.executor.annotation.Sequence;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
-import com.fillumina.performance.util.junit.JUnitParameterizedSequencePerformanceTemplate;
+import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Arrays;
 import java.util.Locale;
@@ -22,8 +21,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class SearchTypePerformanceTest
-        extends JUnitParameterizedSequencePerformanceTemplate<Searcher, String[]>{
+public class SearchTypePerformanceTest extends PerformanceTemplate {
 
     private PrintOut printOut = new PrintOut();
 
@@ -68,54 +66,56 @@ public class SearchTypePerformanceTest
     }
 
     @Override
-    public void config(MixedConfigurationBuilder config) {
-        config.speedTestOnly();
+    public void config(MixedConfigurationBuilder<?> config) {
+        config.speedConfig();
     }
 
-    @Override
-    public void addParameters(final ParameterContainer<Searcher> parameters) {
-        parameters.addParameter("linear", new LinearSearcher())
-                .addParameter("binary", new BinarySearcher());
-
-    }
 
     @Override
-    public void addSequence(final SequenceContainer<String[]> sequences) {
-        final String[] locales = Locale.getISOCountries();
-        Arrays.sort(locales);
-        sequences.setSequenceItem("10", Arrays.copyOf(locales, 10));
-        sequences.setSequenceItem("30", Arrays.copyOf(locales, 30));
-    }
-
-    @Override
-    public void addAssertions(ParameterizedSequenceMixedAssertion assertion) {
-        assertion.speed()
-            .forSequenceValue("10")
-                .forAllTests()
-                    .setTolerance(Ratio.percentage(5))
-                        .assertOrder("linear").lessThan("binary")
-                    .end()
-                .endTests()
-
-            .forSequenceValue("30")
-                .forAllTests()
-                    .setTolerance(Ratio.percentage(5))
-                    .assertOrder("binary").lessThan("linear");
-    }
-
-    @Override
-    public void addTests(
-            TestContainer<ParameterizedSequenceTestable<Searcher, String[]>> tests) {
-        tests.addTest("test", new ParameterizedSequenceTestable<Searcher, String[]>() {
+    public void addTests(TestConfiguration<?> tests) {
+        tests.addTest("test", new Runnable() {
             final Random rnd = new Random(System.currentTimeMillis());
 
+            @Param
+            private Searcher searcher;
+
+            @Sequence
+            private String[] names;
+
             @Override
-            public Object test(final Searcher param, final String[] sequence) {
-                final int pos = rnd.nextInt(sequence.length);
-                final int result = param.indexOf(sequence, sequence[pos]);
+            public void run() {
+                final int pos = rnd.nextInt(names.length);
+                final int result = searcher.indexOf(names, names[pos]);
                 assertEquals(pos, result);
-                return null;
             }
         });
+
+        tests.parameters().name("searcher")
+                .value("linear", new LinearSearcher())
+                .value("binary", new BinarySearcher())
+                .end();
+
+        final String[] locales = Locale.getISOCountries();
+        Arrays.sort(locales);
+
+        tests.sequences().name("names")
+                .value("10", Arrays.copyOf(locales, 10))
+                .value("30", Arrays.copyOf(locales, 30))
+                .value("200", Arrays.copyOf(locales, 200))
+                .end();
     }
+
+    @Override
+    public void addAssertions(MixedAssertionBuilder<?> assertions) {
+        assertions.avgTime()
+            .with().string("10").all().end()
+                    .tolerance(Ratio.percentage(5))
+                        .order("linear").lessThan("binary")
+
+            .with().string("30").all().end()
+                    .tolerance(Ratio.percentage(5))
+                    .order("binary").lessThan("linear")
+            .end();
+    }
+
 }

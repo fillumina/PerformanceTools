@@ -1,12 +1,13 @@
 package com.fillumina.performance.examples.template;
 
 import com.fillumina.performance.examples.PrintOut;
-import com.fillumina.performance.infrastructure.TestContainer;
-import com.fillumina.performance.suite.ParameterContainer;
-import com.fillumina.performance.suite.ParameterizedTestable;
-import com.fillumina.performance.template.ParameterizedMixedAssertion;
-import com.fillumina.performance.template.ParameterizedPerformanceTemplate;
+import com.fillumina.performance.executor.annotation.Param;
+import com.fillumina.performance.executor.annotation.SetUp;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.test.Sink;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
+import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,8 +18,8 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class MapMultiThreadedPerformanceTest
-        extends ParameterizedPerformanceTemplate<Map<Integer, String>> {
+public class MapMultiThreadedPerformanceTest extends PerformanceTemplate {
+
     private static final int MAX_CAPACITY = 128;
     private static final int MASK = MAX_CAPACITY + 1;
 
@@ -26,8 +27,11 @@ public class MapMultiThreadedPerformanceTest
             "CONCURRENT RANDOM WRITE";
     private static final String CONCURRENT_RANDOM_READ =
             "CONCURRENT RANDOM READ";
+
     private static final String CONCURRENT_HASH_MAP = "ConcurrentHashMap";
     private static final String SYNCHRONIZED_HASH_MAP = "SynchronizedHashMap";
+    private static final String SYNCHRONIZED_LINKED_HASH_MAP =
+            "SynchronizedLinkedHashMap";
 
     private PrintOut printOut = new PrintOut();
 
@@ -38,7 +42,6 @@ public class MapMultiThreadedPerformanceTest
         test.executeWithMediumOutput();
     }
 
-    //TODO failed: Map Multi Threaded : CONCURRENT RANDOM WRITE 'SynchronizedHashMap' (722.0563 +/- 6.7179 (97 samples) ns) expected greater than 'ConcurrentHashMap' (746.7997 +/- 12.4453 (97 samples) ns)  with a tolerance of 7.000 %
     @Test
     public void executeTest() {
         if (printOut.isPrintOut()) {
@@ -49,61 +52,63 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void config(MixedConfigurationBuilder configuration) {
+    public void config(MixedConfigurationBuilder<?> configuration) {
         configuration
             .setName("Map Multi Threaded")
-            .speedTestOnly()
+            .speedConfig()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-                .setMaxPercentageMargin(10);
+                .setMaxPercentageMargin(Ratio.percentage(10));
     }
 
-    @Override
-    public void addParameters(
-            final ParameterContainer<Map<Integer, String>> parameters) {
-        parameters.addParameter("SynchronizedLinkedHashMap",
-                Collections.synchronizedMap(
-                    new LinkedHashMap<Integer, String>(MAX_CAPACITY)));
-
-        parameters.addParameter(CONCURRENT_HASH_MAP,
-                new ConcurrentHashMap<Integer, String>(MAX_CAPACITY));
-
-        parameters.addParameter(SYNCHRONIZED_HASH_MAP,
-                Collections.synchronizedMap(
-                    new HashMap<Integer, String>(MAX_CAPACITY)));
-    }
+    private final int[] randomArray = createRandomIndexes(MAX_CAPACITY);
 
     @Override
-    public void addTests(
-            TestContainer<ParameterizedTestable<Map<Integer, String>>> tests) {
+    public void addTests(TestConfiguration<?> tests) {
 
-        final int[] randomArray = createRandomIndexes(MAX_CAPACITY);
-
-        tests.addTest(CONCURRENT_RANDOM_READ,
-                new ParameterizedTestable<Map<Integer, String>>() {
+        tests.addTest(CONCURRENT_RANDOM_READ, new Runnable() {
             int counter = 0;
 
-            @Override
-            public void setUp(final Map<Integer, String> map) {
+            @Param
+            private Map<Integer,String> map;
+
+            @SetUp
+            public void setUp() {
                 fillUpMap(map, MAX_CAPACITY);
             }
 
             @Override
-            public Object test(final Map<Integer, String> map) {
+            public void run() {
                 counter = (counter + 1) & MASK;
-                return map.get(randomArray[counter]);
+                Sink.drain(map.get(randomArray[counter]));
             }
         });
 
-        tests.addTest(CONCURRENT_RANDOM_WRITE,
-                new ParameterizedTestable<Map<Integer, String>>() {
+        tests.addTest(CONCURRENT_RANDOM_WRITE, new Runnable() {
             int counter = 0;
 
+            @Param
+            private Map<Integer,String> map;
+
             @Override
-            public Object test(final Map<Integer, String> map) {
+            public void run() {
                 counter = (counter + 1) & MASK;
-                return map.put(randomArray[counter], "xyz");
+                Sink.drain(map.put(randomArray[counter], "xyz"));
             }
         });
+
+        tests.parameters()
+                .name("map")
+                    .value(SYNCHRONIZED_LINKED_HASH_MAP,
+                            Collections.synchronizedMap(
+                                new LinkedHashMap<Integer, String>(MAX_CAPACITY)))
+                    .value(CONCURRENT_HASH_MAP,
+                            new ConcurrentHashMap<Integer, String>(MAX_CAPACITY))
+                    .value(SYNCHRONIZED_HASH_MAP,
+                            Collections.synchronizedMap(
+                                new HashMap<Integer, String>(MAX_CAPACITY)))
+                .end()
+            .end();
+
     }
 
     private int[] createRandomIndexes(final int maxIndex) {
@@ -123,17 +128,14 @@ public class MapMultiThreadedPerformanceTest
     }
 
     @Override
-    public void addAssertions(ParameterizedMixedAssertion assertion) {
-        assertion.speed()
+    public void addAssertions(MixedAssertionBuilder<?> assertions) {
+        assertions.avgTime()
             .forTest(CONCURRENT_RANDOM_READ)
-                .setTolerance(Ratio.percentage(7))
-                    .assertOrder(SYNCHRONIZED_HASH_MAP)
-                        .greaterThan(CONCURRENT_HASH_MAP)
+                .tolerance(Ratio.percentage(7))
+                    .order(SYNCHRONIZED_HASH_MAP).greaterThan(CONCURRENT_HASH_MAP)
+                    .order(SYNCHRONIZED_HASH_MAP).greaterThan(CONCURRENT_HASH_MAP)
                 .end()
-            .forTest(CONCURRENT_RANDOM_WRITE)
-                .setTolerance(Ratio.percentage(7))
-                    .assertOrder(SYNCHRONIZED_HASH_MAP)
-                        .greaterThan(CONCURRENT_HASH_MAP);
+            .end();
     }
 
     private static void fillUpMap(final Map<Integer, String> map,

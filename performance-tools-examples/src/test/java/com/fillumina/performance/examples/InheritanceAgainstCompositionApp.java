@@ -1,12 +1,14 @@
 package com.fillumina.performance.examples;
 
-import com.fillumina.performance.infrastructure.Sink;
-import com.fillumina.performance.template.MixedAssertion;
+import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.test.Sink;
+import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.template.TestConfiguration;
 
 /**
+ * This approach is a long standing argument about composition against
+ * extending a class.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -20,14 +22,14 @@ public class InheritanceAgainstCompositionApp
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speedTestOnly();
+        config.speedConfig();
     }
 
     @Override
     public void addTests(TestConfiguration<?> tests) {
         tests.addTest("composition", new Runnable() {
+            private final ComposedClass cc = new ComposedClass();
             private int a = 4, b = 7889;
-            private ComposedClass cc = new ComposedClass();
 
             @Override
             public void run() {
@@ -36,8 +38,8 @@ public class InheritanceAgainstCompositionApp
         });
 
         tests.addTest("inheritance", new Runnable() {
+            private final ExtendingMultiplier em = new ExtendingMultiplier();
             private int a = 4, b = 7889;
-            private ExtendingMultiplier em = new ExtendingMultiplier();
 
             @Override
             public void run() {
@@ -47,7 +49,8 @@ public class InheritanceAgainstCompositionApp
     }
 
     @Override
-    public void addAssertions(MixedAssertion<?> assertions) {
+    public void addAssertions(MixedAssertionBuilder<?> assertions) {
+        assertions.avgTime().order("composition").equalsTo("inheritance").end();
     }
 
     private static abstract class AbstractInheritableClass {
@@ -75,11 +78,11 @@ public class InheritanceAgainstCompositionApp
     }
 
     private static class ComposedClass {
-        private final static StandAloneMultiplier multiplier =
+        private final static StandAloneMultiplier MULTIPLIER =
                 new StandAloneMultiplier();
 
         public int doOperation(int a, int b) {
-            return multiplier.multiply(a, b);
+            return MULTIPLIER.multiply(a, b);
         }
     }
 }
