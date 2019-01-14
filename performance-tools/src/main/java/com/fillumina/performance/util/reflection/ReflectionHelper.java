@@ -117,19 +117,10 @@ public class ReflectionHelper {
         }
         for (Constructor<?> c : clazz.getDeclaredConstructors()) {
             Parameter[] parameters = c.getParameters();
-            IndexedHashMap<String,Field> fieldMap = getAllFieldsByName(clazz);
-            final int paramSize = parameters.length;
-            Object[] vars = new Object[paramSize];
-            for (int i=1; i<paramSize; i++) {
-                try {
-                    vars[i] = getFieldValue(origin, parameters[i].getName());
-                } catch (IllegalArgumentException e) {
-                    // use same index as reported by java reflection
-                    final String alternativeName = fieldMap.getKeyAtIndex(i-1);
-                    //System.out.println("ALTERNATIVE NAME: " + alternativeName);
-                    vars[i] = getFieldValue(origin, alternativeName);
-                }
+            if (parameters.length == 0) {
+                return newInstance(c);
             }
+            Object[] vars = getParametersFromObject(origin, parameters);
             if (enclosingClass == parameters[0].getType()) {
                 Field f = getFieldValueWithType(clazz, enclosingClass);
                 try {
@@ -143,18 +134,40 @@ public class ReflectionHelper {
                         InvocationTargetException ex) {
                     throw new RuntimeException(ex);
                 }
-            } else {
-                try {
-                    c.setAccessible(true);
-                    return (T) c.newInstance();
-                } catch (IllegalArgumentException |
-                        IllegalAccessException | InstantiationException |
-                        InvocationTargetException ex) {
-                    throw new RuntimeException(ex);
-                }
             }
         }
         return null;
+    }
+
+    private static <T> Object[] getParametersFromObject(T origin,
+            Parameter[] constructorParameters) {
+        final Class<?> clazz = origin.getClass();
+        final IndexedHashMap<String,Field> fieldMap = getAllFieldsByName(clazz);
+        final int paramSize = constructorParameters.length;
+        Object[] vars = new Object[paramSize];
+        for (int i=1; i<paramSize; i++) {
+            try {
+                vars[i] = getFieldValue(origin, constructorParameters[i].getName());
+            } catch (IllegalArgumentException e) {
+                // use same index as reported by java reflection
+                final String alternativeName = fieldMap.getKeyAtIndex(i-1);
+                //System.out.println("ALTERNATIVE NAME: " + alternativeName);
+                vars[i] = getFieldValue(origin, alternativeName);
+            }
+        }
+        return vars;
+    }
+
+    private static <T> T newInstance(
+            Constructor<?> c) throws RuntimeException {
+        try {
+            c.setAccessible(true);
+            return (T) c.newInstance();
+        } catch (IllegalArgumentException |
+                IllegalAccessException | InstantiationException |
+                InvocationTargetException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private static Field getFieldValueWithType(Class<?> clazz, Class<?> type) {

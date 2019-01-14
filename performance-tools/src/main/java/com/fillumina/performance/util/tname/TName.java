@@ -48,12 +48,17 @@ public class TName extends AbstractList<String>
     private final String[] array;
     private ArrayList<WeakReference<TName>> children;
 
-    private TName(TName parent, String lastName) {
+    protected TName(TName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.level = parent == null ? 0 : parent.size() + 1;
         this.array = createArray();
         this.fullName = toStringWithSeparator(SEPARATOR);
+    }
+
+    /** Override if you extend this class. */
+    protected TName createNew(String name) {
+        return new TName(this, name);
     }
 
     private String[] createArray() {
@@ -111,7 +116,7 @@ public class TName extends AbstractList<String>
         } else {
             children = new ArrayList<>(3);
         }
-        TName child = new TName(this, name);
+        TName child = createNew(name);
         children.add(new WeakReference<>(child));
         return child;
     }

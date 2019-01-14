@@ -60,6 +60,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         assertEquals(5, executor.getConcurrencyLevel());
     }
 
+    // TODO this test fails a lot during mvn clean install
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =

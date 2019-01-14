@@ -26,8 +26,8 @@ class IterationLogger {
     }
 
     public String getMessage() {
-        return "test '" + name + "' has been probably " +
-                "evicted by JVM optimizations and cannot be tested." +
+        return "test '" + name +
+                "' has been evicted by JVM optimizations and cannot be tested." +
                 System.lineSeparator() + toString();
     }
 
