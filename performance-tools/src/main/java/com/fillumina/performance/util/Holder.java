@@ -1,5 +1,7 @@
 package com.fillumina.performance.util;
 
+import java.util.Objects;
+
 /**
  * Used to pass values out of an inner class or in a scope where an external
  * final variable is needed to be accessed but its value must be mutable
@@ -20,6 +22,7 @@ public class Holder<T> {
         public void setValue(double value) { this.value = value; }
         public void add(double value) { this.value += value; }
         public void subtract(double value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Float {
@@ -31,6 +34,7 @@ public class Holder<T> {
         public void setValue(float value) { this.value = value; }
         public void add(float value) { this.value += value; }
         public void subtract(float value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Integer {
@@ -46,6 +50,7 @@ public class Holder<T> {
         public void setValue(int value) { this.value = value; }
         public void add(int value) { this.value += value; }
         public void subtract(int value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Long {
@@ -61,6 +66,7 @@ public class Holder<T> {
         public void setValue(long value) { this.value = value; }
         public void add(long value) { this.value += value; }
         public void subtract(long value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Short {
@@ -76,6 +82,7 @@ public class Holder<T> {
         public void setValue(short value) { this.value = value; }
         public void add(short value) { this.value += value; }
         public void subtract(short value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Char {
@@ -91,6 +98,7 @@ public class Holder<T> {
         public char decrementAndGet() { return --value; }
         public void add(char value) { this.value += value; }
         public void subtract(char value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Byte {
@@ -106,6 +114,7 @@ public class Holder<T> {
         public byte decrementAndGet() { return --value; }
         public void add(byte value) { this.value += value; }
         public void subtract(byte value) { this.value -= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     public static class Boolean {
@@ -117,6 +126,7 @@ public class Holder<T> {
         public void setValue(boolean value) { this.value = value; }
         public void or(boolean value) { this.value |= value; }
         public void and(boolean value) { this.value &= value; }
+        @Override public String toString() { return Objects.toString(value); }
     }
 
     private T value;
@@ -142,5 +152,10 @@ public class Holder<T> {
 
     public void setValue(T value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toString(value);
     }
 }

@@ -4,6 +4,7 @@ import com.fillumina.performance.util.stats.Measure;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  *
@@ -11,14 +12,22 @@ import java.util.Optional;
  */
 class BiggerMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Predicate<String> ACCEPTS_ALL = name -> false;
 
     private final Measure refMeasure;
     private final int refIndex;
     private final CharSequence refName;
 
     public BiggerMeasure(Map<? extends CharSequence, ? extends Measure> map) {
+        this(map, ACCEPTS_ALL);
+    }
+
+    public BiggerMeasure(Map<? extends CharSequence, ? extends Measure> map,
+            Predicate<String> filter) {
         Optional<? extends Map.Entry<? extends CharSequence, ? extends Measure>> result =
-                map.entrySet().stream().max((e1, e2) -> {
+                map.entrySet().stream()
+                        .filter(e -> !filter.test(e.getKey().toString()))
+                        .max((e1, e2) -> {
             return Double.compare(e1.getValue().getMean(), e2.getValue().getMean());
         });
 

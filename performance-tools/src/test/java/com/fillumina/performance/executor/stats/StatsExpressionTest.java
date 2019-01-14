@@ -16,6 +16,22 @@ import org.junit.Test;
 public class StatsExpressionTest {
 
     @Test
+    public void shouldReturnToCaller() {
+        StatsExpression<StatsExpressionTest> solver = new StatsExpression<>(this);
+        StatsExpression<StatsExpressionTest> caller = solver.addExpression(TN.tname("first"))
+                .addTest(TN.tname("one")).multiplyBy(7)
+                .subtractTest(TN.tname("two")).divideBy(3)
+                .addExpression()
+                    .addTest(TN.tname("three", "four")).multiplyBy(2)
+                    .subtractTest(TN.tname("one"))
+                .endExpression().divideBy(5)
+            .end();
+
+        assertEquals(solver, caller);
+        assertEquals(this, caller.end());
+    }
+
+    @Test
     public void shouldCreateAnExpressionUsingTNames() {
         StatsExpression<?> solver = new StatsExpression<>();
         solver.addExpression(TN.tname("first"))

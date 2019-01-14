@@ -47,8 +47,10 @@ public abstract class AbstractTimeStatsTableStringGenerator
         appendable.append(header);
         appendable.append(System.lineSeparator());
 
+        Stats filteredStats = new Stats(stats, n -> n.endsWith("$"));
+
         TableFormatter performance =
-                createPerformanceTable(stats, confidence);
+                createPerformanceTable(filteredStats, confidence);
         appendable.append(performance.toString());
         appendable.append(System.lineSeparator());
     }

@@ -52,7 +52,8 @@ package com.fillumina.performance.util;
    }
  * </pre>
  *
- *
+ * @param C returned object type
+ * @param B type of the object to build
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {

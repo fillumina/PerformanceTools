@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * An {@link AssertableExperiment} representing the Statistics about an
@@ -49,7 +50,12 @@ public class Stats extends Printable<Stats>
 
     /** Copy constructor. */
     public Stats(Stats copy) {
-        this(copy.type, copy.map);
+        this(copy.type, copy.map, copy.unit);
+    }
+
+    /** Copy constructor but filtering out references. */
+    public Stats(Stats copy, Predicate<String> filter) {
+        this(copy.type, copy.map, copy.unit, filter);
     }
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
@@ -59,10 +65,18 @@ public class Stats extends Printable<Stats>
     public Stats(StatsType type,
             Map<TName,DimensionalMeasure> measures,
             Unit<?> unit) {
+        this(type, measures, unit, null);
+    }
+
+    public Stats(StatsType type,
+            Map<TName,DimensionalMeasure> measures,
+            Unit<?> unit,
+            Predicate<String> filter) {
         this.type = type;
         this.unit = getArmonizedUnit(measures.values());
         this.map = createNormalizedMap(measures, unit);
-        this.refMeasure = new BiggerMeasure(this.map);
+        this.refMeasure = filter == null ?
+                new BiggerMeasure(this.map) : new BiggerMeasure(map, filter);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
 

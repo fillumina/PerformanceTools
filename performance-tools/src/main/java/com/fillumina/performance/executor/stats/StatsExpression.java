@@ -24,7 +24,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         implements ExpressionSolver {
 
     private final C caller;
-    private final Map<TName, ExpressionList> map = new IndexedHashMap<>();
+    private final Map<TName, ExpressionList<C>> map = new IndexedHashMap<>();
     private Map<TName, String> stringMap;
 
     public StatsExpression() {
@@ -39,12 +39,12 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         return caller;
     }
 
-    public ExpressionList addExpression(String... name) {
+    public ExpressionList<C> addExpression(String... name) {
         return addExpression(TN.tname(name));
     }
 
-    public ExpressionList addExpression(CharSequence name) {
-        ExpressionList expressionList = new ExpressionList(null, false);
+    public ExpressionList<C> addExpression(CharSequence name) {
+        ExpressionList<C> expressionList = new ExpressionList<>(this, null, false);
         map.put(TN.tname(name), expressionList);
         return expressionList;
     }
@@ -52,7 +52,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     @Override
     public StatsExpression<C> appendTo(Appendable appendable) {
         AppendableWrapper app = new AppendableWrapper(appendable);
-        map.forEach((TName name, ExpressionList expr) -> {
+        map.forEach((TName name, ExpressionList<C> expr) -> {
                     app.print(name.toString()).print(": ");
                     expr.appendTo(app);
         });
@@ -63,7 +63,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     public Map<TName,String> getStringExpressions() {
         if (stringMap == null || stringMap.size() != map.size()) {
             Map<TName,String> m = new LinkedHashMap<>();
-            map.forEach( (TName name, ExpressionList expr) ->
+            map.forEach( (TName name, ExpressionList<C> expr) ->
                     m.put(name, expr.toString()) );
             this.stringMap = Collections.unmodifiableMap(m);
         }
@@ -77,18 +77,18 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
             return Collections.<TName,Measure>emptyMap();
         }
         IndexedHashMap<TName, Measure> measureMap = new IndexedHashMap<>();
-        map.forEach((TName name, ExpressionList exp) ->
+        map.forEach((TName name, ExpressionList<C> exp) ->
             measureMap.put(name, exp.solve(stats)) );
         return measureMap;
     }
 
-    public static abstract class AbstractExpression {
-        protected final ExpressionList parent;
+    public static abstract class AbstractExpression<C> {
+        protected final ExpressionList<C> parent;
         protected final boolean subtract;
         protected double multiplier = 1.0;
         protected double divisor = 1.0;
 
-        public AbstractExpression(ExpressionList parent, boolean subtract) {
+        public AbstractExpression(ExpressionList<C> parent, boolean subtract) {
             this.parent = parent;
             this.subtract = subtract;
         }
@@ -97,9 +97,9 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         protected abstract void appendExprTo(AppendableWrapper app);
 
-        protected abstract <E extends AbstractExpression> E addToList(E e);
+        protected abstract <E extends AbstractExpression<C>> E addToList(E e);
 
-        public AbstractExpression appendTo(AppendableWrapper app) {
+        public AbstractExpression<C> appendTo(AppendableWrapper app) {
             appendExprTo(app);
             if (Double.compare(multiplier, 1.0) != 0) {
                 app.print(" * ").print(multiplier);
@@ -110,63 +110,74 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
             return this;
         }
 
-        public ExpressionTest addTest(String... testName) {
+        public ExpressionTest<C> addTest(String... testName) {
             return addTest(TN.tname(testName));
         }
 
-        public ExpressionTest addTest(CharSequence testName) {
-            return addToList(new ExpressionTest(getParent(), false,
+        public ExpressionTest<C> addTest(CharSequence testName) {
+            return addToList(new ExpressionTest<>(getParent(), false,
                     TN.tname(testName) ));
         }
 
-        public ExpressionTest subtractTest(String... testName) {
+        public ExpressionTest<C> subtractTest(String... testName) {
             return subtractTest(TN.tname(testName));
         }
 
-        public ExpressionTest subtractTest(CharSequence testName) {
-            return addToList(new ExpressionTest(getParent(), true,
+        public ExpressionTest<C> subtractTest(CharSequence testName) {
+            return addToList(new ExpressionTest<>(getParent(), true,
                     TN.tname(testName) ));
         }
 
-        public ExpressionList addExpression() {
-            return addToList(new ExpressionList(getParent(), false));
+        public ExpressionList<C> addExpression() {
+            return addToList(new ExpressionList<>(getParent(), false));
         }
 
-        public ExpressionList subtractExpression() {
-            return addToList(new ExpressionList(getParent(), true));
+        public ExpressionList<C> subtractExpression() {
+            return addToList(new ExpressionList<>(getParent(), true));
         }
 
-        public ExpressionList multiplyBy(double value) {
+        public ExpressionList<C> multiplyBy(double value) {
             this.multiplier = value;
             return parent;
         }
 
-        public ExpressionList divideBy(double value) {
+        public ExpressionList<C> divideBy(double value) {
             this.divisor = value;
             return parent;
         }
 
-        public ExpressionList endExpression() {
+        public ExpressionList<C> endExpression() {
             return parent;
         }
 
-        private ExpressionList getParent() {
+        private ExpressionList<C> getParent() {
             if (this instanceof ExpressionList) {
-                return (ExpressionList) this;
+                return (ExpressionList<C>) this;
             }
             return parent;
         }
    }
 
-    public static class ExpressionList extends AbstractExpression {
-        private final List<AbstractExpression> expressions = new ArrayList<>();
+    public static class ExpressionList<C> extends AbstractExpression<C> {
+        private final List<AbstractExpression<C>> expressions = new ArrayList<>();
+        private StatsExpression<C> caller;
 
-        public ExpressionList(ExpressionList expressionList, boolean subtract) {
+        public ExpressionList(ExpressionList<C> expressionList, boolean subtract) {
+            this(null, expressionList, subtract);
+        }
+
+        public ExpressionList(StatsExpression<C> caller,
+                ExpressionList<C> expressionList, boolean subtract) {
             super(expressionList, subtract);
+            this.caller = caller;
+        }
+
+        public StatsExpression<C> end() {
+            return caller;
         }
 
         @Override
-        protected <E extends AbstractExpression> E addToList(E e) {
+        protected <E extends AbstractExpression<C>> E addToList(E e) {
             expressions.add(e);
             return e;
         }
@@ -184,7 +195,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
                 app.print("(");
             }
             boolean first = true;
-            for (AbstractExpression expr : expressions) {
+            for (AbstractExpression<C> expr : expressions) {
                 if (expr.subtract) {
                     app.print(" - ");
                 } else if (!first) {
@@ -203,7 +214,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         @Override
         protected Measure solve(Stats stats) {
             Measure measure = null;
-            for (AbstractExpression exp : expressions) {
+            for (AbstractExpression<C> exp : expressions) {
                 if (measure == null) {
                     measure = exp.solve(stats);
                 } else {
@@ -214,10 +225,10 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
     }
 
-    public static class ExpressionTest extends AbstractExpression {
+    public static class ExpressionTest<C> extends AbstractExpression<C> {
         private final TName testName;
 
-        public ExpressionTest(ExpressionList parent,
+        public ExpressionTest(ExpressionList<C> parent,
                 boolean subtract,
                 TName testName) {
             super(parent, subtract);
@@ -225,7 +236,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
 
         @Override
-        protected <E extends AbstractExpression> E addToList(E e) {
+        protected <E extends AbstractExpression<C>> E addToList(E e) {
             parent.expressions.add(e);
             return e;
         }

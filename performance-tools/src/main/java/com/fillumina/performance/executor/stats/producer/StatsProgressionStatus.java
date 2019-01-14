@@ -44,7 +44,7 @@ public class StatsProgressionStatus {
         buf.append(System.lineSeparator());
         if (stats != null && !stats.isEmpty()) {
             for (Stats s : stats) {
-                buf.append(stats.toString());
+                buf.append(s.toString());
                 buf.append(System.lineSeparator());
             }
         }

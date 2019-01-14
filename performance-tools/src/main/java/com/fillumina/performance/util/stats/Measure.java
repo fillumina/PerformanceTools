@@ -72,7 +72,7 @@ public abstract class Measure {
      * @return
      */
     public Ratio getFractionalUncertainty(Ratio confidence) {
-        return Ratio.decimal(getMarginOfError(confidence) / getMean());
+        return Ratio.decimal(Math.abs(getMarginOfError(confidence) / getMean()));
     }
 
     public double getStandardDeviation() {

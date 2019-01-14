@@ -72,11 +72,14 @@ public final class AverageTimeStatsTableStringGenerator
         String tukeyHsdStr = tukeyHsd < 0 ? "" :
                 String.format(Locale.US,"%.3f", tukeyHsd);
 
+        boolean displayRatio = name.toString().endsWith("$");
+
         performanceTable
                 .cell(index)
                 .cell(name.getLastName())
-                .cell(stats.getRatioWithRef(name, confidence)
-                        .toStringAsPercentage())
+                .cell(displayRatio ? "" :
+                        stats.getRatioWithRef(name, confidence)
+                                .toStringAsPercentage())
                 .cell(measure.toStringForConfidenceWitoutSamples(
                         confidence, unit))
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))

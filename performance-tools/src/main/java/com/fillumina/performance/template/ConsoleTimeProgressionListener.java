@@ -104,11 +104,15 @@ public class ConsoleTimeProgressionListener
             System.out.println("");
             System.out.println(TableFormatter.title("TEST " + name, '-'));
         }
-        if (statusMessage != null) {
-            System.out.println(statusMessage);
+        if (statusMessage != null && !statusMessage.isEmpty()) {
+            System.out.println("");
+            System.out.println("iterator status: " + statusMessage);
         }
-        for (Stats t : stats) {
-            System.out.println(stringGenerator.toString(t));
+        if (!stats.isEmpty()) {
+            System.out.println("");
+            for (Stats t : stats) {
+                System.out.println(stringGenerator.toString(t));
+            }
         }
     }
 }

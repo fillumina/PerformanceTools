@@ -70,7 +70,9 @@ public class RequiredMarginStrategyTest {
 
         SampleProgressionStatus status = createStatus(7, 5, margin);
 
-        assertEquals(0.0, strategy.errorToStopTakingSamplesCondition(status), 0);
+        double error = strategy.errorToStopTakingSamplesCondition(status);
+
+        assertEquals("status=\n" + status.toString(), 0.0, error, 0);
     }
 
     private SampleProgressionStatus createStatus(int executedSamples,
@@ -89,7 +91,7 @@ public class RequiredMarginStrategyTest {
     private MixedStatsHolder createMixedAssertableHolderWithMargin(
             Ratio requiredMargin) {
         Holder<MixedStatsHolder> holder = new Holder<>();
-        ExpBinarySearcher.search(0, 200, o -> {
+        ExpBinarySearcher.search(1, 200, o -> {
             MixedStatsHolder msh = createMixedAssertableHolder(o);
             Ratio maxMargin = RequiredMarginStrategy
                     .getMaxPercentageMargin(msh, Ratio.P_999);

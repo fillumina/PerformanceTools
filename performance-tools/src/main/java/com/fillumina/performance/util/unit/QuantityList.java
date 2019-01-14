@@ -32,7 +32,7 @@ public class QuantityList
         public Builder add(Quantity<?> q) {
             list.add(q);
             Unit<?> unit = q.getUnit();
-            double baseValue = unit.convertToBase(q.getValue());
+            double baseValue = Math.abs(unit.convertToBase(q.getValue()));
             if (baseUnit == null) {
                 baseUnit = unit.getBase();
             } else {

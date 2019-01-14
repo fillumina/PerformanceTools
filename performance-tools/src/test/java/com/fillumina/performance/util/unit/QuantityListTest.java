@@ -35,6 +35,18 @@ public class QuantityListTest {
     }
 
     @Test
+    public void shouldArmonizeEqualNegativeUnits() {
+        QuantityList armonizer = QuantityList.builder()
+                .add(100, IntervalUnit.MILLISECONDS)
+                .add(2_000, IntervalUnit.MILLISECONDS)
+                .add(-130_123, IntervalUnit.MILLISECONDS)
+                .add(783, IntervalUnit.MILLISECONDS)
+                .build();
+
+        assertEquals(IntervalUnit.SECONDS, armonizer.getUnit());
+    }
+
+    @Test
     public void shouldReturnAValueList() {
         List<Double> list = QuantityList.builder()
                 .add(100, IntervalUnit.MILLISECONDS)
