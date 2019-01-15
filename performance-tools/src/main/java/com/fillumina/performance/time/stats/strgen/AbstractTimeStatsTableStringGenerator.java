@@ -1,6 +1,7 @@
 package com.fillumina.performance.time.stats.strgen;
 
-import com.fillumina.performance.executor.stats.ExtendedStats;
+import com.fillumina.performance.executor.stats.ExpressionSolver;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
@@ -47,7 +48,7 @@ public abstract class AbstractTimeStatsTableStringGenerator
         appendable.append(header);
         appendable.append(System.lineSeparator());
 
-        Stats filteredStats = new Stats(stats, n -> n.endsWith("$"));
+        Stats filteredStats = new Stats(stats, ReferenceTestFilter.FILTER);
 
         TableFormatter performance =
                 createPerformanceTable(filteredStats, confidence);
@@ -62,15 +63,22 @@ public abstract class AbstractTimeStatsTableStringGenerator
                 stats.getMaximumPercentageMargin(confidence).toString())
             .param("ANOVA", stats.getAnova())
             .toString();
-        if (stats instanceof ExtendedStats) {
-            ExtendedStats eStats = (ExtendedStats) stats;
-            TableFormatter expr = new TableFormatter("  ")
-                    .row("name", "expression");
-            eStats.getExpressionsAsString().forEach((TName name, String str) ->
-                    expr.row(name.toString(), str));
-            header = header + System.lineSeparator() + expr.toString();
+        String exprStr = System.lineSeparator();
+        if (stats instanceof Stats) {
+            Stats eStats = (Stats) stats;
+            ExpressionSolver exprSolver =
+                    eStats.getPayload(ExpressionSolver.class);
+            Map<TName, String> expressions =
+                    exprSolver.getStringExpressions();
+            if (!expressions.isEmpty()) {
+                TableFormatter expr = new TableFormatter("  ")
+                        .row("name", "expression");
+                expressions.forEach((TName name, String str) ->
+                        expr.row(name.toString(), str));
+                exprStr = expr.toString() + System.lineSeparator();
+            }
         }
-        return header;
+        return header + exprStr;
     }
 
     protected TableFormatter createPerformanceTable(

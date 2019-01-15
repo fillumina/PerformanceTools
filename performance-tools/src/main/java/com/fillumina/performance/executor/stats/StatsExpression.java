@@ -1,6 +1,5 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.Printable;
@@ -79,14 +78,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
         IndexedHashMap<TName, Measure> measureMap = new IndexedHashMap<>();
         map.forEach((TName name, ExpressionList<C> exp) -> {
-            try {
                 measureMap.put(name, exp.solve(stats));
-            } catch(MeasureNotFoundException e) {
-                // ignore if not ending with $
-                if (!name.toString().endsWith("$")) {
-                    throw e;
-                }
-            }
         });
         return measureMap;
     }

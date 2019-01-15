@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats;
 
 import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.collection.IndexedHashMap;

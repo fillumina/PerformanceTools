@@ -2,8 +2,8 @@ package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.TestExecutor;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
-import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.tname.TName;
 
@@ -63,7 +63,8 @@ public class ConsecutiveExecutorStatsProducer
                         if (joinStats.isNull()) {
                             joinStats.setValue(stats);
                         } else {
-                            joinStats.setValue(joinStats.getValue().join(stats));
+                            joinStats.setValue((Stats)
+                                    joinStats.getValue().join(stats));
                         }
                     });
         });

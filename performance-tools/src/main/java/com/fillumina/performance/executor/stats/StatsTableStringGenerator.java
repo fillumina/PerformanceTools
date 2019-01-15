@@ -79,11 +79,11 @@ public final class StatsTableStringGenerator
                 stats.getMaximumPercentageMargin(confidence).toString())
             .param("ANOVA", stats.getAnova())
             .toString();
-        if (stats instanceof ExtendedStats) {
-            ExtendedStats eStats = (ExtendedStats) stats;
+        ExpressionSolver exprSolver = stats.getPayload(ExpressionSolver.class);
+        if (exprSolver != null) {
             TableFormatter expr = new TableFormatter("  ")
                     .row("name", "expression");
-            eStats.getExpressionsAsString().forEach((TName name, String str) ->
+            exprSolver.getStringExpressions().forEach((TName name, String str) ->
                     expr.row(name.toString(), str));
             header = header + System.lineSeparator() + expr.toString();
         }

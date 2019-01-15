@@ -16,6 +16,7 @@ import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,6 +28,9 @@ import java.util.function.Predicate;
  * In addition of the usual statistics it calculates ANOVA and performs the
  * Tukey HSD post-hoc test on all experiment pairs so to assess the
  * statistic significance of results.
+ * <p>
+ * It is possible to add named payloads that contain configurable info about the
+ * various stages of the creation of the stats.
  * <p>
  * This class is immutable.
  *
@@ -45,6 +49,7 @@ public class Stats extends Printable<Stats>
     private final IndexedHashMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
     private final Unit<?> unit;
+    private final Map<String, Object> payloadMap = new HashMap<>();
 
     private TukeyPrintable tukeyPrintable;
 
@@ -79,6 +84,27 @@ public class Stats extends Printable<Stats>
                 new BiggerMeasure(this.map) : new BiggerMeasure(map, filter);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
     }
+
+    public void putPayload(Object payload) {
+        if (payload != null) {
+            payloadMap.put(payload.getClass().getName(), payload);
+        }
+    }
+
+    public void putPayload(String name, Object payload) {
+        payloadMap.put(name, payload);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getPayload(Class<T> payloadClazz) {
+        return (T) payloadMap.get(payloadClazz.getName());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getPayload(String payloadName, Class<T> clz) {
+        return (T) payloadMap.get(payloadName);
+    }
+
 
     /** @return a new Stats normalized to the given unit. */
     public Stats as(Unit<?> unit) {

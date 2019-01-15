@@ -343,7 +343,8 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    private void appendTo(Appendable appendable, LinkedTree<TName,Stats>  tree)
+    private void appendTo(Appendable appendable,
+            LinkedTree<TName,Stats>  tree)
             throws IOException {
         TName title = tree.getKey();
         if (title != null && !title.isEmpty()) {

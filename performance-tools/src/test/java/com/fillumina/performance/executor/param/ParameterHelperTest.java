@@ -62,7 +62,7 @@ public class ParameterHelperTest {
 
         //System.out.println(params.toString());
 
-        IndexedHashMap<TName,Runnable> pmap =
+        IndexedHashMap<TName,RunnableContainer> pmap =
                 ParameterHelper.createParameterizedRunnables(
                         Param.class, params, new ParameterizedRunnable());
 
@@ -70,7 +70,7 @@ public class ParameterHelperTest {
 
         assertEquals(6, pmap.size());
 
-        Iterator<Entry<TName,Runnable>> it = pmap.iterator();
+        Iterator<Entry<TName,RunnableContainer>> it = pmap.iterator();
         assertEquals("Bob-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Tom-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Bob-100", it.next().getKey().toStringWithSeparator("-"));
@@ -79,8 +79,9 @@ public class ParameterHelperTest {
         assertEquals("Tom-1000", it.next().getKey().toStringWithSeparator("-"));
         assertFalse(it.hasNext());
 
-        pmap.forEach((TName tname, Runnable runnable) -> {
-            ParameterizedRunnable prunnable = (ParameterizedRunnable) runnable;
+        pmap.forEach((TName tname, RunnableContainer runnable) -> {
+            ParameterizedRunnable prunnable =
+                    (ParameterizedRunnable) runnable.getRunnable();
 
             String name = tname.getFirstName();
             assertEquals(name, prunnable.getName());

@@ -1,6 +1,7 @@
 package com.fillumina.performance.executor.stats.producer;
 
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.tname.TName;
 import java.util.Collection;

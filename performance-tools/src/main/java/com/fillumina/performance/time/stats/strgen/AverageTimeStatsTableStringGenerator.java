@@ -72,7 +72,7 @@ public final class AverageTimeStatsTableStringGenerator
         String tukeyHsdStr = tukeyHsd < 0 ? "" :
                 String.format(Locale.US,"%.3f", tukeyHsd);
 
-        boolean displayRatio = name.toString().endsWith("$");
+        boolean displayRatio = ReferenceTestFilter.FILTER.test(name.toString());
 
         performanceTable
                 .cell(index)

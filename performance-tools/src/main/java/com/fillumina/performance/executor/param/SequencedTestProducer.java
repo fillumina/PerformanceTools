@@ -19,6 +19,7 @@ import java.util.Map.Entry;
 public class SequencedTestProducer
     extends AbstractStatsProducerInstrumenter<SequencedTestProducer> {
 
+    public static final String SEQUENCES = "sequences";
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> sequences;
@@ -44,15 +45,15 @@ public class SequencedTestProducer
         assertTestsPresent();
 
         //          test name,          options
-        IndexedHashMap<TName, IndexedHashMap<TName, Runnable>> sequencedTestMap =
-                new IndexedHashMap<>();
+        IndexedHashMap<TName, IndexedHashMap<TName, RunnableContainer>>
+                sequencedTestMap = new IndexedHashMap<>();
 
         getTests().forEach((TName testName, Runnable runnable) -> {
-            IndexedHashMap<TName, Runnable> runnableList =
+            IndexedHashMap<TName, RunnableContainer> runnableContainersMap =
                     ParameterHelper.createParameterizedRunnables(
                             Sequence.class, sequences, runnable);
 
-            sequencedTestMap.put(testName, runnableList);
+            sequencedTestMap.put(testName, runnableContainersMap);
         });
 
         final TName experimentName = getName();
@@ -65,18 +66,32 @@ public class SequencedTestProducer
         for (int i=0; i<sequenceSize; i++) {
             final int index = i;
             producer.clearTests();
+
+            IndexedHashMap<TName, RunnableContainer> runnableMap =
+                    new IndexedHashMap<>();
+
             sequencedTestMap.forEach(
-                    (TName testName, IndexedHashMap<TName, Runnable> map) -> {
-                final Entry<TName, Runnable> paramTestEntry =
+                    (TName testName,
+                            IndexedHashMap<TName, RunnableContainer> map) -> {
+                final Entry<TName, RunnableContainer> paramTestEntry =
                         map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();
-                Runnable paramTest = paramTestEntry.getValue();
+                RunnableContainer runnableContainer = paramTestEntry.getValue();
+                Runnable paramTest = runnableContainer.getRunnable();
+
+                runnableMap.put(testName, runnableContainer);
 
                 TName name = experimentName.append(paramName);
                 producer.setName(name);
                 producer.addTest(createTestName(name, testName), paramTest);
             });
-            joiner.addSubExperiment(producer.execute());
+
+            final MixedStatsHolder results = producer.execute();
+
+            ParameterHelper.addOptionsToExtendedStats(SEQUENCES,
+                    runnableMap, results);
+
+            joiner.addSubExperiment(results);
         }
 
         MixedStatsHolder mixedHolder = joiner.join();

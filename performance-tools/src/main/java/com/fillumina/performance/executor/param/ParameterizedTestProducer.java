@@ -16,6 +16,7 @@ import com.fillumina.performance.util.tname.TName;
  */
 public class ParameterizedTestProducer
     extends AbstractStatsProducerInstrumenter<ParameterizedTestProducer> {
+    public static final String PARAMETERS = "parameters";
     public static final String SEPARATOR = "-";
 
     private final LinkedTree<String,Object> params;
@@ -49,14 +50,19 @@ public class ParameterizedTestProducer
             producer.clearTests();
             producer.setName(composedName);
 
-            IndexedHashMap<TName, Runnable> runnableMap =
+            IndexedHashMap<TName, RunnableContainer> runnableMap =
                     ParameterHelper.createParameterizedRunnables(
                             Param.class, params, runnable);
 
-            runnableMap.forEach( (TName tname, Runnable test) ->
-                producer.addTest(createTestName(composedName, tname), test));
+            runnableMap.forEach( (TName tname, RunnableContainer rc) ->
+                producer.addTest(createTestName(composedName, tname),
+                        rc.getRunnable()));
 
             MixedStatsHolder result = producer.get();
+
+            ParameterHelper.addOptionsToExtendedStats(PARAMETERS,
+                    runnableMap, result);
+
             joiner.addSubExperiment(result);
         });
         MixedStatsHolder mixedHolder = joiner.join();
