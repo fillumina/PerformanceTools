@@ -28,7 +28,8 @@ public class ParameterHelper {
      * @param baseRunnable  the base object to be clones and assigned
      * @return              a map of named parameters assigned clones
      */
-    static IndexedHashMap<TName, RunnableContainer> createParameterizedRunnables(
+    static IndexedHashMap<TName, RunnableOptionsContainer>
+                createParameterizedRunnables(
             Class<? extends Annotation> annotation,
             LinkedTree<String, Object> params,
             Runnable baseRunnable) {
@@ -37,13 +38,14 @@ public class ParameterHelper {
 
         RunnableHelper paramSetter = new RunnableHelper(baseRunnable, annotation);
 
-        IndexedHashMap<TName,RunnableContainer> linkedMap = new IndexedHashMap<>();
-        OptionContainer.Builder optBuilder = OptionContainer.builder();
+        IndexedHashMap<TName,RunnableOptionsContainer> linkedMap = new IndexedHashMap<>();
 
         for (Combinator.IntArrayCursorList combination : new Combinator(max)) {
             TName composedParamName = TN.EMPTY;
             IndexedHashMap<String, Object> parameters = new IndexedHashMap<>();
 
+            OptionContainer.Builder optBuilder = OptionContainer.builder();
+            
             for (int i=0; i<combination.size(); i++) {
                 LinkedTree<String, Object> options = params.getTreeAtIndex(i);
                 Map.Entry<String, Object> selectedOption =
@@ -63,7 +65,7 @@ public class ParameterHelper {
             OptionContainer options = optBuilder.build();
 
             linkedMap.put(composedParamName,
-                    new RunnableContainer(runnable, options));
+                    new RunnableOptionsContainer(runnable, options));
         }
 
         return linkedMap;
@@ -82,9 +84,9 @@ public class ParameterHelper {
     /**
      * Adds the options to the results of the experiment.
      */
-    public static void addOptionsToExtendedStats(
+    public static void addOptionsToStats(
             final String payloadName,
-            IndexedHashMap<TName, RunnableContainer> runnableMap,
+            IndexedHashMap<TName, RunnableOptionsContainer> runnableMap,
             MixedStatsHolder result) {
 
         Map<TName, OptionContainer> optionMap = new HashMap<>();

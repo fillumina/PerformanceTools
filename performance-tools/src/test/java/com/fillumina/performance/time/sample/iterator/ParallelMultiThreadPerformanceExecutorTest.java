@@ -61,8 +61,10 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     }
 
     // TODO this test keep failing a lot during 'mvn clean install'
+    // I guess it's because of java 11 behavior
     //count_1=8.02642768E8, count_2=1.37677088E8, error=3.4419272E7 expected:<8.02642768E8> but was:<1.37677088E8>
     //count_1=1.41301581E8, count_2=9.8915503E7, error=2.472887575E7 expected:<1.41301581E8> but was:<9.8915503E7>
+    //count_1=7.84695116E8, count_2=1.02794679E8, error=2.569866975E7 expected:<7.84695116E8> but was:<1.02794679E8>
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =

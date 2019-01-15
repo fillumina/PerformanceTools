@@ -44,4 +44,8 @@ public class OptionContainer {
         return options.get(name);
     }
 
+    @Override
+    public String toString() {
+        return "OptionContainer{" + "options=" + options + '}';
+    }
 }

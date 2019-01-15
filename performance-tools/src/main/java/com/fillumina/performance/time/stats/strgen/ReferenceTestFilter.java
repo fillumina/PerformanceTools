@@ -20,6 +20,6 @@ public class ReferenceTestFilter {
             n -> n.endsWith("~") || n.contains("~_") || n.contains("~ :");
 
     public static String makeItFiltrable(String name) {
-        return name + "$";
+        return name + "~";
     }
 }

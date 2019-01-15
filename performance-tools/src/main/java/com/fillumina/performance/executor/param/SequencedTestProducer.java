@@ -45,11 +45,11 @@ public class SequencedTestProducer
         assertTestsPresent();
 
         //          test name,          options
-        IndexedHashMap<TName, IndexedHashMap<TName, RunnableContainer>>
+        IndexedHashMap<TName, IndexedHashMap<TName, RunnableOptionsContainer>>
                 sequencedTestMap = new IndexedHashMap<>();
 
         getTests().forEach((TName testName, Runnable runnable) -> {
-            IndexedHashMap<TName, RunnableContainer> runnableContainersMap =
+            IndexedHashMap<TName, RunnableOptionsContainer> runnableContainersMap =
                     ParameterHelper.createParameterizedRunnables(
                             Sequence.class, sequences, runnable);
 
@@ -67,16 +67,16 @@ public class SequencedTestProducer
             final int index = i;
             producer.clearTests();
 
-            IndexedHashMap<TName, RunnableContainer> runnableMap =
+            IndexedHashMap<TName, RunnableOptionsContainer> runnableMap =
                     new IndexedHashMap<>();
 
             sequencedTestMap.forEach(
                     (TName testName,
-                            IndexedHashMap<TName, RunnableContainer> map) -> {
-                final Entry<TName, RunnableContainer> paramTestEntry =
+                        IndexedHashMap<TName, RunnableOptionsContainer> map) -> {
+                final Entry<TName, RunnableOptionsContainer> paramTestEntry =
                         map.getEntryAtIndex(index);
                 TName paramName = paramTestEntry.getKey();
-                RunnableContainer runnableContainer = paramTestEntry.getValue();
+                RunnableOptionsContainer runnableContainer = paramTestEntry.getValue();
                 Runnable paramTest = runnableContainer.getRunnable();
 
                 runnableMap.put(testName, runnableContainer);
@@ -88,7 +88,7 @@ public class SequencedTestProducer
 
             final MixedStatsHolder results = producer.execute();
 
-            ParameterHelper.addOptionsToExtendedStats(SEQUENCES,
+            ParameterHelper.addOptionsToStats(SEQUENCES,
                     runnableMap, results);
 
             joiner.addSubExperiment(results);

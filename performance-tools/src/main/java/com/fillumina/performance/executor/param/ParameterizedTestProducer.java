@@ -50,17 +50,17 @@ public class ParameterizedTestProducer
             producer.clearTests();
             producer.setName(composedName);
 
-            IndexedHashMap<TName, RunnableContainer> runnableMap =
+            IndexedHashMap<TName, RunnableOptionsContainer> runnableMap =
                     ParameterHelper.createParameterizedRunnables(
                             Param.class, params, runnable);
 
-            runnableMap.forEach( (TName tname, RunnableContainer rc) ->
+            runnableMap.forEach( (TName tname, RunnableOptionsContainer rc) ->
                 producer.addTest(createTestName(composedName, tname),
                         rc.getRunnable()));
 
             MixedStatsHolder result = producer.get();
 
-            ParameterHelper.addOptionsToExtendedStats(PARAMETERS,
+            ParameterHelper.addOptionsToStats(PARAMETERS,
                     runnableMap, result);
 
             joiner.addSubExperiment(result);

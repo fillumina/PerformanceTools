@@ -25,7 +25,7 @@ public class Option {
     }
 
     @SuppressWarnings(value = "unchecked")
-    public <T> T getOptionValue(Class<T> clz) {
+    public <T> T getOptionValue() {
         return (T) optionValue;
     }
 

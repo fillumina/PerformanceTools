@@ -182,16 +182,8 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     public Stats getStatsAtPath(String... path) {
-        String[] array;
-        if (!path[0].equals(tree.getKey().getFirstName())) {
-            array = new String[path.length + 1];
-            array[0] = tree.getKey().getFirstName();
-            System.arraycopy(path, 0, array, 1, path.length);
-        } else {
-            array = path;
-        }
-        TName tpath = TN.tname(array);
-        LinkedTree<TName,Stats> subTree = null;
+        TName tpath = addTestNameIfAbsent(path);
+        LinkedTree<TName,Stats> subTree = tree;
 
         for (TName t : tpath.getAllPartialTNames()) {
             if (t.size() == 1 && t.equals(tree.getKey())) {
@@ -201,6 +193,19 @@ public class StatsHolder extends Printable<StatsHolder>
             }
         }
         return subTree.getValue();
+    }
+
+    public TName addTestNameIfAbsent(String[] path) {
+        String[] array;
+        if (!path[0].equals(tree.getKey().getFirstName())) {
+            array = new String[path.length + 1];
+            array[0] = tree.getKey().getFirstName();
+            System.arraycopy(path, 0, array, 1, path.length);
+        } else {
+            array = path;
+        }
+        TName tpath = TN.tname(array);
+        return tpath;
     }
 
     public Stats getStats(TName path) {

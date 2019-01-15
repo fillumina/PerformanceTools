@@ -7,10 +7,11 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsProducerMock;
-import com.fillumina.performance.util.reflection.ReflectionHelper;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.reflection.ReflectionHelper;
+import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +66,61 @@ public class ParameterizedTestProducerTest {
 
         assertEquals(TN.tname("XYZ", "test", "a"), stats0.get(0));
         assertEquals(TN.tname("XYZ", "test", "b"), stats0.get(1));
+    }
+
+    @Test
+    public void shouldAddPayloadToStats() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("param1")
+                                .leaf("a", 'a')
+                                .leaf("b", 'b')
+                            .end()
+                            .branch("param2")
+                                .leaf("1", 1)
+                                .leaf("2", 2)
+                            .end()
+                            .getRoot();
+
+        ParameterizedTestProducer producer =
+                new ParameterizedTestProducer(params);
+
+        NameStatsProducerMock statsProducer = new NameStatsProducerMock();
+
+        producer.instrument(statsProducer);
+
+        producer.addTest("test",
+                new Runnable() {
+                    @Param private char param1;
+                    @Param private int param2;
+                    @Override public void run() {}
+                });
+
+        MixedStatsHolder holder = producer.execute();
+        Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE)
+                .getStatsAtPath("test");
+
+        Map<TName, OptionContainer> options =
+                stats.<Map<TName, OptionContainer>>getPayload(
+                        ParameterizedTestProducer.PARAMETERS);
+
+        assertOption(options, 'a', 1);
+        assertOption(options, 'b', 1);
+        assertOption(options, 'a', 2);
+        assertOption(options, 'b', 2);
+
+        try {
+            assertOption(options, 'c', 666);
+        } catch (NullPointerException e) {
+            // all right
+        }
+    }
+
+    private void assertOption(Map<TName, OptionContainer> options, char a, int v) {
+        OptionContainer optCont = options.get(
+                TN.tname(String.valueOf(a), String.valueOf(v)));
+        assertEquals(a, (char)optCont.getOption("param1").getOptionValue());
+        assertEquals(v, (int)optCont.getOption("param2").getOptionValue());
     }
 
     @Test

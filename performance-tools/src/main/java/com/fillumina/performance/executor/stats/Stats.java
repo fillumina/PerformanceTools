@@ -101,10 +101,9 @@ public class Stats extends Printable<Stats>
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getPayload(String payloadName, Class<T> clz) {
+    public <T> T getPayload(String payloadName) {
         return (T) payloadMap.get(payloadName);
     }
-
 
     /** @return a new Stats normalized to the given unit. */
     public Stats as(Unit<?> unit) {

@@ -48,7 +48,7 @@ public class BiggerMeasureTest {
         Stats stats = creator.createStats().as(Magnitude.UNIT);
 
         BiggerMeasure bigger = new BiggerMeasure(stats.getMeasureMap(),
-            n -> n.endsWith("$"));
+            n -> n.toString().endsWith("$"));
 
         assertEquals(1, bigger.getIndex());
         assertEquals("two", bigger.getName().toString());

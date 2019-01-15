@@ -8,10 +8,10 @@ import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.NameStatsProducerMock;
 import com.fillumina.performance.mock.StatsProducerMock;
-import com.fillumina.performance.util.reflection.ReflectionHelper;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.reflection.ReflectionHelper;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
 import java.util.List;
@@ -67,6 +67,52 @@ public class SequencedTestProducerTest {
 
         assertEquals(TN.tname("XYZ", "a", "test"), tree.get(0).get(0));
         assertEquals(TN.tname("XYZ", "b", "test"), tree.get(1).get(0));
+    }
+
+    @Test
+    public void shouldAddOptionToStatsPayload() {
+        final LinkedTree<String,Object> params =
+                LinkedTree.<String,Object>builder()
+                            .branch("param")
+                                .leaf("a", 'a')
+                                .leaf("b", 'b')
+                            .end()
+                            .getRoot();
+
+        SequencedTestProducer producer =
+                new SequencedTestProducer(params);
+
+        NameStatsProducerMock statsProducer = new NameStatsProducerMock();
+
+        producer.instrument(statsProducer);
+
+        producer.addTest("test",
+                new Runnable() {
+                    @Sequence private char param;
+                    @Override public void run() {}
+                });
+
+        producer.setName("XYZ");
+
+        MixedStatsHolder holder = producer.execute();
+        StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
+
+        Stats statsA = aHolder.getStatsAtPath("XYZ", "a");
+        Stats statsB = aHolder.getStatsAtPath("XYZ", "b");
+
+        assertPayload(statsA, 'a');
+        assertPayload(statsB, 'b');
+
+    }
+
+    public void assertPayload(Stats statsA, final char sequenceValue) {
+        Map<TName, OptionContainer> options =
+                statsA.<Map<TName, OptionContainer>>getPayload(
+                        SequencedTestProducer.SEQUENCES);
+
+        OptionContainer optCont = options.get(TN.tname("test"));
+        assertEquals(sequenceValue,
+                (char)optCont.getOption("param").getOptionValue());
     }
 
     @Test
