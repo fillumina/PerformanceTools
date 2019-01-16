@@ -108,7 +108,7 @@ public class JMHSample_06_FixtureLevel {
     }
 
     public static void main(final String[] args) throws RunnerException {
-//        main_jmh(args);
+        main_jmh(args);
         main_pt(args);
     }
 
@@ -130,27 +130,31 @@ public class JMHSample_06_FixtureLevel {
                 .end()
                 .tests()
                     .addTest(new Runnable() {
+                        // before test
                         @com.fillumina.performance.executor.annotation.SetUp
                         public void setup() {
                             checkSequenceAndIncrement(0);
                         }
 
+                        // before each loop
                         @com.fillumina.performance.executor.annotation.BeforeSample
                         public void beforeSample() {
                             checkSequenceAndIncrement(1);
                         }
 
-                        /** It's executed only once by configuration. */
+                        // It's executed only once by configuration
                         @Override
                         public void run() {
                             checkSequenceAndIncrement(2);
                         }
 
+                        // after each loop
                         @com.fillumina.performance.executor.annotation.AfterSample
                         public void afterSample() {
                             checkSequenceAndIncrement(3);
                         }
 
+                        // after the test
                         @com.fillumina.performance.executor.annotation.TearDown
                         public void teardown() {
                             checkSequenceAndIncrement(4);

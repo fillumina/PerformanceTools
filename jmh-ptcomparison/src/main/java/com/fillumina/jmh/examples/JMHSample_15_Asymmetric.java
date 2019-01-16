@@ -31,8 +31,8 @@
 package com.fillumina.jmh.examples;
 
 import com.fillumina.performance.executor.test.Sink;
-import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import com.fillumina.performance.template.PerformanceBuilder;
+import com.fillumina.performance.time.sample.iterator.ParallelTest;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -134,7 +134,7 @@ public class JMHSample_15_Asymmetric {
     }
 
     /**
-     * PT provides a simple way to define groups within a executeWithoutOutput
+     * PT provides a simple way to define groups within a {@link ParallelTest}.
      * @param args
      */
     public static void main_pt(final String[] args) {

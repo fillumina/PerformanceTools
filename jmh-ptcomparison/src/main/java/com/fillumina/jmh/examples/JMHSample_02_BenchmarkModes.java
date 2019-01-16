@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -168,7 +169,7 @@ public class JMHSample_02_BenchmarkModes {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jhm(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_02_BenchmarkModes.class.getSimpleName())
                 .warmupIterations(5)
@@ -179,14 +180,34 @@ public class JMHSample_02_BenchmarkModes {
         new Runner(opt).run();
     }
 
+    public static void main(final String[] args) throws RunnerException {
+        main_jhm(args);
+        main_pt(args);
+    }
+
     /*
-    PerformanceTools always reports its results using both elapsed time and
+    PerformanceTools always reports its speed results using both elapsed time and
     number of operations per unit of time. It also reports standard deviation,
-    accuracy, confidence, ratio versus slower test (which imho is far more
-    informative and resilient to different systems than synthetic results based
-    on absolute time)
+    accuracy, confidence, ratio versus slower test (which is far more
+    informative and resilient to different testing environments than synthetic
+    results based on absolute time)
     and performs advanced statistical calculations (ANOVA and TukeyHSD) to
     report if the given tests are statistically equals or different (according
     to the required confidence) between each other.
+    One mode that PerformanceTool misses is single shot time.
     */
+    public static void main_pt(final String[] args) {
+        PerformanceBuilder
+            .speedTest()
+                .addTest(() -> {
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(100);
+                    } catch (InterruptedException ex) {
+                    }
+                })
+                .end()
+            .end()
+        .executeWithFullOutput();
+    }
+
 }

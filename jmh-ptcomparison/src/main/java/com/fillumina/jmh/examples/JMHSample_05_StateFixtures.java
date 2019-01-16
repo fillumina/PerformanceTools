@@ -30,6 +30,7 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.template.PerformanceBuilder;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -119,7 +120,7 @@ public class JMHSample_05_StateFixtures {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jmh(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_05_StateFixtures.class.getSimpleName())
                 .warmupIterations(5)
@@ -131,6 +132,39 @@ public class JMHSample_05_StateFixtures {
         new Runner(opt).run();
     }
 
-    // PerformanceTools uses annotated life cycle events methods in the
-    // Runnable test. The states can be modified too.
+
+    public static void main(final String[] args) throws RunnerException {
+        //main_jmh(args);
+        main_pt(args);
+    }
+
+    /**
+     * PerformanceTools uses annotated life cycle events methods in the
+     * Runnable test. The states can be modified too.
+     */
+    public static void main_pt(final String[] args) {
+        PerformanceBuilder
+            .speedTest()
+                .addTest(new Runnable() {
+                    private double x;
+
+                    @com.fillumina.performance.executor.annotation.SetUp
+                    public void prepare() {
+                        x = Math.PI;
+                    }
+
+                    @com.fillumina.performance.executor.annotation.TearDown
+                    public void check() {
+                        assert x > Math.PI : "Nothing changed?";
+                    }
+
+                    @Override
+                    public void run() {
+                        x++;
+                    }
+                })
+                .end()
+            .end()
+            .executeWithFullOutput();
+    }
 }

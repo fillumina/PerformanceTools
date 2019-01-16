@@ -110,7 +110,7 @@ public class JMHSample_08_DeadCode {
     }
 
     /**
-     * The perspective or PerformanceTools is different from JMH in that if
+     * The perspective of PerformanceTools is different from JMH in that if
      * a test is evicted it is simply reported as such with an exception.
      * It is not trying to interfere with JVM mechanisms but only to
      * measure it.

@@ -30,6 +30,8 @@
  */
 package com.fillumina.jmh.examples;
 
+import com.fillumina.performance.executor.test.Sink;
+import com.fillumina.performance.template.PerformanceBuilder;
 import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
@@ -145,7 +147,7 @@ public class JMHSample_11_Loops {
      *      http://openjdk.java.net/projects/code-tools/jmh/)
      */
 
-    public static void main(String[] args) throws RunnerException {
+    public static void main_jhm(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(JMHSample_11_Loops.class.getSimpleName())
                 .warmupIterations(5)
@@ -156,9 +158,47 @@ public class JMHSample_11_Loops {
         new Runner(opt).run();
     }
 
-    /*
-    This is another bad test situation. PerformanceTools cannot do anything
-    to mitigate that. Results will be inevitabily wrong because the test
-    is wrong.
+    public static void main(final String[] args) throws RunnerException {
+        //main_jhm(args);
+        main_pt(args);
+    }
+
+    /**
+     *
      */
+    public static void main_pt(final String[] args) {
+
+        PerformanceBuilder
+                .config()
+                    .speedConfig()
+                        .setFixedSamples(5)
+                    .end()
+                .tests()
+                    .addTest("loop", new Runnable() {
+                        @com.fillumina.performance.executor.annotation.Param("size")
+                        private int size;
+
+                        private int x = 1,y = 2;
+
+                        @Override
+                        public void run() {
+                            int s = 0;
+                            for (int i = 0; i < size; i++) {
+                                s += (x + y);
+                            }
+                            Sink.drain(s);
+                        }
+                    })
+                .expressions()
+                    .addExpression("loop")
+                        .addCurrentTest().factors().divideBy("size").end()
+                    .end()
+                .end()
+                .parameters()
+                    .name("size").values(10, 100, 1_000).end()
+                    .end()
+                .end()
+            .end()
+            .executeWithFullOutput();
+    }
 }

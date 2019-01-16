@@ -183,6 +183,9 @@ public class JMHSample_07_FixtureLevelInvocation {
      * operation in the test itself and (if it is constant time) evaluate
      * it in another test and subtract its time. It's a convoluted method
      * but it's efficient and simple enough.
+     * Anyway in this example the lag time is 3 orders of magnitude bigger
+     * than the actual test average time making the measure completely
+     * unaccurate to both jmh and pt.
      */
     public static void main_pt(final String[] args) {
         JMHSample_07_FixtureLevelInvocation test =
@@ -204,9 +207,11 @@ public class JMHSample_07_FixtureLevelInvocation {
         PerformanceBuilder
             .config()
                 .speedConfig()
+                    .setFixedSamples(10) // no need for more here
                 .end()
                 .tests()
-                    .addTest("lag", new Runnable() {
+                    // the dollar sign means that the test should not be used as reference
+                    .addTest("lag$", new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -217,7 +222,8 @@ public class JMHSample_07_FixtureLevelInvocation {
                             }
                         }
                     })
-                    .addTest("cold", new Runnable() {
+                    // the dollar sign means that the test should not be used as reference
+                    .addTest("cold$", new Runnable() {
                         @Override
                         public void run() {
                             try {
@@ -241,11 +247,20 @@ public class JMHSample_07_FixtureLevelInvocation {
                             }
                         }
                     })
+                    // by this expression we can subtract the lag time to cold
+                    // so to compare cold with hot without lagging
+                    .expressions()
+                        .addExpression("cold-lag")
+                            .addTest("cold$").subtractTest("lag$")
+                        .endExpression()
+                        .end()
+                    .end()
                 .end()
             .end()
             .executeWithFullOutput();
 
         normalState.down();
         laggingState.down();
+
     }
 }

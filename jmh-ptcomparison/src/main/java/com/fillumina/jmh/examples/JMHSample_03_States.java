@@ -128,17 +128,18 @@ public class JMHSample_03_States {
     }
 
     public static void main(final String[] args) throws RunnerException {
-        //main_jmh(args);
+        main_jmh(args);
         main_pt(args);
     }
 
     /**
      * Because tests are simple {@link Runnable} classes their status is
-     * determined programmatically using standard java behaviors.
-     * There is no need for special notations.
-     * The {@link Runnable} will be executed as is (eventually it
-     * will be cloned to avoid some JVM optimizations but this will not
-     * interfere with their variable access).
+     * determined programmatically using standard java behaviors:
+     * there is no need for special notations or anything fancy.
+     * The {@link Runnable} will be executed as is (it
+     * will be cloned).
+     * NOTE: the ETA uses a linear algorithm that gets confused by the fact
+     * that the margin converges in a non linear way.
      */
     public static void main_pt(final String[] args) {
 

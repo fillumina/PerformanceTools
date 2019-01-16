@@ -123,9 +123,31 @@ public class JMHSample_10_ConstantFold {
     }
 
     /**
-     * Constant fold is not solvable by the performance measurement framework
-     * and must be avoided by the tester.
-     * PerformanceTools throws an exception in case of folded tests.
+     * {@link Drain} and the use of a {@code volatile} field can avoid
+     * constant fold optimization.<br>
+     * This is the result of the test:
+     * <pre>
+        idx  name               ratio vs slower    average time
+        0    baseline-final     3.05 +/- 0.03 %    0.837 +/- 0.006 ns/op
+        1    final              3.05 +/- 0.03 %    0.837 +/- 0.007 ns/op
+        2    baseline-standard  5.39 +/- 0.05 %    1.477 +/- 0.011 ns/op
+        3    standard           5.34 +/- 0.04 %    1.465 +/- 0.010 ns/op
+        4    baseline-volatile  10.14 +/- 0.08 %   2.780 +/- 0.019 ns/op
+        5    volatile           100.00 +/- 0.58 %  27.410 +/- 0.112 ns/op
+     * </pre>
+     * This is what we can get from this (and by the way the usefulness
+     * of the tool for investigations like this one):
+     * <ul>
+     * <li><b>final</b>
+     * field tests have the same speed so the {@code Math.log()}
+     * hasn't been executed and has been folded out.
+     * <li><b>standard</b>
+     * field tests have the same speed as well (although slightly slower)
+     * so the {@code Math.log()} hasn't been executed and has been folded out.
+     * <li><b>volatile</b>
+     * field tests have very different speed so the {@code Math.log()} has
+     * been executed and not folded out.
+     * </ul>
      */
     public static void main_pt(final String[] args) {
 
@@ -134,13 +156,44 @@ public class JMHSample_10_ConstantFold {
                     .speedConfig()
                     .end()
                 .tests()
-                    // this executeWithoutOutput is optimized by JVM
-                    .addTest("folded", new Runnable() {
+                    .addTest("baseline-final", new Runnable() {
+                        private final double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            drain(x);
+                        }
+                    })
+                    .addTest("final", new Runnable() {
                         private final double x = Math.PI;
 
                         @Override
                         public void run() {
                             drain(Math.log(x));
+                        }
+                    })
+                    .addTest("baseline-standard", new Runnable() {
+                        private double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            drain(x);
+                        }
+                    })
+                    .addTest("standard", new Runnable() {
+                        private double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            drain(Math.log(x));
+                        }
+                    })
+                    .addTest("baseline-volatile", new Runnable() {
+                        private volatile double x = Math.PI;
+
+                        @Override
+                        public void run() {
+                            drain(x);
                         }
                     })
                     .addTest("volatile", new Runnable() {

@@ -139,12 +139,32 @@ public class JMHSample_09_Blackholes {
     }
 
     /**
-     * To be sure that a result is consumed and the code is thus not evicted
- PerformanceTools uses the same mechanism as JMH: a consuming class
- named SafeSink. SafeSink is created to be as light and effective as
- possible (consider that its execution time is necessarily accounted in
- the executeWithoutOutput total time).
- <p>
+     * To be sure that a result is consumed and the code path is thus not evicted
+     * PerformanceTools uses the same mechanism as JMH: a consuming class
+     * named {@link Sink}. It is created to be as light and effective as
+     * possible (consider that its execution time is necessarily accounted in
+     * the executeWithoutOutput total time).
+     * <p>
+     * Consuming a returned value takes a toll on speed that can be avoided
+     * by using the {@link Sink} when and if it's needed. Of course Sink
+     * itself uses some time but it can be accounted for.
+     * <p>
+     * jhm reports:
+     * <pre>
+        JMHSample_08_DeadCode.baseline      avgt    5   0.415 ± 0.105  ns/op
+        JMHSample_08_DeadCode.measureRight  avgt    5  27.279 ± 0.678  ns/op
+        JMHSample_08_DeadCode.measureWrong  avgt    5   0.354 ± 0.003  ns/op
+     * </pre>
+     * from wicth it seems that measureRight (two log operation) is many times
+     * slower than baseline (just one log).<br>
+     * PerformanceTools correctly reports that two logs are twice as slow than
+     * just one:
+     * <pre>
+        0    baseline   49.74 +/- 0.47 %   27.487 +/- 0.131 ns/op
+        1    log + log  94.44 +/- 0.92 %   52.191 +/- 0.281 ns/op
+        2    log & log  100.01 +/- 1.14 %  55.270 +/- 0.440 ns/op
+     * </pre>
+     * <p>
      * It's worth noting that {@link Blackhole#consume(double)} methods
      * read from a volatile variable which might impact the performances
      * of a multi-threaded task.
@@ -157,29 +177,29 @@ public class JMHSample_09_Blackholes {
                 .speedConfig()
                 .end()
                 .tests()
-                    .addTest("cos", new Runnable() {
+                    .addTest("baseline", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x));
+                            Sink.drain(Math.log(x));
                         }
                     })
-                    .addTest("sin + cos", new Runnable() {
+                    .addTest("log + log", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x) + Math.sin(x));
+                            Sink.drain(Math.log(x) + Math.log(x));
                         }
                     })
-                    .addTest("sin & cos", new Runnable() {
+                    .addTest("log & log", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override
                         public void run() {
-                            Sink.drain(Math.cos(x));
-                            Sink.drain(Math.sin(x));
+                            Sink.drain(Math.log(x));
+                            Sink.drain(Math.log(x));
                         }
                     })
                 .end()
