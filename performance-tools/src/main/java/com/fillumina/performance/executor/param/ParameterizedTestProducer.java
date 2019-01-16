@@ -60,8 +60,7 @@ public class ParameterizedTestProducer
 
             MixedStatsHolder result = producer.get();
 
-            ParameterHelper.addOptionsToStats(PARAMETERS,
-                    runnableMap, result);
+            ParameterHelper.addOptionsToStats(PARAMETERS, runnableMap, result);
 
             joiner.addSubExperiment(result);
         });

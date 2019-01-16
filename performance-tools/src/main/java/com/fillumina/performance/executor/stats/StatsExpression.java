@@ -89,17 +89,17 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
                 ParameterHelper.getOptionMap(stats);
 
         IndexedHashMap<TName, Measure> measureMap = new IndexedHashMap<>();
-        map.forEach((TName statsName, ExpressionList<C> exp) -> {
+        map.forEach((TName exprName, ExpressionList<C> exp) -> {
                 Set<String> paramSet = new HashSet<>();
                 exp.addParameters(paramSet);
                 if (paramSet.isEmpty()) {
-                    measureMap.put(statsName, exp.solve(stats, null, null));
+                    measureMap.put(exprName, exp.solve(stats, null, null));
                 } else {
-                    optionsMap.forEach((TName tname, Map<String,Option> oc) -> {
-                        final TName testName = statsName.append(tname);
-                        Measure m = exp.solve(stats, oc, testName);
+                    optionsMap.forEach((TName pname, Map<String,Option> oc) -> {
+                        TName name = exprName.append(pname);
+                        Measure m = exp.solve(stats, oc, name);
                         // TODO changes the names of the expression tests
-                        TName n = testName.append(tname.getLastName() + "*");
+                        TName n = exprName.append(pname.getLastName() + "*");
                         measureMap.put(n, m);
                     });
                 }
@@ -212,6 +212,10 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
                 app.print(" * ").print(factors.toString());
             }
             return this;
+        }
+
+        public ExpressionTest<C> addCurrentTest() {
+            return addTest(TN.CURRENT);
         }
 
         public ExpressionTest<C> addTest(String... testName) {

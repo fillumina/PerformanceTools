@@ -104,6 +104,7 @@ public class ParameterHelper {
     }
 
     public static Map<TName, Map<String,Option>> getOptionMap(Stats stats) {
+
         Map<TName, Map<String,Option>> parametersMap =
                 stats.getPayload(ParameterizedTestProducer.PARAMETERS);
 

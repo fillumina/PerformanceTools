@@ -109,9 +109,9 @@ public class StatsExpressionTest {
                 .name(TN.tname("first"))
 
                 // with one parameter called alfa
-                .addTest(TN.tname("one-alfa-1")).mean(10.0).endTest()
-                .addTest(TN.tname("one-alfa-2")).mean(20.0).endTest()
-                .addTest(TN.tname("one-alfa-3")).mean(30.0).endTest()
+                .addTest(TN.tname("first", "one-alfa-1")).mean(10.0).endTest()
+                .addTest(TN.tname("first", "one-alfa-2")).mean(20.0).endTest()
+                .addTest(TN.tname("first", "one-alfa-3")).mean(30.0).endTest()
 
                 // these are the values of the parameter for each test
                 .addParametersForTest(TN.tname("one-alfa-1"))
@@ -164,17 +164,26 @@ public class StatsExpressionTest {
                 expression.toString());
 
         assertEquals(3, stats.getMeasureMap().size());
-        assertEquals(10.0, stats.getMeasure("one-alfa-1").getMean(), 0);
-        assertEquals(20.0, stats.getMeasure("one-alfa-2").getMean(), 0);
-        assertEquals(30.0, stats.getMeasure("one-alfa-3").getMean(), 0);
+        assertEquals(10.0,
+                stats.getMeasure(TN.tname("first", "one-alfa-1")).getMean(), 0);
+        assertEquals(20.0,
+                stats.getMeasure(TN.tname("first", "one-alfa-2")).getMean(), 0);
+        assertEquals(30.0,
+                stats.getMeasure(TN.tname("first", "one-alfa-3")).getMean(), 0);
 
         assertEquals(6, eStats.getMeasureMap().size());
-        assertEquals(10.0, eStats.getMeasure("one-alfa-1").getMean(), 0);
-        assertEquals(20.0, eStats.getMeasure("one-alfa-2").getMean(), 0);
-        assertEquals(30.0, eStats.getMeasure("one-alfa-3").getMean(), 0);
-        assertEquals(1.0, eStats.getMeasure(TN.tname("one-alfa-1", "*")).getMean(), 0);
-        assertEquals(4.0, eStats.getMeasure(TN.tname("one-alfa-2", "*")).getMean(), 0);
-        assertEquals(9.0, eStats.getMeasure(TN.tname("one-alfa-3", "*")).getMean(), 0);
+        assertEquals(10.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-1")).getMean(), 0);
+        assertEquals(20.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-2")).getMean(), 0);
+        assertEquals(30.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-3")).getMean(), 0);
+        assertEquals(1.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-1*")).getMean(), 0);
+        assertEquals(4.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-2*")).getMean(), 0);
+        assertEquals(9.0,
+                eStats.getMeasure(TN.tname("first", "one-alfa-3*")).getMean(), 0);
     }
 
 
