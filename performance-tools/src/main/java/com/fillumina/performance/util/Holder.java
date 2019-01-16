@@ -22,6 +22,8 @@ public class Holder<T> {
         public void setValue(double value) { this.value = value; }
         public void add(double value) { this.value += value; }
         public void subtract(double value) { this.value -= value; }
+        public void multiply(double value) { this.value *= value; }
+        public void divide(double value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -34,6 +36,8 @@ public class Holder<T> {
         public void setValue(float value) { this.value = value; }
         public void add(float value) { this.value += value; }
         public void subtract(float value) { this.value -= value; }
+        public void multiply(float value) { this.value *= value; }
+        public void divide(float value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -50,6 +54,8 @@ public class Holder<T> {
         public void setValue(int value) { this.value = value; }
         public void add(int value) { this.value += value; }
         public void subtract(int value) { this.value -= value; }
+        public void multiply(int value) { this.value *= value; }
+        public void divide(int value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -66,6 +72,8 @@ public class Holder<T> {
         public void setValue(long value) { this.value = value; }
         public void add(long value) { this.value += value; }
         public void subtract(long value) { this.value -= value; }
+        public void multiply(long value) { this.value *= value; }
+        public void divide(long value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -82,6 +90,8 @@ public class Holder<T> {
         public void setValue(short value) { this.value = value; }
         public void add(short value) { this.value += value; }
         public void subtract(short value) { this.value -= value; }
+        public void multiply(short value) { this.value *= value; }
+        public void divide(short value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -98,6 +108,8 @@ public class Holder<T> {
         public char decrementAndGet() { return --value; }
         public void add(char value) { this.value += value; }
         public void subtract(char value) { this.value -= value; }
+        public void multiply(char value) { this.value *= value; }
+        public void divide(char value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 
@@ -114,6 +126,8 @@ public class Holder<T> {
         public byte decrementAndGet() { return --value; }
         public void add(byte value) { this.value += value; }
         public void subtract(byte value) { this.value -= value; }
+        public void multiply(byte value) { this.value *= value; }
+        public void divide(byte value) { this.value /= value; }
         @Override public String toString() { return Objects.toString(value); }
     }
 

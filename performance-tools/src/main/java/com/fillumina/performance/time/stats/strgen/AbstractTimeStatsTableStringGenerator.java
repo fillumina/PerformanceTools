@@ -2,7 +2,6 @@ package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.Stats;
-import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.tname.TName;
@@ -64,10 +63,9 @@ public abstract class AbstractTimeStatsTableStringGenerator
             .param("ANOVA", stats.getAnova())
             .toString();
         String exprStr = System.lineSeparator();
-        if (stats instanceof Stats) {
-            Stats eStats = (Stats) stats;
-            ExpressionSolver exprSolver =
-                    eStats.getPayload(ExpressionSolver.class);
+        ExpressionSolver exprSolver =
+                stats.getPayload(ExpressionSolver.class);
+        if (exprSolver != null) {
             Map<TName, String> expressions =
                     exprSolver.getStringExpressions();
             if (!expressions.isEmpty()) {

@@ -1,21 +1,23 @@
 package com.fillumina.performance.executor.param;
 
+import java.util.Map;
+
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class RunnableOptionsContainer {
 
-    private final OptionContainer optionContainer;
+    private final Map<String,Option> optionContainer;
     private final Runnable runnable;
 
     public RunnableOptionsContainer(Runnable runnable,
-            OptionContainer optionContainer) {
+            Map<String,Option> optionContainer) {
         this.optionContainer = optionContainer;
         this.runnable = runnable;
     }
 
-    public OptionContainer getOptionContainer() {
+    public Map<String,Option> getOptionContainer() {
         return optionContainer;
     }
 

@@ -16,6 +16,7 @@ import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,18 +50,19 @@ public class Stats extends Printable<Stats>
     private final IndexedHashMap<TName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
     private final Unit<?> unit;
-    private final Map<String, Object> payloadMap = new HashMap<>();
+    private final Map<String, Object> payloadMap;
+    private final Predicate<String> filter;
 
     private TukeyPrintable tukeyPrintable;
 
     /** Copy constructor. */
     public Stats(Stats copy) {
-        this(copy.type, copy.map, copy.unit);
+        this(copy.type, copy.map, copy.unit, copy.payloadMap, copy.filter);
     }
 
-    /** Copy constructor but filtering out references. */
+    /** Copy constructor but with new filter. */
     public Stats(Stats copy, Predicate<String> filter) {
-        this(copy.type, copy.map, copy.unit, filter);
+        this(copy.type, copy.map, copy.unit, copy.payloadMap, filter);
     }
 
     public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
@@ -70,12 +72,17 @@ public class Stats extends Printable<Stats>
     public Stats(StatsType type,
             Map<TName,DimensionalMeasure> measures,
             Unit<?> unit) {
-        this(type, measures, unit, null);
+        this(type, measures, unit, null, null);
+    }
+
+    public Stats(Stats copy, Map<TName,DimensionalMeasure> measures) {
+        this(copy.type, measures, copy.unit, copy.payloadMap, copy.filter);
     }
 
     public Stats(StatsType type,
             Map<TName,DimensionalMeasure> measures,
             Unit<?> unit,
+            Map<String, Object> payloadMap,
             Predicate<String> filter) {
         this.type = type;
         this.unit = getArmonizedUnit(measures.values());
@@ -83,6 +90,13 @@ public class Stats extends Printable<Stats>
         this.refMeasure = filter == null ?
                 new BiggerMeasure(this.map) : new BiggerMeasure(map, filter);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());
+        this.payloadMap = payloadMap == null ? new HashMap<>() :
+                new HashMap<>(payloadMap);
+        this.filter = filter;
+    }
+
+    public Predicate<String> getFilter() {
+        return filter;
     }
 
     public void putPayload(Object payload) {
@@ -93,6 +107,10 @@ public class Stats extends Printable<Stats>
 
     public void putPayload(String name, Object payload) {
         payloadMap.put(name, payload);
+    }
+
+    public Map<String,Object> getPayloadMap() {
+        return Collections.unmodifiableMap(payloadMap);
     }
 
     @SuppressWarnings("unchecked")
@@ -107,7 +125,7 @@ public class Stats extends Printable<Stats>
 
     /** @return a new Stats normalized to the given unit. */
     public Stats as(Unit<?> unit) {
-        return new Stats(type, map, unit);
+        return new Stats(type, map, unit, payloadMap, null);
     }
 
     /** @return a new Stats with the merged measures of the two Stats. */
@@ -120,7 +138,7 @@ public class Stats extends Printable<Stats>
         Map<TName,DimensionalMeasure> m = new IndexedHashMap<>();
         m.putAll(getMeasureMap());
         m.putAll(other.getMeasureMap());
-        return new Stats(other.type , m);
+        return new Stats(other, m);
     }
 
     @Override

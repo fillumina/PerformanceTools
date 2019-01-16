@@ -1,11 +1,16 @@
 package com.fillumina.performance.mock;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.param.Option;
+import com.fillumina.performance.executor.param.OptionBuilder;
+import com.fillumina.performance.executor.param.ParameterizedTestProducer;
+import com.fillumina.performance.executor.param.SequencedTestProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.MixedStatsHolderCreator;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsType;
+import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
@@ -15,6 +20,7 @@ import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -25,6 +31,8 @@ public class StatsMockBuilder {
     private final StatsType statsType;
     private CharSequence name;
     private Ratio confidence = Ratio.P_95;
+    private Map<TName, Map<String,Option>> parameters = new IndexedHashMap<>();
+    private Map<TName, Map<String,Option>> sequences = new IndexedHashMap<>();
 
     public static Stats create(Object... objs) {
         return createWithTypes(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
@@ -68,6 +76,22 @@ public class StatsMockBuilder {
         return new Data(name);
     }
 
+    public OptionBuilder<StatsMockBuilder>
+                addParametersForTest(TName name) {
+        return new OptionBuilder<>( o -> {
+                    parameters.put(name, o);
+                    return StatsMockBuilder.this;
+                });
+    }
+
+    public OptionBuilder<StatsMockBuilder>
+                addSequencesForTest(TName name) {
+        return new OptionBuilder<>( o -> {
+                    sequences.put(name, o);
+                    return StatsMockBuilder.this;
+                });
+    }
+
     public MixedStatsHolder buildWithCoincidentalValues(Unit<?> unit) {
         int[] counter = new int[dataList.size()];
 
@@ -100,7 +124,8 @@ public class StatsMockBuilder {
             }
         } while(added);
 
-        return statsCreator.getMixedAssertableHolder(ListFilter.identity());
+        MixedStatsHolder mah = setOptionsPayload(statsCreator);
+        return mah;
     }
 
     public MixedStatsHolder buildWithSyntheticNormalValues(Unit<?> unit) {
@@ -137,7 +162,18 @@ public class StatsMockBuilder {
             }
         } while(added);
 
-        return statsCreator.getMixedAssertableHolder(ListFilter.identity());
+        MixedStatsHolder mah = setOptionsPayload(statsCreator);
+        return mah;
+    }
+
+    private MixedStatsHolder setOptionsPayload(
+            MixedStatsHolderCreator statsCreator) {
+        final MixedStatsHolder mah =
+                statsCreator.getMixedAssertableHolder(ListFilter.identity());
+        final Stats stats = mah.getFirstStatsHolder().getStats();
+        stats.putPayload(ParameterizedTestProducer.PARAMETERS, parameters);
+        stats.putPayload(SequencedTestProducer.SEQUENCES, sequences);
+        return mah;
     }
 
     public MixedStatsHolder buildWithNormalDistribution(Unit<?> unit) {
@@ -178,7 +214,9 @@ public class StatsMockBuilder {
                 statsCreator.addSample(sampleBuilder.buildSample());
             }
         } while(added);
-        return statsCreator.getMixedAssertableHolder(ListFilter.identity());
+
+        MixedStatsHolder mah = setOptionsPayload(statsCreator);
+        return mah;
     }
 
     public class Data {

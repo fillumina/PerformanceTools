@@ -106,13 +106,13 @@ public class SequencedTestProducerTest {
     }
 
     public void assertPayload(Stats statsA, final char sequenceValue) {
-        Map<TName, OptionContainer> options =
-                statsA.<Map<TName, OptionContainer>>getPayload(
+        Map<TName, Map<String,Option>> options =
+                statsA.<Map<TName, Map<String,Option>>>getPayload(
                         SequencedTestProducer.SEQUENCES);
 
-        OptionContainer optCont = options.get(TN.tname("test"));
+        Map<String,Option> optCont = options.get(TN.tname("test"));
         assertEquals(sequenceValue,
-                (char)optCont.getOption("param").getOptionValue());
+                (char)optCont.get("param").getOptionValue());
     }
 
     @Test

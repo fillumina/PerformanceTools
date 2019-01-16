@@ -10,6 +10,7 @@ import com.fillumina.performance.util.tname.TName;
 public class TN {
 
     public static final TName EMPTY = TName.createRoot();
+    public static final TName CURRENT = EMPTY.append("current");
 
     public static final TName tname(CharSequence name) {
         if (name == null || name.length() == 0) {

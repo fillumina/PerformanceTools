@@ -53,8 +53,8 @@ public class ExpressionStatsProducer extends
             map.forEach( (List<TName> list, Stats stats) -> {
                 if (stats != null) {
                     TName name = list.get(list.size() - 1);
-                    Stats eStats = new Stats(stats.getStatsType(),
-                                    createMixedMap(stats, expressions));
+                    Stats eStats =
+                            new Stats(stats, createMixedMap(stats, expressions));
                     eStats.putPayload(expressions);
                     builder.addStats(name, eStats);
                 }
@@ -74,7 +74,7 @@ public class ExpressionStatsProducer extends
         }
         Unit<?> unit = measures.values().iterator().next().getUnit();
         Map<TName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
-        expression.solve(new Stats(type, measures))
+        expression.solve(new Stats(stats, measures))
                 .forEach((CharSequence s, Measure m) ->
                     map.put(TN.tname(s), new DimensionalOnlineMeasure(unit, m)) );
         return Collections.unmodifiableMap(map);

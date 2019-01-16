@@ -2,6 +2,7 @@ package com.fillumina.performance.executor.param;
 
 import com.fillumina.performance.executor.TN;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.Combinator;
@@ -10,6 +11,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.tname.TName;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -17,7 +19,6 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParameterHelper {
-
 
     /**
      * Takes parameters values from {@code params} and creates a map
@@ -38,14 +39,15 @@ public class ParameterHelper {
 
         RunnableHelper paramSetter = new RunnableHelper(baseRunnable, annotation);
 
-        IndexedHashMap<TName,RunnableOptionsContainer> linkedMap = new IndexedHashMap<>();
+        IndexedHashMap<TName,RunnableOptionsContainer> linkedMap =
+                new IndexedHashMap<>();
 
         for (Combinator.IntArrayCursorList combination : new Combinator(max)) {
             TName composedParamName = TN.EMPTY;
             IndexedHashMap<String, Object> parameters = new IndexedHashMap<>();
 
-            OptionContainer.Builder optBuilder = OptionContainer.builder();
-            
+            OptionBuilder<?> optBuilder = new OptionBuilder<>();
+
             for (int i=0; i<combination.size(); i++) {
                 LinkedTree<String, Object> options = params.getTreeAtIndex(i);
                 Map.Entry<String, Object> selectedOption =
@@ -62,7 +64,7 @@ public class ParameterHelper {
             }
 
             Runnable runnable = paramSetter.cloneAndSetParameters(parameters);
-            OptionContainer options = optBuilder.build();
+            Map<String,Option> options = optBuilder.build();
 
             linkedMap.put(composedParamName,
                     new RunnableOptionsContainer(runnable, options));
@@ -89,7 +91,7 @@ public class ParameterHelper {
             IndexedHashMap<TName, RunnableOptionsContainer> runnableMap,
             MixedStatsHolder result) {
 
-        Map<TName, OptionContainer> optionMap = new HashMap<>();
+        Map<TName, Map<String,Option>> optionMap = new HashMap<>();
 
         runnableMap.forEach((tn, rc) ->
                 optionMap.put(tn, rc.getOptionContainer()) );
@@ -101,4 +103,32 @@ public class ParameterHelper {
                 });
     }
 
+    public static Map<TName, Map<String,Option>> getOptionMap(Stats stats) {
+        Map<TName, Map<String,Option>> parametersMap =
+                stats.getPayload(ParameterizedTestProducer.PARAMETERS);
+
+        Map<TName, Map<String,Option>> sequencesMap =
+                stats.getPayload(SequencedTestProducer.SEQUENCES);
+
+        Map<TName, Map<String,Option>> map = new LinkedHashMap<>();
+        merge(parametersMap, map);
+        merge(sequencesMap, map);
+
+        return map;
+    }
+
+    private static void merge(Map<TName, Map<String, Option>> src,
+            Map<TName, Map<String, Option>> dst) {
+        if (src == null) {
+            return;
+        }
+        src.forEach((TName tname, Map<String,Option> opts) -> {
+            Map<String,Option> m = dst.get(tname);
+            if (m != null) {
+                m.putAll(opts);
+            } else {
+                dst.put(tname, new LinkedHashMap<>(opts));
+            }
+        });
+    }
 }

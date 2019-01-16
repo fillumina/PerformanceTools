@@ -619,6 +619,7 @@ public class LinkedTree<K,V>
         flatten(map, converter, new ArrayDeque<>(), this);
         return map;
     }
+    
     private <C> void flatten(
             Map<C, ? super V> map,
             Function<List<K>,C> converter,

@@ -100,8 +100,8 @@ public class ParameterizedTestProducerTest {
         Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE)
                 .getStatsAtPath("test");
 
-        Map<TName, OptionContainer> options =
-                stats.<Map<TName, OptionContainer>>getPayload(
+        Map<TName, Map<String,Option>> options =
+                stats.<Map<TName, Map<String,Option>>>getPayload(
                         ParameterizedTestProducer.PARAMETERS);
 
         assertOption(options, 'a', 1);
@@ -116,11 +116,11 @@ public class ParameterizedTestProducerTest {
         }
     }
 
-    private void assertOption(Map<TName, OptionContainer> options, char a, int v) {
-        OptionContainer optCont = options.get(
+    private void assertOption(Map<TName, Map<String,Option>> options, char a, int v) {
+        Map<String,Option> optCont = options.get(
                 TN.tname(String.valueOf(a), String.valueOf(v)));
-        assertEquals(a, (char)optCont.getOption("param1").getOptionValue());
-        assertEquals(v, (int)optCont.getOption("param2").getOptionValue());
+        assertEquals(a, (char)optCont.get("param1").getOptionValue());
+        assertEquals(v, (int)optCont.get("param2").getOptionValue());
     }
 
     @Test

@@ -1,7 +1,10 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.param.Option;
+import com.fillumina.performance.executor.param.ParameterHelper;
 import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
@@ -9,10 +12,14 @@ import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.stats.MeasureTimesValue;
 import com.fillumina.performance.util.tname.TName;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Allows to create new statistically accurate {@link Measure}s based on
@@ -20,6 +27,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// TODO put in its own package?
 public class StatsExpression<C> extends Printable<StatsExpression<C>>
         implements ExpressionSolver {
 
@@ -76,11 +84,98 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         if (stats.isEmpty()) {
             return Collections.<TName,Measure>emptyMap();
         }
+
+        Map<TName, Map<String,Option>> optionsMap =
+                ParameterHelper.getOptionMap(stats);
+
         IndexedHashMap<TName, Measure> measureMap = new IndexedHashMap<>();
-        map.forEach((TName name, ExpressionList<C> exp) -> {
-                measureMap.put(name, exp.solve(stats));
+        map.forEach((TName statsName, ExpressionList<C> exp) -> {
+                Set<String> paramSet = new HashSet<>();
+                exp.addParameters(paramSet);
+                if (paramSet.isEmpty()) {
+                    measureMap.put(statsName, exp.solve(stats, null, null));
+                } else {
+                    optionsMap.forEach((TName tname, Map<String,Option> oc) -> {
+                        final TName testName = statsName.append(tname);
+                        Measure m = exp.solve(stats, oc, testName);
+                        // TODO changes the names of the expression tests
+                        TName n = testName.append(tname.getLastName() + "*");
+                        measureMap.put(n, m);
+                    });
+                }
         });
         return measureMap;
+    }
+
+    public static class Factors<C> {
+        private final ExpressionList<C> parent;
+        private List<String> multiplicators = new ArrayList<>();
+        private List<String> divisors = new ArrayList<>();
+
+        public Factors(ExpressionList<C> parent) {
+            this.parent = parent;
+        }
+
+        public Factors<C> multiplyBy(String... array) {
+            Arrays.stream(array).forEach(multiplicators::add);
+            return this;
+        }
+
+        public Factors<C> divideBy(String... array) {
+            Arrays.stream(array).forEach(divisors::add);
+            return this;
+        }
+
+        public ExpressionList<C> end() {
+            return parent;
+        }
+
+        protected boolean isEmpty() {
+            return multiplicators.isEmpty() && divisors.isEmpty();
+        }
+
+        protected void addParameters(Set<String> set) {
+            set.addAll(multiplicators);
+            set.addAll(divisors);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder buf = new StringBuilder();
+            buf.append(multiplicators.stream().collect(Collectors.joining(" * ")));
+            if (!divisors.isEmpty()) {
+                buf.append(" / (");
+                buf.append(divisors.stream().collect(Collectors.joining(" * ")));
+                buf.append(") ");
+            }
+            return buf.toString();
+        }
+
+        private double getMultiplicators(Map<String, Option> options) {
+            return getFrom(options, multiplicators);
+        }
+
+        private Double getDivisors(Map<String, Option> options) {
+            return getFrom(options, divisors);
+        }
+
+        private double getFrom(Map<String, Option> options, List<String> list) {
+            Holder.Double mult = new Holder.Double(1.0);
+            list.forEach(s -> {
+                Double v = toDouble(options.get(s).getOptionValue());
+                if (v != null) {
+                    mult.multiply(v);
+                }
+            });
+            return mult.get();
+        }
+
+        private Double toDouble(Object obj) {
+            if (obj == null) {
+                return null;
+            }
+            return Double.valueOf(obj.toString());
+        }
     }
 
     public static abstract class AbstractExpression<C> {
@@ -88,13 +183,16 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         protected final boolean subtract;
         protected double multiplier = 1.0;
         protected double divisor = 1.0;
+        protected Factors<C> factors;
 
         public AbstractExpression(ExpressionList<C> parent, boolean subtract) {
             this.parent = parent;
             this.subtract = subtract;
         }
 
-        protected abstract Measure solve(Stats stats);
+        protected abstract Measure solve(Stats stats,
+                                        Map<String,Option> optionContainer,
+                                        TName currentTest);
 
         protected abstract void appendExprTo(AppendableWrapper app);
 
@@ -102,11 +200,16 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         public AbstractExpression<C> appendTo(AppendableWrapper app) {
             appendExprTo(app);
-            if (Double.compare(multiplier, 1.0) != 0) {
-                app.print(" * ").print(multiplier);
-            }
-            if (Double.compare(divisor, 1.0) != 0) {
-                app.print(" / ").print(divisor);
+
+            if (factors == null || factors.isEmpty()) {
+                if (Double.compare(multiplier, 1.0) != 0) {
+                    app.print(" * ").print(multiplier);
+                }
+                if (Double.compare(divisor, 1.0) != 0) {
+                    app.print(" / ").print(divisor);
+                }
+            } else {
+                app.print(" * ").print(factors.toString());
             }
             return this;
         }
@@ -147,6 +250,13 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
             return parent;
         }
 
+        public Factors<C> factors() {
+            if (factors == null) {
+                factors = new Factors<>(parent);
+            }
+            return factors;
+        }
+
         public ExpressionList<C> endExpression() {
             return parent;
         }
@@ -156,6 +266,28 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
                 return (ExpressionList<C>) this;
             }
             return parent;
+        }
+
+        protected void addParameters(Set<String> set) {
+            if (factors != null && !factors.isEmpty()) {
+                factors.addParameters(set);
+            }
+        }
+
+        protected void copyParameters(Map<String,Option> options) {
+            if (options == null || options.isEmpty()) {
+                return;
+            }
+            if (factors != null && !factors.isEmpty()) {
+                double mult = factors.getMultiplicators(options);
+                if (mult != 1.0) {
+                    multiplier = mult;
+                }
+                double div = factors.getDivisors(options);;
+                if (div != 1.0) {
+                    divisor = div;
+                }
+            }
         }
    }
 
@@ -175,6 +307,14 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         public StatsExpression<C> end() {
             return caller;
+        }
+
+        @Override
+        public void addParameters(Set<String> paramSet) {
+            super.addParameters(paramSet);
+            for (AbstractExpression<C> expr : expressions) {
+                expr.addParameters(paramSet);
+            }
         }
 
         @Override
@@ -213,15 +353,18 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
 
         @Override
-        protected Measure solve(Stats stats) {
+        protected Measure solve(Stats stats, Map<String,Option> optionContainer,
+                TName currentTest) {
             Measure measure = null;
             for (AbstractExpression<C> exp : expressions) {
                 if (measure == null) {
-                    measure = exp.solve(stats);
+                    measure = exp.solve(stats, optionContainer, currentTest);
                 } else {
-                    measure = add(measure, exp.solve(stats));
+                    measure = add(measure,
+                            exp.solve(stats, optionContainer, currentTest));
                 }
             }
+            copyParameters(optionContainer);
             return multiply(measure, (subtract ? -1 : 1) * multiplier / divisor);
         }
     }
@@ -248,8 +391,11 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
 
         @Override
-        protected Measure solve(Stats stats) {
-            Measure measure = stats.getMeasure(testName);
+        protected Measure solve(Stats stats, Map<String,Option> optionContainer,
+                TName currentTest) {
+            TName name = TN.CURRENT.equals(testName) ? currentTest : testName;
+            Measure measure = stats.getMeasure(name);
+            copyParameters(optionContainer);
             return multiply(measure, (subtract ? -1 : 1) * multiplier / divisor);
         }
 
