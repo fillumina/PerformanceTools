@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains the measure of one or more tests.
+ * Contains the measure of one or more tests relative to the same experiment.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

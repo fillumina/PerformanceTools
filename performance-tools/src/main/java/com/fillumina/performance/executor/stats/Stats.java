@@ -81,12 +81,22 @@ public class Stats extends Printable<Stats>
 
     public Stats(StatsType type,
             Map<TName,DimensionalMeasure> measures,
-            Unit<?> unit,
+            Unit<?> unit, // to force a specific unit, null to auto-select
             Map<String, Object> payloadMap,
             Predicate<String> filter) {
+        Unit<?> armonizedUnit = getArmonizedUnit(measures.values());
+        if (unit != null) {
+            if (armonizedUnit != null && !unit.isSameType(armonizedUnit)) {
+                throw new RuntimeException("given unit " + unit +
+                        " is not compatible with used one " + armonizedUnit);
+            }
+            this.unit = unit;
+            this.map = createNormalizedMap(measures, unit);
+        } else {
+            this.unit = armonizedUnit;
+            this.map = createNormalizedMap(measures, this.unit);
+        }
         this.type = type;
-        this.unit = getArmonizedUnit(measures.values());
-        this.map = createNormalizedMap(measures, unit);
         this.refMeasure = filter == null ?
                 new BiggerMeasure(this.map) : new BiggerMeasure(map, filter);
         this.multiMeasure = new MultiMeasureSignificance(measures.values());

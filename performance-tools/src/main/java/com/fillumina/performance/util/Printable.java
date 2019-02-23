@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 /**
+ * Extends what it is usually done by the {@link Object#toString() } method.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

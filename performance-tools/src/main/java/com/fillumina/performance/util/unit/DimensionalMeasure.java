@@ -16,6 +16,13 @@ public abstract class DimensionalMeasure extends Measure {
         return toStringForConfidence(Ratio.P_95, unit);
     }
 
+    /**
+     * @param unit the unit to be converted into.
+     *          <i>the given unit must be of the same type of the actual one!</i>
+     *
+     * @return a new {@link DimensionalMeasure} converted to the given
+     *           {@link Unit}.
+     */
     public DimensionalMeasure in(Unit<?> unit) {
         if (getUnit() == unit) {
             return this;
