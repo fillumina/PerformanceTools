@@ -5,8 +5,8 @@ import java.util.Objects;
 
 /**
  * Because {@link PathName} implements {@link CharSequence} this map
- * uses equality over identity to allow searching by whatever can be
- * matched with that.
+ * uses equality over strings to allow searching by whatever
+ * Object key has a matching string representation.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

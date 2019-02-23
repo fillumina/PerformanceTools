@@ -54,7 +54,7 @@ public class TestConfiguration<C>
         statsExpression = new StatsExpression<>(this);
     }
 
-    public TestConfiguration<C> setName(PathName name) {
+    public TestConfiguration<C> setPathName(PathName name) {
         this.name = name;
         return this;
     }

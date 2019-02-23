@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 /**
  *
- * @param I self
+ * @param I self used to allow fluent interface to extending classes
  * @param N notification
  * @param T test
  * @param R result

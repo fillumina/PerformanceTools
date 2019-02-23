@@ -9,7 +9,10 @@ import com.fillumina.performance.util.pathname.PathName;
  */
 public class PN {
 
-    public static final PathName EMPTY = PathName.createRoot();
+    private static final String SEPARATOR = " : ";
+
+    public static final PathName EMPTY =
+            PathName.createRootWithSeparator(SEPARATOR);
     public static final PathName CURRENT = EMPTY.append("current");
 
     public static final PathName pname(CharSequence name) {

@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Contains trees of immutable strings where each node represents a path
- * from the root to the node. Different trees can be created.
+ * Contains a tree of nodes where each node represents a sequence of immutable
+ * strings from the root down to that node. Different roots can be created.
  * It's an efficient way to use path names without having to manage lists or
  * arrays and consuming as little memory as possible maintaining an acceptable
  * speed.
@@ -23,13 +23,16 @@ import java.util.ListIterator;
 public class PathName extends AbstractList<String>
         implements Comparable<PathName>, CharSequence, Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String SEPARATOR = " : ";
 
     // this is just one of the possible roots. this is used by default.
     public static final PathName ROOT = createRoot();
 
     public static PathName createRoot() {
-        return new PathName(null, null);
+        return new PathName(null, null, " : ");
+    }
+
+    public static PathName createRootWithSeparator(String separator) {
+        return new PathName(null, null, separator);
     }
 
     public static PathName getCommonPrefix(Iterable<PathName> iterable) {
@@ -47,16 +50,22 @@ public class PathName extends AbstractList<String>
     private final PathName parent;  // it's an inverted linked list
     private final int level;
     private final String lastName;
+    private final String separator;
     private final String fullName;
     private final String[] array;
     private ArrayList<WeakReference<PathName>> children;
 
     protected PathName(PathName parent, String lastName) {
+        this(parent, lastName, parent.getRoot().getSeparator());
+    }
+
+    protected PathName(PathName parent, String lastName, String separator) {
         this.parent = parent;
         this.lastName = lastName;
         this.level = parent == null ? 0 : parent.size() + 1;
         this.array = createArray();
-        this.fullName = toStringWithSeparator(SEPARATOR);
+        this.separator = separator;
+        this.fullName = toStringWithSeparator(separator);
     }
 
     /** Override if you extend this class. */
@@ -165,6 +174,10 @@ public class PathName extends AbstractList<String>
             current = current.parent;
         }
         return current;
+    }
+
+    public String getSeparator() {
+        return separator;
     }
 
     @Override

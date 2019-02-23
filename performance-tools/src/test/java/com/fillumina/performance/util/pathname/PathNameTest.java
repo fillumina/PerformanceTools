@@ -376,4 +376,18 @@ public class PathNameTest {
         assertEquals("two", tn.getTNameAt(1).getLastName());
         assertEquals("three", tn.getTNameAt(2).getLastName());
     }
+
+    @Test
+    public void shouldCreateANewRootWithASeparator() {
+        PathName root = PathName.createRootWithSeparator(" > ");
+        assertEquals(" > ", root.getSeparator());
+    }
+
+    @Test
+    public void shouldUseTheSeparatorGivenToRoot() {
+        PathName root = PathName.createRootWithSeparator(" > ");
+
+        assertEquals("one > two > three",
+                root.append("one").append("two").append("three").toString());
+    }
 }

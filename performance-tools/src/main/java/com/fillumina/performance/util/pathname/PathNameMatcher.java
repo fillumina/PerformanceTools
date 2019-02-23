@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 /**
  * A matcher that matches {@link PathName}s.
- * It allows to create expressions that match {@link PathName}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
