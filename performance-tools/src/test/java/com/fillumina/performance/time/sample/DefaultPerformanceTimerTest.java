@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mock.CountingTestable;
@@ -11,7 +11,7 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
 import com.fillumina.performance.util.ToleranceAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -23,9 +23,9 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class DefaultPerformanceTimerTest {
-    private static final TName ONE = TN.tname("one");
-    private static final TName TWO = TN.tname("two");
-    private static final TName THREE = TN.tname("three");
+    private static final PathName ONE = PN.pname("one");
+    private static final PathName TWO = PN.pname("two");
+    private static final PathName THREE = PN.pname("three");
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
@@ -151,7 +151,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
-                            IndexedHashMap<TName, Runnable> tests,
+                            IndexedHashMap<PathName, Runnable> tests,
                             int[] iterations) {
                         return SpeedSampleMock.builder()
                                 .addTest(ONE)
@@ -184,7 +184,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                         @Override
                         public TimeSampleBuilder executeIterations(
-                                IndexedHashMap<TName, Runnable> tests,
+                                IndexedHashMap<PathName, Runnable> tests,
                                 int[] iterations) {
                             iterationCounter.set(iterations[0]);
                             return SpeedSampleMock.builder()
@@ -216,7 +216,7 @@ public class DefaultPerformanceTimerTest {
                 new PerformanceExecutor() {
                     @Override
                     public TimeSampleBuilder executeIterations(
-                            IndexedHashMap<TName, Runnable> tests,
+                            IndexedHashMap<PathName, Runnable> tests,
                             int[] iterations) {
                         return sample;
                     }

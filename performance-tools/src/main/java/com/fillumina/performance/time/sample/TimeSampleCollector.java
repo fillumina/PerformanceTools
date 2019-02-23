@@ -3,8 +3,8 @@ package com.fillumina.performance.time.sample;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.time.TimeStatsType;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamedMap;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.ThroughputUnit;
@@ -23,7 +23,7 @@ import java.util.function.Function;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TimeSampleCollector implements TimeSampleBuilder {
-    private final Map<TName, IterationTimeAccumulator> timeMap;
+    private final Map<PathName, IterationTimeAccumulator> timeMap;
     private long totalTimeNs;
 
     public TimeSampleCollector() {
@@ -31,7 +31,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
     }
 
     public TimeSampleCollector add(
-            final TName name,
+            final PathName name,
             final long elapsed,
             final int iterations) {
         IterationTimeAccumulator acc = timeMap.get(name);
@@ -56,7 +56,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
     @Override
     public Sample buildAverageTimeSample() {
-        TNameMap<SampleValue> map = createMap(
+        PathNamedMap<SampleValue> map = createMap(
                 AverageTimeUnit.NANOSECONDS,
                 ita -> 1.0 * ita.getTimeNs() / ita.getIterations());
         return new Sample(TimeStatsType.AVERAGE, map);
@@ -64,18 +64,18 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
     @Override
     public Sample buildThroughputSample() {
-        TNameMap<SampleValue> map = createMap(
+        PathNamedMap<SampleValue> map = createMap(
                 ThroughputUnit.OP,
                 ita -> 1E9 * ita.getIterations() / ita.getTimeNs());
         return new Sample(TimeStatsType.THROUGHPUT, map);
     }
 
-    private TNameMap<SampleValue> createMap(
+    private PathNamedMap<SampleValue> createMap(
             Unit<?> unit,
             Function<IterationTimeAccumulator, Double> valueFunc) {
-        TNameMap<SampleValue> map = new TNameMap<>(timeMap.size());
+        PathNamedMap<SampleValue> map = new PathNamedMap<>(timeMap.size());
         timeMap.entrySet().forEach((e) -> {
-            TName name = e.getKey();
+            PathName name = e.getKey();
             IterationTimeAccumulator ita = e.getValue();
 
             SampleValue s = new TimeSampleValue(

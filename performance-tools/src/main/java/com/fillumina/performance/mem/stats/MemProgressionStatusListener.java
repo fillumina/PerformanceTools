@@ -1,6 +1,6 @@
 package com.fillumina.performance.mem.stats;
 
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 
 /**
  *
@@ -8,5 +8,5 @@ import com.fillumina.performance.util.tname.TName;
  */
 public interface MemProgressionStatusListener {
 
-    void accepts(TName testName, int sample, int totalSamples, long memoryUsed);
+    void accepts(PathName testName, int sample, int totalSamples, long memoryUsed);
 }

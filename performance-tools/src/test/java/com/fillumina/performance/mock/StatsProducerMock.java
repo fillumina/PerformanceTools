@@ -1,10 +1,10 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.AbstractStatsProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Absolute;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 public class StatsProducerMock<T>
         extends AbstractStatsProducer<StatsProducerMock<T>> {
 
-    private final Map<TName, Double> map;
+    private final Map<PathName, Double> map;
     private final List<Map<CharSequence,T>> tree = new ArrayList<>();
     private BiFunction<CharSequence,Runnable,T> evaluator = (x,y) -> null;
 
@@ -29,11 +29,11 @@ public class StatsProducerMock<T>
         for (int i=0,l=objects.length; i<l; i+=2) {
             CharSequence c = (CharSequence) objects[i];
             double value = Double.valueOf(objects[i+1].toString());
-            map.put(TN.tname(c), value);
+            map.put(PN.pname(c), value);
         }
     }
 
-    public StatsProducerMock(Map<TName, Double> map) {
+    public StatsProducerMock(Map<PathName, Double> map) {
         this.map = map;
     }
 
@@ -50,11 +50,11 @@ public class StatsProducerMock<T>
 
     @Override
     public MixedStatsHolder get() {
-        StatsMockBuilder builder = new StatsMockBuilder().name(getName());
+        StatsMockBuilder builder = new StatsMockBuilder().name(getPathName());
         Map<CharSequence,T> subTree = new IndexedHashMap<>();
         tree.add(subTree);
-        getTests().forEach((TName name, Runnable test) -> {
-            //TName cname = getName().append(name);
+        getTests().forEach((PathName name, Runnable test) -> {
+            //PathName cname = getName().append(name);
             subTree.put(name, evaluate(name, test));
             double testValue;
             try {

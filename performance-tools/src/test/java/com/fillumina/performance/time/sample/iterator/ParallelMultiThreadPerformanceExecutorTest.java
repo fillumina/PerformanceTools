@@ -1,11 +1,11 @@
 package com.fillumina.performance.time.sample.iterator;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,12 +27,12 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
-        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
+        IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new ParallelTest()
+        testMap.put(PN.pname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
                     .addTask("two", 2, NULL_RUNNABLE));
-        testMap.put(TN.tname("not asymmetric"), new Runnable() {
+        testMap.put(PN.pname("not asymmetric"), new Runnable() {
             @Override
             public void run() {
                 // do nothing
@@ -48,9 +48,9 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(2, DAYS_1);
 
-        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
+        IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
-        testMap.put(TN.tname("asymmetric"), new ParallelTest()
+        testMap.put(PN.pname("asymmetric"), new ParallelTest()
                     .addTask("one", 1, NULL_RUNNABLE)
                     .addTask("two", 2, NULL_RUNNABLE)
                     .addTask("three", 2, NULL_RUNNABLE));
@@ -70,7 +70,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         ParallelMultiThreadPerformanceExecutor executor =
                 new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
 
-        IndexedHashMap<TName,Runnable> testMap = new IndexedHashMap<>();
+        IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
         AtomicInteger aCounter = new AtomicInteger();
         AtomicInteger bCounter = new AtomicInteger();
@@ -78,7 +78,7 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         int aWorkers = 1;
         int bWorkers = 3;
 
-        testMap.put(TN.tname("asymmetric"),
+        testMap.put(PN.pname("asymmetric"),
                 new ParallelTest()
                     .addTask("a", aWorkers, () -> aCounter.getAndIncrement() )
                     .addTask("b", bWorkers, () -> bCounter.getAndIncrement() ) );

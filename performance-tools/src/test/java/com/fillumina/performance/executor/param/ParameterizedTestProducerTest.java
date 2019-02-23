@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
@@ -11,7 +11,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.reflection.ReflectionHelper;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,15 +57,15 @@ public class ParameterizedTestProducerTest {
                 .getStatsAtPath("XYZ", "test");
 
         assertEquals(1.0,
-                stats.getMeasure(TN.tname("XYZ", "test", "a")).getMean(), 0);
+                stats.getMeasure(PN.pname("XYZ", "test", "a")).getMean(), 0);
         assertEquals(2.0,
-                stats.getMeasure(TN.tname("XYZ", "test", "b")).getMean(), 0);
+                stats.getMeasure(PN.pname("XYZ", "test", "b")).getMean(), 0);
 
         List<List<CharSequence>> tree = statsProducer.getTree();
         List<CharSequence> stats0 = tree.get(0);
 
-        assertEquals(TN.tname("XYZ", "test", "a"), stats0.get(0));
-        assertEquals(TN.tname("XYZ", "test", "b"), stats0.get(1));
+        assertEquals(PN.pname("XYZ", "test", "a"), stats0.get(0));
+        assertEquals(PN.pname("XYZ", "test", "b"), stats0.get(1));
     }
 
     @Test
@@ -100,8 +100,8 @@ public class ParameterizedTestProducerTest {
         Stats stats = holder.getStatsHolder(MockStatsType.INSTANCE)
                 .getStatsAtPath("test");
 
-        Map<TName, Map<String,Option>> options =
-                stats.<Map<TName, Map<String,Option>>>getPayload(
+        Map<PathName, Map<String,Option>> options =
+                stats.<Map<PathName, Map<String,Option>>>getPayload(
                         ParameterizedTestProducer.PARAMETERS);
 
         assertOption(options, 'a', 1);
@@ -116,9 +116,8 @@ public class ParameterizedTestProducerTest {
         }
     }
 
-    private void assertOption(Map<TName, Map<String,Option>> options, char a, int v) {
-        Map<String,Option> optCont = options.get(
-                TN.tname(String.valueOf(a), String.valueOf(v)));
+    private void assertOption(Map<PathName, Map<String,Option>> options, char a, int v) {
+        Map<String,Option> optCont = options.get(PN.pname(String.valueOf(a), String.valueOf(v)));
         assertEquals(a, (char)optCont.get("param1").getOptionValue());
         assertEquals(v, (int)optCont.get("param2").getOptionValue());
     }
@@ -147,10 +146,10 @@ public class ParameterizedTestProducerTest {
                             });
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
-                TN.tname("one", "linked"), 10.0,
-                TN.tname("one", "array"), 20.0,
-                TN.tname("two", "linked"), 30.0,
-                TN.tname("two", "array"), 40.0);
+                PN.pname("one", "linked"), 10.0,
+                PN.pname("one", "array"), 20.0,
+                PN.pname("two", "linked"), 30.0,
+                PN.pname("two", "array"), 40.0);
 
         if (printout) {
             printTree(exec);
@@ -159,8 +158,8 @@ public class ParameterizedTestProducerTest {
         assertEquals(1, exec.size());
 
         Map<CharSequence, Runnable> one = exec.get(0);
-        assertValues(one.get(TN.tname("one", "linked")), LinkedList.class, 0);
-        assertValues(one.get(TN.tname("one", "array")), ArrayList.class, 0);
+        assertValues(one.get(PN.pname("one", "linked")), LinkedList.class, 0);
+        assertValues(one.get(PN.pname("one", "array")), ArrayList.class, 0);
     }
 
     @Test
@@ -202,14 +201,14 @@ public class ParameterizedTestProducerTest {
                 );
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
-                TN.tname("one", "linked", "10"), 10.0,
-                TN.tname("one", "linked", "100"), 100.0,
-                TN.tname("one", "array", "10"), 20.0,
-                TN.tname("one", "array", "100"), 200.0,
-                TN.tname("two", "linked", "10"), 30.0,
-                TN.tname("two", "linked", "100"), 300.0,
-                TN.tname("two", "array", "10"), 40.0,
-                TN.tname("two", "array", "100"), 400.0);
+                PN.pname("one", "linked", "10"), 10.0,
+                PN.pname("one", "linked", "100"), 100.0,
+                PN.pname("one", "array", "10"), 20.0,
+                PN.pname("one", "array", "100"), 200.0,
+                PN.pname("two", "linked", "10"), 30.0,
+                PN.pname("two", "linked", "100"), 300.0,
+                PN.pname("two", "array", "10"), 40.0,
+                PN.pname("two", "array", "100"), 400.0);
 
         if (printout) {
             printTree(exec);
@@ -250,14 +249,14 @@ public class ParameterizedTestProducerTest {
                         "two", new ListSizeRunnable());
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
-                TN.tname("one", "linked", "10"), 10.0,
-                TN.tname("one", "linked", "100"), 100.0,
-                TN.tname("one", "array", "10"), 20.0,
-                TN.tname("one", "array", "100"), 200.0,
-                TN.tname("two", "linked", "10"), 30.0,
-                TN.tname("two", "linked", "100"), 300.0,
-                TN.tname("two", "array", "10"), 40.0,
-                TN.tname("two", "array", "100"), 400.0);
+                PN.pname("one", "linked", "10"), 10.0,
+                PN.pname("one", "linked", "100"), 100.0,
+                PN.pname("one", "array", "10"), 20.0,
+                PN.pname("one", "array", "100"), 200.0,
+                PN.pname("two", "linked", "10"), 30.0,
+                PN.pname("two", "linked", "100"), 300.0,
+                PN.pname("two", "array", "10"), 40.0,
+                PN.pname("two", "array", "100"), 400.0);
 
         if (printout) {
             printTree(exec);
@@ -271,31 +270,23 @@ public class ParameterizedTestProducerTest {
 
     private void checkTree(List<Map<CharSequence, Runnable>> exec) {
         Map<CharSequence, Runnable> one = exec.get(0);
-        assertValues(
-                one.get(TN.tname("one", "linked", "10")),
+        assertValues(one.get(PN.pname("one", "linked", "10")),
                 LinkedList.class, 10);
-        assertValues(
-                one.get(TN.tname("one", "linked", "100")),
+        assertValues(one.get(PN.pname("one", "linked", "100")),
                 LinkedList.class, 100);
-        assertValues(
-                one.get(TN.tname("one", "array", "10")),
+        assertValues(one.get(PN.pname("one", "array", "10")),
                 ArrayList.class, 10);
-        assertValues(
-                one.get(TN.tname("one", "array", "100")),
+        assertValues(one.get(PN.pname("one", "array", "100")),
                 ArrayList.class, 100);
 
         Map<CharSequence, Runnable> two = exec.get(1);
-        assertValues(
-                two.get(TN.tname("two", "linked", "10")),
+        assertValues(two.get(PN.pname("two", "linked", "10")),
                 LinkedList.class, 10);
-        assertValues(
-                two.get(TN.tname("two", "linked", "100")),
+        assertValues(two.get(PN.pname("two", "linked", "100")),
                 LinkedList.class, 100);
-        assertValues(
-                two.get(TN.tname("two", "array", "10")),
+        assertValues(two.get(PN.pname("two", "array", "10")),
                 ArrayList.class, 10);
-        assertValues(
-                two.get(TN.tname("two", "array", "100")),
+        assertValues(two.get(PN.pname("two", "array", "100")),
                 ArrayList.class, 100);
     }
 

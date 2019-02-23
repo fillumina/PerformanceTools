@@ -3,8 +3,8 @@ package com.fillumina.performance.executor.sample;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamedMap;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
@@ -20,9 +20,9 @@ public class Sample implements StatsTyped, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final StatsType type;
-    private final TNameMap<SampleValue> map;
+    private final PathNamedMap<SampleValue> map;
 
-    public Sample(StatsType type, TNameMap<SampleValue> map) {
+    public Sample(StatsType type, PathNamedMap<SampleValue> map) {
         this.type = type;
         this.map = map;
     }
@@ -36,11 +36,11 @@ public class Sample implements StatsTyped, Serializable {
         return type;
     }
 
-    public Map<TName, SampleValue> getValuesMap() {
+    public Map<PathName, SampleValue> getValuesMap() {
         return map.unmodifiableView();
     }
 
-    public List<TName> getTestNames() {
+    public List<PathName> getTestNames() {
         return map.keyList();
     }
 

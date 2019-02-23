@@ -5,15 +5,15 @@ import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.CallBackBuilder.Setter;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNameMatcher;
 import com.fillumina.performance.util.unit.Absolute;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
     public void checkAndReport(AssertableExperiment assertable,
             Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {
-        List<TName> tnames = extractFullNames(assertable);
+        List<PathName> tnames = extractFullNames(assertable);
         UnusedAssertionChecker dummy = new UnusedAssertionChecker();
         for (Evaluator evaluator : evaluators) {
             List<ExperimentAssertion> assertions = evaluator.createAssertions(tnames);
@@ -114,7 +114,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
 
     private void forEach(AssertableExperiment assertable,
             Consumer<ExperimentAssertion> consumer) {
-        List<TName> tnames = extractFullNames(assertable);
+        List<PathName> tnames = extractFullNames(assertable);
         for (Evaluator evaluator : evaluators) {
             List<ExperimentAssertion> assertions =
                     evaluator.createAssertions(tnames);
@@ -124,21 +124,21 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
         }
     }
 
-    private List<TName> extractFullNames(AssertableExperiment assertable) {
+    private List<PathName> extractFullNames(AssertableExperiment assertable) {
         Collection<? extends CharSequence> names = assertable.getNames();
-        List<TName> tnames = new ArrayList<>(names.size());
+        List<PathName> tnames = new ArrayList<>(names.size());
         for (CharSequence cs : names) {
-            if (cs instanceof TName) {
-                tnames.add((TName) cs);
+            if (cs instanceof PathName) {
+                tnames.add((PathName) cs);
             } else {
-                tnames.add(TN.tname(cs));
+                tnames.add(PN.pname(cs));
             }
         }
         return tnames;
     }
 
     private interface Evaluator extends ExperimentAssertion {
-        List<ExperimentAssertion> createAssertions(Collection<TName> names);
+        List<ExperimentAssertion> createAssertions(Collection<PathName> names);
 
         @Override
         public default void accept(AssertableExperiment t) {
@@ -158,7 +158,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
     public static class Builder<C> extends CallBackBuilder<C, ExperimentAssertion> {
         private final List<Evaluator> evaluators = new ArrayList<>();
         private Ratio tolerance = Ratio.percentage(10);
-        private TNameMatcher base = TNameMatcher.EMPTY;
+        private PathNameMatcher base = PathNameMatcher.EMPTY;
 
         public Builder() {
             super();
@@ -186,58 +186,58 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
 
         public Builder<C> forTest(String... path) {
             base = path.length == 0 ?
-                    TNameMatcher.EMPTY :
-                    TNameMatcher.builder().string(path).end();
+                    PathNameMatcher.EMPTY :
+                    PathNameMatcher.builder().string(path).end();
             return this;
         }
 
-        public TNameMatcher.MatcherBuilder<Builder<C>> with() {
-            return TNameMatcher.builder((builtObject) -> {
+        public PathNameMatcher.MatcherBuilder<Builder<C>> with() {
+            return PathNameMatcher.builder((builtObject) -> {
                 base = builtObject;
                 return this;
             });
         }
 
         public OrderCondition order(String... path) {
-            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            PathNameMatcher matcher = PathNameMatcher.builder().string(path).end();
             return new OrderCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.MatcherBuilder<OrderCondition> order() {
-            return TNameMatcher.builder((builtObject) -> {
+        public PathNameMatcher.MatcherBuilder<OrderCondition> order() {
+            return PathNameMatcher.builder((builtObject) -> {
                 return new OrderCondition(base.append(builtObject), tolerance);
             });
         }
 
-        public OrderCondition order(TNameMatcher matcher) {
+        public OrderCondition order(PathNameMatcher matcher) {
             return new OrderCondition(base.append(matcher), tolerance);
         }
 
         public class OrderCondition implements Evaluator {
             private final Ratio tolerance;
-            private final TNameMatcher nameMatcher;
-            private TNameMatcher otherMatcher;
+            private final PathNameMatcher nameMatcher;
+            private PathNameMatcher otherMatcher;
             private RelativeOrder equalityCondition;
 
-            public OrderCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+            public OrderCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
                 this.tolerance = tolerance;
             }
 
-            public TNameMatcher.MatcherBuilder<C> lessThan() {
+            public PathNameMatcher.MatcherBuilder<C> lessThan() {
                 return fluent(RelativeOrder.LESS);
             }
 
-            public TNameMatcher.MatcherBuilder<C> greaterThan() {
+            public PathNameMatcher.MatcherBuilder<C> greaterThan() {
                 return fluent(RelativeOrder.GREATER);
             }
 
-            public TNameMatcher.MatcherBuilder<C> equalsTo() {
+            public PathNameMatcher.MatcherBuilder<C> equalsTo() {
                 return fluent(RelativeOrder.EQUALS);
             }
 
-            private TNameMatcher.MatcherBuilder<C> fluent(final RelativeOrder condition) {
-                return TNameMatcher.builder((builtObject) -> {
+            private PathNameMatcher.MatcherBuilder<C> fluent(final RelativeOrder condition) {
+                return PathNameMatcher.builder((builtObject) -> {
                     otherMatcher = builtObject;
                     equalityCondition = condition;
                     addToEvaluators(this);
@@ -246,45 +246,45 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             }
 
             public Builder<C> lessThan(String... str) {
-                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                PathNameMatcher matcher = PathNameMatcher.builder().string(str).end();
                 return lessThan(matcher);
             }
 
             public Builder<C> greaterThan(String... str) {
-                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                PathNameMatcher matcher = PathNameMatcher.builder().string(str).end();
                 return greaterThan(matcher);
             }
 
             public Builder<C> equalsTo(String... str) {
-                TNameMatcher matcher = TNameMatcher.builder().string(str).end();
+                PathNameMatcher matcher = PathNameMatcher.builder().string(str).end();
                 return equalsTo(matcher);
             }
 
-            public Builder<C> lessThan(TNameMatcher matcher) {
+            public Builder<C> lessThan(PathNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
                 equalityCondition = RelativeOrder.LESS;
                 return addToEvaluators(this);
             }
 
-            public Builder<C> greaterThan(TNameMatcher matcher) {
+            public Builder<C> greaterThan(PathNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
                 equalityCondition = RelativeOrder.GREATER;
                 return addToEvaluators(this);
             }
 
-            public Builder<C> equalsTo(TNameMatcher matcher) {
+            public Builder<C> equalsTo(PathNameMatcher matcher) {
                 this.otherMatcher = base.append(matcher);
                 equalityCondition = RelativeOrder.EQUALS;
                 return addToEvaluators(this);
             }
 
             @Override
-            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
+            public List<ExperimentAssertion> createAssertions(Collection<PathName> names) {
                 List<ExperimentAssertion> list = new ArrayList<>();
-                List<TName> aList = filterNames(names, nameMatcher);
-                List<TName> bList = filterNames(names, otherMatcher);
-                for (TName aItem : aList) {
-                    for (TName bItem : bList) {
+                List<PathName> aList = filterNames(names, nameMatcher);
+                List<PathName> bList = filterNames(names, otherMatcher);
+                for (PathName aItem : aList) {
+                    for (PathName bItem : bList) {
                         if (!aItem.equals(bItem)) {
                             ExperimentAssertion assertion = Assertions
                                     .withTolerance(tolerance)
@@ -307,27 +307,27 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
         }
 
         public PercentageCondition percentage(String... path) {
-            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            PathNameMatcher matcher = PathNameMatcher.builder().string(path).end();
             return new PercentageCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.MatcherBuilder<PercentageCondition> percentage() {
-            return TNameMatcher.builder((builtObject) -> {
+        public PathNameMatcher.MatcherBuilder<PercentageCondition> percentage() {
+            return PathNameMatcher.builder((builtObject) -> {
                 return new PercentageCondition(base.append(builtObject), tolerance);
             });
         }
 
-        public PercentageCondition percentage(TNameMatcher matcher) {
+        public PercentageCondition percentage(PathNameMatcher matcher) {
             return new PercentageCondition(base.append(matcher), tolerance);
         }
 
         public class PercentageCondition implements Evaluator {
-            private final TNameMatcher nameMatcher;
+            private final PathNameMatcher nameMatcher;
             private final Ratio tolerance;
             private RelativeOrder equalityCondition;
             private Ratio percentage;
 
-            public PercentageCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+            public PercentageCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
                 this.tolerance = tolerance;
             }
@@ -351,10 +351,10 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             }
 
             @Override
-            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
-                List<TName> matchingNames = filterNames(names, nameMatcher);
+            public List<ExperimentAssertion> createAssertions(Collection<PathName> names) {
+                List<PathName> matchingNames = filterNames(names, nameMatcher);
                 List<ExperimentAssertion> list = new ArrayList<>();
-                for (TName n : matchingNames) {
+                for (PathName n : matchingNames) {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertPercentage(n)
@@ -374,27 +374,27 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
         }
 
         public ValueCondition value(String... path) {
-            TNameMatcher matcher = TNameMatcher.builder().string(path).end();
+            PathNameMatcher matcher = PathNameMatcher.builder().string(path).end();
             return new ValueCondition(base.append(matcher), tolerance);
         }
 
-        public TNameMatcher.MatcherBuilder<ValueCondition> value() {
-            return TNameMatcher.builder((builtObject) -> {
+        public PathNameMatcher.MatcherBuilder<ValueCondition> value() {
+            return PathNameMatcher.builder((builtObject) -> {
                 return new ValueCondition(base.append(builtObject), tolerance);
             });
         }
 
-        public ValueCondition value(TNameMatcher matcher) {
+        public ValueCondition value(PathNameMatcher matcher) {
             return new ValueCondition(base.append(matcher), tolerance);
         }
 
         public class ValueCondition implements Evaluator {
-            private final TNameMatcher nameMatcher;
+            private final PathNameMatcher nameMatcher;
             private final Ratio tolerance;
             private RelativeOrder equalityCondition;
             private Quantity<?> value;
 
-            public ValueCondition(TNameMatcher nameMatcher, Ratio tolerance) {
+            public ValueCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
                 this.tolerance = tolerance;
             }
@@ -436,10 +436,10 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             }
 
             @Override
-            public List<ExperimentAssertion> createAssertions(Collection<TName> names) {
+            public List<ExperimentAssertion> createAssertions(Collection<PathName> names) {
                 List<ExperimentAssertion> list = new ArrayList<>();
-                List<TName> aList = filterNames(names, nameMatcher);
-                for (TName aItem : aList) {
+                List<PathName> aList = filterNames(names, nameMatcher);
+                for (PathName aItem : aList) {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertValue(aItem)
@@ -464,10 +464,10 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             return Builder.this;
         }
 
-        private static List<TName> filterNames(
-                Collection<TName> names, TNameMatcher matcher) {
-            List<TName> result = new ArrayList<>();
-            for (TName n : names) {
+        private static List<PathName> filterNames(
+                Collection<PathName> names, PathNameMatcher matcher) {
+            List<PathName> result = new ArrayList<>();
+            for (PathName n : names) {
                 if (matcher.matches(n)) {
                     result.add(n);
                 }

@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
@@ -19,7 +19,7 @@ public class MixedStatsHolderCreatorTest {
     @Test
     public void shouldCreateMixedStatsWithSingleType() {
         MixedStatsHolderCreator creator =
-                new MixedStatsHolderCreator(TN.tname("first"));
+                new MixedStatsHolderCreator(PN.pname("first"));
 
         creator.addSample(createSample(1, 10));
         creator.addSample(createSample(2, 20));
@@ -48,7 +48,7 @@ public class MixedStatsHolderCreatorTest {
     @Test
     public void shouldCreateMixedStatsWithMultipleTypes() {
         MixedStatsHolderCreator creator =
-                new MixedStatsHolderCreator(TN.tname("first"));
+                new MixedStatsHolderCreator(PN.pname("first"));
 
         StatsType type1 = new StatsType(){};
         StatsType type2 = new StatsType(){};

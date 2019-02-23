@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tname;
+package com.fillumina.performance.util.pathname;
 
 import com.fillumina.performance.util.CallBackBuilder;
 import java.util.ArrayList;
@@ -8,25 +8,26 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * A matcher that matches {@link TName}s.
+ * A matcher that matches {@link PathName}s.
+ * It allows to create expressions that match {@link PathName}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMatcher {
-    public static final TNameMatcher EMPTY =
-            new TNameMatcher(Collections.<Condition>emptyList());
+public class PathNameMatcher {
+    public static final PathNameMatcher EMPTY =
+            new PathNameMatcher(Collections.<Condition>emptyList());
 
     private final List<Condition> conditions;
 
-    /** Build a matcher that matches {@link TName}s. */
-    public static class MatcherBuilder<C> extends CallBackBuilder<C,TNameMatcher> {
+    /** *  Build a matcher that matches {@link PathName}s. */
+    public static class MatcherBuilder<C> extends CallBackBuilder<C,PathNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
         private MatcherBuilder() {
             super();
         }
 
-        private MatcherBuilder(Setter<C, TNameMatcher> setter) {
+        private MatcherBuilder(Setter<C, PathNameMatcher> setter) {
             super(setter);
         }
 
@@ -87,38 +88,38 @@ public class TNameMatcher {
         }
 
         @Override
-        public TNameMatcher build() {
-            return new TNameMatcher(conditions);
+        public PathNameMatcher build() {
+            return new PathNameMatcher(conditions);
         }
     }
 
-    public static MatcherBuilder<TNameMatcher> builder() {
+    public static MatcherBuilder<PathNameMatcher> builder() {
         return new MatcherBuilder<>();
     }
 
     public static <C> MatcherBuilder<C> builder(
-            CallBackBuilder.Setter<C,TNameMatcher> setter) {
+            CallBackBuilder.Setter<C,PathNameMatcher> setter) {
         return new MatcherBuilder<>(setter);
     }
 
-    private TNameMatcher(List<Condition> conditions) {
+    private PathNameMatcher(List<Condition> conditions) {
         this.conditions = conditions;
     }
 
-    public TNameMatcher append(TNameMatcher other) {
+    public PathNameMatcher append(PathNameMatcher other) {
         List<Condition> list =
                 new ArrayList<>(conditions.size() + other.conditions.size());
         list.addAll(conditions);
         list.addAll(other.conditions);
-        return new TNameMatcher(list);
+        return new PathNameMatcher(list);
     }
 
     public static enum Result {
-        /** {@link TName} doesn't match */
+        /** {@link PathName} doesn't match */
         REJECT,
         /** Eats nodes up to a match */
         NEXT,
-        /** {@link TName} matches */
+        /** {@link PathName} matches */
         ACCEPT
     }
 
@@ -240,11 +241,11 @@ public class TNameMatcher {
     };
 
     public boolean matches(CharSequence name) {
-        return matches(TName.ROOT.append(name.toString()));
+        return matches(PathName.ROOT.append(name.toString()));
     }
 
-    public boolean matches(TName tname) {
-        String[] tnames = tname.toArray();
+    public boolean matches(PathName pname) {
+        String[] tnames = pname.toArray();
         int size = tnames.length;
         Result previousMatch = Result.ACCEPT;
         Result match = Result.ACCEPT;

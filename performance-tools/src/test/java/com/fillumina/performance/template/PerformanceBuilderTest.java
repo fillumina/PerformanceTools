@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.ProducerConfigurationImpl;
 import com.fillumina.performance.executor.generator.TestConfiguration;
@@ -115,8 +115,8 @@ public class PerformanceBuilderTest {
 
         // System.out.println(stats.toString());
 
-        assertTrue(stats.getNames().contains(TN.tname("first")));
-        assertTrue(stats.getNames().contains(TN.tname("second")));
+        assertTrue(stats.getNames().contains(PN.pname("first")));
+        assertTrue(stats.getNames().contains(PN.pname("second")));
     }
 
 }

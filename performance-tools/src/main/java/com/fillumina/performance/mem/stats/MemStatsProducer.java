@@ -13,7 +13,7 @@ import com.fillumina.performance.mem.sample.MemSampleProducer;
 import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.MostUsedFilter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +64,7 @@ public class MemStatsProducer
     public MixedStatsHolder get() {
         sampleProducer.clearAndAddAllTests(this);
 
-        MixedStatsHolderCreator sampleCollector = new MixedStatsHolderCreator(getName());
+        MixedStatsHolderCreator sampleCollector = new MixedStatsHolderCreator(getPathName());
         setUpTests();
         for (int i=0; i<samples; i++) {
             Map<StatsType, Sample> sample = sampleProducer.get();
@@ -107,13 +107,13 @@ public class MemStatsProducer
             int currentSampleIndex, int totalSamples) {
         for (Sample sample : sampleMap.values()) {
             for (SampleValue v : sample.getValuesMap().values()) {
-                notifyListeners(v.getName(), 0, 0,
+                notifyListeners(v.getPathName(), 0, 0,
                         (long) v.getQuantity().as(MemUnit.B));
             }
         }
     }
 
-    protected void notifyListeners(TName testName,
+    protected void notifyListeners(PathName testName,
             int currentSampleIndex, int totalSamples, long memoryUsed) {
         if (listeners != null) {
             for (MemProgressionStatusListener l : listeners) {

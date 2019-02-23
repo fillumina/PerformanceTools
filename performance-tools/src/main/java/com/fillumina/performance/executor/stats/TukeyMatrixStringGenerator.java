@@ -4,7 +4,7 @@ import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -67,12 +67,12 @@ public final class TukeyMatrixStringGenerator
                 .cell("tukeyHSD")
                 .cell("equality")
                 .endl();
-        List<TName> list = new ArrayList<>(stats.getNames());
+        List<PathName> list = new ArrayList<>(stats.getNames());
         int size = list.size();
         for (int i=0; i<size; i++) {
-            TName iname = list.get(i);
+            PathName iname = list.get(i);
             for (int j=i + 1; j<size; j++) {
-                TName jname = list.get(j);
+                PathName jname = list.get(j);
                 if (stats.getMeasure(iname).getMean() <
                         stats.getMeasure(jname).getMean()) {
                     addTukey(stats, iname, jname, tukeyTable, confidence);
@@ -85,7 +85,7 @@ public final class TukeyMatrixStringGenerator
     }
 
     private void addTukey(final Stats stats,
-            TName iname, TName jname,
+            PathName iname, PathName jname,
             TableFormatter tukeyTable,
             Ratio confidence) {
         double tukey = stats.getTukeyHsd(iname, jname);

@@ -1,13 +1,13 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -120,9 +120,9 @@ public class MixedAssertionableResult<C> {
         }
 
         public Appendable appendResults() {
-            List<TName> names = extractNames();
+            List<PathName> names = extractNames();
 
-            for (TName name : names) {
+            for (PathName name : names) {
                 newline();
                 appendTitle(name.toString(), '-');
 
@@ -153,11 +153,11 @@ public class MixedAssertionableResult<C> {
             }
         }
 
-        private List<TName> extractNames() {
+        private List<PathName> extractNames() {
             LinkedTree<String,Void> tree = new LinkedTree<>();
-            TName last = null;
+            PathName last = null;
             for (AssertionableResult<?> statsRes : map.values()) {
-                for (TName tn : statsRes.getFlattenedAssertableMap().keySet()) {
+                for (PathName tn : statsRes.getFlattenedAssertableMap().keySet()) {
                     last = tn;
                     tree.putValueAtPath(null, tn);
                 }
@@ -165,8 +165,8 @@ public class MixedAssertionableResult<C> {
             if (tree.isEmpty()) {
                 return Collections.singletonList(last);
             }
-            IndexedHashMap<TName,Void> map = new IndexedHashMap<>();
-            tree.flatten(map, list -> TN.tname(list) );
+            IndexedHashMap<PathName,Void> map = new IndexedHashMap<>();
+            tree.flatten(map, list -> PN.pname(list) );
             return map.keyList();
         }
     }

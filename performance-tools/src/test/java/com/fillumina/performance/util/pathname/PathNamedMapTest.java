@@ -1,6 +1,6 @@
-package com.fillumina.performance.util.tname;
+package com.fillumina.performance.util.pathname;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -9,24 +9,24 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMapTest {
+public class PathNamedMapTest {
 
-    private static class TNamedImpl implements TNamed {
-        private final TName name;
+    private static class TNamedImpl implements PathNamed {
+        private final PathName name;
         private final int value;
 
         public TNamedImpl(int value, String... name) {
-            this.name = TN.tname(name);
+            this.name = PN.pname(name);
             this.value = value;
         }
 
-        public TNamedImpl(int value, TName name) {
+        public TNamedImpl(int value, PathName name) {
             this.name = name;
             this.value = value;
         }
 
         @Override
-        public TName getName() {
+        public PathName getPathName() {
             return name;
         }
 
@@ -42,7 +42,7 @@ public class TNameMapTest {
 
     @Test
     public void shouldGetWithSingleString() {
-        TNameMap<TNamedImpl> map = new TNameMap<>();
+        PathNamedMap<TNamedImpl> map = new PathNamedMap<>();
         map.add(new TNamedImpl(1, "one"));
         map.add(new TNamedImpl(2, "two"));
 
@@ -52,11 +52,11 @@ public class TNameMapTest {
 
     @Test
     public void shouldGetWithSingleStringUnmodifiable() {
-        TNameMap<TNamedImpl> map = new TNameMap<>();
+        PathNamedMap<TNamedImpl> map = new PathNamedMap<>();
         map.add(new TNamedImpl(1, "one"));
         map.add(new TNamedImpl(2, "two"));
 
-        Map<TName,TNamedImpl> unmodifiable = map.unmodifiableView();
+        Map<PathName,TNamedImpl> unmodifiable = map.unmodifiableView();
 
         assertEquals(1, unmodifiable.get("one").getValue(), 0);
         assertEquals(2, unmodifiable.get("two").getValue(), 0);
@@ -64,11 +64,11 @@ public class TNameMapTest {
 
     @Test
     public void shouldGetWithTName() {
-        TName one = TName.ROOT.append("one");
-        TName two = TName.ROOT.append("two");
-        TName twelve = TName.ROOT.append("one", "two");
+        PathName one = PathName.ROOT.append("one");
+        PathName two = PathName.ROOT.append("two");
+        PathName twelve = PathName.ROOT.append("one", "two");
 
-        TNameMap<TNamedImpl> map = new TNameMap<>();
+        PathNamedMap<TNamedImpl> map = new PathNamedMap<>();
         map.add(new TNamedImpl(1, one));
         map.add(new TNamedImpl(2, two));
         map.add(new TNamedImpl(12, twelve));

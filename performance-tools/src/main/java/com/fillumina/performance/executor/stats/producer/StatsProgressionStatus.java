@@ -3,7 +3,7 @@ package com.fillumina.performance.executor.stats.producer;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Collection;
 
 /**
@@ -11,11 +11,11 @@ import java.util.Collection;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StatsProgressionStatus {
-    private final TName name;
+    private final PathName name;
     private final Collection<Stats> stats;
     private final String statusMessage;
 
-    public StatsProgressionStatus(TName name,
+    public StatsProgressionStatus(PathName name,
             Collection<Stats> stats,
             String statusMessage) {
         this.name = name;
@@ -23,7 +23,7 @@ public class StatsProgressionStatus {
         this.statusMessage = statusMessage;
     }
 
-    public TName getName() {
+    public PathName getName() {
         return name;
     }
 

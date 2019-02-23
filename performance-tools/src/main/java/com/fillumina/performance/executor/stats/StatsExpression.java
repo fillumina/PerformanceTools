@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.param.Option;
 import com.fillumina.performance.executor.param.ParameterHelper;
 import com.fillumina.performance.util.AppendableWrapper;
@@ -10,7 +10,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureSum;
 import com.fillumina.performance.util.stats.MeasureTimesValue;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,8 +32,8 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         implements ExpressionSolver {
 
     private final C caller;
-    private final Map<TName, ExpressionList<C>> map = new IndexedHashMap<>();
-    private Map<TName, String> stringMap;
+    private final Map<PathName, ExpressionList<C>> map = new IndexedHashMap<>();
+    private Map<PathName, String> stringMap;
 
     public StatsExpression() {
         this(null);
@@ -48,19 +48,19 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     }
 
     public ExpressionList<C> addExpression(String... name) {
-        return addExpression(TN.tname(name));
+        return addExpression(PN.pname(name));
     }
 
     public ExpressionList<C> addExpression(CharSequence name) {
         ExpressionList<C> expressionList = new ExpressionList<>(this, null, false);
-        map.put(TN.tname(name), expressionList);
+        map.put(PN.pname(name), expressionList);
         return expressionList;
     }
 
     @Override
     public StatsExpression<C> appendTo(Appendable appendable) {
         AppendableWrapper app = new AppendableWrapper(appendable);
-        map.forEach((TName name, ExpressionList<C> expr) -> {
+        map.forEach((PathName name, ExpressionList<C> expr) -> {
                     app.print(name.toString()).print(": ");
                     expr.appendTo(app);
         });
@@ -68,10 +68,10 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     }
 
     @Override
-    public Map<TName,String> getStringExpressions() {
+    public Map<PathName,String> getStringExpressions() {
         if (stringMap == null || stringMap.size() != map.size()) {
-            Map<TName,String> m = new LinkedHashMap<>();
-            map.forEach( (TName name, ExpressionList<C> expr) ->
+            Map<PathName,String> m = new LinkedHashMap<>();
+            map.forEach((PathName name, ExpressionList<C> expr) ->
                     m.put(name, expr.toString()) );
             this.stringMap = Collections.unmodifiableMap(m);
         }
@@ -80,26 +80,26 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map<TName, Measure> solve(Stats stats) {
+    public Map<PathName, Measure> solve(Stats stats) {
         if (stats.isEmpty()) {
-            return Collections.<TName,Measure>emptyMap();
+            return Collections.<PathName,Measure>emptyMap();
         }
 
-        Map<TName, Map<String,Option>> optionsMap =
+        Map<PathName, Map<String,Option>> optionsMap =
                 ParameterHelper.getOptionMap(stats);
 
-        IndexedHashMap<TName, Measure> measureMap = new IndexedHashMap<>();
-        map.forEach((TName exprName, ExpressionList<C> exp) -> {
+        IndexedHashMap<PathName, Measure> measureMap = new IndexedHashMap<>();
+        map.forEach((PathName exprName, ExpressionList<C> exp) -> {
                 Set<String> paramSet = new HashSet<>();
                 exp.addParameters(paramSet);
                 if (paramSet.isEmpty()) {
                     measureMap.put(exprName, exp.solve(stats, null, null));
                 } else {
-                    optionsMap.forEach((TName pname, Map<String,Option> oc) -> {
-                        TName name = exprName.append(pname);
+                    optionsMap.forEach((PathName pname, Map<String,Option> oc) -> {
+                        PathName name = exprName.append(pname);
                         Measure m = exp.solve(stats, oc, name);
                         // TODO changes the names of the expression tests
-                        TName n = exprName.append(pname.getLastName() + "*");
+                        PathName n = exprName.append(pname.getLastName() + "*");
                         measureMap.put(n, m);
                     });
                 }
@@ -192,7 +192,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         protected abstract Measure solve(Stats stats,
                                         Map<String,Option> optionContainer,
-                                        TName currentTest);
+                                        PathName currentTest);
 
         protected abstract void appendExprTo(AppendableWrapper app);
 
@@ -215,25 +215,25 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
         }
 
         public ExpressionTest<C> addCurrentTest() {
-            return addTest(TN.CURRENT);
+            return addTest(PN.CURRENT);
         }
 
         public ExpressionTest<C> addTest(String... testName) {
-            return addTest(TN.tname(testName));
+            return addTest(PN.pname(testName));
         }
 
         public ExpressionTest<C> addTest(CharSequence testName) {
             return addToList(new ExpressionTest<>(getParent(), false,
-                    TN.tname(testName) ));
+                    PN.pname(testName) ));
         }
 
         public ExpressionTest<C> subtractTest(String... testName) {
-            return subtractTest(TN.tname(testName));
+            return subtractTest(PN.pname(testName));
         }
 
         public ExpressionTest<C> subtractTest(CharSequence testName) {
             return addToList(new ExpressionTest<>(getParent(), true,
-                    TN.tname(testName) ));
+                    PN.pname(testName) ));
         }
 
         public ExpressionList<C> addExpression() {
@@ -358,7 +358,7 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         @Override
         protected Measure solve(Stats stats, Map<String,Option> optionContainer,
-                TName currentTest) {
+                PathName currentTest) {
             Measure measure = null;
             for (AbstractExpression<C> exp : expressions) {
                 if (measure == null) {
@@ -374,11 +374,11 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
     }
 
     public static class ExpressionTest<C> extends AbstractExpression<C> {
-        private final TName testName;
+        private final PathName testName;
 
         public ExpressionTest(ExpressionList<C> parent,
                 boolean subtract,
-                TName testName) {
+                PathName testName) {
             super(parent, subtract);
             this.testName = testName;
         }
@@ -396,8 +396,8 @@ public class StatsExpression<C> extends Printable<StatsExpression<C>>
 
         @Override
         protected Measure solve(Stats stats, Map<String,Option> optionContainer,
-                TName currentTest) {
-            TName name = TN.CURRENT.equals(testName) ? currentTest : testName;
+                PathName currentTest) {
+            PathName name = PN.CURRENT.equals(testName) ? currentTest : testName;
             Measure measure = stats.getMeasure(name);
             copyParameters(optionContainer);
             return multiply(measure, (subtract ? -1 : 1) * multiplier / divisor);

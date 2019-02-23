@@ -1,11 +1,11 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.mock.SampleProducerMock;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;
@@ -59,7 +59,7 @@ public class AbstractSampleProducerInstrumenterTest {
     private static class StatsProgressionStatusListenerImpl
             implements StatsProgressionStatusListener {
 
-        private TName name;
+        private PathName name;
         private Collection<? extends Stats> stats;
         private String statusMessage;
 
@@ -77,7 +77,7 @@ public class AbstractSampleProducerInstrumenterTest {
                 new StatsProgressionStatusListenerImpl();
         producer.addStatsProgressionListener(listener);
 
-        TName name = TN.tname("name");
+        PathName name = PN.pname("name");
         String message = "status message";
         producer.notifyStatsListeners(
                 new StatsProgressionStatus(name, null, message));

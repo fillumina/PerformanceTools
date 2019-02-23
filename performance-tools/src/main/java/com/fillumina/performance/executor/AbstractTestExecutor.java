@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +23,8 @@ public abstract class AbstractTestExecutor
     public static final String SINGLE_TEST_NAME = UNNAMED_TEST_PREFIX + "0";
 
     private final List<Consumer<? super N>> consumers = new ArrayList<>();
-    private final IndexedHashMap<TName, T> tests = new IndexedHashMap<>();
-    private TName name = TN.EMPTY;
+    private final IndexedHashMap<PathName, T> tests = new IndexedHashMap<>();
+    private PathName name = PN.EMPTY;
 
     /** @inheritDoc */
     @Override
@@ -81,7 +81,7 @@ public abstract class AbstractTestExecutor
 
     @Override
     @SuppressWarnings("unchecked")
-    public I setName(TName name) {
+    public I setPathName(PathName name) {
         this.name = name;
         return (I) this;
     }
@@ -89,12 +89,12 @@ public abstract class AbstractTestExecutor
     /** Sets a name for the test. */
     @SuppressWarnings("unchecked")
     public I setName(String name) {
-        this.name = TN.tname(name);
+        this.name = PN.pname(name);
         return (I) this;
     }
 
     @Override
-    public TName getName() {
+    public PathName getPathName() {
         return name;
     }
 
@@ -115,7 +115,7 @@ public abstract class AbstractTestExecutor
     /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
-    public I addTests(Map<TName,T> tests) {
+    public I addTests(Map<PathName,T> tests) {
         this.tests.putAll(tests);
         return (I) this;
     }
@@ -123,13 +123,13 @@ public abstract class AbstractTestExecutor
     /** @inheritDoc */
     @Override
     public I addTest(String name, T test) {
-        return addTest(TN.tname(name), test);
+        return addTest(PN.pname(name), test);
     }
 
     /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
-    public I addTest(TName name, T test) {
+    public I addTest(PathName name, T test) {
         if (tests.containsKey(name)) {
             throw new RuntimeException("test '" + name + "' already inserted");
         }
@@ -140,23 +140,23 @@ public abstract class AbstractTestExecutor
     /** @inheritDoc */
     @Override
     public I ignoreTest(String name, T test) {
-        return ignoreTest(TN.tname(name), test);
+        return ignoreTest(PN.pname(name), test);
     }
 
     /** @inheritDoc */
     @Override
     @SuppressWarnings("unchecked")
-    public I ignoreTest(final TName name, final T test) {
+    public I ignoreTest(final PathName name, final T test) {
         return (I) this;
     }
 
     /** @inheritDoc */
     @Override
-    public IndexedHashMap<TName, T> getTests() {
+    public IndexedHashMap<PathName, T> getTests() {
         return tests.unmodifiableView();
     }
 
-    protected static TName createTestName(TName producerName, TName testName) {
+    protected static PathName createTestName(PathName producerName, PathName testName) {
         if (producerName.isSharingPrefixWith(testName)) {
             return testName;
         }

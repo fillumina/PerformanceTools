@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.Sample;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Iterator;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -14,9 +14,9 @@ import org.junit.Test;
  */
 public class PerformanceSampleTest {
     private static final int ITERATIONS = 1_000;
-    private static final TName THIRD = TN.tname("third");
-    private static final TName SECOND = TN.tname("second");
-    private static final TName FIRST = TN.tname("first");
+    private static final PathName THIRD = PN.pname("third");
+    private static final PathName SECOND = PN.pname("second");
+    private static final PathName FIRST = PN.pname("first");
 
     private Sample sample;
 
@@ -36,7 +36,7 @@ public class PerformanceSampleTest {
 
     @Test
     public void shouldHonourTheListOrder() {
-        Iterator<TName> it = sample.getValuesMap().keySet().iterator();
+        Iterator<PathName> it = sample.getValuesMap().keySet().iterator();
         assertEquals(FIRST, it.next());
         assertEquals(SECOND, it.next());
         assertEquals(THIRD, it.next());

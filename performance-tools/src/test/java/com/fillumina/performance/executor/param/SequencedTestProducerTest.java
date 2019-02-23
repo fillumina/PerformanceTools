@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
@@ -13,7 +13,7 @@ import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.reflection.ReflectionHelper;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,16 +57,16 @@ public class SequencedTestProducerTest {
 
         Stats statsA = aHolder.getStatsAtPath("XYZ", "a");
         assertEquals(1.0,
-                statsA.getMeasure(TN.tname("XYZ", "a", "test")).getMean(), 0);
+                statsA.getMeasure(PN.pname("XYZ", "a", "test")).getMean(), 0);
 
         Stats statsB = aHolder.getStatsAtPath("XYZ", "b");
         assertEquals(2.0,
-                statsB.getMeasure(TN.tname("XYZ", "b", "test")).getMean(), 0);
+                statsB.getMeasure(PN.pname("XYZ", "b", "test")).getMean(), 0);
 
         List<List<CharSequence>> tree = statsProducer.getTree();
 
-        assertEquals(TN.tname("XYZ", "a", "test"), tree.get(0).get(0));
-        assertEquals(TN.tname("XYZ", "b", "test"), tree.get(1).get(0));
+        assertEquals(PN.pname("XYZ", "a", "test"), tree.get(0).get(0));
+        assertEquals(PN.pname("XYZ", "b", "test"), tree.get(1).get(0));
     }
 
     @Test
@@ -106,11 +106,11 @@ public class SequencedTestProducerTest {
     }
 
     public void assertPayload(Stats statsA, final char sequenceValue) {
-        Map<TName, Map<String,Option>> options =
-                statsA.<Map<TName, Map<String,Option>>>getPayload(
+        Map<PathName, Map<String,Option>> options =
+                statsA.<Map<PathName, Map<String,Option>>>getPayload(
                         SequencedTestProducer.SEQUENCES);
 
-        Map<String,Option> optCont = options.get(TN.tname("test"));
+        Map<String,Option> optCont = options.get(PN.pname("test"));
         assertEquals(sequenceValue,
                 (char)optCont.get("param").getOptionValue());
     }
@@ -139,10 +139,10 @@ public class SequencedTestProducerTest {
                             });
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
-                TN.tname("P95", "one"), 10.0,
-                TN.tname("P95", "two"), 100.0,
-                TN.tname("P99", "one"), 20.0,
-                TN.tname("P99", "two"), 200.0);
+                PN.pname("P95", "one"), 10.0,
+                PN.pname("P95", "two"), 100.0,
+                PN.pname("P99", "one"), 20.0,
+                PN.pname("P99", "two"), 200.0);
 
         if (printout) {
             printTree(exec);
@@ -150,8 +150,8 @@ public class SequencedTestProducerTest {
 
         assertEquals(2, exec.size());
 
-        assertValues(exec.get(0).get(TN.tname("P95", "one")), Ratio.P_95, 0);
-        assertValues(exec.get(1).get(TN.tname("P99", "one")), Ratio.P_99, 0);
+        assertValues(exec.get(0).get(PN.pname("P95", "one")), Ratio.P_95, 0);
+        assertValues(exec.get(1).get(PN.pname("P99", "one")), Ratio.P_99, 0);
     }
 
     @Test
@@ -193,14 +193,14 @@ public class SequencedTestProducerTest {
                 );
 
         List<Map<CharSequence, Runnable>> exec = getExecutedTests(tests, params,
-                TN.tname("P95", "10", "one"), 10.0,
-                TN.tname("P95", "10", "two"), 100.0,
-                TN.tname("P95", "100", "one"), 20.0,
-                TN.tname("P95", "100", "two"), 200.0,
-                TN.tname("P99", "10", "one"), 30.0,
-                TN.tname("P99", "10", "two"), 300.0,
-                TN.tname("P99", "100", "one"), 40.0,
-                TN.tname("P99", "100", "two"), 400.0);
+                PN.pname("P95", "10", "one"), 10.0,
+                PN.pname("P95", "10", "two"), 100.0,
+                PN.pname("P95", "100", "one"), 20.0,
+                PN.pname("P95", "100", "two"), 200.0,
+                PN.pname("P99", "10", "one"), 30.0,
+                PN.pname("P99", "10", "two"), 300.0,
+                PN.pname("P99", "100", "one"), 40.0,
+                PN.pname("P99", "100", "two"), 400.0);
 
         if (printout) {
             printTree(exec);
@@ -208,15 +208,15 @@ public class SequencedTestProducerTest {
 
         assertEquals(4, exec.size());
 
-        TName[] array = {
-            TN.tname("P95", "10"),
-            TN.tname("P99", "10"),
-            TN.tname("P95", "100"),
-            TN.tname("P99", "100")
+        PathName[] array = {
+            PN.pname("P95", "10"),
+            PN.pname("P99", "10"),
+            PN.pname("P95", "100"),
+            PN.pname("P99", "100")
         };
 
         int index = 0;
-        for (TName name : array) {
+        for (PathName name : array) {
             Map<CharSequence, Runnable> map = exec.get(index);
             index++;
             Runnable one = map.get(name.append("one"));

@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.param.Option;
 import com.fillumina.performance.executor.param.OptionBuilder;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
@@ -14,7 +14,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
@@ -31,23 +31,23 @@ public class StatsMockBuilder {
     private final StatsType statsType;
     private CharSequence name;
     private Ratio confidence = Ratio.P_95;
-    private Map<TName, Map<String,Option>> parameters = new IndexedHashMap<>();
-    private Map<TName, Map<String,Option>> sequences = new IndexedHashMap<>();
+    private Map<PathName, Map<String,Option>> parameters = new IndexedHashMap<>();
+    private Map<PathName, Map<String,Option>> sequences = new IndexedHashMap<>();
 
     public static Stats create(Object... objs) {
-        return createWithTypes(MockStatsType.INSTANCE, TN.EMPTY, Magnitude.UNIT, objs);
+        return createWithTypes(MockStatsType.INSTANCE, PN.EMPTY, Magnitude.UNIT, objs);
     }
 
     public static Stats createWithTypes(
             StatsType statsType,
-            TName title,
+            PathName title,
             Unit<?> unit,
             Object... objs) {
         StatsMockBuilder builder = new StatsMockBuilder(statsType);
         for (int i=0,l=objs.length; i<l; i+=2) {
             String testName = (String) objs[i];
             double testMean = (double) objs[i+1];
-            TName tn = title.append(testName);
+            PathName tn = title.append(testName);
             builder.addTest(tn).mean(testMean).stdev(2.0).endTest();
         }
         return builder.buildWithSyntheticNormalValues(unit)
@@ -77,7 +77,7 @@ public class StatsMockBuilder {
     }
 
     public OptionBuilder<StatsMockBuilder>
-                addParametersForTest(TName name) {
+                addParametersForTest(PathName name) {
         return new OptionBuilder<>( o -> {
                     parameters.put(name, o);
                     return StatsMockBuilder.this;
@@ -85,7 +85,7 @@ public class StatsMockBuilder {
     }
 
     public OptionBuilder<StatsMockBuilder>
-                addSequencesForTest(TName name) {
+                addSequencesForTest(PathName name) {
         return new OptionBuilder<>( o -> {
                     sequences.put(name, o);
                     return StatsMockBuilder.this;
@@ -102,7 +102,7 @@ public class StatsMockBuilder {
         }
 
         MixedStatsHolderCreator statsCreator =
-                new MixedStatsHolderCreator(TN.tname(name));
+                new MixedStatsHolderCreator(PN.pname(name));
         boolean added;
         do {
             added = false;
@@ -138,7 +138,7 @@ public class StatsMockBuilder {
         }
 
         MixedStatsHolderCreator statsCreator =
-                new MixedStatsHolderCreator(TN.tname(name));
+                new MixedStatsHolderCreator(PN.pname(name));
         boolean added;
         do {
             added = false;
@@ -191,7 +191,7 @@ public class StatsMockBuilder {
         }
 
         MixedStatsHolderCreator statsCreator =
-                new MixedStatsHolderCreator(TN.tname(name));
+                new MixedStatsHolderCreator(PN.pname(name));
         boolean added;
         do {
             added = false;

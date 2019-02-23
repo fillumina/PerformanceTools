@@ -3,7 +3,7 @@ package com.fillumina.performance.executor.param;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import static org.junit.Assert.assertArrayEquals;
@@ -62,7 +62,7 @@ public class ParameterHelperTest {
 
         //System.out.println(params.toString());
 
-        IndexedHashMap<TName,RunnableOptionsContainer> pmap =
+        IndexedHashMap<PathName,RunnableOptionsContainer> pmap =
                 ParameterHelper.createParameterizedRunnables(
                         Param.class, params, new ParameterizedRunnable());
 
@@ -70,7 +70,7 @@ public class ParameterHelperTest {
 
         assertEquals(6, pmap.size());
 
-        Iterator<Entry<TName,RunnableOptionsContainer>> it = pmap.iterator();
+        Iterator<Entry<PathName,RunnableOptionsContainer>> it = pmap.iterator();
         assertEquals("Bob-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Tom-10", it.next().getKey().toStringWithSeparator("-"));
         assertEquals("Bob-100", it.next().getKey().toStringWithSeparator("-"));
@@ -79,14 +79,14 @@ public class ParameterHelperTest {
         assertEquals("Tom-1000", it.next().getKey().toStringWithSeparator("-"));
         assertFalse(it.hasNext());
 
-        pmap.forEach((TName tname, RunnableOptionsContainer runnable) -> {
+        pmap.forEach((PathName pname, RunnableOptionsContainer runnable) -> {
             ParameterizedRunnable prunnable =
                     (ParameterizedRunnable) runnable.getRunnable();
 
-            String name = tname.getFirstName();
+            String name = pname.getFirstName();
             assertEquals(name, prunnable.getName());
 
-            int size = Integer.valueOf(tname.getLastName());
+            int size = Integer.valueOf(pname.getLastName());
             assertEquals(size, prunnable.getSize());
         });
     }

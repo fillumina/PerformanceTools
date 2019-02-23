@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Map.Entry;
 
 /**
@@ -45,18 +45,18 @@ public class SequencedTestProducer
         assertTestsPresent();
 
         //          test name,          options
-        IndexedHashMap<TName, IndexedHashMap<TName, RunnableOptionsContainer>>
+        IndexedHashMap<PathName, IndexedHashMap<PathName, RunnableOptionsContainer>>
                 sequencedTestMap = new IndexedHashMap<>();
 
-        getTests().forEach((TName testName, Runnable runnable) -> {
-            IndexedHashMap<TName, RunnableOptionsContainer> runnableContainersMap =
+        getTests().forEach((PathName testName, Runnable runnable) -> {
+            IndexedHashMap<PathName, RunnableOptionsContainer> runnableContainersMap =
                     ParameterHelper.createParameterizedRunnables(
                             Sequence.class, sequences, runnable);
 
             sequencedTestMap.put(testName, runnableContainersMap);
         });
 
-        final TName experimentName = getName();
+        final PathName experimentName = getPathName();
 
         MixedStatsHolder.Joiner joiner =
                 MixedStatsHolder.joiner(experimentName);
@@ -67,22 +67,21 @@ public class SequencedTestProducer
             final int index = i;
             producer.clearTests();
 
-            IndexedHashMap<TName, RunnableOptionsContainer> runnableMap =
+            IndexedHashMap<PathName, RunnableOptionsContainer> runnableMap =
                     new IndexedHashMap<>();
 
-            sequencedTestMap.forEach(
-                    (TName testName,
-                        IndexedHashMap<TName, RunnableOptionsContainer> map) -> {
-                final Entry<TName, RunnableOptionsContainer> paramTestEntry =
+            sequencedTestMap.forEach((PathName testName,
+                        IndexedHashMap<PathName, RunnableOptionsContainer> map) -> {
+                final Entry<PathName, RunnableOptionsContainer> paramTestEntry =
                         map.getEntryAtIndex(index);
-                TName paramName = paramTestEntry.getKey();
+                PathName paramName = paramTestEntry.getKey();
                 RunnableOptionsContainer runnableContainer = paramTestEntry.getValue();
                 Runnable paramTest = runnableContainer.getRunnable();
 
                 runnableMap.put(testName, runnableContainer);
 
-                TName name = experimentName.append(paramName);
-                producer.setName(name);
+                PathName name = experimentName.append(paramName);
+                producer.setPathName(name);
                 producer.addTest(createTestName(name, testName), paramTest);
             });
 

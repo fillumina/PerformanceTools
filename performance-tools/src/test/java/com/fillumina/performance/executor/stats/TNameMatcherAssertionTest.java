@@ -2,12 +2,12 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.OrderAssertionError;
 import com.fillumina.performance.assertion.ValueAssertionError;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
-import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.pathname.PathNameMatcher;
 import org.junit.Test;
 
 /**
@@ -21,13 +21,12 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.order(TNameMatcher.builder().string("one").build())
-                .lessThan(TNameMatcher.builder().string("two").build());
+        builder.order(PathNameMatcher.builder().string("one").build())
+                .lessThan(PathNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one"), new OnlineMeasure(10.0),
-                        TN.tname("two"), new OnlineMeasure(20.0)));
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one"), new OnlineMeasure(10.0),
+                        PN.pname("two"), new OnlineMeasure(20.0)));
 
         builder.build().accept(stats);
     }
@@ -37,14 +36,13 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.order(TNameMatcher.builder().string("one").build())
+        builder.order(PathNameMatcher.builder().string("one").build())
                 // GREATER: 10 > 20!
-                .greaterThan(TNameMatcher.builder().string("two").build());
+                .greaterThan(PathNameMatcher.builder().string("two").build());
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one"), new OnlineMeasure(10.0),
-                        TN.tname("two"), new OnlineMeasure(20.0)));
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one"), new OnlineMeasure(10.0),
+                        PN.pname("two"), new OnlineMeasure(20.0)));
 
         builder.build().accept(stats);
     }
@@ -60,9 +58,8 @@ public class TNameMatcherAssertionTest {
         builder.value().string("one").end().equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one"), new OnlineMeasure(10.0),
-                        TN.tname("two"), new OnlineMeasure(20.0)));
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one"), new OnlineMeasure(10.0),
+                        PN.pname("two"), new OnlineMeasure(20.0)));
 
         builder.build().accept(stats);
     }
@@ -72,16 +69,15 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.order(TNameMatcher.builder().string("one").build())
-                .lessThan(TNameMatcher.builder().string("two").build());
+        builder.order(PathNameMatcher.builder().string("one").build())
+                .lessThan(PathNameMatcher.builder().string("two").build());
 
-        builder.value(TNameMatcher.builder().string("one").build())
+        builder.value(PathNameMatcher.builder().string("one").build())
                 .equalsTo(99.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one"), new OnlineMeasure(10.0),
-                        TN.tname("two"), new OnlineMeasure(20.0)));
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one"), new OnlineMeasure(10.0),
+                        PN.pname("two"), new OnlineMeasure(20.0)));
 
         builder.build().accept(stats);
     }
@@ -91,18 +87,17 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.order(TNameMatcher.builder().jolly().equalsTo(10.0).build())
-                .lessThan(TNameMatcher.builder().jolly().equalsTo(100.0).build());
+        builder.order(PathNameMatcher.builder().jolly().equalsTo(10.0).build())
+                .lessThan(PathNameMatcher.builder().jolly().equalsTo(100.0).build());
 
-        builder.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(PathNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "10"), new OnlineMeasure(10.0),
-                        TN.tname("one", "100"), new OnlineMeasure(100.0),
-                        TN.tname("two", "10"), new OnlineMeasure(20.0),
-                        TN.tname("two", "100"), new OnlineMeasure(200.0)
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "10"), new OnlineMeasure(10.0),
+                        PN.pname("one", "100"), new OnlineMeasure(100.0),
+                        PN.pname("two", "10"), new OnlineMeasure(20.0),
+                        PN.pname("two", "100"), new OnlineMeasure(200.0)
                 )
         );
 
@@ -114,18 +109,17 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(PathNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(10.0);
 
-        builder.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+        builder.value(PathNameMatcher.builder().string("NOT_EXIST").string("10").build())
                 .equalsTo(10.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "10"), new OnlineMeasure(10.0),
-                        TN.tname("one", "100"), new OnlineMeasure(100.0),
-                        TN.tname("two", "10"), new OnlineMeasure(20.0),
-                        TN.tname("two", "100"), new OnlineMeasure(200.0)
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "10"), new OnlineMeasure(10.0),
+                        PN.pname("one", "100"), new OnlineMeasure(100.0),
+                        PN.pname("two", "10"), new OnlineMeasure(20.0),
+                        PN.pname("two", "100"), new OnlineMeasure(200.0)
                 )
         );
 
@@ -137,16 +131,15 @@ public class TNameMatcherAssertionTest {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
 
-        builder.value(TNameMatcher.builder().string("NOT_EXIST").string("10").build())
+        builder.value(PathNameMatcher.builder().string("NOT_EXIST").string("10").build())
                 .equalsTo(10.0);
 
-        builder.value(TNameMatcher.builder().string("one").string("10").build())
+        builder.value(PathNameMatcher.builder().string("one").string("10").build())
                 .equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "10"), new OnlineMeasure(10.0),
-                        TN.tname("one", "100"), new OnlineMeasure(100.0)
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "10"), new OnlineMeasure(10.0),
+                        PN.pname("one", "100"), new OnlineMeasure(100.0)
                 )
         );
 
@@ -161,8 +154,7 @@ public class TNameMatcherAssertionTest {
         builder.value().string("one", "10").end().equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "10"), new OnlineMeasure(10.0))
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "10"), new OnlineMeasure(10.0))
         );
 
         builder.build().accept(stats);
@@ -176,8 +168,7 @@ public class TNameMatcherAssertionTest {
         builder.value("one", "10").equalsTo(9999.0);
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "10"), new OnlineMeasure(10.0))
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "10"), new OnlineMeasure(10.0))
         );
 
         builder.build().accept(stats);
@@ -191,9 +182,8 @@ public class TNameMatcherAssertionTest {
         builder.forTest("one").order("a").greaterThan("b");
 
         AssertableMock stats = new AssertableMock("test",
-                IndexedHashMap.<CharSequence,Measure>create(
-                        TN.tname("one", "a"), new OnlineMeasure(10.0),
-                        TN.tname("one", "b"), new OnlineMeasure(20.0)) );
+                IndexedHashMap.<CharSequence,Measure>create(PN.pname("one", "a"), new OnlineMeasure(10.0),
+                        PN.pname("one", "b"), new OnlineMeasure(20.0)) );
 
         builder.build().accept(stats);
     }

@@ -5,7 +5,7 @@ import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumente
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.util.Holder;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 
 /**
  * Executes tests sequentially and returns them as an aggregate statistics.
@@ -43,16 +43,16 @@ public class ConsecutiveExecutorStatsProducer
         producer.clearTests();
 
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();
-        builder.addStats(getName(), stats);
+        builder.addStats(getPathName(), stats);
         return builder.build();
     }
 
     private Stats executeConsecutively(
             TestExecutor<?, ?, Runnable, MixedStatsHolder> producer) {
         final Holder<Stats> joinStats = new Holder<>();
-        getTests().forEach((TName name, Runnable test) -> {
+        getTests().forEach((PathName name, Runnable test) -> {
             producer.clearTests();
-            producer.setName(name);
+            producer.setPathName(name);
             producer.addTest(name, test);
 
             MixedStatsHolder mixedHolder = producer.get();

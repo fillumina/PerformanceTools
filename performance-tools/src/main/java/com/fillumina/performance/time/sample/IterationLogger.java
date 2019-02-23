@@ -1,6 +1,6 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 
 /**
  *
@@ -8,10 +8,10 @@ import com.fillumina.performance.util.tname.TName;
  */
 class IterationLogger {
     private final double[][] log;
-    private TName name;
+    private PathName name;
     private int index;
 
-    public IterationLogger(TName testName, int lines) {
+    public IterationLogger(PathName testName, int lines) {
         this.name = testName;
         this.log = new double[lines][5];
     }

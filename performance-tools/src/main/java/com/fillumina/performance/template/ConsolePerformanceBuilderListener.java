@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.formatter.TimeFormat;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 
@@ -75,7 +75,7 @@ public class ConsolePerformanceBuilderListener extends AppendableWrapper
     }
 
     private void printResultTitle(MixedConfiguration configuration) {
-        TName testName = configuration.getTestConfig().getName();
+        PathName testName = configuration.getTestConfig().getPathName();
         if (testName == null || testName.isEmpty()) {
             println(TableFormatter.title("RESULTS", '='));
         } else {

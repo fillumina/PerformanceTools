@@ -5,7 +5,7 @@ import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
@@ -77,7 +77,7 @@ public class SingleTestMultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests,
+            final IndexedHashMap<PathName, Runnable> tests,
             final int[] iterations) {
         if (tests.isEmpty() || tests.size() != 1) {
             throw new IllegalArgumentException(
@@ -85,9 +85,9 @@ public class SingleTestMultiThreadPerformanceExecutor
         }
 
         // get the first (and only) run
-        final Map.Entry<TName,Runnable> entry =
+        final Map.Entry<PathName,Runnable> entry =
                 tests.entrySet().iterator().next();
-        final TName testName = entry.getKey();
+        final PathName testName = entry.getKey();
         final Runnable testable = entry.getValue();
         final int iteration = iterations[0];
 

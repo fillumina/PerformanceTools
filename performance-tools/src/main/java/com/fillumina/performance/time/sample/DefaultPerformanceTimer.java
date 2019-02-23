@@ -1,13 +1,13 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
@@ -160,14 +160,14 @@ public class DefaultPerformanceTimer
 
     private int[] doEstimation(long milliseconds)
             throws InvalidTestException {
-        IndexedHashMap<TName,Runnable> map = getTests();
+        IndexedHashMap<PathName,Runnable> map = getTests();
         int size = map.size();
         int[] estimations = new int[size];
         // this way the test execution order will be scrambled which is
         // useful to detect JVM bias toward the first executed test.
         for (int idx : getShuffledIndexes(size)) {
-            Map.Entry<TName,Runnable> entry = map.getEntryAtIndex(idx);
-            TName name = entry.getKey();
+            Map.Entry<PathName,Runnable> entry = map.getEntryAtIndex(idx);
+            PathName name = entry.getKey();
             Runnable test = entry.getValue();
             estimations[idx] = estimateSingleTest(name, test, milliseconds);
         }
@@ -190,7 +190,7 @@ public class DefaultPerformanceTimer
         return array;
     }
 
-    private int estimateSingleTest(TName name, Runnable testable, long millis)
+    private int estimateSingleTest(PathName name, Runnable testable, long millis)
         throws InvalidTestException {
         final double desiredTimeNs = millis * 1E6;
         int previousIterations = -1;
@@ -219,8 +219,8 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder executeSingleTest(Runnable runnable,
             int iterations) {
-        final IndexedHashMap<TName,Runnable> singletonTest =
-                IndexedHashMap.create(TN.tname("singleton"), runnable);
+        final IndexedHashMap<PathName,Runnable> singletonTest =
+                IndexedHashMap.create(PN.pname("singleton"), runnable);
         final int[] singletonArray = new int[]{iterations};
         return executor.executeIterations(singletonTest, singletonArray);
     }
@@ -248,7 +248,7 @@ public class DefaultPerformanceTimer
 
     private TimeSampleBuilder performTests(int[] iterations)
             throws IllegalStateException {
-        IndexedHashMap<TName,Runnable> tests = getTests();
+        IndexedHashMap<PathName,Runnable> tests = getTests();
         int[] actualIterations = createIterationsArrayIfNeeded(iterations);
         final TimeSampleBuilder builder =
                 executor.executeIterations(tests, actualIterations);

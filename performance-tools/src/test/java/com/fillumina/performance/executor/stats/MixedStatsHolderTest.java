@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.mock.StatsMockBuilder;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,8 +77,8 @@ public class MixedStatsHolderTest {
         Stats stats1 = createTypedStatsMock("1");
         Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(TN.tname("one"), stats1)
-                .addStats(TN.tname("two"), stats2)
+                .addStats(PN.pname("one"), stats1)
+                .addStats(PN.pname("two"), stats2)
                 .build();
 
         assertEquals(stats1,
@@ -92,8 +92,8 @@ public class MixedStatsHolderTest {
         Stats stats1 = createTypedStatsMock("1");
         Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(TN.tname("one"), stats1)
-                .addStats(TN.tname("two"), stats2)
+                .addStats(PN.pname("one"), stats1)
+                .addStats(PN.pname("two"), stats2)
                 .build();
 
         Set<StatsType> set = mixedHolder.getTypes();
@@ -107,8 +107,8 @@ public class MixedStatsHolderTest {
         Stats stats1 = createTypedStatsMock("1");
         Stats stats2 = createTypedStatsMock("2");
         MixedStatsHolder mixedHolder = MixedStatsHolder.builder()
-                .addStats(TN.tname("one"), stats1)
-                .addStats(TN.tname("two"), stats2)
+                .addStats(PN.pname("one"), stats1)
+                .addStats(PN.pname("two"), stats2)
                 .build();
 
         Map<StatsType, StatsHolder> map = mixedHolder.getStatsMap();
@@ -127,7 +127,7 @@ public class MixedStatsHolderTest {
         Stats stats1 = createTypedStatsMock("1");
         MixedStatsHolder one = create("one_", stats1);
 
-        TName rootName = TN.tname("root");
+        PathName rootName = PN.pname("root");
 
         MixedStatsHolder root = MixedStatsHolder.joiner(rootName)
                 .addSubExperiment(one)
@@ -145,7 +145,7 @@ public class MixedStatsHolderTest {
         MixedStatsHolder one = create("one_", stats1);
         MixedStatsHolder two = create("two_", stats2);
 
-        TName rootName = TN.tname("root");
+        PathName rootName = PN.pname("root");
 
         MixedStatsHolder mixedStatsHolder = MixedStatsHolder.joiner(rootName)
                 .addSubExperiment(one)
@@ -172,7 +172,7 @@ public class MixedStatsHolderTest {
         Stats b3 = createTypedStatsMock("b3");
         MixedStatsHolder two = create("two_", b1, b2, b3);
 
-        TName rootName = TN.tname("root");
+        PathName rootName = PN.pname("root");
 
         MixedStatsHolder root = MixedStatsHolder.joiner(rootName)
                 .addSubExperiment(one)
@@ -205,13 +205,13 @@ public class MixedStatsHolderTest {
         Stats s = createTypedStatsMock("2");
         MixedStatsHolder one = create("one_", s);
 
-        TName rootName = TN.tname("root");
+        PathName rootName = PN.pname("root");
 
         MixedStatsHolder root = MixedStatsHolder.joiner(rootName)
                 .addSubExperiment(one)
                 .join();
 
-        assertEquals(rootName, root.getStatsHolder(s.getStatsType()).getName());
+        assertEquals(rootName, root.getStatsHolder(s.getStatsType()).getPathName());
     }
 
     private MixedStatsHolder create(String prefix, Stats... array) {
@@ -224,12 +224,12 @@ public class MixedStatsHolderTest {
         return builder.build();
     }
 
-    private static TName createName(String prefix, int index) {
-        return TN.tname(prefix + Integer.toString(index));
+    private static PathName createName(String prefix, int index) {
+        return PN.pname(prefix + Integer.toString(index));
     }
 
     private AssertableExperiment getAssertable(MixedStatsHolder mixedHolder,
-            StatsType type, TName name) {
+            StatsType type, PathName name) {
         return mixedHolder
                 .getStatsHolder(type)
                 .getTree()

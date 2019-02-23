@@ -1,8 +1,8 @@
 package com.fillumina.performance.time.stats;
 
-import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
+import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTypeImpl;
@@ -11,10 +11,10 @@ import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.ReciprocalOnlineMeasureSampler;
 import com.fillumina.performance.util.stats.SingleMeasure;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -179,23 +179,23 @@ public class EventFrequency {
 
     /** Returns the performance statistics. */
     public MixedStatsHolder getPerformances(ListFilter<Double> filter) {
-        Map<TName,DimensionalMeasure> cntMap = new IndexedHashMap<>(map.size());
-        Map<TName,DimensionalMeasure> avgMap = new IndexedHashMap<>(map.size());
-        Map<TName,DimensionalMeasure> tptMap = new IndexedHashMap<>(map.size());
+        Map<PathName,DimensionalMeasure> cntMap = new IndexedHashMap<>(map.size());
+        Map<PathName,DimensionalMeasure> avgMap = new IndexedHashMap<>(map.size());
+        Map<PathName,DimensionalMeasure> tptMap = new IndexedHashMap<>(map.size());
 
-        map.forEach( (s,m) -> {
-                TName tname = TN.tname(s);
+        map.forEach((s,m) -> {
+                PathName pname = PN.pname(s);
                 Measure direct = m.getSampler().getDirect();
                 Measure inverse = m.getSampler().getInverse();
-                cntMap.put(tname,
+                cntMap.put(pname,
                         new DefaultDimensionalMeasure(
                                 new SingleMeasure(direct.getCount()),
                                 Magnitude.UNIT));
-                avgMap.put(tname,
+                avgMap.put(pname,
                         new DefaultDimensionalMeasure(
                                 direct,
                                 AverageTimeUnit.NANOSECONDS));
-                tptMap.put(tname,
+                tptMap.put(pname,
                         new DefaultDimensionalMeasure(
                                 inverse,
                                 ThroughputUnit.GIGAOP));

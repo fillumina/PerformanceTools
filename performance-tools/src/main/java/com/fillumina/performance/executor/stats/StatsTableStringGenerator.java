@@ -7,7 +7,7 @@ import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -83,7 +83,7 @@ public final class StatsTableStringGenerator
         if (exprSolver != null) {
             TableFormatter expr = new TableFormatter("  ")
                     .row("name", "expression");
-            exprSolver.getStringExpressions().forEach((TName name, String str) ->
+            exprSolver.getStringExpressions().forEach((PathName name, String str) ->
                     expr.row(name.toString(), str));
             header = header + System.lineSeparator() + expr.toString();
         }
@@ -105,14 +105,14 @@ public final class StatsTableStringGenerator
                 .endl();
         Holder.Integer index = new Holder.Integer();
         stats.getMeasureMap().entrySet().forEach((e) -> {
-            TName name = e.getKey();
+            PathName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
             Unit<?> unit = measure.getUnit();
             final double stdev = unit.convert(
                     measure.getUnbiasedStandardDeviation(),
                     measure.getUnit());
-            List<TName> names = stats.getNames();
-            int testPrefixSize = TName.commonPrefix(names).size();
+            List<PathName> names = stats.getNames();
+            int testPrefixSize = PathName.getCommonPrefix(names).size();
             double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
             String tukeyHsdStr = tukeyHsd < 0 ? "" :
                     String.format(Locale.US,"%.3f", tukeyHsd);
@@ -136,7 +136,7 @@ public final class StatsTableStringGenerator
     private TableFormatter createTableForSingleTest(
             Stats stats,
             Ratio confidence) {
-        TName name = stats.getNames().iterator().next();
+        PathName name = stats.getNames().iterator().next();
         DimensionalMeasure m = stats.getMeasureMap().get(name);
         Unit<?> unit = m.getUnit();
         return new TableFormatter()
@@ -168,11 +168,11 @@ public final class StatsTableStringGenerator
                 .endl();
         Holder.Integer index = new Holder.Integer();
         stats.getMeasureMap().entrySet().forEach(e -> {
-            TName name = e.getKey();
+            PathName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
             Unit<?> unit = measure.getUnit();
 
-            int testPrefixSize = TName.commonPrefix(stats.getNames()).size();
+            int testPrefixSize = PathName.getCommonPrefix(stats.getNames()).size();
 
             performanceTable
                     .cell(index.getValue())
@@ -191,7 +191,7 @@ public final class StatsTableStringGenerator
     private void appendTitle(Appendable appendable,
             Stats stats)
             throws IOException {
-        TName testPrefix = TName.commonPrefix(stats.getNames());
+        PathName testPrefix = PathName.getCommonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
                         stats.getStatsType().toString());
         appendable.append(statsType);

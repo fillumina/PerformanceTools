@@ -6,8 +6,8 @@ import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.StatsTyped;
 import com.fillumina.performance.executor.test.LfsrRunnable;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamedMap;
 import com.fillumina.performance.util.unit.MemUnit;
 import java.util.Collections;
 import java.util.Map;
@@ -39,10 +39,10 @@ public abstract class AbstractMemSampleProducer
     }
 
     public Sample getSampleWithIterations(int... iterations) {
-        TNameMap<SampleValue> map = new TNameMap<>(getTests().size());
+        PathNamedMap<SampleValue> map = new PathNamedMap<>(getTests().size());
         int index = 0;
-        for (Map.Entry<TName,Runnable> e : getTests()) {
-            TName name = e.getKey();
+        for (Map.Entry<PathName,Runnable> e : getTests()) {
+            PathName name = e.getKey();
             Runnable test = e.getValue();
 
             long mem = 0;

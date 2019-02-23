@@ -6,7 +6,7 @@ import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
@@ -80,13 +80,13 @@ public class MultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests,
+            final IndexedHashMap<PathName, Runnable> tests,
             final int[] iterations) {
         final TimeSampleCollector timeCollector =
                 new TimeSampleCollector();
 
         Holder.Integer index = new Holder.Integer();
-        tests.forEach( (TName testName, Runnable runnable) -> {
+        tests.forEach((PathName testName, Runnable runnable) -> {
             final int iteration = iterations[index.getValue()];
             final int totalIterations = iteration * workerNumber;
 

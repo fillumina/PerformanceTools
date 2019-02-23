@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tname;
+package com.fillumina.performance.util.pathname;
 
 import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.io.Serializable;
@@ -10,45 +10,48 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * Contains trees of immutable strings each forming a path.
- * Different trees can be created (same concept as namespaces).
+ * Contains trees of immutable strings where each node represents a path
+ * from the root to the node. Different trees can be created.
+ * It's an efficient way to use path names without having to manage lists or
+ * arrays and consuming as little memory as possible maintaining an acceptable
+ * speed.
  * Names are weak referenced so they are automatically reclaimed when not needed.
  * The class is synchronized so it is thread safe.
- * TName means TreeName but has been shortened because of its frequent use.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TName extends AbstractList<String>
-        implements Comparable<TName>, CharSequence, Serializable {
+public class PathName extends AbstractList<String>
+        implements Comparable<PathName>, CharSequence, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
-    public static final TName ROOT = createRoot();
+    // this is just one of the possible roots. this is used by default.
+    public static final PathName ROOT = createRoot();
 
-    public static TName createRoot() {
-        return new TName(null, null);
+    public static PathName createRoot() {
+        return new PathName(null, null);
     }
 
-    public static TName commonPrefix(Iterable<TName> iterable) {
-        Iterator<TName> it = iterable.iterator();
+    public static PathName getCommonPrefix(Iterable<PathName> iterable) {
+        Iterator<PathName> it = iterable.iterator();
         if (!it.hasNext()) {
             return null;
         }
-        TName common = it.next();
+        PathName common = it.next();
         while (it.hasNext()) {
             common = common.commonPrefix(it.next());
         }
         return common;
     }
 
-    private final TName parent;
+    private final PathName parent;  // it's an inverted linked list
     private final int level;
     private final String lastName;
     private final String fullName;
     private final String[] array;
-    private ArrayList<WeakReference<TName>> children;
+    private ArrayList<WeakReference<PathName>> children;
 
-    protected TName(TName parent, String lastName) {
+    protected PathName(PathName parent, String lastName) {
         this.parent = parent;
         this.lastName = lastName;
         this.level = parent == null ? 0 : parent.size() + 1;
@@ -57,14 +60,14 @@ public class TName extends AbstractList<String>
     }
 
     /** Override if you extend this class. */
-    protected TName createNew(String name) {
-        return new TName(this, name);
+    protected PathName createNew(String name) {
+        return new PathName(this, name);
     }
 
     private String[] createArray() {
         String[] a = new String[level];
         int s = level;
-        TName current = this;
+        PathName current = this;
         while (s > 0) {
             a[--s] = current.lastName;
             current = current.parent;
@@ -72,11 +75,11 @@ public class TName extends AbstractList<String>
         return a;
     }
 
-    public TName append(Iterable<String> names) {
+    public PathName append(Iterable<String> names) {
         if (names == null) {
             return this;
         }
-        TName current = this;
+        PathName current = this;
         for (String n : names) {
             if (n != null) {
                 current = current.append(n);
@@ -85,11 +88,11 @@ public class TName extends AbstractList<String>
         return current;
     }
 
-    public TName append(String... names) {
+    public PathName append(String... names) {
         if (names == null || names.length == 0) {
             return this;
         }
-        TName current = this;
+        PathName current = this;
         for (String n : names) {
             if (n != null) {
                 current = current.append(n);
@@ -98,15 +101,15 @@ public class TName extends AbstractList<String>
         return current;
     }
 
-    public synchronized TName append(String name) {
+    public synchronized PathName append(String name) {
         if (name == null || name.isEmpty()) {
             return this;
         }
         if (children != null) {
-            ListIterator<WeakReference<TName>> it = children.listIterator();
+            ListIterator<WeakReference<PathName>> it = children.listIterator();
             while (it.hasNext()) {
-                WeakReference<TName> wr = it.next();
-                TName child = wr.get();
+                WeakReference<PathName> wr = it.next();
+                PathName child = wr.get();
                 if (child == null) {
                     it.remove();
                 } else if (name.equals(child.getLastName())) {
@@ -116,7 +119,7 @@ public class TName extends AbstractList<String>
         } else {
             children = new ArrayList<>(3);
         }
-        TName child = createNew(name);
+        PathName child = createNew(name);
         children.add(new WeakReference<>(child));
         return child;
     }
@@ -124,10 +127,10 @@ public class TName extends AbstractList<String>
     public synchronized void clean() {
         if (children != null) {
             int removed = 0;
-            ListIterator<WeakReference<TName>> it = children.listIterator();
+            ListIterator<WeakReference<PathName>> it = children.listIterator();
             while (it.hasNext()) {
-                WeakReference<TName> wr = it.next();
-                TName child = wr.get();
+                WeakReference<PathName> wr = it.next();
+                PathName child = wr.get();
                 if (child == null) {
                     removed++;
                     it.remove();
@@ -152,12 +155,12 @@ public class TName extends AbstractList<String>
         return parent == null;
     }
 
-    public boolean isSameRoot(TName cn) {
+    public boolean isSameRoot(PathName cn) {
         return getRoot() == cn.getRoot();
     }
 
-    public TName getRoot() {
-        TName current = this;
+    public PathName getRoot() {
+        PathName current = this;
         while (current.parent != null) {
             current = current.parent;
         }
@@ -178,14 +181,14 @@ public class TName extends AbstractList<String>
         return parent != null;
     }
 
-    public TName getParent() {
+    public PathName getParent() {
         return parent;
     }
 
-    /** @return an unmodifiable {@link List} of {@link TName}s. */
-    public List<TName> getAllPartialTNames() {
-        TName[] tnames = new TName[level];
-        TName current = this;
+    /** @return an unmodifiable {@link List} of {@link PathName}s. */
+    public List<PathName> getAllPartialTNames() {
+        PathName[] tnames = new PathName[level];
+        PathName current = this;
         for (int index = level - 1; index >= 0; index--) {
             tnames[index] = current;
             current = current.parent;
@@ -193,8 +196,8 @@ public class TName extends AbstractList<String>
         return new UnmodifiableList<>(tnames);
     }
 
-    public TName getTNameAt(int index) {
-        TName current = this;
+    public PathName getTNameAt(int index) {
+        PathName current = this;
         for (int i=0; i< level - index - 1; i++) {
             current = current.parent;
         }
@@ -225,13 +228,13 @@ public class TName extends AbstractList<String>
         return parent.toStringWithSeparator(separator);
     }
 
-    public boolean isSharingPrefixWith(TName other) {
+    public boolean isSharingPrefixWith(PathName other) {
         return !commonPrefix(other).isEmpty();
     }
 
-    public TName commonPrefix(TName other) {
+    public PathName commonPrefix(PathName other) {
         int minlen = Math.min(level, other.level);
-        TName prefix = getRoot();
+        PathName prefix = getRoot();
         for (int i=0; i<minlen; i++) {
             String indexedName = get(i);
             if (indexedName.equals(other.get(i))) {
@@ -280,7 +283,7 @@ public class TName extends AbstractList<String>
     /** Much faster than {@link #iterator()} */
     public Iterator<String> reverseIterator() {
         return new Iterator<String>() {
-            private TName current = TName.this;
+            private PathName current = PathName.this;
 
             @Override
             public boolean hasNext() {
@@ -352,7 +355,7 @@ public class TName extends AbstractList<String>
     }
 
     @Override
-    public int compareTo(TName other) {
+    public int compareTo(PathName other) {
         if (other == null) {
             return -1;
         }
@@ -386,7 +389,7 @@ public class TName extends AbstractList<String>
 
     @Override
     public int hashCode() {
-        // this is by design so TName can be hash compatible with their
+        // this is by design so PathName can be hash compatible with their
         // string representations (i.e. in maps, especially if size = 1)
         return fullName.hashCode();
     }
@@ -402,7 +405,7 @@ public class TName extends AbstractList<String>
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TName other = (TName) obj;
+        final PathName other = (PathName) obj;
         return parent == other.parent && lastName.equals(other.lastName);
     }
 

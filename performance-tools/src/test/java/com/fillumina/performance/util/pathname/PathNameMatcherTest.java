@@ -1,7 +1,7 @@
-package com.fillumina.performance.util.tname;
+package com.fillumina.performance.util.pathname;
 
-import static com.fillumina.performance.executor.TN.tname;
-import com.fillumina.performance.util.tname.TNameMatcher.Result;
+import static com.fillumina.performance.executor.PN.pname;
+import com.fillumina.performance.util.pathname.PathNameMatcher.Result;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
@@ -10,14 +10,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameMatcherTest {
+public class PathNameMatcherTest {
 
     @Test
     public void shouldRecognizeAFixedName() {
-        TName ok = tname("alfa");
-        TName nok = tname("beta");
+        PathName ok = pname("alfa");
+        PathName nok = pname("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder().string("alfa").build();
+        PathNameMatcher pattern = PathNameMatcher.builder().string("alfa").build();
 
         assertTrue(pattern.matches(ok));
         assertFalse(pattern.matches(nok));
@@ -25,10 +25,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeALessThan() {
-        TName ok = tname("10");
-        TName nok = tname("30");
+        PathName ok = pname("10");
+        PathName nok = pname("30");
 
-        TNameMatcher pattern = TNameMatcher.builder().lessThan(20).build();
+        PathNameMatcher pattern = PathNameMatcher.builder().lessThan(20).build();
 
         assertTrue(pattern.matches(ok));
         assertFalse(pattern.matches(nok));
@@ -36,10 +36,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAGreaterThan() {
-        TName ok = tname("30");
-        TName nok = tname("10");
+        PathName ok = pname("30");
+        PathName nok = pname("10");
 
-        TNameMatcher pattern = TNameMatcher.builder().greaterThan(20).build();
+        PathNameMatcher pattern = PathNameMatcher.builder().greaterThan(20).build();
 
         assertTrue(pattern.matches(ok));
         assertFalse(pattern.matches(nok));
@@ -47,10 +47,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAnEquals() {
-        TName ok = tname("20");
-        TName nok = tname("10");
+        PathName ok = pname("20");
+        PathName nok = pname("10");
 
-        TNameMatcher pattern = TNameMatcher.builder().equalsTo(20).build();
+        PathNameMatcher pattern = PathNameMatcher.builder().equalsTo(20).build();
 
         assertTrue(pattern.matches(ok));
         assertFalse(pattern.matches(nok));
@@ -58,10 +58,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeInterval() {
-        TName ok = tname("20");
-        TName nok = tname("10");
+        PathName ok = pname("20");
+        PathName nok = pname("10");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .interval(15, 25)
                 .build();
 
@@ -71,10 +71,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeRegexp() {
-        TName ok = tname("alfa");
-        TName nok = tname("beta");
+        PathName ok = pname("alfa");
+        PathName nok = pname("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .pattern("a.?.?a").build();
 
         assertTrue(pattern.matches(ok));
@@ -83,10 +83,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeJolly() {
-        TName ok1 = tname("alfa");
-        TName ok2 = tname("beta");
+        PathName ok1 = pname("alfa");
+        PathName ok2 = pname("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder().jolly().build();
+        PathNameMatcher pattern = PathNameMatcher.builder().jolly().build();
 
         assertTrue(pattern.matches(ok1));
         assertTrue(pattern.matches(ok2));
@@ -94,10 +94,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeAll() {
-        TName ok1 = tname("alfa");
-        TName ok2 = tname("beta");
+        PathName ok1 = pname("alfa");
+        PathName ok2 = pname("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder().all().build();
+        PathNameMatcher pattern = PathNameMatcher.builder().all().build();
 
         assertTrue(pattern.matches(ok1));
         assertTrue(pattern.matches(ok2));
@@ -105,10 +105,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeFixedStringCondition() {
-        TName ok = tname("root", "subroot", "alfa");
-        TName nok = tname("root", "subroot", "beta");
+        PathName ok = pname("root", "subroot", "alfa");
+        PathName nok = pname("root", "subroot", "beta");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .string("root", "subroot", "alfa")
                 .build();
 
@@ -118,10 +118,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeExternalCondition() {
-        TName ok = tname("alfa");
-        TName nok = tname("beta");
+        PathName ok = pname("alfa");
+        PathName nok = pname("beta");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .condition(value -> "alfa".equals(value) ?
                         Result.ACCEPT : Result.REJECT)
                 .build();
@@ -132,12 +132,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiCondition() {
-        TName ok = tname("alfa", "10");
-        TName nok1 = tname("alfa", "20");
-        TName nok2 = tname("beta", "10");
-        TName nok3 = tname("alfa", "10", "other");
+        PathName ok = pname("alfa", "10");
+        PathName nok1 = pname("alfa", "20");
+        PathName nok2 = pname("beta", "10");
+        PathName nok3 = pname("alfa", "10", "other");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .pattern("a.?.?a")
                 .equalsTo(10)
                 .build();
@@ -150,12 +150,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithJolly() {
-        TName ok = tname("alfa", "pippo", "10");
-        TName nok1 = tname("alfa", "pippo", "20");
-        TName nok2 = tname("beta", "pippo", "10");
-        TName nok3 = tname("alfa", "pippo", "10", "other");
+        PathName ok = pname("alfa", "pippo", "10");
+        PathName nok1 = pname("alfa", "pippo", "20");
+        PathName nok2 = pname("beta", "pippo", "10");
+        PathName nok3 = pname("alfa", "pippo", "10", "other");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .pattern("a.?.?a")
                 .jolly()
                 .equalsTo(10)
@@ -169,12 +169,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtBeginning() {
-        TName ok = tname("alfa", "pippo", "10");
-        TName nok1 = tname("alfa", "pippo", "20");
-        TName nok2 = tname("beta", "pippo", "20");
-        TName nok3 = tname("alfa", "pippo", "10", "other");
+        PathName ok = pname("alfa", "pippo", "10");
+        PathName nok1 = pname("alfa", "pippo", "20");
+        PathName nok2 = pname("beta", "pippo", "20");
+        PathName nok3 = pname("alfa", "pippo", "10", "other");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .all()
                 .equalsTo(10)
                 .build();
@@ -187,13 +187,13 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtEnd() {
-        TName ok = tname("alfa", "pippo", "10");
-        TName nok1 = tname("gamma", "pippo", "20");
-        TName nok2 = tname("beta", "pippo", "20");
-        TName nok3 = tname("gamma", "pippo", "10")
+        PathName ok = pname("alfa", "pippo", "10");
+        PathName nok1 = pname("gamma", "pippo", "20");
+        PathName nok2 = pname("beta", "pippo", "20");
+        PathName nok3 = pname("gamma", "pippo", "10")
                 .append("other");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .pattern("a.?.?a")
                 .all()
                 .build();
@@ -206,13 +206,13 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllAtBeginningAndEnd() {
-        TName ok = tname("alfa", "one", "10");
-        TName nok1 = tname("gamma", "two", "20");
-        TName nok2 = tname("beta", "three", "20");
-        TName nok3 = tname("gamma", "four", "10")
+        PathName ok = pname("alfa", "one", "10");
+        PathName nok1 = pname("gamma", "two", "20");
+        PathName nok2 = pname("beta", "three", "20");
+        PathName nok3 = pname("gamma", "four", "10")
                 .append("other");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .all()
                 .string("one")
                 .all()
@@ -226,12 +226,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllPastEnd() {
-        TName ok = tname("alfa", "one");
-        TName nok1 = tname("gamma", "two");
-        TName nok2 = tname("beta", "three");
-        TName nok3 = tname("gamma", "four");
+        PathName ok = pname("alfa", "one");
+        PathName nok1 = pname("gamma", "two");
+        PathName nok2 = pname("beta", "three");
+        PathName nok3 = pname("gamma", "four");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .jolly()
                 .string("one")
                 .all()
@@ -245,12 +245,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithAllPastEndAndAnotherNode() {
-        TName ok = tname("alfa", "one", "end");
-        TName nok1 = tname("alfa", "one");
-        TName nok2 = tname("beta", "end");
-        TName nok3 = tname("one", "end");
+        PathName ok = pname("alfa", "one", "end");
+        PathName nok1 = pname("alfa", "one");
+        PathName nok2 = pname("beta", "end");
+        PathName nok3 = pname("one", "end");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .jolly()
                 .string("one")
                 .all()
@@ -265,12 +265,12 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldRecognizeMultiConditionWithOnlyAll() {
-        TName ok0 = tname("alfa", "one", "10");
-        TName ok1 = tname();
-        TName ok2 = tname("beta");
-        TName ok3 = tname("");
+        PathName ok0 = pname("alfa", "one", "10");
+        PathName ok1 = pname();
+        PathName ok2 = pname("beta");
+        PathName ok3 = pname("");
 
-        TNameMatcher pattern = TNameMatcher.builder()
+        PathNameMatcher pattern = PathNameMatcher.builder()
                 .all()
                 .build();
 
@@ -282,10 +282,10 @@ public class TNameMatcherTest {
 
     @Test
     public void shouldAcceptCharSequence() {
-        TName tnameOk = tname("alfa");
+        PathName tnameOk = pname("alfa");
         String stringOk = "alfa";
 
-        TNameMatcher pattern = TNameMatcher.builder().string("alfa").build();
+        PathNameMatcher pattern = PathNameMatcher.builder().string("alfa").build();
 
         assertTrue(pattern.matches(tnameOk));
         assertTrue(pattern.matches(stringOk));

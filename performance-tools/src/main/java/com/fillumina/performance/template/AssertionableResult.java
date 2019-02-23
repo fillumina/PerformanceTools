@@ -10,7 +10,7 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class AssertionableResult<C>
     private final Collection<ExperimentAssertion> assertions;
     private final StringGenerator<? super AssertableExperiment> viewer;
 
-    private IndexedHashMap<TName, Stats> flatMap;
+    private IndexedHashMap<PathName, Stats> flatMap;
 
     public AssertionableResult(
             CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
@@ -138,7 +138,7 @@ public class AssertionableResult<C>
         return failedAssertions;
     }
 
-    public void appendNamedTestResults(Appendable appendable, TName name) {
+    public void appendNamedTestResults(Appendable appendable, PathName name) {
         AssertableExperiment assertable = getFlattenedAssertableMap().get(name);
         Holder.Boolean assertionsShowed = new Holder.Boolean(false);
         if (assertable != null) {
@@ -181,7 +181,7 @@ public class AssertionableResult<C>
         }
     }
 
-    public IndexedHashMap<TName, Stats> getFlattenedAssertableMap() {
+    public IndexedHashMap<PathName, Stats> getFlattenedAssertableMap() {
         if (flatMap == null) {
             if (statsHolder != null && !statsHolder.isEmpty()) {
                 flatMap = statsHolder.getFlattenedAssertableMap();

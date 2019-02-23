@@ -18,7 +18,7 @@ public class NameStatsProducerMock
 
     @Override
     public MixedStatsHolder get() {
-        StatsMockBuilder builder = new StatsMockBuilder().name(getName());
+        StatsMockBuilder builder = new StatsMockBuilder().name(getPathName());
         List<CharSequence> sample = new ArrayList<>(getTests().size());
         tree.add(sample);
         getTests().forEach((CharSequence name, Runnable test) -> {

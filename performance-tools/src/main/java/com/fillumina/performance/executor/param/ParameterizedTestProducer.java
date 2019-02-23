@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsProducer;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 
 /**
  * Tests with different parameter values are executed together and their
@@ -41,21 +41,21 @@ public class ParameterizedTestProducer
 
         assertTestsPresent();
 
-        TName name = getName();
+        PathName name = getPathName();
         MixedStatsHolder.Joiner joiner = MixedStatsHolder.joiner(name);
 
         StatsProducer<?> producer = getProducer();
-        getTests().forEach((TName testName, Runnable runnable) -> {
-            final TName composedName = createTestName(name, testName);
+        getTests().forEach((PathName testName, Runnable runnable) -> {
+            final PathName composedName = createTestName(name, testName);
             producer.clearTests();
-            producer.setName(composedName);
+            producer.setPathName(composedName);
 
-            IndexedHashMap<TName, RunnableOptionsContainer> runnableMap =
+            IndexedHashMap<PathName, RunnableOptionsContainer> runnableMap =
                     ParameterHelper.createParameterizedRunnables(
                             Param.class, params, runnable);
 
-            runnableMap.forEach( (TName tname, RunnableOptionsContainer rc) ->
-                producer.addTest(createTestName(composedName, tname),
+            runnableMap.forEach((PathName pname, RunnableOptionsContainer rc) ->
+                producer.addTest(createTestName(composedName, pname),
                         rc.getRunnable()));
 
             MixedStatsHolder result = producer.get();

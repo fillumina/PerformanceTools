@@ -2,7 +2,7 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +13,9 @@ import java.util.Map;
 public class MixedStatsHolderCreator {
 
     private final Map<StatsType, StatsCreator> buildersMap = new HashMap<>();
-    private final TName name;
+    private final PathName name;
 
-    public MixedStatsHolderCreator(TName name) {
+    public MixedStatsHolderCreator(PathName name) {
         this.name = name;
     }
 

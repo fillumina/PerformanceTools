@@ -1,34 +1,34 @@
 package com.fillumina.performance.executor.sample;
 
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNamed;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Quantity;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 import java.util.Objects;
+import com.fillumina.performance.util.pathname.PathNamed;
 
 /**
  * The iteration performance sample value for a single test.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SampleValue implements TNamed, Serializable {
+public class SampleValue implements PathNamed, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final TName name;
+    private final PathName name;
     private final Quantity<?> quantity;
 
-    public SampleValue(TName name, double value, Unit<?> unit) {
+    public SampleValue(PathName name, double value, Unit<?> unit) {
         this(name, Quantity.from(value, unit));
     }
 
-    public SampleValue(TName name, Quantity<?> quantity) {
+    public SampleValue(PathName name, Quantity<?> quantity) {
         this.name = name;
         this.quantity = quantity;
     }
 
     @Override
-    public TName getName() {
+    public PathName getPathName() {
         return name;
     }
 

@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor;
 
-import com.fillumina.performance.util.tname.TNamed;
-import com.fillumina.performance.util.tname.TNominable;
 import java.util.function.Supplier;
 import com.fillumina.performance.util.ConsumerContainer;
+import com.fillumina.performance.util.pathname.PathNamed;
+import com.fillumina.performance.util.pathname.PathNameSettable;
 
 /**
  * Executes an experiment and return its result.
@@ -20,8 +20,8 @@ public interface TestExecutor<I extends TestExecutor<I,N,T,R>, N, T, R>
             Supplier<R>,
             TestContainer<I,T>,
             ConsumerContainer<I,N>,
-            TNominable<I>,
-            TNamed {
+            PathNameSettable<I>,
+            PathNamed {
 
     /** Better name than {@link get()} for which it is just an alias. */
     default public R execute() {

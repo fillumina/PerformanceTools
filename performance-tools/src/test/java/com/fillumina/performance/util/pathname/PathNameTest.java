@@ -1,4 +1,4 @@
-package com.fillumina.performance.util.tname;
+package com.fillumina.performance.util.pathname;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,82 +10,82 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class TNameTest {
+public class PathNameTest {
 
-    private final TName ROOT = TName.createRoot();
+    private final PathName ROOT = PathName.createRoot();
 
     public static void main(final String[] args) {
-        new TNameTest().shouldCleanTheTree();
+        new PathNameTest().shouldCleanTheTree();
     }
 
     @Test
     public void shouldAppendFluently() {
-        TName a = ROOT.append("1", "2", "3");
-        TName b = ROOT.append("1").append("2").append("3");
+        PathName a = ROOT.append("1", "2", "3");
+        PathName b = ROOT.append("1").append("2").append("3");
         assertTrue(a == b);
     }
 
     @Test
     public void shouldAppendIterable() {
-        TName a = ROOT.append("1", "2", "3");
-        TName b = ROOT.append(Arrays.asList("1", "2", "3"));
+        PathName a = ROOT.append("1", "2", "3");
+        PathName b = ROOT.append(Arrays.asList("1", "2", "3"));
         assertTrue(a == b);
     }
 
     @Test
     public void shouldSelectCommonPrefix() {
-        TName a = ROOT.append("1", "2", "3");
-        TName b = ROOT.append("1", "2", "3");
-        TName c = ROOT.append("1", "2", "X", "Y");
-        TName d = ROOT.append("1", "2");
+        PathName a = ROOT.append("1", "2", "3");
+        PathName b = ROOT.append("1", "2", "3");
+        PathName c = ROOT.append("1", "2", "X", "Y");
+        PathName d = ROOT.append("1", "2");
 
-        TName common = TName.commonPrefix(Arrays.asList(a, b, c, d));
+        PathName common = PathName.getCommonPrefix(Arrays.asList(a, b, c, d));
         assertEquals(d, common);
     }
 
     @Test
     public void shouldReturnNullIfNoCommonPrefix() {
-        TName a = ROOT.append("1", "2", "3");
-        TName b = ROOT.append("1", "2", "3");
-        TName c = ROOT.append("1", "2", "X", "Y");
-        TName d = ROOT.append("A", "2");
+        PathName a = ROOT.append("1", "2", "3");
+        PathName b = ROOT.append("1", "2", "3");
+        PathName c = ROOT.append("1", "2", "X", "Y");
+        PathName d = ROOT.append("A", "2");
 
-        TName common = TName.commonPrefix(Arrays.asList(a, b, c, d));
+        PathName common = PathName.getCommonPrefix(Arrays.asList(a, b, c, d));
         assertNotNull(common);
         assertEquals(ROOT, common);
     }
 
     @Test
     public void shouldEMPTYBeRoot() {
-        assertTrue(TName.ROOT.getRoot() == TName.ROOT);
+        assertTrue(PathName.ROOT.getRoot() == PathName.ROOT);
     }
 
     @Test
     public void shouldReturnTheRoot() {
-        TName cn = ROOT.append("hello").append("world");
+        PathName cn = ROOT.append("hello").append("world");
         assertTrue(ROOT == cn.getRoot());
     }
 
     @Test
     public void shouldDetectEqualRoot() {
-        TName cn1 = ROOT.append("hello").append("world");
-        TName cn2 = ROOT.append("one");
+        PathName cn1 = ROOT.append("hello").append("world");
+        PathName cn2 = ROOT.append("one");
 
         assertTrue(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldDetectNotEqualRoot() {
-        TName alterntativeRoot = TName.createRoot();
-        TName cn1 = alterntativeRoot.append("hello").append("world");
-        TName cn2 = ROOT.append("one");
+        PathName alterntativeRoot = PathName.createRoot();
+        PathName cn1 = alterntativeRoot.append("hello").append("world");
+        PathName cn2 = ROOT.append("one");
 
         assertFalse(cn2.isSameRoot(cn1));
     }
 
     @Test
     public void shouldCleanTheTree() {
-        TName cn = ROOT.append("alfa").append("beta").append("delta");
+        PathName cn = ROOT.append("alfa").append("beta").append("delta");
         assertFalse(ROOT.isChildrenEmpty());
 
         cn = null;
@@ -137,21 +137,21 @@ public class TNameTest {
 
     @Test
     public void shouldNotCreateANewElementWithTheSameName() {
-        TName cn = ROOT.append("alfa");
-        TName beta = cn.append("beta");
+        PathName cn = ROOT.append("alfa");
+        PathName beta = cn.append("beta");
 
         assertTrue(beta == cn.append("beta"));
     }
 
     @Test
     public void shouldReturnTheFirstName() {
-        TName cn = ROOT.append("alfa").append("beta").append("delta");
+        PathName cn = ROOT.append("alfa").append("beta").append("delta");
         assertEquals("alfa", cn.getFirstName());
     }
 
     @Test
     public void shouldReturnTheFirstNameWithOnlyOneName() {
-        TName cn = ROOT.append("alfa");
+        PathName cn = ROOT.append("alfa");
         assertEquals("alfa", cn.getFirstName());
     }
 
@@ -167,7 +167,7 @@ public class TNameTest {
 
     @Test
     public void shouldReadAsList() {
-        TName cn = ROOT.append("alfa", "beta", "gamma");
+        PathName cn = ROOT.append("alfa", "beta", "gamma");
         assertEquals("alfa", cn.get(0));
         assertEquals("beta", cn.get(1));
         assertEquals("gamma", cn.get(2));
@@ -175,7 +175,7 @@ public class TNameTest {
 
     @Test
     public void shouldIterate() {
-        Iterator<String> it = TName.ROOT.append("one", "two", "three")
+        Iterator<String> it = PathName.ROOT.append("one", "two", "three")
                 .iterator();
 
         assertTrue(it.hasNext());
@@ -192,7 +192,7 @@ public class TNameTest {
 
     @Test
     public void shouldReadAsArray() {
-        TName tn = TName.createRoot().append("one", "two", "three");
+        PathName tn = PathName.createRoot().append("one", "two", "three");
         String[] array = tn.toArray();
         assertEquals(3, array.length);
         assertEquals("one", array[0]);
@@ -202,7 +202,7 @@ public class TNameTest {
 
     @Test
     public void shouldCompare() {
-        TName root = TName.createRoot();
+        PathName root = PathName.createRoot();
         assertEquals(0,
                 root.compareTo(root));
         assertEquals(0,
@@ -231,7 +231,7 @@ public class TNameTest {
 
     @Test
     public void shouldReverseIterate() {
-        TName name = TName.createRoot().append("one", "two", "three");
+        PathName name = PathName.createRoot().append("one", "two", "three");
 
         Iterator<String> it = name.reverseIterator();
         assertTrue(it.hasNext());
@@ -248,7 +248,7 @@ public class TNameTest {
 
     @Test
     public void shouldReverseIterateWithOneElement() {
-        TName name = TName.createRoot().append("one");
+        PathName name = PathName.createRoot().append("one");
 
         Iterator<String> it = name.reverseIterator();
 
@@ -260,7 +260,7 @@ public class TNameTest {
 
     @Test
     public void shouldReverseIterateWithRoot() {
-        TName name = TName.createRoot();
+        PathName name = PathName.createRoot();
 
         Iterator<String> it = name.reverseIterator();
         assertFalse(it.hasNext());
@@ -268,14 +268,14 @@ public class TNameTest {
 
     @Test
     public void shouldDetectIsRoot() {
-        TName root = TName.createRoot();
+        PathName root = PathName.createRoot();
 
         assertTrue(root.isRoot());
     }
 
     @Test
     public void shouldDetectIsNotRoot() {
-        TName name = TName.createRoot().append("one", "two", "three");
+        PathName name = PathName.createRoot().append("one", "two", "three");
 
         assertFalse(name.isRoot());
     }
@@ -310,7 +310,7 @@ public class TNameTest {
 
     @Test
     public void shouldReturngetAllPartialTNames() {
-        List<TName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
+        List<PathName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
         assertEquals("one", items.get(0).getLastName());
         assertEquals("two", items.get(1).getLastName());
         assertEquals("three", items.get(2).getLastName());
@@ -318,7 +318,7 @@ public class TNameTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void shouldTheReturnedgetAllPartialTNamesBeImmutable() {
-        List<TName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
+        List<PathName> items = ROOT.append("one", "two", "three").getAllPartialTNames();
         items.set(2, ROOT.append("bla"));
     }
 
@@ -334,7 +334,7 @@ public class TNameTest {
 
     @Test
     public void shouldTheReturnedArrayBeAClone() {
-        TName tn = ROOT.append("one", "two", "three");
+        PathName tn = ROOT.append("one", "two", "three");
         String[] a = tn.toArray();
         String[] b = tn.toArray();
         assertTrue(a != b);
@@ -350,27 +350,27 @@ public class TNameTest {
 
     @Test
     public void shouldNonRootBeNotEmpty() {
-        TName tn = ROOT.append("one", "two", "three");
+        PathName tn = ROOT.append("one", "two", "three");
         assertFalse(tn.isEmpty());
     }
 
     @Test
     public void shouldANullParamReturnRoot() {
-        TName a = ROOT.append((String)null);
+        PathName a = ROOT.append((String)null);
         assertEquals(a, ROOT);
 
     }
 
     @Test
     public void shouldANullParamReturnTheSameTName() {
-        TName a = ROOT.append("one", "two", "three");
-        TName b = a.append((String)null);
+        PathName a = ROOT.append("one", "two", "three");
+        PathName b = a.append((String)null);
         assertEquals(a, b);
     }
 
     @Test
     public void shouldGetTNameAt() {
-        TName tn = ROOT.append("one", "two", "three");
+        PathName tn = ROOT.append("one", "two", "three");
 
         assertEquals("one", tn.getTNameAt(0).getLastName());
         assertEquals("two", tn.getTNameAt(1).getLastName());

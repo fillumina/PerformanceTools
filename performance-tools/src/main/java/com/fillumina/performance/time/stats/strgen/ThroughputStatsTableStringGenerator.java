@@ -5,7 +5,7 @@ import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
@@ -61,7 +61,7 @@ public final class ThroughputStatsTableStringGenerator
     protected void createTableLine(
             TableFormatter performanceTable,
             int index,
-            TName name,
+            PathName name,
             DimensionalMeasure measure,
             Stats stats,
             double stdev,

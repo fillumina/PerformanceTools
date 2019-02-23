@@ -7,7 +7,7 @@ import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
@@ -65,7 +65,7 @@ public class ParallelMultiThreadPerformanceExecutor
 
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests,
+            final IndexedHashMap<PathName, Runnable> tests,
             final int[] bound) {
 
         assertAllTestsAreAsymmetric(tests);
@@ -82,7 +82,7 @@ public class ParallelMultiThreadPerformanceExecutor
                 new TimeSampleCollector();
 
         Holder.Integer index = new Holder.Integer();
-        tests.forEach((TName testName, Runnable r) -> {
+        tests.forEach((PathName testName, Runnable r) -> {
             final ParallelTest runnable = (ParallelTest) r;
             final int millis = bound[index.getValue()];
 
@@ -112,11 +112,11 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     private List<IteratingRunnable> createWorkers(ParallelTest runnable,
-            TName testName) {
+            PathName testName) {
         final List<IteratingRunnable> workerList = new ArrayList<>();
         for (Group group : runnable.getGroups()) {
             final int workers = group.getWorkers();
-            final TName groupName = testName.append(group.getName());
+            final PathName groupName = testName.append(group.getName());
             final Runnable test = group.getRunnable();
 
             for (int i=0; i<workers; i++) {
@@ -172,8 +172,8 @@ public class ParallelMultiThreadPerformanceExecutor
                 "to complete: " + timeout, e);
     }
 
-    private void assertAllTestsAreAsymmetric(IndexedHashMap<TName, Runnable> tests) {
-        tests.forEach((TName name, Runnable runnable) -> {
+    private void assertAllTestsAreAsymmetric(IndexedHashMap<PathName, Runnable> tests) {
+        tests.forEach((PathName name, Runnable runnable) -> {
             if (!(runnable instanceof ParallelTest)) {
                 throw new IllegalArgumentException("test '" + name +
                         "' is not of type " +
@@ -182,7 +182,7 @@ public class ParallelMultiThreadPerformanceExecutor
         });
     }
 
-    private int calculateTotalWorkersNeeded(IndexedHashMap<TName, Runnable> tests) {
+    private int calculateTotalWorkersNeeded(IndexedHashMap<PathName, Runnable> tests) {
         Holder.Integer workers = new Holder.Integer(0);
         tests.values().forEach(runnable -> {
             ParallelTest asymmetric = (ParallelTest) runnable;
@@ -194,12 +194,12 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     private class IteratingRunnable implements Runnable {
-        private final TName name;
+        private final PathName name;
         private final Runnable runnable;
         private int iterations = 0;
         private long elapsed;
 
-        public IteratingRunnable(final TName name,
+        public IteratingRunnable(final PathName name,
                 final Runnable runnable) {
             this.name = name;
             this.runnable = runnable;

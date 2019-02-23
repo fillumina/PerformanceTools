@@ -13,7 +13,7 @@ import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
@@ -93,7 +93,7 @@ public class ConsoleTimeProgressionListener
 
     @Override
     public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
-        TName name = status.getName();
+        PathName name = status.getName();
         Collection<? extends Stats> stats = status.getStats();
         String statusMessage = status.getStatusMessage();
 

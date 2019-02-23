@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
@@ -262,11 +262,10 @@ public class StatsTest {
 
         Stats sum = a.join(b).as(Magnitude.UNIT);
 
-        assertEquals(Arrays.asList(
-                TN.tname("one"),
-                TN.tname("two"),
-                TN.tname("three"),
-                TN.tname("four")), sum.getNames());
+        assertEquals(Arrays.asList(PN.pname("one"),
+                PN.pname("two"),
+                PN.pname("three"),
+                PN.pname("four")), sum.getNames());
 
         assertEquals(1.0, sum.getMeasure("one").getMean(), 0.1);
         assertEquals(2.0, sum.getMeasure("two").getMean(), 0.1);

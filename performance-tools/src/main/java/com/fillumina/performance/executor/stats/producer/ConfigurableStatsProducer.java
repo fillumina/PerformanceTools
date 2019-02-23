@@ -18,7 +18,7 @@ import com.fillumina.performance.util.filter.FilterChain;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.formatter.TimeFormat;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collection;
@@ -168,7 +168,7 @@ public class ConfigurableStatsProducer
     public MixedStatsHolder get() {
         assertPerformanceExecutorNotNull();
         addTestsToPerformanceTimer();
-        getSampleProducer().setName(getName());
+        getSampleProducer().setPathName(getPathName());
         MixedStatsHolder multiCollector = executeTests();
         getSampleProducer().clearTests();
         return multiCollector;
@@ -180,8 +180,7 @@ public class ConfigurableStatsProducer
         }
         final SampleProducer<?> sampleProducer = getSampleProducer();
         sampleProducer.clearTests();
-        getTests().forEach(
-                (TName name, Runnable test) ->
+        getTests().forEach((PathName name, Runnable test) ->
                                     sampleProducer.addTest(name, test) );
     }
 
@@ -198,7 +197,7 @@ public class ConfigurableStatsProducer
 
         long start = System.nanoTime();
         do {
-            creator = new MixedStatsHolderCreator(getName());
+            creator = new MixedStatsHolderCreator(getPathName());
 
             sampleNumber = strategy.getExpectedNumberOfSamples();
             checkSampleValidity(sampleNumber);
@@ -247,7 +246,7 @@ public class ConfigurableStatsProducer
             statsMap = getAllAssertables(mixedHolder);
             statsColl = statsMap.values();
             toBeRepeated = strategy.repeatExecution(statsColl);
-            notifyStatsListeners(new StatsProgressionStatus(getName(), statsColl,
+            notifyStatsListeners(new StatsProgressionStatus(getPathName(), statsColl,
                         strategy.getStatusMessage()));
 
             repetitions++;
@@ -286,7 +285,7 @@ public class ConfigurableStatsProducer
     }
 
     private void throwTimeoutException(SampleProgressionStatus status) {
-        String name = getName().toString();
+        String name = getPathName().toString();
         String testName = (name == null || name.isEmpty()) ? "" :
                 "'" + name + "' ";
         throw new RuntimeException("Timeout occurred: test " + testName +

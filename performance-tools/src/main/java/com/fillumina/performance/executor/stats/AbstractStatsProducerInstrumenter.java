@@ -29,7 +29,7 @@ public abstract class AbstractStatsProducerInstrumenter
 
     protected void setAllTests() {
         producer.clearTests();
-        producer.setName(getName());
+        producer.setPathName(getPathName());
         producer.addTests(getTests());
     }
 }

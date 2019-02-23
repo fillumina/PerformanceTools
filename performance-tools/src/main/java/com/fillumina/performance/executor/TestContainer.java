@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor;
 
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Map;
 
 /**
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface TestContainer<I extends TestContainer<I,T>,T> {
 
-    IndexedHashMap<TName,T> getTests();
+    IndexedHashMap<PathName,T> getTests();
 
     /**
      * Ignores the test
@@ -24,10 +24,10 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
      * Ignores the test
      * (convenience method to avoid commenting out large code blocks).
      */
-    I ignoreTest(final TName name, final T test);
+    I ignoreTest(final PathName name, final T test);
 
     @SuppressWarnings("unchecked")
-    default I clearAndAddAllTests(Map<TName,T> tests) {
+    default I clearAndAddAllTests(Map<PathName,T> tests) {
         clearTests();
         addTests(tests);
         return (I) this;
@@ -40,7 +40,7 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
     }
 
     /** Adds some named tests. */
-    I addTests(Map<TName,T> tests);
+    I addTests(Map<PathName,T> tests);
 
     /** Adds a single test (name generation is implementation dependent). */
     I addTest(final T test);
@@ -49,7 +49,7 @@ public interface TestContainer<I extends TestContainer<I,T>,T> {
     I addTest(final String name, final T test);
 
     /** Adds a named test. */
-    I addTest(final TName name, final T test);
+    I addTest(final PathName name, final T test);
 
     /** Clears tests. */
     I clearTests();

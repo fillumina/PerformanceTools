@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
@@ -62,8 +62,8 @@ public class ExpressionStatsProducerTest {
 
         MixedStatsHolder mixedHolder =
                 new StatsProducerMock<>(
-                                        TN.tname("first", "one"), 10.0,
-                                        TN.tname("first", "two"), 20.0)
+                                        PN.pname("first", "one"), 10.0,
+                                        PN.pname("first", "two"), 20.0)
                         .instrumentedBy(parameterizer)
                         .instrumentedBy(new ExpressionStatsProducer(expression))
                             .addTest("first", new Runnable() {

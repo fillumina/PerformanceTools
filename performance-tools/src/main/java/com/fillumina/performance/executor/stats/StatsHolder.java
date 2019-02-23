@@ -2,15 +2,15 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.assertion.ExperimentAssertion;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNamed;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamed;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Objects;
@@ -27,24 +27,24 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public class StatsHolder extends Printable<StatsHolder>
-        implements StatsTyped, TNamed, Serializable {
+        implements StatsTyped, PathNamed, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = " : ";
 
     public static class Builder {
         private final StatsType type;
-        private final LinkedTree<TName, Stats> tree;
+        private final LinkedTree<PathName, Stats> tree;
         private final StringGenerator<Stats> generator;
-        private LinkedTree<TName, Stats> current;
+        private LinkedTree<PathName, Stats> current;
 
         private Builder(
                 StatsType type,
-                TName tname,
+                PathName pname,
                 Stats assertable,
                 StringGenerator<Stats> generator) {
             this.type = type;
-            this.tree = new LinkedTree<>(tname, assertable);
+            this.tree = new LinkedTree<>(pname, assertable);
             this.current = this.tree;
             this.generator = generator;
         }
@@ -55,21 +55,21 @@ public class StatsHolder extends Printable<StatsHolder>
         }
 
         public Builder name(String name) {
-            current.put(tname(name), null);
+            current.put(pname(name), null);
             return this;
         }
 
         public Builder subExperiment(String name) {
-            current = current.add(tname(name), null);
+            current = current.add(pname(name), null);
             return this;
         }
 
         public Builder test(String name, Stats assertable) {
-            current.put(tname(name), assertable);
+            current.put(pname(name), assertable);
             return this;
         }
 
-        private TName tname(String name) {
+        private PathName pname(String name) {
             return current.getKey().append(name);
         }
 
@@ -85,25 +85,25 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     private final StatsType statsType;
-    private final LinkedTree<TName, Stats> tree;
+    private final LinkedTree<PathName, Stats> tree;
     private final StringGenerator<Stats> formatter;
     private MixedStatsHolder caller;
 
     /** @return a builder to create a tree statistics */
     public static Builder builder(StatsType type) {
-        return builder(type, TN.EMPTY, null, null);
+        return builder(type, PN.EMPTY, null, null);
     }
 
     /** @return a builder to create tree statistics */
     public static Builder builder(
             StatsType type, String name) {
-        return builder(type, TN.tname(name), null, null);
+        return builder(type, PN.pname(name), null, null);
     }
 
     /** @return a builder to create a tree statistics */
     public static Builder builder(
-            StatsType type, TName tname) {
-        return builder(type, TN.notNull(tname), null, null);
+            StatsType type, PathName pname) {
+        return builder(type, PN.notNull(pname), null, null);
     }
 
     public StatsHolder(StatsHolder copy) {
@@ -115,24 +115,24 @@ public class StatsHolder extends Printable<StatsHolder>
     /** @return a builder to create a tree statistics */
     public static Builder builder(
             StatsType type,
-            TName name,
+            PathName name,
             Stats stats,
             StringGenerator<Stats> stringGenerator) {
-        return new Builder(type, TN.notNull(name), stats, stringGenerator);
+        return new Builder(type, PN.notNull(name), stats, stringGenerator);
     }
 
     public StatsHolder(final Stats stats) {
-        this(TN.EMPTY, stats);
+        this(PN.EMPTY, stats);
     }
 
     public StatsHolder(
-            final TName name,
+            final PathName name,
             final Stats stats) {
         this(name, stats, null);
     }
 
     public StatsHolder(
-            final TName name,
+            final PathName name,
             final Stats stats,
             final StringGenerator<Stats> formatter) {
         this(stats.getStatsType(), new LinkedTree<>(name, stats), formatter);
@@ -140,7 +140,7 @@ public class StatsHolder extends Printable<StatsHolder>
 
     private StatsHolder(
             final StatsType type,
-            final LinkedTree<TName,Stats> tree,
+            final LinkedTree<PathName,Stats> tree,
             final StringGenerator<Stats> formatter) {
         this.statsType = type;
         this.tree = tree == null ? null : tree.setUnmodifiable();
@@ -153,7 +153,7 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     /** Still not sure if make it part of the public API */
-    public LinkedTree<TName,Stats> getTree() {
+    public LinkedTree<PathName,Stats> getTree() {
         return tree;
     }
 
@@ -173,7 +173,7 @@ public class StatsHolder extends Printable<StatsHolder>
 
     /** @return the name of the test. */
     @Override
-    public TName getName() {
+    public PathName getPathName() {
         return tree.getKey();
     }
 
@@ -182,10 +182,10 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     public Stats getStatsAtPath(String... path) {
-        TName tpath = addTestNameIfAbsent(path);
-        LinkedTree<TName,Stats> subTree = tree;
+        PathName tpath = addTestNameIfAbsent(path);
+        LinkedTree<PathName,Stats> subTree = tree;
 
-        for (TName t : tpath.getAllPartialTNames()) {
+        for (PathName t : tpath.getAllPartialTNames()) {
             if (t.size() == 1 && t.equals(tree.getKey())) {
                 subTree = tree;
             } else {
@@ -195,7 +195,7 @@ public class StatsHolder extends Printable<StatsHolder>
         return subTree.getValue();
     }
 
-    public TName addTestNameIfAbsent(String[] path) {
+    public PathName addTestNameIfAbsent(String[] path) {
         String[] array;
         if (!path[0].equals(tree.getKey().getFirstName())) {
             array = new String[path.length + 1];
@@ -204,16 +204,16 @@ public class StatsHolder extends Printable<StatsHolder>
         } else {
             array = path;
         }
-        TName tpath = TN.tname(array);
+        PathName tpath = PN.pname(array);
         return tpath;
     }
 
-    public Stats getStats(TName path) {
+    public Stats getStats(PathName path) {
         return tree.getValueAtPath(path);
     }
 
     private interface LeafVisitor<T extends AssertableExperiment> {
-        void visitLeaf(TName name, T stats);
+        void visitLeaf(PathName name, T stats);
     }
 
     /**
@@ -223,8 +223,7 @@ public class StatsHolder extends Printable<StatsHolder>
      */
     @SuppressWarnings("unchecked")
     private void traverseLeaves(final LeafVisitor<Stats> visitor) {
-        tree.<TName,Stats>traverseLeaves(
-                (LinkedTree<TName, Stats> t) -> {
+        tree.<PathName,Stats>traverseLeaves((LinkedTree<PathName, Stats> t) -> {
                     visitor.visitLeaf(t.getKey(), t.getValue());
                     return false;
                 });
@@ -239,7 +238,7 @@ public class StatsHolder extends Printable<StatsHolder>
      */
     public StatsHolder use(Consumer<Stats> consumer) {
         if (consumer != null) {
-            traverseLeaves((TName name, Stats stats) -> {
+            traverseLeaves((PathName name, Stats stats) -> {
                 consumer.accept(stats);
             });
         }
@@ -261,7 +260,7 @@ public class StatsHolder extends Printable<StatsHolder>
      */
     public StatsHolder check(ExperimentAssertion assertion) {
         if (assertion != null) {
-            traverseLeaves((TName name, Stats stats) -> {
+            traverseLeaves((PathName name, Stats stats) -> {
                 assertion.accept(stats);
             });
         }
@@ -282,7 +281,7 @@ public class StatsHolder extends Printable<StatsHolder>
         if (appendable != null) {
             final AppendableWrapperSentinel wrapped =
                     new AppendableWrapperSentinel(appendable);
-            traverseLeaves((TName name, Stats stats) -> {
+            traverseLeaves((PathName name, Stats stats) -> {
                 try {
                     wrapped.setUnmodified();
                     assertion.appendToCatchingException(wrapped, stats);
@@ -297,9 +296,9 @@ public class StatsHolder extends Printable<StatsHolder>
         return this;
     }
 
-    public IndexedHashMap<TName, Stats> getFlattenedAssertableMap() {
-        IndexedHashMap<TName, Stats> map = new IndexedHashMap<>();
-        traverseLeaves((TName name, Stats stats) -> {
+    public IndexedHashMap<PathName, Stats> getFlattenedAssertableMap() {
+        IndexedHashMap<PathName, Stats> map = new IndexedHashMap<>();
+        traverseLeaves((PathName name, Stats stats) -> {
             if (name != null) {
                 map.put(name, stats);
             }
@@ -349,9 +348,9 @@ public class StatsHolder extends Printable<StatsHolder>
     }
 
     private void appendTo(Appendable appendable,
-            LinkedTree<TName,Stats>  tree)
+            LinkedTree<PathName,Stats>  tree)
             throws IOException {
-        TName title = tree.getKey();
+        PathName title = tree.getKey();
         if (title != null && !title.isEmpty()) {
             appendable.append(System.lineSeparator());
             appendable.append(TableFormatter.title(
@@ -361,7 +360,7 @@ public class StatsHolder extends Printable<StatsHolder>
         if (tree.isLeaf()) {
             appendLeafTo(appendable, tree.getValue());
         } else {
-            for (LinkedTree<TName,Stats> branch : tree) {
+            for (LinkedTree<PathName,Stats> branch : tree) {
                 appendTo(appendable, branch);
             }
         }

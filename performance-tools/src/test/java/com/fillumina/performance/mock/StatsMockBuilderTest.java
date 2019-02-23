@@ -1,6 +1,6 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.stats.Ratio;
@@ -34,8 +34,8 @@ public class StatsMockBuilderTest {
                 .getStats()
                 .as(Magnitude.UNIT);
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 1.0);
-        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 1.0);
+        assertEquals(10.0, stats.getMeasure(PN.pname("first")).getMean(), 1.0);
+        assertEquals(20.0, stats.getMeasure(PN.pname("second")).getMean(), 1.0);
     }
 
     @Test
@@ -60,8 +60,8 @@ public class StatsMockBuilderTest {
                 .getStats()
                 .as(Magnitude.UNIT);
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 2.0);
-        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 2.0);
+        assertEquals(10.0, stats.getMeasure(PN.pname("first")).getMean(), 2.0);
+        assertEquals(20.0, stats.getMeasure(PN.pname("second")).getMean(), 2.0);
     }
 
     @Test
@@ -86,8 +86,8 @@ public class StatsMockBuilderTest {
                 .getStats()
                 .as(Magnitude.UNIT);
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("first")).getMean(), 2.0);
-        assertEquals(20.0, stats.getMeasure(TN.tname("second")).getMean(), 2.0);
+        assertEquals(10.0, stats.getMeasure(PN.pname("first")).getMean(), 2.0);
+        assertEquals(20.0, stats.getMeasure(PN.pname("second")).getMean(), 2.0);
     }
 
 }

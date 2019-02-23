@@ -1,6 +1,6 @@
 package com.fillumina.performance.template;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.mem.MemStatsType;
@@ -12,7 +12,7 @@ import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class MixedConfigurationBuilder<C>
     private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
     private final MixedAssertionableResult.Builder mixedAssertionableResultBuilder;
 
-    private TName testName = TN.EMPTY;
+    private PathName testName = PN.EMPTY;
     private String failureAudioFilename;
     private String successAudioFilename;
     private boolean alertActive;
@@ -75,12 +75,12 @@ public class MixedConfigurationBuilder<C>
 
     /** Sets the test name. */
     public MixedConfigurationBuilder<C> setName(final String name) {
-        this.testName = TN.tname(name);
+        this.testName = PN.pname(name);
         return this;
     }
 
     /** Sets the test name. */
-    public MixedConfigurationBuilder<C> setName(final TName name) {
+    public MixedConfigurationBuilder<C> setName(final PathName name) {
         this.testName = name;
         return this;
     }

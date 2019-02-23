@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.param;
 
 import com.fillumina.performance.assertion.OrderAssertionError;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
@@ -9,7 +9,7 @@ import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsProducerMock;
 import com.fillumina.performance.util.collection.LinkedTree;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -31,11 +31,11 @@ public class SequencedTestProducerCheckingTest {
         test.shouldTheParamsBeAssignedToTests();
     }
 
-    private static final TName ONE_A = TN.tname("one", "a");
-    private static final TName ONE_B = TN.tname("one", "b");
-    private static final TName TWO_A = TN.tname("two", "a");
-    private static final TName TWO_B = TN.tname("two", "b");
-    private static final TName A_THREE = TN.tname("a","three");
+    private static final PathName ONE_A = PN.pname("one", "a");
+    private static final PathName ONE_B = PN.pname("one", "b");
+    private static final PathName TWO_A = PN.pname("two", "a");
+    private static final PathName TWO_B = PN.pname("two", "b");
+    private static final PathName A_THREE = PN.pname("a","three");
 
     public static class RunnableImpl implements Runnable {
         @Sequence private int value;
@@ -88,11 +88,11 @@ public class SequencedTestProducerCheckingTest {
     public void shouldReturnTheGivenStats() {
         String err = holder.toString();
 
-        Stats a = holder.getStats(TN.tname("one"));
+        Stats a = holder.getStats(PN.pname("one"));
         assertEquals(err, 10.0, a.getMeasure(ONE_A).getMean(), 0.1);
         assertEquals(err, 100.0, a.getMeasure(ONE_B).getMean(), 0.1);
 
-        Stats b = holder.getStats(TN.tname("two"));
+        Stats b = holder.getStats(PN.pname("two"));
         assertEquals(err, 20.0, b.getMeasure(TWO_A).getMean(), 0.1);
         assertEquals(err, 200.0, b.getMeasure(TWO_B).getMean(), 0.1);
     }

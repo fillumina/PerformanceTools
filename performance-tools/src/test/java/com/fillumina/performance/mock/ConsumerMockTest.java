@@ -1,7 +1,7 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.TN;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.executor.PN;
+import com.fillumina.performance.util.pathname.PathName;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class ConsumerMockTest {
 
         ConsumerMock<AssertableMock> consumer = new ConsumerMock<>();
 
-        TName testName = TN.tname("one", "two");
+        PathName testName = PN.pname("one", "two");
 
         consumer.accept(assertable);
 

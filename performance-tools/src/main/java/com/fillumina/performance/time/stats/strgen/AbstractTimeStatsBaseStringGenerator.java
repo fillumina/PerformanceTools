@@ -5,7 +5,7 @@ import com.fillumina.performance.util.CamelCaseUtils;
 import com.fillumina.performance.util.Selectable;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -38,7 +38,7 @@ public abstract class AbstractTimeStatsBaseStringGenerator
 
     protected void appendTitle(Appendable appendable, Stats stats)
             throws IOException {
-        TName testPrefix = TName.commonPrefix(stats.getNames());
+        PathName testPrefix = PathName.getCommonPrefix(stats.getNames());
         String statsType = CamelCaseUtils.camelCaseToSentence(
                 stats.getStatsType().toString());
         appendable.append(statsType);

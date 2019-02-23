@@ -2,7 +2,7 @@ package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 
 /**
  * Test executor.
@@ -19,6 +19,6 @@ public interface PerformanceExecutor {
      *              time to execute depending on the implementation.
      */
     TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests,
+            final IndexedHashMap<PathName, Runnable> tests,
             final int[] iterations);
 }

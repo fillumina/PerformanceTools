@@ -1,11 +1,11 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.mock.MockStatsType;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamedMap;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import java.util.Collection;
 import static org.junit.Assert.assertEquals;
@@ -24,15 +24,15 @@ public class TimeSampleTest {
     private static final int ELAPSED_TWO = 2_500;
     private static final int ELAPSED_ONE = 10_000;
 
-    private static final TName TWO = TN.tname("two");
-    private static final TName ONE = TN.tname("one");
+    private static final PathName TWO = PN.pname("two");
+    private static final PathName ONE = PN.pname("one");
 
-    private TNameMap<SampleValue> map;
+    private PathNamedMap<SampleValue> map;
     private Sample sample;
 
     @Before
     public void initMap() {
-        this.map = new TNameMap<>();
+        this.map = new PathNamedMap<>();
         map.add(new SampleValue(ONE, ELAPSED_ONE, UNIT));
         map.add(new SampleValue(TWO, ELAPSED_TWO, UNIT));
 

@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.generator;
 
 import com.fillumina.performance.executor.AbstractTestExecutor;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.TestContainer;
 import com.fillumina.performance.executor.param.ParameterizedTestProducer;
 import com.fillumina.performance.executor.param.SequencedTestProducer;
@@ -13,9 +13,9 @@ import com.fillumina.performance.util.CallBackBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNamed;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Map;
+import com.fillumina.performance.util.pathname.PathNamed;
 
 /**
  *
@@ -28,16 +28,16 @@ public class TestConfiguration<C>
                 SequencedTestProducer.Configuration,
                 ExpressionStatsProducer.Configuration,
                 TestContainer<TestConfiguration<C>,Runnable>,
-                TNamed {
+                PathNamed {
 
     private static final String TAB = "    ";
     private static final String CRLF = System.lineSeparator();
 
-    private final IndexedHashMap<TName, Runnable> tests = new IndexedHashMap<>();
+    private final IndexedHashMap<PathName, Runnable> tests = new IndexedHashMap<>();
     private final LinkedTree<String, Object> parameters = new LinkedTree<>();
     private final LinkedTree<String, Object> sequences = new LinkedTree<>();
     private final StatsExpression<TestConfiguration<C>> statsExpression;
-    private TName name = TN.EMPTY;
+    private PathName name = PN.EMPTY;
 
     public TestConfiguration() {
         super();
@@ -54,24 +54,24 @@ public class TestConfiguration<C>
         statsExpression = new StatsExpression<>(this);
     }
 
-    public TestConfiguration<C> setName(TName name) {
+    public TestConfiguration<C> setName(PathName name) {
         this.name = name;
         return this;
     }
 
     @Override
-    public TName getName() {
+    public PathName getPathName() {
         return name;
     }
 
     @Override
-    public IndexedHashMap<TName, Runnable> getTests() {
+    public IndexedHashMap<PathName, Runnable> getTests() {
         return tests.unmodifiableView();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public TestConfiguration<C> addTests(Map<TName, Runnable> tests) {
+    public TestConfiguration<C> addTests(Map<PathName, Runnable> tests) {
         this.tests.putAll(tests);
         return this;
     }
@@ -85,7 +85,7 @@ public class TestConfiguration<C>
 
     /** @IheritDoc */
     @Override
-    public TestConfiguration<C> ignoreTest(TName name, Runnable test) {
+    public TestConfiguration<C> ignoreTest(PathName name, Runnable test) {
         return this;
     }
 
@@ -99,13 +99,13 @@ public class TestConfiguration<C>
     /** @IheritDoc */
     @Override
     public TestConfiguration<C> addTest(String name, Runnable test) {
-        tests.put(TN.tname(name), test);
+        tests.put(PN.pname(name), test);
         return this;
     }
 
     /** @IheritDoc */
     @Override
-    public TestConfiguration<C> addTest(TName name, Runnable test) {
+    public TestConfiguration<C> addTest(PathName name, Runnable test) {
         tests.put(name, test);
         return this;
     }
@@ -172,22 +172,22 @@ public class TestConfiguration<C>
 
     private String toStringExpressions(
             StatsExpression<TestConfiguration<C>> statsExpression) {
-        final Map<TName, String> expressions =
+        final Map<PathName, String> expressions =
                 statsExpression.getStringExpressions();
         if (!expressions.isEmpty()) {
             TableFormatter table = new TableFormatter();
             table.line("expressions:");
-            expressions.forEach((TName name, String s) ->
+            expressions.forEach((PathName name, String s) ->
                     table.param(name.toString(), s) );
             return table.toString();
         }
         return "";
     }
 
-    public static String toStringTests(IndexedHashMap<TName,Runnable> tests) {
+    public static String toStringTests(IndexedHashMap<PathName,Runnable> tests) {
         StringBuilder buf = new StringBuilder();
         buf.append("tests:").append(CRLF);
-        for (TName name : tests.keySet()) {
+        for (PathName name : tests.keySet()) {
             buf.append(' ').append(name.toString())
                     .append(CRLF);
         }
@@ -240,7 +240,7 @@ public class TestConfiguration<C>
     }
 
     private void getTestsParamsTree(StringBuilder buf, String tab) {
-        for (TName test : tests.keySet()) {
+        for (PathName test : tests.keySet()) {
             buf.append(tab).append(test.toString()).append(CRLF);
             for (LinkedTree<String,Object> param : parameters) {
                 String paramName = param.getKey();

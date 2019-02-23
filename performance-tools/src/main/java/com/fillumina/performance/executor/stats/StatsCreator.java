@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.QuantityList;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class StatsCreator implements StatsTyped {
 
-    private final IndexedHashMap<TName, QuantityList.Builder> valuesMap =
+    private final IndexedHashMap<PathName, QuantityList.Builder> valuesMap =
             new IndexedHashMap<>();
     private final StatsType type;
 
@@ -31,7 +31,7 @@ public class StatsCreator implements StatsTyped {
 
     public void addSample(Sample sample) {
         sample.getValuesMap().values().forEach((SampleValue v) -> {
-            QuantityList.Builder builder = getBuilder(v.getName());
+            QuantityList.Builder builder = getBuilder(v.getPathName());
             builder.add(v.getQuantity());
         });
     }
@@ -44,9 +44,9 @@ public class StatsCreator implements StatsTyped {
      * Builds a {@link Stats} out of the collected samples.
      */
     public Stats createStats(ListFilter<Double> filter) {
-        IndexedHashMap<TName, DimensionalMeasure> map = new IndexedHashMap<>();
+        IndexedHashMap<PathName, DimensionalMeasure> map = new IndexedHashMap<>();
 
-        valuesMap.forEach((TName name, QuantityList.Builder builder) -> {
+        valuesMap.forEach((PathName name, QuantityList.Builder builder) -> {
             final QuantityList qList = builder.build();
             List<Double> filtered = filter.filter(qList);
             DimensionalOnlineMeasure measure =
@@ -57,7 +57,7 @@ public class StatsCreator implements StatsTyped {
         return new Stats(type, map);
     }
 
-    private QuantityList.Builder getBuilder(TName name) {
+    private QuantityList.Builder getBuilder(PathName name) {
         QuantityList.Builder builder = valuesMap.get(name);
         if (builder == null) {
             builder = QuantityList.builder();

@@ -4,7 +4,7 @@ import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public abstract class AbstractTimeStatsTableStringGenerator
     protected abstract void createTableLine(
             TableFormatter performanceTable,
             int index,
-            TName name,
+            PathName name,
             DimensionalMeasure measure,
             Stats stats,
             double stdev,
@@ -66,12 +66,12 @@ public abstract class AbstractTimeStatsTableStringGenerator
         ExpressionSolver exprSolver =
                 stats.getPayload(ExpressionSolver.class);
         if (exprSolver != null) {
-            Map<TName, String> expressions =
+            Map<PathName, String> expressions =
                     exprSolver.getStringExpressions();
             if (!expressions.isEmpty()) {
                 TableFormatter expr = new TableFormatter("  ")
                         .row("name", "expression");
-                expressions.forEach((TName name, String str) ->
+                expressions.forEach((PathName name, String str) ->
                         expr.row(name.toString(), str));
                 exprStr = expr.toString() + System.lineSeparator();
             }
@@ -84,9 +84,9 @@ public abstract class AbstractTimeStatsTableStringGenerator
         TableFormatter performanceTable = new TableFormatter("  ");
         createHeaderLine(performanceTable);
         int index = 0;
-        for (Map.Entry<TName,DimensionalMeasure> e :
+        for (Map.Entry<PathName,DimensionalMeasure> e :
                 stats.getMeasureMap().entrySet()) {
-            TName name = e.getKey();
+            PathName name = e.getKey();
             DimensionalMeasure measure = e.getValue();
             Unit<?> unit = measure.getUnit();
             double stdev = measure.getUnbiasedStandardDeviation();

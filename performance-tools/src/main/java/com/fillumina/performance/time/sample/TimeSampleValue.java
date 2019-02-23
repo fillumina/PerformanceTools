@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ public class TimeSampleValue extends SampleValue implements Serializable {
     private final long iterations;
     private final long timeNs;
 
-    public TimeSampleValue(TName name,
+    public TimeSampleValue(PathName name,
             Quantity<?> quantity,
             long iterations,
             long timeNs) {

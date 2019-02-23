@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.AbstractStatsProducerInstrumenter;
 import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
@@ -8,7 +8,7 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
 import com.fillumina.performance.util.unit.Unit;
@@ -48,11 +48,11 @@ public class ExpressionStatsProducer extends
         MixedStatsHolder mixedHolder = getProducer().get();
 
         mixedHolder.getStatsMap().forEach((StatsType type, StatsHolder holder) -> {
-            Map<List<TName>,Stats> map = new LinkedHashMap<>();
+            Map<List<PathName>,Stats> map = new LinkedHashMap<>();
             holder.getTree().flattenTo(map);
-            map.forEach( (List<TName> list, Stats stats) -> {
+            map.forEach((List<PathName> list, Stats stats) -> {
                 if (stats != null) {
-                    TName name = list.get(list.size() - 1);
+                    PathName name = list.get(list.size() - 1);
                     Stats eStats =
                             new Stats(stats, createMixedMap(stats, expressions));
                     eStats.putPayload(expressions);
@@ -63,20 +63,20 @@ public class ExpressionStatsProducer extends
         return builder.build();
     }
 
-    private static Map<TName,DimensionalMeasure> createMixedMap(
+    private static Map<PathName,DimensionalMeasure> createMixedMap(
             Stats stats,
             ExpressionSolver expression) {
         StatsType type = stats.getStatsType();
-        Map<TName, DimensionalMeasure> measures = stats.getMeasureMap();
+        Map<PathName, DimensionalMeasure> measures = stats.getMeasureMap();
 
         if (measures.isEmpty()) {
             throw new RuntimeException("measures cannot be empty");
         }
         Unit<?> unit = measures.values().iterator().next().getUnit();
-        Map<TName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
+        Map<PathName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
         expression.solve(new Stats(stats, measures))
                 .forEach((CharSequence s, Measure m) ->
-                    map.put(TN.tname(s), new DimensionalOnlineMeasure(unit, m)) );
+                    map.put(PN.pname(s), new DimensionalOnlineMeasure(unit, m)) );
         return Collections.unmodifiableMap(map);
     }
 

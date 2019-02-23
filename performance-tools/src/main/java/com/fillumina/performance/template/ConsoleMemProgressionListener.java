@@ -13,7 +13,7 @@ import com.fillumina.performance.util.LinearEtaEstimator;
 import com.fillumina.performance.util.formatter.CsvFormatter;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.MemUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -45,7 +45,7 @@ public class ConsoleMemProgressionListener
     @Override
     public void acceptStatsProgressionStatus(StatsProgressionStatus status) {
         String statusMessage = status.getStatusMessage();
-        TName name = status.getName();
+        PathName name = status.getName();
         Collection<? extends Stats> stats = status.getStats();
 
         if (FixedSamplesAndIterationsStrategy.WARMUP_STATUS.equals(statusMessage) ||
@@ -71,7 +71,7 @@ public class ConsoleMemProgressionListener
         Quantity<IntervalUnit> error = LinearEtaEstimator.ZERO;
         int sample = status.getExecutedSamples();
         int totalSamples = status.getTotalSamples();
-        TName testName = status.getLastStats().getFirstStatsHolder().getName();
+        PathName testName = status.getLastStats().getFirstStatsHolder().getPathName();
 
         if (sample == 1) {
             buf

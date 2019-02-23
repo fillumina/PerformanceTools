@@ -33,7 +33,7 @@ public class SampleLineStringGenerator
             } else {
                 appendable.append(", \t");
             }
-            appendable.append(v.getName()).append("=");
+            appendable.append(v.getPathName()).append("=");
             appendable.append(Double.toString(v.getQuantity().getValue()) );
         }
     }

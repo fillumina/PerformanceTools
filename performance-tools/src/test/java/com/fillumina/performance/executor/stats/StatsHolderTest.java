@@ -1,15 +1,15 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMatcher;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNameMatcher;
 import com.fillumina.performance.util.unit.Absolute;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
@@ -58,10 +58,10 @@ public class StatsHolderTest {
     @Test
     public void shouldReturnGivenNameAndStats() {
         final Stats stats = createTypedStatsMock("leaf");
-        final TName name = TN.tname("root");
+        final PathName name = PN.pname("root");
         StatsHolder holder = new StatsHolder(name, stats);
 
-        assertEquals(name, holder.getName());
+        assertEquals(name, holder.getPathName());
         assertEquals(stats, holder.getStats());
     }
 
@@ -105,7 +105,7 @@ public class StatsHolderTest {
 
     @Test
     public void shouldAddSubExperiment() {
-        TName name = TN.tname("L");
+        PathName name = PN.pname("L");
         Stats stats = createTypedStatsMock("leaf");
         StatsHolder subExperiment = new StatsHolder(name, stats);
 
@@ -114,9 +114,9 @@ public class StatsHolderTest {
                 .addSubExperiment(subExperiment)
                 .build();
 
-        LinkedTree<TName, Stats> tree = holder.getTree();
+        LinkedTree<PathName, Stats> tree = holder.getTree();
 
-        LinkedTree<TName, Stats> subTree = tree.getTree(name);
+        LinkedTree<PathName, Stats> subTree = tree.getTree(name);
         assertEquals(stats, subTree.getValue());
     }
 
@@ -165,20 +165,20 @@ public class StatsHolderTest {
                             .test("three", s3)
                         .build();
 
-        LinkedTree<TName, Stats> root = holder.getTree();
+        LinkedTree<PathName, Stats> root = holder.getTree();
 
         assertEquals(1, root.size());
         assertEquals("root", root.getKey().getLastName());
 
-        LinkedTree<TName, Stats> subroot =
-                root.getTree(TN.tname("root", "subroot"));
+        LinkedTree<PathName, Stats> subroot =
+                root.getTree(PN.pname("root", "subroot"));
 
         assertEquals(3, subroot.size());
         assertEquals("subroot", subroot.getKey().getLastName());
 
-        assertEquals(s1, subroot.get(TN.tname("root", "subroot", "one")));
-        assertEquals(s2, subroot.get(TN.tname("root", "subroot", "two")));
-        assertEquals(s3, subroot.get(TN.tname("root", "subroot", "three")));
+        assertEquals(s1, subroot.get(PN.pname("root", "subroot", "one")));
+        assertEquals(s2, subroot.get(PN.pname("root", "subroot", "two")));
+        assertEquals(s3, subroot.get(PN.pname("root", "subroot", "three")));
     }
 
     @Test
@@ -233,9 +233,9 @@ public class StatsHolderTest {
 
     @Test
     public void shouldAddComplexAssertions() {
-        TName one = TN.tname("root", "subroot", "one");
-        TName two = TN.tname("root", "subroot", "two");
-        TName three = TN.tname("root", "subroot", "three");
+        PathName one = PN.pname("root", "subroot", "one");
+        PathName two = PN.pname("root", "subroot", "two");
+        PathName three = PN.pname("root", "subroot", "three");
 
         StatsType type = MockStatsType.INSTANCE;
 
@@ -257,8 +257,8 @@ public class StatsHolderTest {
 
         // using long matcher setter
         holder.check()
-                .order(TNameMatcher.builder().all().string("first").build())
-                .lessThan(TNameMatcher.builder().all().string("second").build());
+                .order(PathNameMatcher.builder().all().string("first").build())
+                .lessThan(PathNameMatcher.builder().all().string("second").build());
 
         // using fluid interface
         holder.check().value()
@@ -315,12 +315,12 @@ public class StatsHolderTest {
                                 .test("one", assertable6)
                     .build();
 
-        Map<TName, Stats> map = holder.getFlattenedAssertableMap();
+        Map<PathName, Stats> map = holder.getFlattenedAssertableMap();
 
         assertEquals(6, map.size());
 
-        TName subRoot1 = TN.tname("root", "subroot1");
-        TName subRoot2 = TN.tname("root", "subroot2");
+        PathName subRoot1 = PN.pname("root", "subroot1");
+        PathName subRoot2 = PN.pname("root", "subroot2");
 
         assertEquals(assertable1, map.get(subRoot1.append("one")));
         assertEquals(assertable2, map.get(subRoot1.append("two")));

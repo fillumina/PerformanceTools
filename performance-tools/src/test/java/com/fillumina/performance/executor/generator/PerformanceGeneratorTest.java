@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.generator;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
@@ -10,7 +10,7 @@ import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.mock.StatsMockBuilder;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
@@ -44,14 +44,14 @@ public class PerformanceGeneratorTest {
                 .getStats()
                 .as(Magnitude.UNIT);
 
-        assertEquals(10.0, stats.getMeasure(TN.tname("a")).getMean(), 0.1);
-        assertEquals(33, stats.getMeasure(TN.tname("a")).getCount(), 0);
+        assertEquals(10.0, stats.getMeasure(PN.pname("a")).getMean(), 0.1);
+        assertEquals(33, stats.getMeasure(PN.pname("a")).getCount(), 0);
     }
 
     @Test
     public void shouldExecuteSingleTestWithParameter() {
-        TName a1 = TN.tname("a", "one");
-        TName a2 = TN.tname("a", "two");
+        PathName a1 = PN.pname("a", "one");
+        PathName a2 = PN.pname("a", "two");
         ProducerConfiguration prodConf = new ProducerConfigurationImpl(
             new SampleProducerMockBuilder()
                 .samples(33)
@@ -82,7 +82,7 @@ public class PerformanceGeneratorTest {
                 .executeSingleTest(testConfig, prodConf);
 
         StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
-        Stats stats = aHolder.getStats(TN.tname("a")).as(Magnitude.UNIT);
+        Stats stats = aHolder.getStats(PN.pname("a")).as(Magnitude.UNIT);
 
         assertEquals(10.0, stats.getMeasure(a1).getMean(), 0.1);
         assertEquals(33, stats.getMeasure(a1).getCount(), 0);
@@ -96,11 +96,11 @@ public class PerformanceGeneratorTest {
         ProducerConfiguration prodConf = new ProducerConfigurationImpl(
             new SampleProducerMockBuilder()
                 .samples(33)
-                .addTest(TN.tname("one", "a"))
+                .addTest(PN.pname("one", "a"))
                     .mean(10.0)
                     .stdev(1.2)
                 .endTest()
-                .addTest(TN.tname("two", "a"))
+                .addTest(PN.pname("two", "a"))
                     .mean(20.0)
                     .stdev(1.2)
                 .endTest()
@@ -125,13 +125,13 @@ public class PerformanceGeneratorTest {
 
         StatsHolder aHolder = holder.getStatsHolder(MockStatsType.INSTANCE);
 
-        Stats stats1 = aHolder.getStats(TN.tname("one")).as(Magnitude.UNIT);
-        assertEquals(10.0, stats1.getMeasure(TN.tname("one","a")).getMean(), 1);
-        assertEquals(33, stats1.getMeasure(TN.tname("one","a")).getCount(), 0);
+        Stats stats1 = aHolder.getStats(PN.pname("one")).as(Magnitude.UNIT);
+        assertEquals(10.0, stats1.getMeasure(PN.pname("one","a")).getMean(), 1);
+        assertEquals(33, stats1.getMeasure(PN.pname("one","a")).getCount(), 0);
 
-        Stats stats2 = aHolder.getStats(TN.tname("two")).as(Magnitude.UNIT);
-        assertEquals(20.0, stats2.getMeasure(TN.tname("two","a")).getMean(), 1);
-        assertEquals(33, stats2.getMeasure(TN.tname("two","a")).getCount(), 0);
+        Stats stats2 = aHolder.getStats(PN.pname("two")).as(Magnitude.UNIT);
+        assertEquals(20.0, stats2.getMeasure(PN.pname("two","a")).getMean(), 1);
+        assertEquals(33, stats2.getMeasure(PN.pname("two","a")).getCount(), 0);
     }
 
     public static final StatsType TYPE_A = new MockStatsType("TYPE_A");
@@ -146,17 +146,17 @@ public class PerformanceGeneratorTest {
         public PerformanceGeneratorMock() {
             Stats statsA = createStats(TYPE_A, "a", 10.0);
             array[0] = MixedStatsHolder.builder()
-                    .addStats(TN.tname("a"), statsA)
+                    .addStats(PN.pname("a"), statsA)
                     .build();
 
             Stats statsB = createStats(TYPE_B, "a", 20.0);
             array[1] = MixedStatsHolder.builder()
-                    .addStats(TN.tname("a"), statsB)
+                    .addStats(PN.pname("a"), statsB)
                     .build();
         }
 
         private Stats createStats(StatsType type, String name, double mean) {
-            return new StatsMockBuilder(type).addTest(TN.tname(name))
+            return new StatsMockBuilder(type).addTest(PN.pname(name))
                     .mean(mean)
                     .endTest()
                     .buildWithSyntheticNormalValues(Magnitude.UNIT)
@@ -203,10 +203,10 @@ public class PerformanceGeneratorTest {
 //        holder.print();
 
         Stats statsA = holder.getStatsHolder(TYPE_A).getStats().as(Magnitude.UNIT);
-        assertEquals(10.0, statsA.getMeasure(TN.tname("a")).getMean(), 0.1);
+        assertEquals(10.0, statsA.getMeasure(PN.pname("a")).getMean(), 0.1);
 
         Stats statsB = holder.getStatsHolder(TYPE_B).getStats().as(Magnitude.UNIT);
-        assertEquals(20.0, statsB.getMeasure(TN.tname("a")).getMean(), 0.1);
+        assertEquals(20.0, statsB.getMeasure(PN.pname("a")).getMean(), 0.1);
     }
 
 }

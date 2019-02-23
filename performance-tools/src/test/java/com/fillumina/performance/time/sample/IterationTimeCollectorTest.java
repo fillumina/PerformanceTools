@@ -1,9 +1,9 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -14,8 +14,8 @@ import org.junit.Test;
  */
 public class IterationTimeCollectorTest {
 
-    private static final TName ONE = TN.tname("one");
-    private static final TName TWO = TN.tname("two");
+    private static final PathName ONE = PN.pname("one");
+    private static final PathName TWO = PN.pname("two");
 
     @Test
     public void shouldAccountForDifferentMeasuresOfTheSameTest() {

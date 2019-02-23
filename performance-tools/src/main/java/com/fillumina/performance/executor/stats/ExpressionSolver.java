@@ -1,7 +1,7 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.util.stats.Measure;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.Map;
 
 /**
@@ -16,8 +16,8 @@ public interface ExpressionSolver {
      * @return the result of the managed expressions calculated on the given
      *          {@link Stats}.
      */
-    Map<TName, Measure> solve(Stats stats);
+    Map<PathName, Measure> solve(Stats stats);
 
     /** @return a map of string representations of named expressions. */
-    Map<TName, String> getStringExpressions();
+    Map<PathName, String> getStringExpressions();
 }

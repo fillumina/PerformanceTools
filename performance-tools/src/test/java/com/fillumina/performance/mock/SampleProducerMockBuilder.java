@@ -4,10 +4,10 @@ import com.fillumina.performance.executor.sample.AbstractSampleProducer;
 import com.fillumina.performance.executor.sample.Sample;
 import com.fillumina.performance.executor.sample.SampleValue;
 import com.fillumina.performance.executor.stats.StatsType;
+import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.pathname.PathNamedMap;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
-import com.fillumina.performance.util.tname.TNameMap;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,19 +36,19 @@ public class SampleProducerMockBuilder {
     public class SampleProducerMock
             extends AbstractSampleProducer<SampleProducerMock> {
 
-        private final List<TNameMap<SampleValue>> list;
+        private final List<PathNamedMap<SampleValue>> list;
         private int index;
 
-        public SampleProducerMock(List<TNameMap<SampleValue>> list) {
+        public SampleProducerMock(List<PathNamedMap<SampleValue>> list) {
             this.list = list;
         }
 
         @Override
         public Map<StatsType, Sample> get() {
-            final TNameMap<SampleValue> map = new TNameMap<>();
+            final PathNamedMap<SampleValue> map = new PathNamedMap<>();
             getTests().forEach((CharSequence name, Runnable test) -> {
-                TName tname = (TName) name;
-                map.put(tname, list.get(index).get(tname));
+                PathName pname = (PathName) name;
+                map.put(pname, list.get(index).get(pname));
             });
             index = (index + 1) % list.size();
             return Collections.singletonMap(statsType,
@@ -60,7 +60,7 @@ public class SampleProducerMockBuilder {
             return get();
         }
 
-        public List<TNameMap<SampleValue>> getList() {
+        public List<PathNamedMap<SampleValue>> getList() {
             return list;
         }
     }
@@ -80,7 +80,7 @@ public class SampleProducerMockBuilder {
     }
 
     public SampleProducerMock buildWithCoincidentalValues(Unit<?> unit) {
-        List<TNameMap<SampleValue>> list = new ArrayList<>();
+        List<PathNamedMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
                     unit,
@@ -93,7 +93,7 @@ public class SampleProducerMockBuilder {
     }
 
     public SampleProducerMock buildWithSyntheticNormalValues(Unit<?> unit) {
-        List<TNameMap<SampleValue>> list = new ArrayList<>();
+        List<PathNamedMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(
                     unit,
@@ -120,7 +120,7 @@ public class SampleProducerMockBuilder {
                     .iterator());
         }
 
-        List<TNameMap<SampleValue>> list = new ArrayList<>();
+        List<PathNamedMap<SampleValue>> list = new ArrayList<>();
         for (int i=0; i<samples; i++) {
             int index = 0;
             SampleCreator.Builder sampleBuilder = SampleCreator.builder(

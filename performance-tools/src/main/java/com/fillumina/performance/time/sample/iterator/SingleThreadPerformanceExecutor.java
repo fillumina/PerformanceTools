@@ -5,7 +5,7 @@ import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +58,7 @@ public class SingleThreadPerformanceExecutor
      */
     @Override
     public TimeSampleBuilder executeIterations(
-            final IndexedHashMap<TName, Runnable> tests,
+            final IndexedHashMap<PathName, Runnable> tests,
             final int[] iterations) {
 
         final int actualFractions =
@@ -73,7 +73,7 @@ public class SingleThreadPerformanceExecutor
         final TimeSampleCollector timeCollector =
                 new TimeSampleCollector();
         // to set the right order before shuffling
-        for (TName name : tests.keySet()) {
+        for (PathName name : tests.keySet()) {
             timeCollector.add(name, 0, 0);
         }
 
@@ -108,11 +108,11 @@ public class SingleThreadPerformanceExecutor
     }
 
     private static List<IterationData> createTestData(
-            Map<TName, Runnable> tests,
+            Map<PathName, Runnable> tests,
             int[] iterationPerFraction) {
         IterationData[] data = new IterationData[iterationPerFraction.length];
         Holder.Integer index = new Holder.Integer();
-        tests.forEach((TName name, Runnable runnable) -> {
+        tests.forEach((PathName name, Runnable runnable) -> {
             RunnableIterator iterator =
                     RunnableIterator.DISPATCHER.getIterator(runnable);
             int idx = index.getAndIncrement();
@@ -132,24 +132,24 @@ public class SingleThreadPerformanceExecutor
         return minIterations < fractions ? 1 : fractions;
     }
 
-    private void setupTests(Map<TName, Runnable> tests) {
+    private void setupTests(Map<PathName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.setUp(testable);
         }
     }
 
-    private void tearDownTests(Map<TName, Runnable> tests) {
+    private void tearDownTests(Map<PathName, Runnable> tests) {
         for (Runnable testable : tests.values()) {
             AnnotatedRunnableSetter.INSTANCE.tearDown(testable);
         }
     }
 
     private static class IterationData {
-        private final TName name;
+        private final PathName name;
         private final RunnableIterator iterator;
         private final int iterations;
 
-        public IterationData(TName name,
+        public IterationData(PathName name,
                 RunnableIterator iterator,
                 int iterations) {
             this.name = name;

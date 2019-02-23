@@ -3,7 +3,7 @@ package com.fillumina.performance.time.stats.strgen;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public abstract class
         if (! isStatsAssignableFrom(stats)) {
             return -1;
         }
-        List<TName> list = new ArrayList<>(stats.getMeasureMap().keySet());
+        List<PathName> list = new ArrayList<>(stats.getMeasureMap().keySet());
         if (list.isEmpty()) {
             return -1;
         }
@@ -67,9 +67,9 @@ public abstract class
         createHeaderLine(performanceTable);
 
         double singleTime = 0;
-        for (Map.Entry<TName,DimensionalMeasure> e :
+        for (Map.Entry<PathName,DimensionalMeasure> e :
                 stats.getMeasureMap().entrySet()) {
-            TName n = e.getKey();
+            PathName n = e.getKey();
             DimensionalMeasure elapsed = e.getValue();
             Unit<?> unit = elapsed.getUnit();
             double stdev = elapsed.getUnbiasedStandardDeviation();

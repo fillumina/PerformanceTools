@@ -85,7 +85,7 @@ public class PerformanceGenerator {
 
         // sets the name and finally adds and executes tests
         return producer
-                .setName(testConfig.getName())
+                .setPathName(testConfig.getPathName())
                 .addTests(testConfig.getTests())
                 .execute();
     }

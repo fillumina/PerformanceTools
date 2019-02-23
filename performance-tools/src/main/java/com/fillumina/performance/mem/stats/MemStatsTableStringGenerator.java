@@ -6,7 +6,7 @@ import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -114,7 +114,7 @@ public class MemStatsTableStringGenerator
             .cell("min")
             .cell("max")
             .endl();
-        stats.getMeasureMap().forEach( (TName n, DimensionalMeasure m) -> {
+        stats.getMeasureMap().forEach((PathName n, DimensionalMeasure m) -> {
             Unit<?> unit = m.getUnit();
             memoryTable
                 .cell(n.getLastName())

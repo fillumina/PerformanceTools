@@ -1,9 +1,9 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,7 +25,7 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
         private final MixedStatsHolder mixedHolder =
                 new MixedStatsHolder();
 
-        public Builder addStats(final TName name, final Stats stats) {
+        public Builder addStats(final PathName name, final Stats stats) {
             StatsHolder statsHolder = new StatsHolder(name, stats);
             statsHolder.setCaller(mixedHolder);
             mixedHolder.map.put(statsHolder.getStatsType(), statsHolder);
@@ -48,11 +48,11 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     }
 
     public static class Joiner {
-        private final TName name;
+        private final PathName name;
         private final Map<StatsType,StatsHolder.Builder> map =
                 new LinkedHashMap<>();
 
-        public Joiner(TName name) {
+        public Joiner(PathName name) {
             this.name = name;
         }
 
@@ -88,10 +88,10 @@ public class MixedStatsHolder extends Printable<MixedStatsHolder> {
     }
 
     public static Joiner joiner(String name) {
-        return new Joiner(TN.tname(name));
+        return new Joiner(PN.pname(name));
     }
 
-    public static Joiner joiner(TName name) {
+    public static Joiner joiner(PathName name) {
         return new Joiner(name);
     }
 

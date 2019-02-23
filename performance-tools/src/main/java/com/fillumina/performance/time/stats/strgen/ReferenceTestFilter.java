@@ -13,7 +13,7 @@ public class ReferenceTestFilter {
      * be used in percentages stats (usually to allow expressions to be
      * favored instead).
      * It's really an hack because it relies on
-     * {@link com.fillumina.performance.util.tname.TName#toString() }
+     * {@link com.fillumina.performance.util.pathname.PathName#toString() }
      * representation which should not be part of the API.
      */
     public static final Predicate<String> FILTER =

@@ -2,14 +2,14 @@ package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.IndexedHashMap;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.MultiMeasureSignificance;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.tname.TName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.QuantityList;
 import com.fillumina.performance.util.unit.Unit;
@@ -47,7 +47,7 @@ public class Stats extends Printable<Stats>
     /** The results are presented in relation with the bigger value. */
     private final BiggerMeasure refMeasure;
 
-    private final IndexedHashMap<TName, DimensionalMeasure> map;
+    private final IndexedHashMap<PathName, DimensionalMeasure> map;
     private final MultiMeasureSignificance multiMeasure;
     private final Unit<?> unit;
     private final Map<String, Object> payloadMap;
@@ -65,22 +65,22 @@ public class Stats extends Printable<Stats>
         this(copy.type, copy.map, copy.unit, copy.payloadMap, filter);
     }
 
-    public Stats(StatsType type, Map<TName,DimensionalMeasure> measures) {
+    public Stats(StatsType type, Map<PathName,DimensionalMeasure> measures) {
         this(type, measures, getArmonizedUnit(measures.values()) );
     }
 
     public Stats(StatsType type,
-            Map<TName,DimensionalMeasure> measures,
+            Map<PathName,DimensionalMeasure> measures,
             Unit<?> unit) {
         this(type, measures, unit, null, null);
     }
 
-    public Stats(Stats copy, Map<TName,DimensionalMeasure> measures) {
+    public Stats(Stats copy, Map<PathName,DimensionalMeasure> measures) {
         this(copy.type, measures, copy.unit, copy.payloadMap, copy.filter);
     }
 
     public Stats(StatsType type,
-            Map<TName,DimensionalMeasure> measures,
+            Map<PathName,DimensionalMeasure> measures,
             Unit<?> unit, // to force a specific unit, null to auto-select
             Map<String, Object> payloadMap,
             Predicate<String> filter) {
@@ -145,7 +145,7 @@ public class Stats extends Printable<Stats>
                     "this: " + type.toString() +
                     " != other: " + other.type.toString());
         }
-        Map<TName,DimensionalMeasure> m = new IndexedHashMap<>();
+        Map<PathName,DimensionalMeasure> m = new IndexedHashMap<>();
         m.putAll(getMeasureMap());
         m.putAll(other.getMeasureMap());
         return new Stats(other, m);
@@ -160,17 +160,17 @@ public class Stats extends Printable<Stats>
         return unit;
     }
 
-    private IndexedHashMap<TName, DimensionalMeasure> createNormalizedMap(
-            Map<TName,DimensionalMeasure> measures, Unit<?> unit) {
-        IndexedHashMap<TName,DimensionalMeasure> m =
+    private IndexedHashMap<PathName, DimensionalMeasure> createNormalizedMap(
+            Map<PathName,DimensionalMeasure> measures, Unit<?> unit) {
+        IndexedHashMap<PathName,DimensionalMeasure> m =
                 new IndexedHashMap<>(measures.size());
-        measures.forEach((TName n, DimensionalMeasure d) -> {
+        measures.forEach((PathName n, DimensionalMeasure d) -> {
             m.put(n, d.in(unit));
         });
         return m.unmodifiableView();
     }
 
-    public Map<TName, DimensionalMeasure> getMeasureMap() {
+    public Map<PathName, DimensionalMeasure> getMeasureMap() {
         return map;
     }
 
@@ -182,8 +182,8 @@ public class Stats extends Printable<Stats>
     @Override
     public DimensionalMeasure getMeasure(CharSequence testName)
             throws IllegalStateException {
-        TName tname = TN.tname(testName);
-        DimensionalMeasure m = map.get(tname);
+        PathName pname = PN.pname(testName);
+        DimensionalMeasure m = map.get(pname);
         if (m == null) {
             throw new MeasureNotFoundException(testName, map.keySet());
         }
@@ -196,7 +196,7 @@ public class Stats extends Printable<Stats>
     }
 
     @Override
-    public List<TName> getNames() {
+    public List<PathName> getNames() {
         return map.keyList();
     }
 
@@ -223,13 +223,13 @@ public class Stats extends Printable<Stats>
      * @return the Tukey's Honest Significant Difference
      */
     public double getTukeyHsd(CharSequence testName1, CharSequence testName2) {
-        int idx1 = map.getIndexOfKey(TN.tname(testName1));
-        int idx2 = map.getIndexOfKey(TN.tname(testName2));
+        int idx1 = map.getIndexOfKey(PN.pname(testName1));
+        int idx2 = map.getIndexOfKey(PN.pname(testName2));
         return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
-        int idx1 = map.getIndexOfKey(TN.tname(testName));
+        int idx1 = map.getIndexOfKey(PN.pname(testName));
         if (idx1 == -1) {
             return -1.0;
         }

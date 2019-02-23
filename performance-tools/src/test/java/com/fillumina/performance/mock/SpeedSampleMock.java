@@ -1,8 +1,8 @@
 package com.fillumina.performance.mock;
 
-import com.fillumina.performance.executor.TN;
+import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
-import com.fillumina.performance.util.tname.TName;
+import com.fillumina.performance.util.pathname.PathName;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,20 +24,20 @@ public class SpeedSampleMock {
             return new TestSample(name);
         }
 
-        public TestSample addTest(TName name) {
+        public TestSample addTest(PathName name) {
             return new TestSample(name);
         }
 
         public class TestSample {
-            private final TName name;
+            private final PathName name;
             private long timeNs;
             private long iterations = 10L;
 
             public TestSample(String name) {
-                this(TN.tname(name));
+                this(PN.pname(name));
             }
 
-            public TestSample(TName name) {
+            public TestSample(PathName name) {
                 this.name = name;
             }
 
