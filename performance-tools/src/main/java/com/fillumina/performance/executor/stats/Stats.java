@@ -65,20 +65,32 @@ public class Stats extends Printable<Stats>
         this(copy.type, copy.map, copy.unit, copy.payloadMap, filter);
     }
 
+    /** Simplest constructor. */
     public Stats(StatsType type, Map<PathName,DimensionalMeasure> measures) {
         this(type, measures, getArmonizedUnit(measures.values()) );
     }
 
+    /** Force a specific unit. */
     public Stats(StatsType type,
             Map<PathName,DimensionalMeasure> measures,
             Unit<?> unit) {
         this(type, measures, unit, null, null);
     }
 
+    /** Use the same configuration with new values. */
     public Stats(Stats copy, Map<PathName,DimensionalMeasure> measures) {
         this(copy.type, measures, copy.unit, copy.payloadMap, copy.filter);
     }
 
+    /**
+     * Full blown constructor.
+     * @param type stats' type
+     * @param measures the measures of the experiment
+     * @param unit if null if unit is extracted from measures
+     * @param payload various data not managed by the class
+     * @param filter filter the tests that should be included in the report.
+     *         Used by expressions to hide the original values.
+     */
     public Stats(StatsType type,
             Map<PathName,DimensionalMeasure> measures,
             Unit<?> unit, // to force a specific unit, null to auto-select

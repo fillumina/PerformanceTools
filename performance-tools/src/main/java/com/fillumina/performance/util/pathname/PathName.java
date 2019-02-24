@@ -23,16 +23,19 @@ import java.util.ListIterator;
 public class PathName extends AbstractList<String>
         implements Comparable<PathName>, CharSequence, Serializable {
     private static final long serialVersionUID = 1L;
+    private static final String[] EMPTY_ARRAY = new String[0];
+
+    public static final String DEFAULT_SEPARATOR = " : ";
 
     // this is just one of the possible roots. this is used by default.
     public static final PathName ROOT = createRoot();
 
     public static PathName createRoot() {
-        return new PathName(null, null, " : ");
+        return new PathName(null, DEFAULT_SEPARATOR);
     }
 
     public static PathName createRootWithSeparator(String separator) {
-        return new PathName(null, null, separator);
+        return new PathName(null, separator);
     }
 
     public static PathName getCommonPrefix(Iterable<PathName> iterable) {
@@ -47,41 +50,47 @@ public class PathName extends AbstractList<String>
         return common;
     }
 
-    private final PathName parent;  // it's an inverted linked list
-    private final int level;
+    // it's an inverted linked list
+    private final PathName parent;
+    // in the root element it doubles as the separator.
     private final String lastName;
-    private final String separator;
+
+    private final int level;
     private final String fullName;
     private final String[] array;
     private ArrayList<WeakReference<PathName>> children;
 
     protected PathName(PathName parent, String lastName) {
-        this(parent, lastName, parent.getRoot().getSeparator());
-    }
-
-    protected PathName(PathName parent, String lastName, String separator) {
         this.parent = parent;
         this.lastName = lastName;
-        this.level = parent == null ? 0 : parent.size() + 1;
-        this.array = createArray();
-        this.separator = separator;
+        String separator;
+        String[] a;
+        if (parent == null) {
+            // its root
+            this.level = 0;
+            separator = lastName;
+            a = EMPTY_ARRAY;
+        } else {
+            this.level = parent.size() + 1;
+
+            // create array
+            a = new String[level];
+            int s = level;
+            PathName current = this;
+            while (s > 0) {
+                a[--s] = current.lastName;
+                current = current.parent;
+            }
+            // current is now the root
+            separator = current.getSeparator();
+        }
+        this.array = a;
         this.fullName = toStringWithSeparator(separator);
     }
 
     /** Override if you extend this class. */
     protected PathName createNew(String name) {
         return new PathName(this, name);
-    }
-
-    private String[] createArray() {
-        String[] a = new String[level];
-        int s = level;
-        PathName current = this;
-        while (s > 0) {
-            a[--s] = current.lastName;
-            current = current.parent;
-        }
-        return a;
     }
 
     public PathName append(Iterable<String> names) {
@@ -177,7 +186,10 @@ public class PathName extends AbstractList<String>
     }
 
     public String getSeparator() {
-        return separator;
+        if (isRoot()) {
+            return this.lastName;
+        }
+        return getRoot().getSeparator();
     }
 
     @Override
@@ -229,6 +241,9 @@ public class PathName extends AbstractList<String>
     }
 
     public String getLastName() {
+        if (isRoot()) {
+            return null;
+        }
         return lastName;
     }
 
