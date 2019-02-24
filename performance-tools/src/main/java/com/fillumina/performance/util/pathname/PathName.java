@@ -74,8 +74,8 @@ public class PathName extends AbstractList<String>
             this.level = parent.size() + 1;
 
             // create array
-            a = new String[level];
             int s = level;
+            a = new String[s];
             PathName current = this;
             while (s > 0) {
                 a[--s] = current.lastName;

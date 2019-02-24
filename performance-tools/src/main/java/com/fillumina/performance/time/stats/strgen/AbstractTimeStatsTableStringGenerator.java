@@ -2,9 +2,10 @@ package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.stats.SignificanceMatrixStringGenerator;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -52,6 +53,12 @@ public abstract class AbstractTimeStatsTableStringGenerator
         TableFormatter performance =
                 createPerformanceTable(filteredStats, confidence);
         appendable.append(performance.toString());
+        appendable.append(System.lineSeparator());
+
+        SignificanceMatrixStringGenerator
+                .appendOnlyEqualTestTo(appendable, confidence)
+                .accept(stats);
+
         appendable.append(System.lineSeparator());
     }
 

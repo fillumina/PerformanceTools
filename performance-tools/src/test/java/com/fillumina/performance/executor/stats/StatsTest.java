@@ -233,12 +233,12 @@ public class StatsTest {
         assertEquals(0,
                 stats.getMaximumPercentageMargin(Ratio.P_95).getDecimal(),
                 0.1);
-        assertEquals(0.44, stats.getMinTukeyHsd(), 0.01);
+        assertEquals(0.44, stats.getMinStatisticalPairSignificance(), 0.01);
         assertEquals(1.0,
                 stats.getRatioWithRef("single", Ratio.P_95).getValue(),
                 0.001);
         // 0.44 means equal
-        assertEquals(0.44, stats.getTukeyHsd("single", "single"), 0.1);
+        assertEquals(0.44, stats.getSignificance("single", "single"), 0.1);
         assertEquals(100, stats.getMeasure("single").getMean(), 2.0);
     }
 

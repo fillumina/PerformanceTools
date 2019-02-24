@@ -44,12 +44,16 @@ public class SameClassAccuracyTest extends PerformanceTemplate {
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
-        config.speedConfig().setConfidence(Ratio.P_99);
+        config.speedConfig()
+                .setSamples(10)
+                .setConfidence(Ratio.P_99);
     }
 
     @Override
     public void addTests(TestConfiguration<?> tests) {
         tests.addTest("double", new Shared(new DoubleLfsrRunnable()));
+        tests.addTest("double2", new Shared(new DoubleLfsrRunnable()));
         tests.addTest("single", new Shared(new LfsrRunnable()));
+        tests.addTest("single2", new Shared(new LfsrRunnable()));
     }
 }

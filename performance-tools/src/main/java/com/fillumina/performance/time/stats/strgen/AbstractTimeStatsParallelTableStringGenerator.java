@@ -2,8 +2,8 @@ package com.fillumina.performance.time.stats.strgen;
 
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -57,8 +57,8 @@ public abstract class
             .param("Max ratio percentage margin",
                 stats.getMaximumPercentageMargin(confidence))
             .param("ANOVA", stats.getAnova())
-            .param("Minimum Tukey HSD accuracy for ratio",
-                String.format(Locale.US, "%2.3f", stats.getMinTukeyHsd()));
+            .param("Minimum Significance accuracy for ratio",
+                String.format(Locale.US, "%2.3f", stats.getMinStatisticalPairSignificance()));
 
         appendable.append(header.toString());
         appendable.append(System.lineSeparator());

@@ -5,9 +5,9 @@ import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
+import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.IOException;
@@ -101,7 +101,7 @@ public final class StatsTableStringGenerator
                 .cell("stdev")
                 .cell("uncertainty")
                 .cell("smpl")
-                .cell("TukeyHSD")
+                .cell("significance") // games-howell significance test vs slower
                 .endl();
         Holder.Integer index = new Holder.Integer();
         stats.getMeasureMap().entrySet().forEach((e) -> {

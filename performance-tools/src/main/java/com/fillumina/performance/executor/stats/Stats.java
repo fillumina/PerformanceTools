@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  * An {@link AssertableExperiment} representing the Statistics about an
  * experiment including various tests of the same type.
  * In addition of the usual statistics it calculates ANOVA and performs the
- * Tukey HSD post-hoc test on all experiment pairs so to assess the
+ * Games-Howell HSD post-hoc test on all experiment pairs so to assess the
  * statistic significance of results.
  * <p>
  * It is possible to add named payloads that contain configurable info about the
@@ -53,19 +53,29 @@ public class Stats extends Printable<Stats>
     private final Map<String, Object> payloadMap;
     private final Predicate<String> filter;
 
-    private TukeyPrintable tukeyPrintable;
+    private SignificancePrintable significancePrintable;
 
     /** Copy constructor. */
     public Stats(Stats copy) {
         this(copy.type, copy.map, copy.unit, copy.payloadMap, copy.filter);
     }
 
-    /** Copy constructor but with new filter. */
+    /** Copy constructor but with a new filter. */
     public Stats(Stats copy, Predicate<String> filter) {
         this(copy.type, copy.map, copy.unit, copy.payloadMap, filter);
     }
 
-    /** Simplest constructor. */
+    /** Copy constructor but with new measures. */
+    public Stats(Stats copy, Map<PathName,DimensionalMeasure> measures) {
+        this(copy.type, measures, copy.unit, copy.payloadMap, copy.filter);
+    }
+
+    /** Simplest constructor using {@link StatsType#DEFAULT} stats type. */
+    public Stats(Map<PathName,DimensionalMeasure> measures) {
+        this(StatsType.DEFAULT, measures, getArmonizedUnit(measures.values()) );
+    }
+
+    /** Simplest constructor defining {@link StatsType}. */
     public Stats(StatsType type, Map<PathName,DimensionalMeasure> measures) {
         this(type, measures, getArmonizedUnit(measures.values()) );
     }
@@ -77,16 +87,12 @@ public class Stats extends Printable<Stats>
         this(type, measures, unit, null, null);
     }
 
-    /** Use the same configuration with new values. */
-    public Stats(Stats copy, Map<PathName,DimensionalMeasure> measures) {
-        this(copy.type, measures, copy.unit, copy.payloadMap, copy.filter);
-    }
-
     /**
      * Full blown constructor.
+     *
      * @param type stats' type
      * @param measures the measures of the experiment
-     * @param unit if null if unit is extracted from measures
+     * @param unit if null the unit is extracted from measures
      * @param payload various data not managed by the class
      * @param filter filter the tests that should be included in the report.
      *         Used by expressions to hide the original values.
@@ -227,17 +233,17 @@ public class Stats extends Printable<Stats>
     }
 
     /**
-     * Calculates an estimation that the pair of means are significantly
-     * different from each other.
+     * Calculates a probability that the pair of means are significantly
+     * different from each other (actually using Games-Howell algorithm).
      *
      * @param testName1 name of the first test
      * @param testName2 name of the second test
-     * @return the Tukey's Honest Significant Difference
+     * @return the Games-Howell's Honest Significant Difference
      */
-    public double getTukeyHsd(CharSequence testName1, CharSequence testName2) {
+    public double getSignificance(CharSequence testName1, CharSequence testName2) {
         int idx1 = map.getIndexOfKey(PN.pname(testName1));
         int idx2 = map.getIndexOfKey(PN.pname(testName2));
-        return multiMeasure.tukeyKramerHsdPValue(idx1, idx2);
+        return multiMeasure.gamesHowellPValue(idx1, idx2);
     }
 
     public double getTukeyHsdComparedToRef(CharSequence testName) {
@@ -245,7 +251,7 @@ public class Stats extends Printable<Stats>
         if (idx1 == -1) {
             return -1.0;
         }
-        return multiMeasure.tukeyKramerHsdPValue(idx1, refMeasure.getIndex());
+        return multiMeasure.gamesHowellPValue(idx1, refMeasure.getIndex());
     }
 
     /**
@@ -283,23 +289,23 @@ public class Stats extends Printable<Stats>
     }
 
     /**
-     * Finds the minimum value of the Tukey HSD over all pairs
+     * Finds the minimum value of the Games-Howell HSD over all pairs
      * of experiments.
      * It's an estimation of the statistical significance of the collected data.
-     * The Tukey HSD can be performed only if ANOVA is either close to 0
-     * or to 1.
+     * The Statistical Significance Pair Test can only be performed if ANOVA is
+     * either close to 0 or to 1.
      *
-     * @return the minimum value of the Tukey HSD test appied to all test
-     *         pairs.
+     * @return the minimum value of the Statistical Significance Games-Howell
+     *          test applied to all test pairs.
      */
-    public double getMinTukeyHsd() {
+    public double getMinStatisticalPairSignificance() {
         double min = Double.POSITIVE_INFINITY;
         int size = multiMeasure.getMeasureCount();
         for (int i=0; i<size; i++) {
             for (int j=0; j<=i; j++) {
-                double tukey = multiMeasure.tukeyKramerHsdPValue(i, j);
-                if (tukey < min) {
-                    min = tukey;
+                double significanceProb = multiMeasure.gamesHowellPValue(i, j);
+                if (significanceProb < min) {
+                    min = significanceProb;
                 }
             }
         }
@@ -353,24 +359,31 @@ public class Stats extends Printable<Stats>
         return this;
     }
 
-    public Printable<?> getPrintableTukeyMatrix() {
-        if (tukeyPrintable == null) {
-            tukeyPrintable = new TukeyPrintable(this);
+    public Printable<?> getPrintableTukeyMatrix(
+            Ratio confidence, boolean onlyEqualTest) {
+        if (significancePrintable == null) {
+            significancePrintable =
+                    new SignificancePrintable(this,confidence, onlyEqualTest);
         }
-        return tukeyPrintable;
+        return significancePrintable;
     }
 
-    private static class TukeyPrintable extends Printable<TukeyPrintable> {
+    private static class SignificancePrintable
+            extends Printable<SignificancePrintable> {
+        private final SignificanceMatrixStringGenerator significanceStringGen;
         private final Stats stats;
 
-        public TukeyPrintable(Stats stats) {
+        public SignificancePrintable(Stats stats,
+                Ratio confidence, boolean onlyEqualTest) {
+            this.significanceStringGen =
+                    new SignificanceMatrixStringGenerator(confidence, onlyEqualTest);
             this.stats = stats;
         }
 
         @Override
-        public TukeyPrintable appendTo(Appendable appendable) {
+        public SignificancePrintable appendTo(Appendable appendable) {
             try {
-                TukeyMatrixStringGenerator.INSTANCE.appendTo(appendable, stats);
+                significanceStringGen.appendTo(appendable, stats);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

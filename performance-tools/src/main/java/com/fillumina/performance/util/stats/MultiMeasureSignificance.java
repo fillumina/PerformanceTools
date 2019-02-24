@@ -200,6 +200,9 @@ public class MultiMeasureSignificance {
         double r2 = var2 / n2;
         double df = pow2(r1 + r2) / (pow2(r1)/(n1-1) + pow2(r2)/(n2-1));
         double q = gamesHowellQStat(idx1, idx2);
+        if (Double.isNaN(q) || Double.isInfinite(q)) {
+            return -1;
+        }
         return Qsturng.pStudentRange(q, measuresCount, df);
     }
 

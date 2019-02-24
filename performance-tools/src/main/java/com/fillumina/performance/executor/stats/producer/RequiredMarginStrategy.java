@@ -148,7 +148,7 @@ public class RequiredMarginStrategy
             double error = maxMargin.getDecimal() -
                     maxRequiredPercentageMargin.getDecimal();
 
-            message = "max_ratio= " + maxMargin.toString();
+            message = "max margin= " + maxMargin.toString();
                     //"  error=" + error;
 
             return error;
