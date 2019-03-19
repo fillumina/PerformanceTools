@@ -97,9 +97,8 @@ public class ParallelMultiThreadPerformanceExecutor
             runnableSetter.onAfterSample(runnable, totalWorkersNeeded);
             runnableSetter.tearDown(runnable);
 
-            workerList.forEach((task) -> {
-                timeCollector.add(task.name, task.elapsed, task.iterations);
-            });
+            workerList.forEach(task ->
+                timeCollector.add(task.name, task.elapsed, task.iterations) );
 
             index.incrementAndGet();
         });
@@ -111,7 +110,8 @@ public class ParallelMultiThreadPerformanceExecutor
         return concurrencyLevel;
     }
 
-    private List<IteratingRunnable> createWorkers(PathName testName, int iterations, ParallelTest runnable) {
+    private List<IteratingRunnable> createWorkers(PathName testName,
+            int iterations, ParallelTest runnable) {
         final List<IteratingRunnable> workerList = new ArrayList<>();
         for (Group group : runnable.getGroups()) {
             final int workers = group.getWorkers();
@@ -195,7 +195,7 @@ public class ParallelMultiThreadPerformanceExecutor
     private class IteratingRunnable implements Runnable {
         private final PathName name;
         private final Runnable runnable;
-        private int iterations = 0;
+        private int iterations;
         private long elapsed;
         private CountDownLatch startCountDownLatch, endCountDownLatch;
 
@@ -217,12 +217,12 @@ public class ParallelMultiThreadPerformanceExecutor
         public void run() {
             final int it = iterations;
             Runnable r = runnable;
-            long time = System.nanoTime();
             try {
                 startCountDownLatch.await();
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
+            long time = System.nanoTime();
             for (int i=0; i<it; i++) {
                 r.run();
             }
