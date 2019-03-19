@@ -13,6 +13,7 @@ import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,6 @@ public class ParallelMultiThreadPerformanceExecutor
 
     private final Quantity<IntervalUnit> timeout;
     private int concurrencyLevel;
-    private volatile boolean running = true;
 
     public static MultiThreadPerformanceExecutorBuilder builder() {
         return new MultiThreadPerformanceExecutorBuilder();
@@ -66,7 +66,7 @@ public class ParallelMultiThreadPerformanceExecutor
     @Override
     public TimeSampleBuilder executeIterations(
             final IndexedHashMap<PathName, Runnable> tests,
-            final int[] bound) {
+            final int[] iterationArray) {
 
         assertAllTestsAreAsymmetric(tests);
 
@@ -84,15 +84,15 @@ public class ParallelMultiThreadPerformanceExecutor
         Holder.Integer index = new Holder.Integer();
         tests.forEach((PathName testName, Runnable r) -> {
             final ParallelTest runnable = (ParallelTest) r;
-            final int millis = bound[index.getValue()];
+            final int iterations = iterationArray[index.getValue()];
 
             List<IteratingRunnable> workerList =
-                    createWorkers(runnable, testName);
+                    createWorkers(testName, iterations, runnable);
 
             runnableSetter.setUp(runnable);
             runnableSetter.onBeforeSample(runnable, totalWorkersNeeded);
 
-            parallelExecution(workerList, millis);
+            parallelExecution(workerList);
 
             runnableSetter.onAfterSample(runnable, totalWorkersNeeded);
             runnableSetter.tearDown(runnable);
@@ -111,8 +111,7 @@ public class ParallelMultiThreadPerformanceExecutor
         return concurrencyLevel;
     }
 
-    private List<IteratingRunnable> createWorkers(ParallelTest runnable,
-            PathName testName) {
+    private List<IteratingRunnable> createWorkers(PathName testName, int iterations, ParallelTest runnable) {
         final List<IteratingRunnable> workerList = new ArrayList<>();
         for (Group group : runnable.getGroups()) {
             final int workers = group.getWorkers();
@@ -120,40 +119,40 @@ public class ParallelMultiThreadPerformanceExecutor
             final Runnable test = group.getRunnable();
 
             for (int i=0; i<workers; i++) {
-                workerList.add(new IteratingRunnable(
-                        groupName.append(String.valueOf(i)), test));
+                final PathName pname = groupName.append(String.valueOf(i));
+                final IteratingRunnable iteratingRunnable =
+                        new IteratingRunnable(pname, iterations, test);
+                workerList.add(iteratingRunnable);
             }
         }
         return workerList;
     }
 
-    private long parallelExecution(final List<IteratingRunnable> tasks,
-            int millis) {
+    private long parallelExecution(final List<IteratingRunnable> tasks) {
         final long timeoutMillis = (long)timeout.as(IntervalUnit.MILLISECONDS);
-        boolean alreadyTerminated = false;
         final ExecutorService executor = createExecutor();
 
         final long time = System.nanoTime();
 
-        running = true;
+        CountDownLatch startCountDownLatch = new CountDownLatch(1);
+        CountDownLatch endCountDownLatch = new CountDownLatch(tasks.size());
+        tasks.forEach(ir -> ir.setCountDownLatch(
+                startCountDownLatch, endCountDownLatch));
+
         for (IteratingRunnable task: tasks) {
             executor.execute(task);
         }
 
         final long elapsed;
         try {
-            Thread.sleep(millis);
-            running = false;
-            executor.shutdown();
-            alreadyTerminated = executor.awaitTermination(timeoutMillis,
-                    TimeUnit.MILLISECONDS);
+            Thread.sleep(200); // give it some time to initialize all runnables
+            startCountDownLatch.countDown();
+            endCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
             elapsed = System.nanoTime() - time;
+            executor.shutdown();
+            executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw createTaskTookTooLongException(e);
-        }
-
-        if (!alreadyTerminated) {
-            throw createTaskTookTooLongException(null);
         }
 
         return elapsed;
@@ -198,26 +197,37 @@ public class ParallelMultiThreadPerformanceExecutor
         private final Runnable runnable;
         private int iterations = 0;
         private long elapsed;
+        private CountDownLatch startCountDownLatch, endCountDownLatch;
 
         public IteratingRunnable(final PathName name,
+                final int iterations,
                 final Runnable runnable) {
             this.name = name;
+            this.iterations = iterations;
             this.runnable = runnable;
+        }
+
+        void setCountDownLatch(CountDownLatch startCountDownLatch,
+                CountDownLatch endCountDownLatch) {
+            this.startCountDownLatch = startCountDownLatch;
+            this.endCountDownLatch = endCountDownLatch;
         }
 
         @Override
         public void run() {
-            int it = iterations;
+            final int it = iterations;
             Runnable r = runnable;
             long time = System.nanoTime();
-            // TODO sure that polling a volatile variable is efficient/right?
-            while(running) {
-                r.run();
-                it++;
+            try {
+                startCountDownLatch.await();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
-            // TODO use the interrupt() mechanism?
-            iterations = it;
+            for (int i=0; i<it; i++) {
+                r.run();
+            }
             elapsed = System.nanoTime() - time;
+            endCountDownLatch.countDown();
         }
     }
 }

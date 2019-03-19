@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.test.RunnableSinker;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
+import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -60,12 +61,34 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         assertEquals(5, executor.getConcurrencyLevel());
     }
 
-    // TODO this test keep failing a lot during 'mvn clean install'
-    //count_1=8.02642768E8, count_2=1.37677088E8, error=3.4419272E7 expected:<8.02642768E8> but was:<1.37677088E8>
-    //count_1=1.41301581E8, count_2=9.8915503E7, error=2.472887575E7 expected:<1.41301581E8> but was:<9.8915503E7>
-    //count_1=7.84695116E8, count_2=1.02794679E8, error=2.569866975E7 expected:<7.84695116E8> but was:<1.02794679E8>
-    //count_1=7.62918832E8, count_2=1.04408377E8, error=2.610209425E7 expected:<7.62918832E8> but was:<1.04408377E8>
-    //count_1=7.75780165E8, count_2=1.33171276E8, error=3.3292819E7 expected:<7.75780165E8> but was:<1.33171276E8>
+    private static class ThreadLocalCounter {
+        private int[] array = new int[128];
+
+        public void increment() {
+            final int thread = Thread.currentThread().hashCode();
+            // an unfortunate clash could obviously happen
+            array[thread % 128]++;
+        }
+
+        public int size() {
+            int counter = 0;
+            for (int v : array) {
+                if (v != 0) {
+                    counter++;
+                }
+            }
+            return counter;
+        }
+
+        public int getTotal() {
+            int counter = 0;
+            for (int v : array) {
+                counter += v;
+            }
+            return counter;
+        }
+    }
+
     @Test
     public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
         ParallelMultiThreadPerformanceExecutor executor =
@@ -73,26 +96,34 @@ public class ParallelMultiThreadPerformanceExecutorTest {
 
         IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
-        AtomicInteger aCounter = new AtomicInteger();
-        AtomicInteger bCounter = new AtomicInteger();
+        ThreadLocalCounter aCounter = new ThreadLocalCounter();
+        ThreadLocalCounter bCounter = new ThreadLocalCounter();
 
         int aWorkers = 1;
         int bWorkers = 3;
 
         testMap.put(PN.pname("asymmetric"),
                 new ParallelTest()
-                    .addTask("a", aWorkers, () -> aCounter.getAndIncrement() )
-                    .addTask("b", bWorkers, () -> bCounter.getAndIncrement() ) );
+                    .addTask("a", aWorkers, () -> aCounter.increment() )
+                    .addTask("b", bWorkers, () -> bCounter.increment() ) );
 
-        int[] iterations = new int[]{10_000};
+        int[] iterations = new int[] {5_000};
 
-        executor.executeIterations(testMap, iterations);
+        TimeSampleBuilder builder =
+                executor.executeIterations(testMap, iterations);
 
-        double aNormalizedResult = aCounter.get() / aWorkers;
-        double bNormalizedResult = bCounter.get() / bWorkers;
+        //System.out.println(builder.buildAverageTimeSample().toString());
+
+        double aNormalizedResult = aCounter.getTotal() / aWorkers;
+        double bNormalizedResult = bCounter.getTotal() / bWorkers;
 
         // it's huge, I understand
         double error = bNormalizedResult * 0.25;
+
+        assertEquals("hashcode clash: don't worry, repeat test",
+                aWorkers, aCounter.size());
+        assertEquals("hashcode clash: don't worry, repeat test",
+                bWorkers, bCounter.size());
 
         assertEquals("count_1=" + aNormalizedResult +
                     ", count_2=" + bNormalizedResult +
