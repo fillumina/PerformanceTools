@@ -197,7 +197,7 @@ public class MemConfiguration<C>
 
             @Override
             public int[] getIterations() {
-                return new int[]{1}; // TODO is that right?
+                return new int[]{1};
             }
 
             @Override

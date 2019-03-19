@@ -1,5 +1,7 @@
 package com.fillumina.performance.template;
 
+import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
@@ -11,8 +13,6 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import com.fillumina.performance.assertion.AssertableExperiment;
-import com.fillumina.performance.assertion.ExperimentAssertion;
 
 /**
  *
@@ -97,7 +97,8 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> map = aResult.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map =
+                aResult.getFailedAssertions();
 
         assertEquals(1, map.size());
         assertEquals(assertion, map.get(AssertionableResult.UNCHECKED).get(0));

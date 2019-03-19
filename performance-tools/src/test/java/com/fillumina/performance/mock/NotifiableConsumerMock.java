@@ -9,11 +9,11 @@ import java.util.function.Consumer;
 public class NotifiableConsumerMock<T> implements Consumer<T> {
 
     private boolean notified = false;
-    private T performance;
+    private T message;
 
     @Override
-    public void accept(T assertable) {
-        this.performance = assertable;
+    public void accept(T message) {
+        this.message = message;
         notified = true;
     }
 
@@ -21,7 +21,7 @@ public class NotifiableConsumerMock<T> implements Consumer<T> {
         return notified;
     }
 
-    public T getReceivedAssertable() {
-        return performance;
+    public T getReceivedMessage() {
+        return message;
     }
 }

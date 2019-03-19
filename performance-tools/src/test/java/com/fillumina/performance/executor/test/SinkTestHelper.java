@@ -14,7 +14,7 @@ public abstract class SinkTestHelper {
 
     //Include exorcism.h
     protected void checkIfItIsEvicted(String name, Runnable runnable) {
-        final PerformanceTimer pt = PerformanceTimerFactory
+        final PerformanceTimer<?> pt = PerformanceTimerFactory
                 .createSingleThreaded()
                 .addTest(name, runnable);
         int iterations = pt.estimateIterations(250)[0];

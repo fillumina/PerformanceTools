@@ -35,8 +35,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Francesco Illuminati
  */
 public class DefaultPerformanceTimer
-        extends AbstractSampleProducer<PerformanceTimer>
-        implements PerformanceTimer {
+        extends AbstractSampleProducer<DefaultPerformanceTimer>
+        implements PerformanceTimer<DefaultPerformanceTimer> {
 
     private final PerformanceExecutor executor;
     private long sampleTimeMs = 250;

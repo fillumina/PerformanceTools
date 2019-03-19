@@ -113,9 +113,9 @@ public final class StatsTableStringGenerator
                     measure.getUnit());
             List<PathName> names = stats.getNames();
             int testPrefixSize = PathName.getCommonPrefix(names).size();
-            double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
-            String tukeyHsdStr = tukeyHsd < 0 ? "" :
-                    String.format(Locale.US,"%.3f", tukeyHsd);
+            double significance = stats.getSignificanceComparedToRef(name);
+            String significanceStr = significance < 0 ? "" :
+                    String.format(Locale.US,"%.3f", significance);
             performanceTable
                     .cell(index.getValue())
                     .cell(name.toStringWithSeparatorStartingFrom("_", testPrefixSize))
@@ -126,7 +126,7 @@ public final class StatsTableStringGenerator
                     .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                     .cell(measure.getFractionalUncertainty(confidence))
                     .cell(measure.getCount())
-                    .cell(tukeyHsdStr)
+                    .cell(significanceStr)
                     .endl();
             index.incrementAndGet();
         });

@@ -12,7 +12,7 @@ import org.junit.Test;
 public class ConsumerNotifierImplTest {
 
     private static class InnerConsumerNotifierImpl
-            extends ConsumerNotifierImpl<InnerConsumerNotifierImpl, String> {
+            extends ConsumerNotifier<InnerConsumerNotifierImpl, String> {
     }
 
     private final InnerConsumerNotifierImpl notifier =

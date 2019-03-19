@@ -7,7 +7,7 @@ import com.fillumina.performance.util.instrument.Instrumenter;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractStatsProducer<I extends StatsProducer<I>>
+public abstract class AbstractStatsProducer<I extends AbstractStatsProducer<I>>
     extends AbstractTestExecutor<I, Stats, Runnable, MixedStatsHolder>
     implements StatsProducer<I> {
 

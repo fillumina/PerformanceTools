@@ -19,7 +19,7 @@ import java.util.function.Function;
 /**
  * Indexed hash map implementation (similar in features to
  * {@link LinkedHashMap} but can index its entries randomly).
- * It allows to extract a list view of its keys and values but has very
+ * It allows to extract a <b>list view</b> of its keys and values but has very
  * slow removal time.
  * Features:
  * <ul>
@@ -27,10 +27,9 @@ import java.util.function.Function;
  * <li>worst case (hash clash) for insertion and extraction is linear O(N)
  * <li>removal is linear O(N)
  * <li>maintains insertion order
- * <li>views are random access list
- * <li>manages its own very efficient unmodifiable view of itself
+ * <li>views as random access lists
+ * <li>manages its own unmodifiable view of itself
  * <li>has copy constructor and clone constructor
- * <li>improves locality of access by using arrays
  * </ul>
  * Drawbacks:
  * <ul>
@@ -42,11 +41,10 @@ import java.util.function.Function;
  */
 public class IndexedHashMap<K,V>
         implements Iterable<Entry<K,V>>, Map<K,V>, Cloneable, Serializable {
+    private static final long serialVersionUID = 1L;
 
     public static final IndexedHashMap<?,?> EMPTY =
             new IndexedHashMap<>().unmodifiableView();
-
-    private static final long serialVersionUID = 1L;
 
     private EntryImpl<K,V>[] array;
     private int[] indexes;
@@ -130,9 +128,9 @@ public class IndexedHashMap<K,V>
         return map;
     }
 
-    /** Converts to another map. */
+    /** Converts to another map with same keys and different values. */
     public <W> IndexedHashMap<K,W> transform(Function<V,W> converter) {
-        IndexedHashMap<K,W> map = new IndexedHashMap<>();
+        IndexedHashMap<K,W> map = new IndexedHashMap<>(size());
         for (Map.Entry<K,V> t : this) {
             map.put(t.getKey(), converter.apply(t.getValue()));
         }
@@ -167,11 +165,11 @@ public class IndexedHashMap<K,V>
 
     /**
      * Override if you need a different equals().
-     * @param a the given object
-     * @param b the internal key
+     * @param givenKey the given object
+     * @param entryKey the internal key
      */
-    protected boolean equalsKey(Object a, Object b) {
-        return Objects.equals(a, b);
+    protected boolean equalsKey(Object givenKey, Object entryKey) {
+        return Objects.equals(givenKey, entryKey);
     }
 
     /**

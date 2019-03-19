@@ -8,8 +8,8 @@ import com.fillumina.performance.executor.sample.SampleProducer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface PerformanceTimer
-        extends SampleProducer<PerformanceTimer> {
+public interface PerformanceTimer<I extends PerformanceTimer<I>>
+        extends SampleProducer<I> {
 
     /**
      * Measures the time it takes to perform the given iterations.
@@ -41,7 +41,7 @@ public interface PerformanceTimer
      * It uses the same number of iterations for all tests.
      * @param iterations the number of iterations to complete for every test.
      */
-    PerformanceTimer warmup(int iterations);
+    I warmup(int iterations);
 
     /**
      * Run exactly the same tests as {@link #execute()}.
@@ -49,5 +49,5 @@ public interface PerformanceTimer
      * @param iterations indexed iterations for each test considered with their
      *        insertion order.
      */
-    PerformanceTimer warmup(int[] iterations);
+    I warmup(int[] iterations);
 }

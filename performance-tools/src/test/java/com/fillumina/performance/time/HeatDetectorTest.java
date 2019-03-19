@@ -31,7 +31,7 @@ public class HeatDetectorTest {
             System.out.println("speed= " + heatDetector.checkSpeed(0));
         }
 
-        PerformanceTimer pt = PerformanceTimerFactory.getMultiThreadedBuilder()
+        PerformanceTimer<?> pt = PerformanceTimerFactory.getMultiThreadedBuilder()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors() * 2)
                 .build()
                 .addTest("lfsr", new RndRunnable());

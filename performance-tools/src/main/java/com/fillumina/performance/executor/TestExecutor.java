@@ -1,9 +1,11 @@
 package com.fillumina.performance.executor;
 
-import java.util.function.Supplier;
 import com.fillumina.performance.util.ConsumerContainer;
-import com.fillumina.performance.util.pathname.PathNamed;
+import com.fillumina.performance.util.Nameable;
+import com.fillumina.performance.util.Named;
 import com.fillumina.performance.util.pathname.PathNameSettable;
+import com.fillumina.performance.util.pathname.PathNamed;
+import java.util.function.Supplier;
 
 /**
  * Executes an experiment and return its result.
@@ -17,11 +19,12 @@ import com.fillumina.performance.util.pathname.PathNameSettable;
  */
 public interface TestExecutor<I extends TestExecutor<I,N,T,R>, N, T, R>
         extends
-            Supplier<R>,
+            Supplier<R>, // TODO is this really useful?
             TestContainer<I,T>,
             ConsumerContainer<I,N>,
             PathNameSettable<I>,
-            PathNamed {
+            PathNamed,
+            Named, Nameable<I> {
 
     /** Better name than {@link get()} for which it is just an alias. */
     default public R execute() {

@@ -25,10 +25,8 @@ public class Telemetry {
             new ConcurrentHashMap<>();
 
     /**
-     * Initialize the test. Must be called once before the test starts.
-     * If it is not called all the other calls will
-     * be ignored so to be able to run a code normally if it is not under
-     * Telemetry.
+     * Initializes the test. Must be called once before the test starts.
+     * If it is not called all the other calls will be ignored.
      *
      * @return always true so that it can be put on an assert
      */
@@ -40,7 +38,7 @@ public class Telemetry {
     }
 
     /**
-     * Reset current statistics. It should be called after warmup.
+     * Resets current statistics. It should be called after warmup.
      */
     public static boolean reset() {
         THREAD_LOCAL_TELEMETRY.get().reset();
@@ -48,7 +46,7 @@ public class Telemetry {
     }
 
     /**
-     * Begin a new iteration of the program execution.
+     * Begins a new iteration of the program execution.
      *
      * @return always true so that it can be put on an assert
      */
@@ -67,12 +65,8 @@ public class Telemetry {
      * @return always true so it can be put on an assert and the code
      *         be removed in production by the compiler.
      */
-    public static boolean section(final String name, final int iterations) {
-        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
-        if (telemetry != null) {
-            telemetry.section(name, iterations);
-        }
-        return true;
+    public static boolean section(final String name) {
+        return section(name, 1);
     }
 
     /**
@@ -82,8 +76,12 @@ public class Telemetry {
      * @return always true so it can be put on an assert and the code
      *         be removed in production by the compiler.
      */
-    public static boolean section(final String name) {
-        return section(name, 1);
+    public static boolean section(final String name, final int iterations) {
+        StopWatchTimer telemetry = THREAD_LOCAL_TELEMETRY.get();
+        if (telemetry != null) {
+            telemetry.section(name, iterations);
+        }
+        return true;
     }
 
     /**

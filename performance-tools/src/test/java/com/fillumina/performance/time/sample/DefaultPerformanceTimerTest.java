@@ -10,8 +10,8 @@ import com.fillumina.performance.time.sample.iterator.PerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 import com.fillumina.performance.util.ToleranceAssertion;
 import com.fillumina.performance.util.collection.IndexedHashMap;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,7 +29,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsInExecuteInt() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -39,7 +39,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptDifferentNumberOfIterationsThanTestsLess() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -51,7 +51,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptDifferentNumberOfIterationsThanTestsMore() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -63,7 +63,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterationsThanTests() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -75,7 +75,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test
     public void shouldAcceptOneIterationThough() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -87,7 +87,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptNegativeOneIteration() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -99,7 +99,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptNegativeIterations() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -111,7 +111,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldNotAcceptZeroIterations() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.addTest(ONE, NullRunnable.INSTANCE);
@@ -123,7 +123,7 @@ public class DefaultPerformanceTimerTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldNotAcceptNoTests() {
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
 
         pt.iterate(100);
@@ -132,7 +132,7 @@ public class DefaultPerformanceTimerTest {
     @Test
     public void shouldExecuteATestWithTheGivenNumberOfIterations() {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor()) {
                     @Override
                     public int[] estimateIterations(long milliseconds)
@@ -233,7 +233,7 @@ public class DefaultPerformanceTimerTest {
     @Test
     public void shouldExecuteTestWithWarmup() {
         final AtomicInteger iterationCounter = new AtomicInteger(0);
-        PerformanceTimer pt = new DefaultPerformanceTimer(
+        PerformanceTimer<?> pt = new DefaultPerformanceTimer(
                 new SingleThreadPerformanceExecutor());
         pt.addTest(ONE, new Runnable() {
             @Override

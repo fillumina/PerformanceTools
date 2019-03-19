@@ -5,7 +5,7 @@ package com.fillumina.performance.executor.stats;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class AbstractStatsProducerInstrumenter
-        <I extends StatsProducer<I>>
+        <I extends AbstractStatsProducerInstrumenter<I>>
     extends AbstractStatsProducer<I>
     implements StatsProducerInstrumenter<I> {
 

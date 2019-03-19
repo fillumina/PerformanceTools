@@ -1,5 +1,6 @@
 package com.fillumina.performance.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -9,36 +10,60 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ConsumerAggregator<T>
+public class ConsumerAggregator<I extends ConsumerAggregator<?,T>, T>
         implements Consumer<T> {
 
     private final List<Consumer<? super T>> list =
             new CopyOnWriteArrayList<>();
 
+    public ConsumerAggregator() {
+    }
+
+    protected List<Consumer<? super T>> getConsumers() {
+        return list;
+    }
+
     @SafeVarargs
     public ConsumerAggregator(Consumer<? super T>... consumers) {
-        addAll(consumers);
+        addAllConsumers(consumers);
     }
 
-    public ConsumerAggregator(
-            Collection<Consumer<? super T>> consumers) {
+    public ConsumerAggregator(Collection<Consumer<? super T>> consumers) {
         for (Consumer<? super T> c : consumers) {
-            addAll(c);
+            addAllConsumers(c);
         }
     }
 
-    public ConsumerAggregator<T> add(Consumer<? super T> consumer) {
+    @SuppressWarnings("unchecked")
+    public I addConsumerIf(boolean condition, Consumer<? super T> consumer) {
+        if (condition) {
+            addConsumer(consumer);
+        }
+        return (I) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public I addConsumer(Consumer<? super T> consumer) {
         list.add(consumer);
-        return this;
+        return (I) this;
     }
 
     @SafeVarargs
-    public final ConsumerAggregator<T> addAll(
-            Consumer<? super T>... consumers) {
-        for (Consumer<? super T> pc : consumers) {
-            list.add(pc);
+    @SuppressWarnings("unchecked")
+    public final I addAllConsumers(Consumer<? super T>... consumers) {
+        list.addAll(Arrays.asList(consumers));
+        return (I) this;
+    }
+
+    /**
+     * A {@code null} argument and {@code null} array's elements are ignored.
+     */
+    @SuppressWarnings("unchecked")
+    public I removeConsumer(final Consumer<? super T> consumer) {
+        if (consumer != null) {
+            list.remove(consumer);
         }
-        return this;
+        return (I) this;
     }
 
     @Override
@@ -51,4 +76,9 @@ public class ConsumerAggregator<T>
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public I clearConsumers() {
+        list.clear();
+        return (I) this;
+    }
 }

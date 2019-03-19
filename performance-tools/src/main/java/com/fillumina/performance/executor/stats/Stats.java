@@ -246,7 +246,12 @@ public class Stats extends Printable<Stats>
         return multiMeasure.gamesHowellPValue(idx1, idx2);
     }
 
-    public double getTukeyHsdComparedToRef(CharSequence testName) {
+    /**
+     * Calculates a probability that given mean is significantly
+     * different from the one of the slower test
+     * (actually using Games-Howell algorithm).
+     */
+    public double getSignificanceComparedToRef(CharSequence testName) {
         int idx1 = map.getIndexOfKey(PN.pname(testName));
         if (idx1 == -1) {
             return -1.0;

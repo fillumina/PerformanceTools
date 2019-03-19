@@ -35,10 +35,10 @@ public class SpeedConfiguration<C>
         extends CallBackBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
-    private final  ConsumerAggregator<Sample> sampleConsumer =
+    private final ConsumerAggregator<?, Sample> sampleConsumer =
             new ConsumerAggregator<>();
 
-    private final ConsumerAggregator<Stats> statsConsumer =
+    private final ConsumerAggregator<?, Stats> statsConsumer =
             new ConsumerAggregator<>();
 
     private int concurrencyLevel = 1;
@@ -81,14 +81,14 @@ public class SpeedConfiguration<C>
 
     protected SpeedConfiguration<C> setPerformanceSampleConsumer(
             Consumer<Sample> sampleConsumer) {
-        this.sampleConsumer.add(sampleConsumer);
+        this.sampleConsumer.addConsumer(sampleConsumer);
         return this;
     }
 
     /** Sets a statistics consumer. */
     public SpeedConfiguration<C> setPerformanceStatsConsumer(
             Consumer<Stats> statsPerformanceConsumer) {
-        this.statsConsumer.add(statsPerformanceConsumer);
+        this.statsConsumer.addConsumer(statsPerformanceConsumer);
         return this;
     }
 

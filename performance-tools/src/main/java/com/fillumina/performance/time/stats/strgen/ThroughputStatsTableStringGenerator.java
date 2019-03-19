@@ -4,8 +4,8 @@ import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Viewer;
 import com.fillumina.performance.util.formatter.TableFormatter;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Locale;
@@ -53,7 +53,7 @@ public final class ThroughputStatsTableStringGenerator
                 .cell("stdev")
                 .cell("uncertainty")
                 .cell("smpl")
-                .cell("TukeyHSD")
+                .cell("significance")
                 .endl();
     }
 
@@ -68,9 +68,9 @@ public final class ThroughputStatsTableStringGenerator
             Unit<?> unit,
             Ratio confidence) {
 
-        double tukeyHsd = stats.getTukeyHsdComparedToRef(name);
-        String tukeyHsdStr = tukeyHsd < 0 ? "" :
-                String.format(Locale.US,"%.3f", tukeyHsd);
+        double significance = stats.getSignificanceComparedToRef(name);
+        String significanceStr = significance < 0 ? "" :
+                String.format(Locale.US,"%.3f", significance);
 
         boolean displayRatio = ReferenceTestFilter.FILTER.test(name.toString());
 
@@ -85,7 +85,7 @@ public final class ThroughputStatsTableStringGenerator
                 .cell(String.format(Locale.US,"%.3f %s", stdev, unit))
                 .cell(measure.getFractionalUncertainty(confidence))
                 .cell(measure.getCount())
-                .cell(tukeyHsdStr)
+                .cell(significanceStr)
                 .endl();
     }
 }

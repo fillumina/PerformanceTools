@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractSampleProducer<I extends SampleProducer<I>>
+public abstract class AbstractSampleProducer<I extends AbstractSampleProducer<I>>
     extends AbstractTestExecutor<I, Sample, Runnable, Map<StatsType, Sample>>
     implements SampleProducer<I> {
 

@@ -13,7 +13,7 @@ public class ConsumerAggregatorTest {
 
     @Test
     public void shouldConsumeIfChainEmpty() {
-        ConsumerAggregator<Object> chain =
+        ConsumerAggregator<?,Object> chain =
                 new ConsumerAggregator<>();
 
         chain.accept(new Object());
@@ -22,7 +22,7 @@ public class ConsumerAggregatorTest {
     @Test
     public void shouldConsumeWithOneConsumer() {
         List<String> list = new ArrayList<>();
-        ConsumerAggregator<String> chain =
+        ConsumerAggregator<?,String> chain =
                 new ConsumerAggregator<>(list::add);
 
         chain.accept("hello");
@@ -35,7 +35,7 @@ public class ConsumerAggregatorTest {
         List<String> one = new ArrayList<>();
         List<String> two = new ArrayList<>();
 
-        ConsumerAggregator<String> chain =
+        ConsumerAggregator<?,String> chain =
                 new ConsumerAggregator<>(one::add, two::add);
 
         chain.accept("hello");
