@@ -74,7 +74,7 @@ public class MultiThreadPerformanceExecutorBuilder
     @Override
     public DefaultPerformanceTimer build() {
         final PerformanceExecutor testExecutor =
-                new SelectorMultiThreadPerformanceExecutor(
+                new AutoPerformanceExecutor(
                         threads, workers, timeout);
         return new DefaultPerformanceTimer(testExecutor);
     }

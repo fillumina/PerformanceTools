@@ -18,11 +18,12 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This {@link PerformanceExecutor} uses many threads and
- * workers to run a code in a multi-threaded environment.
+ * workers to run a test in a multi-threaded environment.
  * <p>
- * A <b>thread</b> is a code that race with all the other threads as the system
- * for an available CPU to be executed on.<br>
- * A <b>worker</b> is a code that race for an available thread.<br>
+ * A <b>thread</b> is a code that race with all the other threads on the system
+ * for an available CPU to be executed on. Threads are executed concurrently.<br>
+ * A <b>worker</b> is a code that race for an available thread. Workers are
+ * executed once all the previous ones in the queue has been terminated.<br>
  * All threads are executed concurrently (they might be interleaved by the
  * system scheduler if no physical CPU is available) but the workers have to wait
  * until the preceding workers have finished to start being processed.
@@ -36,7 +37,7 @@ import java.util.concurrent.TimeUnit;
  * is particularly tricky because it involves the OS scheduler and might be
  * influenced by synchronization and memory contention problems. Because of that
  * they are generally less precise than single-threaded ones;
- * <li>The tests run with this executor must be thread safe.
+ * <li>The tests run with this executor <b>must be thread safe</b>.
  * </ul>
  *
  * @author Francesco Illuminati

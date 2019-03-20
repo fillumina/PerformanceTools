@@ -10,15 +10,27 @@ import java.util.List;
  */
 public class ParallelTest implements Runnable {
 
+    public static interface ConcurrentRunnable {
+
+        /**
+         * Run the current thread.
+         *
+         * @param index of the worker within the same group.
+         */
+        public void run(int index);
+    }
+
     static class Group {
         private final String name;
         private final int workers;
-        private final Runnable runnable;
+        private final ConcurrentRunnable concurrentRunnable;
 
-        public Group(String name, int workers, Runnable runnable) {
+        public Group(String name,
+                int workers,
+                ConcurrentRunnable concurrentRunnable) {
             this.name = name;
             this.workers = workers;
-            this.runnable = runnable;
+            this.concurrentRunnable = concurrentRunnable;
         }
 
         public String getName() {
@@ -29,8 +41,8 @@ public class ParallelTest implements Runnable {
             return workers;
         }
 
-        public Runnable getRunnable() {
-            return runnable;
+        public ConcurrentRunnable getConcurrentRunnable() {
+            return concurrentRunnable;
         }
 
         @Override
@@ -54,7 +66,7 @@ public class ParallelTest implements Runnable {
      * @param count number of workers to add
      * @param test  run
      */
-    public ParallelTest addTask(String name, int count, Runnable test) {
+    public ParallelTest addTask(String name, int count, ConcurrentRunnable test) {
         runnableGroup.add(new Group(name, count, test));
         return this;
     }

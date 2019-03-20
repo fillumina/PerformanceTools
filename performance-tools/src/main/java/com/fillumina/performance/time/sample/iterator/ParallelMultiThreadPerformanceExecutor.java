@@ -3,6 +3,7 @@ package com.fillumina.performance.time.sample.iterator;
 import com.fillumina.performance.executor.annotation.AnnotatedRunnableSetter;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
 import com.fillumina.performance.time.sample.TimeSampleCollector;
+import com.fillumina.performance.time.sample.iterator.ParallelTest.ConcurrentRunnable;
 import com.fillumina.performance.time.sample.iterator.ParallelTest.Group;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.ValueAssertion;
@@ -49,6 +50,14 @@ public class ParallelMultiThreadPerformanceExecutor
     }
 
     /**
+     *
+     * @param concurrencyLevel The number of thread created:
+     *           <ul>
+     *           <li>if -1 then unbounded threads will be used
+     *           <li>if 0 then there will be as many threads as needed workers
+     *           <li>otherwise the given number of threads will be used
+     *           </ul>
+     * @param timeout the maximum allowed time for the test to be completed
      * @see MultiThreadPerformanceExecutorBuilder
      */
     public ParallelMultiThreadPerformanceExecutor(final int concurrencyLevel,
@@ -69,9 +78,10 @@ public class ParallelMultiThreadPerformanceExecutor
             final int[] iterationArray) {
 
         assertAllTestsAreAsymmetric(tests);
+        assertIterations(iterationArray, tests);
 
         int totalWorkersNeeded = calculateTotalWorkersNeeded(tests);
-        if (concurrencyLevel >= 0 && totalWorkersNeeded > concurrencyLevel) {
+        if (concurrencyLevel == 0 && totalWorkersNeeded > concurrencyLevel) {
             concurrencyLevel = totalWorkersNeeded;
         }
 
@@ -92,7 +102,7 @@ public class ParallelMultiThreadPerformanceExecutor
             runnableSetter.setUp(runnable);
             runnableSetter.onBeforeSample(runnable, totalWorkersNeeded);
 
-            parallelExecution(workerList);
+            parallelExecution(iterations, workerList);
 
             runnableSetter.onAfterSample(runnable, totalWorkersNeeded);
             runnableSetter.tearDown(runnable);
@@ -116,28 +126,29 @@ public class ParallelMultiThreadPerformanceExecutor
         for (Group group : runnable.getGroups()) {
             final int workers = group.getWorkers();
             final PathName groupName = testName.append(group.getName());
-            final Runnable test = group.getRunnable();
+            final ConcurrentRunnable test = group.getConcurrentRunnable();
 
             for (int i=0; i<workers; i++) {
                 final PathName pname = groupName.append(String.valueOf(i));
                 final IteratingRunnable iteratingRunnable =
-                        new IteratingRunnable(pname, iterations, test);
+                        new IteratingRunnable(pname, i, iterations, test);
                 workerList.add(iteratingRunnable);
             }
         }
         return workerList;
     }
 
-    private long parallelExecution(final List<IteratingRunnable> tasks) {
+    private long parallelExecution(final int iterations,
+            final List<IteratingRunnable> tasks) {
         final long timeoutMillis = (long)timeout.as(IntervalUnit.MILLISECONDS);
         final ExecutorService executor = createExecutor();
 
-        final long time = System.nanoTime();
-
+        CountDownLatch setupCountDownLatch = new CountDownLatch(tasks.size());
         CountDownLatch startCountDownLatch = new CountDownLatch(1);
         CountDownLatch endCountDownLatch = new CountDownLatch(tasks.size());
+
         tasks.forEach(ir -> ir.setCountDownLatch(
-                startCountDownLatch, endCountDownLatch));
+                setupCountDownLatch, startCountDownLatch, endCountDownLatch));
 
         for (IteratingRunnable task: tasks) {
             executor.execute(task);
@@ -145,12 +156,16 @@ public class ParallelMultiThreadPerformanceExecutor
 
         final long elapsed;
         try {
-            Thread.sleep(200); // give it some time to initialize all runnables
+            setupCountDownLatch.await();
             startCountDownLatch.countDown();
-            endCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+            final long time = System.nanoTime();
+            if (iterations > 0) {
+                endCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+            } else {
+                executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS);
+            }
             elapsed = System.nanoTime() - time;
-            executor.shutdown();
-            executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS);
+            executor.shutdownNow();
         } catch (InterruptedException e) {
             throw createTaskTookTooLongException(e);
         }
@@ -158,7 +173,67 @@ public class ParallelMultiThreadPerformanceExecutor
         return elapsed;
     }
 
-    private ExecutorService createExecutor() {
+    protected class IteratingRunnable implements Runnable {
+        private final PathName name;
+        private final int index;
+        private final ConcurrentRunnable runnable;
+        private int iterations;
+        private long elapsed;
+        private CountDownLatch setupCountDownLatch;
+        private CountDownLatch startCountDownLatch;
+        private CountDownLatch endCountDownLatch;
+
+        public IteratingRunnable(final PathName name,
+                final int index,
+                final int iterations,
+                final ConcurrentRunnable runnable) {
+            this.name = name;
+            this.index = index;
+            this.iterations = iterations;
+            this.runnable = runnable;
+        }
+
+        void setCountDownLatch(CountDownLatch setupCountDownLatch,
+                CountDownLatch startCountDownLatch,
+                CountDownLatch endCountDownLatch) {
+            this.setupCountDownLatch = setupCountDownLatch;
+            this.startCountDownLatch = startCountDownLatch;
+            this.endCountDownLatch = endCountDownLatch;
+        }
+
+        @Override
+        public void run() {
+            int it = 0;
+            final int idx = index;
+            ConcurrentRunnable r = runnable;
+            setupCountDownLatch.countDown();
+            try {
+                startCountDownLatch.await();
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+            final long time = System.nanoTime();
+            if (iterations > 0) {
+                it = iterations;
+                for (; it != 0; it--) {
+                    r.run(idx);
+                }
+                endCountDownLatch.countDown();
+            } else {
+                while (true) {
+                    r.run(idx);
+                    it++;
+                    if (Thread.currentThread().isInterrupted()) {
+                        iterations = it;
+                        break;
+                    }
+                }
+            }
+            elapsed = System.nanoTime() - time;
+        }
+    }
+
+    protected ExecutorService createExecutor() {
         if (concurrencyLevel < 1) {
             return Executors.newCachedThreadPool();
         }
@@ -171,7 +246,24 @@ public class ParallelMultiThreadPerformanceExecutor
                 "to complete: " + timeout, e);
     }
 
-    private void assertAllTestsAreAsymmetric(IndexedHashMap<PathName, Runnable> tests) {
+    protected void assertIterations(int[] iterations,
+            IndexedHashMap<PathName, Runnable> tests) {
+        final int length = iterations.length;
+        if (length == 0 || length > tests.size()) {
+            throw new IllegalArgumentException(
+                    "invalid iterations array size of " + length);
+        }
+        for (int i=0; i < iterations.length; i++) {
+            if (iterations[i] < 0) {
+                throw new IllegalArgumentException(
+                        "invalid iterations index[" + i + "] = " +
+                                iterations[i]);
+            }
+        }
+    }
+
+    private void assertAllTestsAreAsymmetric(
+            IndexedHashMap<PathName, Runnable> tests) {
         tests.forEach((PathName name, Runnable runnable) -> {
             if (!(runnable instanceof ParallelTest)) {
                 throw new IllegalArgumentException("test '" + name +
@@ -181,7 +273,8 @@ public class ParallelMultiThreadPerformanceExecutor
         });
     }
 
-    private int calculateTotalWorkersNeeded(IndexedHashMap<PathName, Runnable> tests) {
+    private int calculateTotalWorkersNeeded(
+            IndexedHashMap<PathName, Runnable> tests) {
         Holder.Integer workers = new Holder.Integer(0);
         tests.values().forEach(runnable -> {
             ParallelTest asymmetric = (ParallelTest) runnable;
@@ -190,44 +283,5 @@ public class ParallelMultiThreadPerformanceExecutor
             }
         });
         return workers.getValue();
-    }
-
-    private class IteratingRunnable implements Runnable {
-        private final PathName name;
-        private final Runnable runnable;
-        private int iterations;
-        private long elapsed;
-        private CountDownLatch startCountDownLatch, endCountDownLatch;
-
-        public IteratingRunnable(final PathName name,
-                final int iterations,
-                final Runnable runnable) {
-            this.name = name;
-            this.iterations = iterations;
-            this.runnable = runnable;
-        }
-
-        void setCountDownLatch(CountDownLatch startCountDownLatch,
-                CountDownLatch endCountDownLatch) {
-            this.startCountDownLatch = startCountDownLatch;
-            this.endCountDownLatch = endCountDownLatch;
-        }
-
-        @Override
-        public void run() {
-            final int it = iterations;
-            Runnable r = runnable;
-            try {
-                startCountDownLatch.await();
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-            long time = System.nanoTime();
-            for (int i=0; i<it; i++) {
-                r.run();
-            }
-            elapsed = System.nanoTime() - time;
-            endCountDownLatch.countDown();
-        }
     }
 }

@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
 import com.fillumina.performance.time.sample.iterator.MultiThreadPerformanceExecutorBuilder;
-import com.fillumina.performance.time.sample.iterator.SelectorMultiThreadPerformanceExecutor;
+import com.fillumina.performance.time.sample.iterator.AutoPerformanceExecutor;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 
 /**
@@ -26,14 +26,14 @@ import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExe
 public class PerformanceTimerFactory {
 
     public interface Configuration
-            extends SelectorMultiThreadPerformanceExecutor.Configuration {
+            extends AutoPerformanceExecutor.Configuration {
         long getSampleTimeMs();
     }
 
     public static DefaultPerformanceTimer createPerformanceTimer(
             Configuration conf) {
         return new DefaultPerformanceTimer(
-                new SelectorMultiThreadPerformanceExecutor(conf))
+                new AutoPerformanceExecutor(conf))
                 .setSampleTimeMs(conf.getSampleTimeMs());
     }
 

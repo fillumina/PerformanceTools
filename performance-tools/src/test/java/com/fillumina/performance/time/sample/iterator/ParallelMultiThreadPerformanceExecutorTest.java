@@ -1,16 +1,21 @@
 package com.fillumina.performance.time.sample.iterator;
 
 import com.fillumina.performance.executor.PN;
-import com.fillumina.performance.executor.test.RunnableSinker;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.time.sample.DefaultPerformanceTimer;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.sample.TimeSampleBuilder;
+import com.fillumina.performance.time.sample.iterator.ParallelTest.ConcurrentRunnable;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.OnlineMeasure;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -18,15 +23,15 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class ParallelMultiThreadPerformanceExecutorTest {
-    private static final Quantity<IntervalUnit> DAYS_1 =
-            IntervalUnit.DAYS.quantity(1);
+    private static final Quantity<IntervalUnit> TIMEOUT =
+            IntervalUnit.SECONDS.quantity(5);
 
-    private static final Runnable NULL_RUNNABLE = () -> {};
+    private static final ConcurrentRunnable NULL_RUNNABLE = (int i) -> {};
 
     @Test(expected = IllegalArgumentException.class)
     public void shoulNotAcceptRunnableThatAreNotAsymmetricTestable() {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
+                new ParallelMultiThreadPerformanceExecutor(-1, TIMEOUT);
 
         IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
@@ -46,8 +51,9 @@ public class ParallelMultiThreadPerformanceExecutorTest {
     /** The concurrency is adapted automatically to the required level. */
     @Test
     public void shoulAcceptGroupsWithMoreThanConcurrencyLevelElements() {
+        // concurrencyLevel = 0 means to create as many threads as workers
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(2, DAYS_1);
+                new ParallelMultiThreadPerformanceExecutor(0, TIMEOUT);
 
         IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
 
@@ -61,74 +67,87 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         assertEquals(5, executor.getConcurrencyLevel());
     }
 
-    private static class ThreadLocalCounter {
-        private int[] array = new int[128];
+    private static class Counter {
+        private final int[] array;
 
-        public void increment() {
-            final int thread = Thread.currentThread().hashCode();
-            // an unfortunate clash could obviously happen
-            array[thread % 128]++;
+        public Counter(int size) {
+            array = new int[size];
+        }
+
+        public void incrementIndex(int index) {
+            array[index]++;
+        }
+
+        public int getIndex(int index) {
+            return array[index];
         }
 
         public int size() {
-            int counter = 0;
-            for (int v : array) {
-                if (v != 0) {
-                    counter++;
-                }
-            }
-            return counter;
+            return array.length;
         }
 
-        public int getTotal() {
-            int counter = 0;
-            for (int v : array) {
-                counter += v;
+        public OnlineMeasure getStats() {
+            double[] darray = new double[array.length];
+            for (int i=0; i<array.length; i++) {
+                darray[i] = array[i];
             }
-            return counter;
+            return new OnlineMeasure(darray);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(array);
         }
     }
 
     @Test
-    public void shouldAccountForTheIterationsOfEachAsymmetricWorker() {
+    public void shouldIterateForGivenIterations() {
+        shouldAccountForTheIterationsOfEachAsymmetricWorker(new int[] {5_000});
+    }
+
+    @Test
+    public void shouldRunForGivenTime() {
+        shouldAccountForTheIterationsOfEachAsymmetricWorker(new int[] {0});
+    }
+
+    public void shouldAccountForTheIterationsOfEachAsymmetricWorker(
+            int[] iterations) {
         ParallelMultiThreadPerformanceExecutor executor =
-                new ParallelMultiThreadPerformanceExecutor(1, DAYS_1);
+                new ParallelMultiThreadPerformanceExecutor(-1, TIMEOUT);
 
         IndexedHashMap<PathName,Runnable> testMap = new IndexedHashMap<>();
-
-        ThreadLocalCounter aCounter = new ThreadLocalCounter();
-        ThreadLocalCounter bCounter = new ThreadLocalCounter();
 
         int aWorkers = 1;
         int bWorkers = 3;
 
+        Counter counter = new Counter(aWorkers + bWorkers);
+
         testMap.put(PN.pname("asymmetric"),
                 new ParallelTest()
-                    .addTask("a", aWorkers, () -> aCounter.increment() )
-                    .addTask("b", bWorkers, () -> bCounter.increment() ) );
-
-        int[] iterations = new int[] {5_000};
+                    .addTask("a", aWorkers, i -> counter.incrementIndex(bWorkers) )
+                    .addTask("b", bWorkers, i -> counter.incrementIndex(i) ) );
 
         TimeSampleBuilder builder =
                 executor.executeIterations(testMap, iterations);
 
-        //System.out.println(builder.buildAverageTimeSample().toString());
+        //final Sample sample = builder.buildAverageTimeSample();
+        //System.out.println(sample.toString());
+        //System.out.println("counters= " + counter.toString());
+        //System.out.println("Measure: " + counter.getStats());
 
-        double aNormalizedResult = aCounter.getTotal() / aWorkers;
-        double bNormalizedResult = bCounter.getTotal() / bWorkers;
+        Ratio uncertainty = counter.getStats().getFractionalUncertainty(Ratio.P_99);
 
-        // it's huge, I understand
-        double error = bNormalizedResult * 0.25;
+        //System.out.println("uncertainty= " + uncertainty.toString());
 
-        assertEquals("hashcode clash: don't worry, repeat test",
-                aWorkers, aCounter.size());
-        assertEquals("hashcode clash: don't worry, repeat test",
-                bWorkers, bCounter.size());
+        // that's a lot I know...
+        Ratio maxAcceptableError = Ratio.percentage(60);
 
-        assertEquals("count_1=" + aNormalizedResult +
-                    ", count_2=" + bNormalizedResult +
-                    ", error=" + error,
-                aNormalizedResult, bNormalizedResult, error);
+        assertTrue("\nmeasure = " + counter.getStats() +
+                "\ncounters = " + counter.toString() +
+                "\nerror = " + uncertainty.toString() +
+                "\nmax allowed = " + maxAcceptableError +
+                "\n",
+                uncertainty.isLessThan(maxAcceptableError));
     }
 
     public static void main(final String[] args) {
@@ -140,17 +159,11 @@ public class ParallelMultiThreadPerformanceExecutorTest {
         pt.addTest("async", new ParallelTest() {
             private final AtomicInteger counter = new AtomicInteger();
             {
-                addTask("inc", 3, new RunnableSinker() {
-                    @Override
-                    public void run() {
-                        drain(counter.getAndIncrement());
-                    }
+                addTask("inc", 3, i -> {
+                    Sink.drain(counter.getAndIncrement());
                 });
-                addTask("get", 1, new RunnableSinker() {
-                    @Override
-                    public void run() {
-                        drain(counter.get());
-                    }
+                addTask("get", 1, i -> {
+                    Sink.drain(counter.get());
                 });
             }
         });

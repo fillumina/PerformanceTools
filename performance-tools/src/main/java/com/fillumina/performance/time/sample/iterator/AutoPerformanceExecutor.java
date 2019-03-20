@@ -16,7 +16,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class SelectorMultiThreadPerformanceExecutor
+public class AutoPerformanceExecutor
         implements PerformanceExecutor, Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -30,13 +30,13 @@ public class SelectorMultiThreadPerformanceExecutor
         Quantity<IntervalUnit> getSampleTimeout();
     }
 
-    public SelectorMultiThreadPerformanceExecutor(Configuration config) {
+    public AutoPerformanceExecutor(Configuration config) {
         this(config.getConcurrencyLevel(),
                 config.getWorkerNumber(),
                 config.getSampleTimeout());
     }
 
-    public SelectorMultiThreadPerformanceExecutor(
+    public AutoPerformanceExecutor(
             final int concurrencyLevel,
             final int workerNumber,
             final Quantity<IntervalUnit> timeout) {
