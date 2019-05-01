@@ -24,7 +24,7 @@ import java.util.List;
 public class MixedConfigurationBuilder<C>
         extends CallBackBuilder<C, MixedConfigurationBuilder<C>.Configuration> {
 
-    private final TestConfiguration<MixedConfigurationBuilder<C>> testConfigurator;
+    private TestConfiguration<?> testConfigurator;
 
     private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
     private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
@@ -47,7 +47,6 @@ public class MixedConfigurationBuilder<C>
 
     public MixedConfigurationBuilder(Setter<C, Configuration> setter) {
         super(setter);
-        testConfigurator = new TestConfiguration<>(this);
 
         speedConfigurator = new SpeedConfiguration<>(this);
 
@@ -100,8 +99,16 @@ public class MixedConfigurationBuilder<C>
      * Remember to <b>always end the builder with the
      * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
      */
+    @SuppressWarnings("unchecked")
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
-        return testConfigurator;
+        testConfigurator = new TestConfiguration<>(this);
+        return (TestConfiguration<MixedConfigurationBuilder<C>>) testConfigurator;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <K> TestConfiguration<K> tests(K callback) {
+        testConfigurator = new TestConfiguration<>(callback);
+        return (TestConfiguration<K>) testConfigurator;
     }
 
     /**

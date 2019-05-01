@@ -5,14 +5,17 @@ import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.ProducerConfigurationImpl;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.stats.Stats;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleProducerMockBuilder;
 import com.fillumina.performance.template.PerformanceBuilder.MixedHolder;
+import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Quantity;
 import java.util.Collections;
 import java.util.List;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -117,6 +120,23 @@ public class PerformanceBuilderTest {
 
         assertTrue(stats.getNames().contains(PN.pname("first")));
         assertTrue(stats.getNames().contains(PN.pname("second")));
+    }
+
+    @Test
+    public void shouldExecuteShortSpeedTest() {
+        Holder.Boolean holder = new Holder.Boolean(false);
+
+        PerformanceBuilder
+                .speedTest()
+                    .addTest(() -> {
+                        boolean b = true;
+                        holder.setValue(b);
+                        Sink.drain(b);
+                    })
+                .end()
+                .executeWithoutOutput();
+
+        assertEquals(true, holder.getValue());
     }
 
 }

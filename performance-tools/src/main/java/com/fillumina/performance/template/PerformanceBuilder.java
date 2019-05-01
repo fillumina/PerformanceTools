@@ -28,19 +28,26 @@ public class PerformanceBuilder {
                 config -> new PerformanceBuilder(config) );
     }
 
-    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
-            speedTest() {
-        return config().speedConfig().end().tests();
+    /** Performs a fully automated speed only test. */
+    public static TestConfiguration<PerformanceBuilder> speedTest() {
+        return testWith(config().speedConfig().end());
     }
 
-    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
-            usedMemTest() {
-        return config().usedMemConfig().end().tests();
+    /** Performs a fully automated used memory only test. */
+    public static TestConfiguration<PerformanceBuilder> usedMemTest() {
+        return testWith(config().usedMemConfig().end());
     }
 
-    public static TestConfiguration<MixedConfigurationBuilder<PerformanceBuilder>>
-            allocatedMemTest() {
-        return config().allocatedMemConfig().end().tests();
+    /** Performs a fully automated allocated memory only test. */
+    public static TestConfiguration<PerformanceBuilder> allocatedMemTest() {
+        return testWith(config().allocatedMemConfig().end());
+    }
+
+    private static TestConfiguration<PerformanceBuilder> testWith(
+            MixedConfigurationBuilder<PerformanceBuilder> mcb) {
+        Configuration conf = mcb.build();
+        PerformanceBuilder pb = new PerformanceBuilder(conf);
+        return mcb.tests(pb);
     }
 
     public static class MixedHolder {
