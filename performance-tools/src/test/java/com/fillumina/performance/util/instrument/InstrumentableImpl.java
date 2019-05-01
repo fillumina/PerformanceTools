@@ -16,11 +16,4 @@ public class InstrumentableImpl implements Instrumentable<InstrumentableImpl> {
         this.param = param;
         return this;
     }
-
-    @Override
-    public <T extends Instrumenter<InstrumentableImpl>> T instrumentedBy(
-            T instrumenter) {
-        instrumenter.instrument(this);
-        return instrumenter;
-    }
 }
