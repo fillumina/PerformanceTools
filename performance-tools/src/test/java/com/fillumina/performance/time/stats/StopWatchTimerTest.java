@@ -4,10 +4,10 @@ import com.fillumina.performance.Telemetry;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.time.TimeStatsType;
-import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.AccurateSleeper;
-import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.Looper;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Map;
 import static org.junit.Assert.assertNull;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class StopWatchTimerTest {
-    private static final int ITERATIONS = 100;
+    private static final int ITERATIONS = 500;
     private static final String START = "start";
     private static final String ONE = "one";
     private static final String TWO = "two";
@@ -38,8 +38,6 @@ public class StopWatchTimerTest {
 
     void process() {
         timer.start();
-
-        //timer.section(START);
 
         stepOne();
         timer.section(ONE);

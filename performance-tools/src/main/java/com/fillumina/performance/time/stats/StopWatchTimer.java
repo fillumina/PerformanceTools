@@ -38,7 +38,7 @@ public class StopWatchTimer {
     }
 
     public StopWatchTimer(int size) {
-        map = new IndexedHashMap<>(size);
+        map = new IndexedHashMap<>(size * 2);
         cache = new ReciprocalOnlineMeasureSampler[size];
         for (int i=0; i<size; i++) {
             cache[i] = new ReciprocalOnlineMeasureSampler();
@@ -91,7 +91,12 @@ public class StopWatchTimer {
         final long segmentNs = System.nanoTime() - last;
         ReciprocalOnlineMeasureSampler sampler = map.get(name);
         if (sampler == null) {
-            sampler = cache[map.size()];
+            final int size = map.size();
+            if (size < cache.length) {
+                sampler = cache[size];
+            } else {
+                sampler = new ReciprocalOnlineMeasureSampler();
+            }
             map.put(name, sampler);
         }
         sampler.addSample(1.0 * segmentNs / iterations);
