@@ -1,7 +1,7 @@
 package com.fillumina.performance.time.sample;
 
-import com.fillumina.performance.time.sample.iterator.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.time.sample.iterator.AutoPerformanceExecutor;
+import com.fillumina.performance.time.sample.iterator.MultiThreadPerformanceExecutorBuilder;
 import com.fillumina.performance.time.sample.iterator.SingleThreadPerformanceExecutor;
 
 /**
@@ -30,6 +30,9 @@ public class PerformanceTimerFactory {
         long getSampleTimeMs();
     }
 
+    /**
+     * Creates a fully configurable instance.
+     */
     public static DefaultPerformanceTimer createPerformanceTimer(
             Configuration conf) {
         return new DefaultPerformanceTimer(
@@ -63,7 +66,7 @@ public class PerformanceTimerFactory {
     }
 
     /**
-     * Creates a multi thread {@link PerformanceTimer} builder.
+     * Creates a multi threaded {@link PerformanceTimer} builder.
      * Each test will be executed in a multi threaded
      * environment (so take extra care about thread safety, especially with
      * the test's fields).

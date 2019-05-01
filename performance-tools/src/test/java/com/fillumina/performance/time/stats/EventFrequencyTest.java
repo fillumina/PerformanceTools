@@ -22,6 +22,7 @@ public class EventFrequencyTest {
                         // WOW, that's unusual.
                         ef.fire("wow");
                     }
+                    ef.fire("total");
                 });
         ef.getPerformances().print();
 
