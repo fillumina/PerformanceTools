@@ -1,11 +1,11 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.pathname.PathName;
+import com.fillumina.performance.util.stats.Measure;
 import java.util.Map;
 
 /**
- * Allows to create expressions that involves actual tests results and
+ * Allows to create expressions that involve actual test results and
  * returns calculated statistically accurate {@link Measure}s.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

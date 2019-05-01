@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 /**
- * An {@link Appendable} that doesn't anything.
+ * An {@link Appendable} that doesn't do anything.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

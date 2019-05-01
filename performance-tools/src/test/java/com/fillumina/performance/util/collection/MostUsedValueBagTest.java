@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.collection;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;

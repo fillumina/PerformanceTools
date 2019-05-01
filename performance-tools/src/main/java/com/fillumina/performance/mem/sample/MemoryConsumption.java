@@ -1,7 +1,7 @@
 package com.fillumina.performance.mem.sample;
 
 import com.fillumina.performance.mem.MemUtil;
-import com.fillumina.performance.util.MostUsedValueBag;
+import com.fillumina.performance.util.collection.MostUsedValueBag;
 
 /**
  * Estimates memory usage.

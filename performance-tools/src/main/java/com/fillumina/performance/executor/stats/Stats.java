@@ -44,7 +44,7 @@ public class Stats extends Printable<Stats>
     /** Different type of statistics shouldn't be matched. */
     private final StatsType type;
 
-    /** The results are presented in relation with the bigger value. */
+    /** Results are presented in relation to the bigger value. */
     private final BiggerMeasure refMeasure;
 
     private final IndexedHashMap<PathName, DimensionalMeasure> map;
@@ -233,7 +233,7 @@ public class Stats extends Printable<Stats>
     }
 
     /**
-     * Calculates a probability that the pair of means are significantly
+     * Calculates the probability that a pair of means are significantly
      * different from each other (actually using Games-Howell algorithm).
      *
      * @param testName1 name of the first test
@@ -247,7 +247,7 @@ public class Stats extends Printable<Stats>
     }
 
     /**
-     * Calculates a probability that given mean is significantly
+     * Calculates the probability that the given mean is significantly
      * different from the one of the slower test
      * (actually using Games-Howell algorithm).
      */

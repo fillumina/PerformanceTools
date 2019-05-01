@@ -1,4 +1,4 @@
-package com.fillumina.performance.util;
+package com.fillumina.performance.util.collection;
 
 import java.util.Collection;
 import java.util.Objects;

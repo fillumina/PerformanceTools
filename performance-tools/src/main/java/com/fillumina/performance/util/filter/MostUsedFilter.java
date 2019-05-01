@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.filter;
 
-import com.fillumina.performance.util.MostUsedValueBag;
+import com.fillumina.performance.util.collection.MostUsedValueBag;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.function.Function;
