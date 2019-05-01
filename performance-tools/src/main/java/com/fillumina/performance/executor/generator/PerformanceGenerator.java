@@ -16,7 +16,7 @@ import java.util.List;
  * Executes tests based on configurations and returns statistics.
  * It is important to notice that this class represents just one way to use
  * this API and it provides a complete workflow able to provide statistics out
- * of user specified executor and tests. The API is designed in a way so that
+ * of user specified executor and tests. The API is designed in a way that
  * it can be composed to create whichever workflow is needed.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

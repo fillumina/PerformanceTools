@@ -8,19 +8,16 @@ import java.io.Serializable;
 
 /**
  * Asserts if the performance ratio expressed as a percentage of the
- * given test and the  slower one is within the given tolerance.
- * It should be noted that
- * evaluating the performances with ratios between tests rather than with
- * absolute results allows for a much
- * stable, reproducible between different systems and meaningful measures
- * (i.e. expressing the improvement of a new version of an algorithm over
+ * given test over the slower one is within the given tolerance.
+ * Evaluating the performances with ratios between tests rather than using
+ * timings allows for a much more stable, reproducible and system independent
+ * figures (i.e. expressing the improvement of a new version of an algorithm over
  * a previous version with a ratio is much more useful that stating a
  * timing measurement).
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class PercentageAssertion
-        implements ExperimentAssertion, Serializable {
+class PercentageAssertion implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
@@ -65,7 +62,8 @@ class PercentageAssertion
     @Override
     public void appendTo(Appendable appendable, AssertableExperiment assertable) {
         Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
-        RatioAgainstBiggerMeasureCalculator ratios = new RatioAgainstBiggerMeasureCalculator(assertable);
+        RatioAgainstBiggerMeasureCalculator ratios =
+                new RatioAgainstBiggerMeasureCalculator(assertable);
         MeasureRatio actualRatio = ratios.getRatio(testName, confidence);
         if (actualRatio != null) {
             new AppendableWrapper(appendable)

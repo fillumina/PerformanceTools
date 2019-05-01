@@ -19,7 +19,7 @@ import java.util.function.Supplier;
  */
 public interface TestExecutor<I extends TestExecutor<I,N,T,R>, N, T, R>
         extends
-            Supplier<R>, // TODO is this really useful?
+            Supplier<R>,
             TestContainer<I,T>,
             ConsumerContainer<I,N>,
             PathNameSettable<I>,

@@ -7,7 +7,9 @@ import java.util.Map;
 /**
  * Container for tests.
  *
+ * @param I self used for fluid interface
  * @param T test type
+ *
  * @author Francesco Illuminati
  */
 public interface TestContainer<I extends TestContainer<I,T>,T> {

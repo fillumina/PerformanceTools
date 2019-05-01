@@ -14,8 +14,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class ValueAssertion
-        implements ExperimentAssertion, Serializable {
+class ValueAssertion implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;

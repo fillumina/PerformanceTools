@@ -12,8 +12,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-class OrderAssertion
-        implements ExperimentAssertion, Serializable {
+class OrderAssertion implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
     private final RelativeOrder condition;
@@ -33,7 +32,8 @@ class OrderAssertion
     }
 
     @Override
-    public void accept(AssertableExperiment assertable) throws MeasureNotFoundException {
+    public void accept(AssertableExperiment assertable)
+            throws MeasureNotFoundException {
         if (assertable != null) {
             Measure firstMeasure = assertable.getMeasure(firstTestName);
             Measure secondMeasure = assertable.getMeasure(secondTestName);

@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Evaluates the percentage of time spent by different parts of a code.
+ * Evaluates the amount of time spent by different parts of a code.
  * It can be used in a multi-threaded environment (i.e. tracing a single
- * request on a web server).
+ * request on a web server). Remember that to have significant results
+ * the code must be executed several times.
  * <pre>
  * assert Telemetry.section("calculation");
  * </pre>
