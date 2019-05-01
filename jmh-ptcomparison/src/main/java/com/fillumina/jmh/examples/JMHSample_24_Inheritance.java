@@ -139,8 +139,9 @@ public class JMHSample_24_Inheritance {
 
     /**
      * There is no problem in using inheritance in tests at all.
-     * Unfortunately the unadapted executeWithoutOutput didn't work because it used the
- {@link AbstractBenchmark#x} field which was not volatile provoking
+     * Unfortunately the unadapted executeWithoutOutput didn't work because
+     * it uses the
+     * {@link AbstractBenchmark#x} field which was not volatile provoking
      * the folding of the code.
      */
     public static void main_pt(final String[] args) {

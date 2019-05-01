@@ -163,7 +163,6 @@ public class JMHSample_05_StateFixtures {
                         x++;
                     }
                 })
-                .end()
             .end()
             .executeWithFullOutput();
     }

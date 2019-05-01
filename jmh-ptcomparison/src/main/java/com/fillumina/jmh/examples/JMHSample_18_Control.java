@@ -114,18 +114,14 @@ public class JMHSample_18_Control {
         final AtomicBoolean flag = new AtomicBoolean();
 
         PerformanceBuilder
-            .config()
-                .speedConfig()
-                .end()
-                .tests()
-                    .addTest(new ParallelTest()
-                        .addTask("ping", 1, () -> {
-                            while(!flag.compareAndSet(false, true)) {}
-                        })
-                        .addTask("pong", 1, () -> {
-                            while(!flag.compareAndSet(true, false)) {}
-                        }))
-                .end()
+            .speedTest()
+                .addTest(new ParallelTest()
+                    .addTask("ping", 1, () -> {
+                        while(!flag.compareAndSet(false, true)) {}
+                    })
+                    .addTask("pong", 1, () -> {
+                        while(!flag.compareAndSet(true, false)) {}
+                    }))
             .end()
             .executeWithFullOutput();
     }

@@ -110,7 +110,7 @@ public class JMHSample_27_Params {
     /**
      * Parameters can be any objects and can be inserted in many different
      * ways. Other than parameters PT supports sequences which change
-     * tests groups.
+     * test's grouping.
      */
     public static void main_pt(final String[] args) {
         PerformanceBuilder

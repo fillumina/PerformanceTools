@@ -137,7 +137,7 @@ public class JMHSample_03_States {
      * determined programmatically using standard java behaviors:
      * there is no need for special notations or anything fancy.
      * The {@link Runnable} will be executed as is (it
-     * will be cloned).
+     * will be eventually cloned if needed).
      * NOTE: the ETA uses a linear algorithm that gets confused by the fact
      * that the margin converges in a non linear way.
      */

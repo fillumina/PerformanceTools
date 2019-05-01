@@ -123,7 +123,8 @@ public class JMHSample_10_ConstantFold {
     }
 
     /**
-     * {@link Drain} and the use of a {@code volatile} field can avoid
+     * {@link com.fillumina.performance.executor.test.Sink#drain(java.lang.Object) }
+     * and the use of a {@code volatile} field can avoid
      * constant fold optimization.<br>
      * This is the result of the test:
      * <pre>
@@ -135,8 +136,7 @@ public class JMHSample_10_ConstantFold {
         4    baseline-volatile  10.14 +/- 0.08 %   2.780 +/- 0.019 ns/op
         5    volatile           100.00 +/- 0.58 %  27.410 +/- 0.112 ns/op
      * </pre>
-     * This is what we can get from this (and by the way the usefulness
-     * of the tool for investigations like this one):
+     * This is what we can get from this:
      * <ul>
      * <li><b>final</b>
      * field tests have the same speed so the {@code Math.log()}
@@ -156,7 +156,7 @@ public class JMHSample_10_ConstantFold {
                     .speedConfig()
                     .end()
                 .tests()
-                    .addTest("baseline-final", new Runnable() {
+                    .addTest("final-baseline", new Runnable() {
                         private final double x = Math.PI;
 
                         @Override
@@ -172,7 +172,7 @@ public class JMHSample_10_ConstantFold {
                             drain(Math.log(x));
                         }
                     })
-                    .addTest("baseline-standard", new Runnable() {
+                    .addTest("standard-baseline", new Runnable() {
                         private double x = Math.PI;
 
                         @Override
@@ -188,7 +188,7 @@ public class JMHSample_10_ConstantFold {
                             drain(Math.log(x));
                         }
                     })
-                    .addTest("baseline-volatile", new Runnable() {
+                    .addTest("volatile-baseline", new Runnable() {
                         private volatile double x = Math.PI;
 
                         @Override

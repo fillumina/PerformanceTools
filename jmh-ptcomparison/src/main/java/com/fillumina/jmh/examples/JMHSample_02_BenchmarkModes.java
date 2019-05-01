@@ -205,7 +205,6 @@ public class JMHSample_02_BenchmarkModes {
                     } catch (InterruptedException ex) {
                     }
                 })
-                .end()
             .end()
         .executeWithFullOutput();
     }

@@ -212,7 +212,6 @@ public class JMHSample_12_Forking {
             .speedTest()
                 .addTest("c1", r1)
                 .addTest("c2", r2)
-                .end()
             .end()
             .executeWithFullOutput();
 
@@ -232,7 +231,6 @@ public class JMHSample_12_Forking {
         PerformanceBuilder
             .speedTest()
                 .addTest("c1", () -> { Sink.drain(test.measure(test.c1)); })
-                .end()
             .end()
             .executeWithFullOutput();
 
@@ -240,7 +238,6 @@ public class JMHSample_12_Forking {
         PerformanceBuilder
             .speedTest()
                 .addTest("c2", () -> { Sink.drain(test.measure(test.c2)); })
-                .end()
             .end()
             .executeWithFullOutput();
 

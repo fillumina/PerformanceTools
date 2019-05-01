@@ -108,15 +108,14 @@ public class JMHSample_01_HelloWorld {
     }
 
     /**
-     * Running and empty test means that it will be
-     * probably evicted by the JVM optimizations. This is correctly detected
+     * Running an empty test means that it will be
+     * probably evicted by JVM optimizations. This is correctly detected
      * and reported by throwing a {@link InvalidTestException}.
      */
     public static void main_pt(final String[] args) {
         PerformanceBuilder
             .speedTest()
                 .addTest("empty", () -> {})
-                .end()
             .end()
         .executeWithFullOutput();
     }

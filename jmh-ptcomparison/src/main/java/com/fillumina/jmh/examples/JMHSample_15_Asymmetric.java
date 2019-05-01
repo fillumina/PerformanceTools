@@ -148,8 +148,8 @@ public class JMHSample_15_Asymmetric {
                 .end()
                 .tests()
                     .addTest(new ParallelTest()
-                        .addTask("inc", 3, () -> { Sink.drain(test.inc()); })
-                        .addTask("get", 1, () -> { Sink.drain(test.get()); }))
+                        .addTask("inc", 3, i -> { Sink.drain(test.inc()); })
+                        .addTask("get", 1, i -> { Sink.drain(test.get()); }))
                 .end()
             .end()
             .executeWithFullOutput();

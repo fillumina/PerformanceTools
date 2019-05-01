@@ -166,6 +166,9 @@ public class JMHSample_11_Loops {
     /**
      *
      */
+    // TODO to improve, remove reference
+    // TODO expressions: in configuration needs a newline after
+    // TODO expression.toString() wrong if there isn't any multiplicator: loop : [current] *  / (size)
     public static void main_pt(final String[] args) {
 
         PerformanceBuilder

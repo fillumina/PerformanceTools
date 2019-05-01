@@ -115,6 +115,20 @@ public class JMHSample_06_FixtureLevel {
     /**
      * PerformanceTool uses annotations to specify life cycle event
      * methods in the {@link Runnable} tests.
+     * The annotations embedded into the test use only 2 levels:
+     * <ul>
+     * <li>Before and after each execution
+     * <li>Before and after each iterations
+     * </ul>
+     * The first because a single Runnable might be cloned if needed to be
+     * executed in parallel and to each clone should have its chance at
+     * configuring itself.
+     * The second to prepare for the sample (i.e. some clean ups or preparing
+     * structures useful for the test).
+     *
+     * Jmh has the invocation level that is not present here because it would
+     * impact test accuracy. To allow testing single operations use bulk
+     * tests {@link com.fillumina.performance.executor.test.BulkRunnable}.
      *
      * @param args
      */
