@@ -80,4 +80,10 @@ public class QuantityList
     public int size() {
         return values.size();
     }
+
+    /** Returns a list with a different unit. */
+    public QuantityList as(Unit<?> unit) {
+        this.unit.assertSameTypeWith(unit);
+        return new QuantityList(values, unit);
+    }
 }

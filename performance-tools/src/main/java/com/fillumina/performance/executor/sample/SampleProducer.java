@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  *
  * @param I self
- * 
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface SampleProducer<I extends SampleProducer<I>>
@@ -19,7 +19,7 @@ public interface SampleProducer<I extends SampleProducer<I>>
      * Execute a bunch of tests each with the specified ordered number
      * of iterations.
      *
-     * @param iterations the ordered vararg of iterations
+     * @param iterations the ordered array of iterations
      * @return
      */
     Map<StatsType,Sample> executeWithIterations(int... iterations);

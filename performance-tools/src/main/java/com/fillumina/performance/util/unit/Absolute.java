@@ -1,7 +1,7 @@
 package com.fillumina.performance.util.unit;
 
 /**
- * Use as a bridge between {@link Quantity} and absolute values.
+ * Used as a bridge between {@link Quantity} and absolute values.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

@@ -61,6 +61,27 @@ public class QuantityListTest {
         assertEquals(0.783, list.get(3), 0);
     }
 
+    @Test
+    public void shouldChangeTheUnit() {
+        QuantityList list = QuantityList.builder()
+                .add(100, IntervalUnit.MILLISECONDS)
+                .add(2_000, IntervalUnit.MILLISECONDS)
+                .add(130_123, IntervalUnit.MILLISECONDS)
+                .add(783, IntervalUnit.MILLISECONDS)
+                .build();
+
+        assertEquals(IntervalUnit.SECONDS, list.getUnit());
+
+        QuantityList millisList = list.as(IntervalUnit.MILLISECONDS);
+
+        assertEquals(IntervalUnit.MILLISECONDS, millisList.getUnit());
+
+        assertEquals(100, millisList.get(0), 0);
+        assertEquals(2_000, millisList.get(1), 0);
+        assertEquals(130_123, millisList.get(2), 0);
+        assertEquals(783, millisList.get(3), 0);
+    }
+
     @Test(expected = MismatchedUnitRuntimeException.class)
     public void shouldNotAcceptDifferentUnits() {
         QuantityList.builder()

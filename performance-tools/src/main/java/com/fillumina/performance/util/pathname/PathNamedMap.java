@@ -44,7 +44,7 @@ public class PathNamedMap<T extends PathNamed>
      * This is the key method: by this it is possible to search into the map by
      * using:<br>{@code
      * map.get("one : two")
-     * }<br>along with using a {@link PathName} such as with:<br>{@code
+     * }<br>along with using a {@link PathName} such as:<br>{@code
      * map.get(PathName.getRoot().append("one").append("two"))
      * }.
      */
