@@ -5,7 +5,7 @@ import com.fillumina.performance.mock.StatsMockBuilder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
+import com.fillumina.performance.util.unit.OnlineDimensionalMeasure;
 import com.fillumina.performance.util.unit.Magnitude;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Collections;
@@ -200,7 +200,7 @@ public class StatsExpressionTest {
         Map<PathName,DimensionalMeasure> map = new LinkedHashMap<>(measures);
         expression.solve(stats)
                 .forEach((CharSequence s, Measure m) ->
-                    map.put(PN.pname(s), new DimensionalOnlineMeasure(unit, m)) );
+                    map.put(PN.pname(s), new OnlineDimensionalMeasure(unit, m)) );
         return Collections.unmodifiableMap(map);
     }
 

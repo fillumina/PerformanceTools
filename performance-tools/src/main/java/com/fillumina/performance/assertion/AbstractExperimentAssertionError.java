@@ -10,14 +10,14 @@ import java.util.function.BiPredicate;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractAssertionError extends AssertionError {
+public abstract class AbstractExperimentAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
     private final RelativeOrder relativeOrder;
     private final Ratio tolerance;
     private RequiredTolerance requiredTolerance;
 
-    public AbstractAssertionError(
+    public AbstractExperimentAssertionError(
             RelativeOrder requiredOrder,
             Ratio tolerance) {
         super();

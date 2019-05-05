@@ -56,7 +56,7 @@ package com.fillumina.performance.util;
  * @param B type of the object to build
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {
+public abstract class FluentBuilder<C,B> implements Reentrant<C> {
 
     public interface Setter<C,B> {
         C setBuiltObjectAndReturn(B builtObject);
@@ -64,13 +64,15 @@ public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {
 
     private final Setter<C,B> setter;
 
+    protected abstract B build();
+
     @SuppressWarnings("unchecked")
-    public CallBackBuilder() {
+    public FluentBuilder() {
         this((Setter<C,B>)null);
     }
 
     @SuppressWarnings("unchecked")
-    public CallBackBuilder(C caller) {
+    public FluentBuilder(C caller) {
         if (caller == null) {
             this.setter = (builtObject) -> { return (C) builtObject; };
         } else {
@@ -79,7 +81,7 @@ public abstract class CallBackBuilder<C,B> implements Builder<B>, Reentrant<C> {
     }
 
     @SuppressWarnings("unchecked")
-    public CallBackBuilder(Setter<C, B> setter) {
+    public FluentBuilder(Setter<C, B> setter) {
         if (setter == null) {
             this.setter = (builtObject) -> { return (C) builtObject; };
         } else {

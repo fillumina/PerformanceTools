@@ -1,6 +1,6 @@
 package com.fillumina.performance.util.pathname;
 
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +19,7 @@ public class PathNameMatcher {
     private final List<Condition> conditions;
 
     /** *  Build a matcher that matches {@link PathName}s. */
-    public static class MatcherBuilder<C> extends CallBackBuilder<C,PathNameMatcher> {
+    public static class MatcherBuilder<C> extends FluentBuilder<C,PathNameMatcher> {
         private final List<Condition> conditions = new ArrayList<>();
 
         private MatcherBuilder() {
@@ -97,7 +97,7 @@ public class PathNameMatcher {
     }
 
     public static <C> MatcherBuilder<C> builder(
-            CallBackBuilder.Setter<C,PathNameMatcher> setter) {
+            FluentBuilder.Setter<C,PathNameMatcher> setter) {
         return new MatcherBuilder<>(setter);
     }
 

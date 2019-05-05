@@ -9,10 +9,10 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class CallBackBuilderTest {
+public class FluentBuilderTest {
 
     public static class CallBackBuilderImpl<T>
-            extends CallBackBuilder<T, String> {
+            extends FluentBuilder<T, String> {
 
         private String name;
 
@@ -33,7 +33,7 @@ public class CallBackBuilderTest {
         }
 
         @Override
-        public String build() {
+        protected String build() {
             return name;
         }
     }
@@ -59,7 +59,7 @@ public class CallBackBuilderTest {
     @Test
     public void shouldCreateACar() {
         Car car = Car.builder().name("Alfa Romeo").end();
-        
+
         assertEquals("Alfa Romeo", car.getName());
     }
 

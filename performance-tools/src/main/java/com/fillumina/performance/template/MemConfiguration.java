@@ -7,7 +7,7 @@ import com.fillumina.performance.executor.stats.producer.SampleProgressionStatus
 import com.fillumina.performance.executor.stats.producer.StatsProgressionStatusListener;
 import com.fillumina.performance.mem.stats.MemStatsTableStringGenerator;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.FilterListSizeSelector;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MemConfiguration<C>
-        extends CallBackBuilder<C, MixedProducerConfiguration>
+        extends FluentBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
     private static final Quantity<IntervalUnit> TIMEOUT =

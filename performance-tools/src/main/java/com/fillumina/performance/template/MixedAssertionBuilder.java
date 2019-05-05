@@ -6,7 +6,7 @@ import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.TNameMatcherAssertion;
 import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 
 /**
@@ -14,7 +14,7 @@ import com.fillumina.performance.util.stats.Ratio;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class MixedAssertionBuilder<C>
-        extends CallBackBuilder<C, MixedAssertionBuilder<C>> {
+        extends FluentBuilder<C, MixedAssertionBuilder<C>> {
 
     private final MixedAssertionableResult.Builder mixedStatsBuilder;
     private Ratio tolerance = Ratio.percentage(5);

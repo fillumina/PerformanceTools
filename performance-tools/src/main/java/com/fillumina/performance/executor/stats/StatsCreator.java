@@ -6,7 +6,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
-import com.fillumina.performance.util.unit.DimensionalOnlineMeasure;
+import com.fillumina.performance.util.unit.OnlineDimensionalMeasure;
 import com.fillumina.performance.util.unit.QuantityList;
 import java.util.List;
 
@@ -49,8 +49,8 @@ public class StatsCreator implements StatsTyped {
         valuesMap.forEach((PathName name, QuantityList.Builder builder) -> {
             final QuantityList qList = builder.build();
             List<Double> filtered = filter.filter(qList);
-            DimensionalOnlineMeasure measure =
-                    new DimensionalOnlineMeasure(qList.getUnit(), filtered);
+            OnlineDimensionalMeasure measure =
+                    new OnlineDimensionalMeasure(qList.getUnit(), filtered);
             map.put(name, measure);
         });
 

@@ -6,7 +6,7 @@ import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class AssertionableResult<C>
-        extends CallBackBuilder<C, AssertionableResult<C>> {
+        extends FluentBuilder<C, AssertionableResult<C>> {
 
     public static class Builder {
         private StatsHolder statsHolder;
@@ -59,7 +59,7 @@ public class AssertionableResult<C>
         }
 
         public <C> AssertionableResult<C> buildWithSetter(
-                CallBackBuilder.Setter<C, AssertionableResult<C>> setter) {
+                FluentBuilder.Setter<C, AssertionableResult<C>> setter) {
             return new AssertionableResult<>(
                     setter, statsHolder, assertions, viewer);
         }
@@ -76,7 +76,7 @@ public class AssertionableResult<C>
     private IndexedHashMap<PathName, Stats> flatMap;
 
     public AssertionableResult(
-            CallBackBuilder.Setter<C, AssertionableResult<C>> setter,
+            FluentBuilder.Setter<C, AssertionableResult<C>> setter,
             StatsHolder statsHolder,
             Collection<ExperimentAssertion> assertions,
             StringGenerator<AssertableExperiment> viewer) {
@@ -193,7 +193,7 @@ public class AssertionableResult<C>
     }
 
     @Override
-    public AssertionableResult<C> build() {
+    protected AssertionableResult<C> build() {
         return this;
     }
 

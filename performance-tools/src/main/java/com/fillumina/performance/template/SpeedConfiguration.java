@@ -10,7 +10,7 @@ import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.time.sample.PerformanceTimerFactory;
 import com.fillumina.performance.time.stats.strgen.TimeStatsStringGeneratorSelector;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.ConsumerAggregator;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati
  */
 public class SpeedConfiguration<C>
-        extends CallBackBuilder<C, MixedProducerConfiguration>
+        extends FluentBuilder<C, MixedProducerConfiguration>
         implements Activable {
 
     private final ConsumerAggregator<?, Sample> sampleConsumer =

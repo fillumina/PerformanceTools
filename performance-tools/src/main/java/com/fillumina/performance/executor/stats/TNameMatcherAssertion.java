@@ -7,13 +7,13 @@ import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
-import com.fillumina.performance.util.CallBackBuilder;
-import com.fillumina.performance.util.CallBackBuilder.Setter;
+import com.fillumina.performance.util.FluentBuilder;
+import com.fillumina.performance.util.FluentBuilder.Setter;
 import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.RelativeOrder;
-import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.pathname.PathNameMatcher;
+import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.Absolute;
 import com.fillumina.performance.util.unit.Quantity;
 import java.io.IOException;
@@ -155,7 +155,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
         }
     }
 
-    public static class Builder<C> extends CallBackBuilder<C, ExperimentAssertion> {
+    public static class Builder<C> extends FluentBuilder<C, ExperimentAssertion> {
         private final List<Evaluator> evaluators = new ArrayList<>();
         private Ratio tolerance = Ratio.percentage(10);
         private PathNameMatcher base = PathNameMatcher.EMPTY;

@@ -3,7 +3,7 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.util.AppendableWrapper;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class MixedAssertionableResult<C> {
 
     private static class CallBackSetter<C>
-            implements CallBackBuilder.Setter<C, AssertionableResult<C>> {
+            implements FluentBuilder.Setter<C, AssertionableResult<C>> {
 
         private C callBack;
 

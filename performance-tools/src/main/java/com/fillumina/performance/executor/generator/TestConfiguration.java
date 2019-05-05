@@ -9,7 +9,7 @@ import com.fillumina.performance.executor.param.SubTreeBuilder;
 import com.fillumina.performance.executor.stats.ExpressionSolver;
 import com.fillumina.performance.executor.stats.StatsExpression;
 import com.fillumina.performance.executor.stats.producer.ExpressionStatsProducer;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.collection.LinkedTree;
 import com.fillumina.performance.util.formatter.TableFormatter;
@@ -22,7 +22,7 @@ import com.fillumina.performance.util.pathname.PathNamed;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class TestConfiguration<C>
-        extends CallBackBuilder<C, TestConfiguration<C>>
+        extends FluentBuilder<C, TestConfiguration<C>>
         implements
                 ParameterizedTestProducer.Configuration,
                 SequencedTestProducer.Configuration,

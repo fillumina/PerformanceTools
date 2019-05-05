@@ -11,7 +11,7 @@ import java.util.function.BiPredicate;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OrderAssertionError extends AbstractAssertionError {
+public class OrderAssertionError extends AbstractExperimentAssertionError {
     private static final long serialVersionUID = 1L;
     private final CharSequence firstTestName;
     private final Measure firstMeasure;

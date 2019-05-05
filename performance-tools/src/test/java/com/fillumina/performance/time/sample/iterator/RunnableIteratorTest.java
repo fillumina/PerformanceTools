@@ -9,6 +9,7 @@ import com.fillumina.performance.util.ToleranceAssertion;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -215,7 +216,7 @@ public class RunnableIteratorTest {
     Counter k1 = new Counter1();
     Counter k2 = new Counter2();
 
-    @Test
+    @Ignore @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
         RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
                 () -> { Sink.drain(measure(k1)); });

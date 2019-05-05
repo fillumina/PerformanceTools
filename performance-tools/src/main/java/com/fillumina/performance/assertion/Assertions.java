@@ -37,7 +37,7 @@ public class Assertions
     }
 
     @Override
-    public Assertions build() {
+    protected Assertions build() {
         return this;
     }
 

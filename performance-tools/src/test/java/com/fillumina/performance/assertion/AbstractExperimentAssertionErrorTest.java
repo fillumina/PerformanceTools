@@ -15,10 +15,10 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AbstractAssertionErrorTest {
+public class AbstractExperimentAssertionErrorTest {
 
     private static class AbstractAssertionErrorImpl
-            extends AbstractAssertionError {
+            extends AbstractExperimentAssertionError {
         private static final long serialVersionUID = 1L;
         private Measure actualMeasure;
         private double expected;

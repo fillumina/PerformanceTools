@@ -14,7 +14,7 @@ import java.util.function.BiPredicate;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ValueAssertionError extends AbstractAssertionError {
+public class ValueAssertionError extends AbstractExperimentAssertionError {
     private static final long serialVersionUID = 1L;
     private final CharSequence testName;
     private final DimensionalMeasure actualValue;

@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import java.util.Collections;
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class OptionBuilder<C> extends CallBackBuilder<C, Map<String, Option>> {
+public class OptionBuilder<C> extends FluentBuilder<C, Map<String, Option>> {
     private Map<String,Option> options = new IndexedHashMap<>();
 
     public OptionBuilder() {

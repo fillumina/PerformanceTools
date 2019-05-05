@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.collection.LinkedTree;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class SubTreeBuilder<C>
-        extends CallBackBuilder<C, LinkedTree<String,Object>> {
+        extends FluentBuilder<C, LinkedTree<String,Object>> {
 
     private final LinkedTree<String,Object> root;
 

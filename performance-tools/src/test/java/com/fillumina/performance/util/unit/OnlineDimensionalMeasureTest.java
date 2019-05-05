@@ -7,12 +7,12 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DimensionalOnlineMeasureTest {
+public class OnlineDimensionalMeasureTest {
 
     @Test
     public void shouldUseGivenMilliToPrint() {
         assertEquals("123.000 +/- 1.132 (3 samples) m",
-                new DimensionalOnlineMeasure(0.123, 0.124, 0.122)
+                new OnlineDimensionalMeasure(0.123, 0.124, 0.122)
                         .toString(Magnitude.MILLI)
             );
     }
@@ -20,7 +20,7 @@ public class DimensionalOnlineMeasureTest {
     @Test
     public void shouldUseGivenUnitToPrint() {
         assertEquals("0.123 +/- 0.001 (3 samples) ",
-                new DimensionalOnlineMeasure(0.123, 0.124, 0.122)
+                new OnlineDimensionalMeasure(0.123, 0.124, 0.122)
                         .toString(Magnitude.UNIT)
             );
     }

@@ -11,54 +11,54 @@ import java.util.Objects;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DimensionalOnlineMeasure extends DimensionalMeasure
+public class OnlineDimensionalMeasure extends DimensionalMeasure
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private final Unit<?> unit;
     private final OnlineMeasure measure;
 
-    public DimensionalOnlineMeasure() {
+    public OnlineDimensionalMeasure() {
         this(Magnitude.UNIT);
     }
 
-    public DimensionalOnlineMeasure(double... values) {
+    public OnlineDimensionalMeasure(double... values) {
         this.measure = new OnlineMeasure(values);
         this.unit = Magnitude.UNIT;
     }
 
-    public DimensionalOnlineMeasure(Collection<? extends Number> collection) {
+    public OnlineDimensionalMeasure(Collection<? extends Number> collection) {
         this.measure = new OnlineMeasure(collection);
         this.unit = Magnitude.UNIT;
     }
 
-    public DimensionalOnlineMeasure(Measure other) {
+    public OnlineDimensionalMeasure(Measure other) {
         this.measure = new OnlineMeasure(other);
         this.unit = Magnitude.UNIT;
     }
 
-    public DimensionalOnlineMeasure(Unit<?> unit) {
+    public OnlineDimensionalMeasure(Unit<?> unit) {
         this.measure = new OnlineMeasure();
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit<?> unit, double... values) {
+    public OnlineDimensionalMeasure(Unit<?> unit, double... values) {
         this.measure = new OnlineMeasure(values);
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit<?> unit,
+    public OnlineDimensionalMeasure(Unit<?> unit,
             Collection<? extends Number> collection) {
         this.measure = new OnlineMeasure(collection);
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(Unit<?> unit, Measure other) {
+    public OnlineDimensionalMeasure(Unit<?> unit, Measure other) {
         this.measure = new OnlineMeasure(other);
         this.unit = unit;
     }
 
-    public DimensionalOnlineMeasure(DimensionalMeasure other) {
+    public OnlineDimensionalMeasure(DimensionalMeasure other) {
         this.measure = new OnlineMeasure(other);
         this.unit = other.getUnit();
     }
@@ -144,7 +144,7 @@ public class DimensionalOnlineMeasure extends DimensionalMeasure
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DimensionalOnlineMeasure other = (DimensionalOnlineMeasure) obj;
+        final OnlineDimensionalMeasure other = (OnlineDimensionalMeasure) obj;
         if (!Objects.equals(this.unit, other.unit)) {
             return false;
         }

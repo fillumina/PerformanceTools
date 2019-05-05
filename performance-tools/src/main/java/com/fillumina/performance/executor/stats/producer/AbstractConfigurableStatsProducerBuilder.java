@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.stats.producer;
 
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.filter.ListFilter;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Quantity;
@@ -13,7 +13,7 @@ import com.fillumina.performance.util.unit.Quantity;
  * @author Francesco Illuminati
  */
 public abstract class AbstractConfigurableStatsProducerBuilder<I, C>
-        extends CallBackBuilder<C, ConfigurableStatsProducer>
+        extends FluentBuilder<C, ConfigurableStatsProducer>
         implements ConfigurableStatsProducer.Configuration {
     private static final Quantity<IntervalUnit> UNLIMITED =
             IntervalUnit.NANOSECONDS.quantity(-1);

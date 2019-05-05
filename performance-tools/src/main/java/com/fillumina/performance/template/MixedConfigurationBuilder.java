@@ -9,7 +9,7 @@ import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
 import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Activable;
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.Platform;
 import com.fillumina.performance.util.formatter.TableFormatter;
 import com.fillumina.performance.util.pathname.PathName;
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Francesco Illuminati
  */
 public class MixedConfigurationBuilder<C>
-        extends CallBackBuilder<C, MixedConfigurationBuilder<C>.Configuration> {
+        extends FluentBuilder<C, MixedConfigurationBuilder<C>.Configuration> {
 
     private TestConfiguration<?> testConfigurator;
 
@@ -87,7 +87,7 @@ public class MixedConfigurationBuilder<C>
     /**
      * Configures the assertions.
      * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
      * @return
      */
     public MixedAssertionBuilder<MixedConfigurationBuilder<C>> assertions() {
@@ -97,7 +97,7 @@ public class MixedConfigurationBuilder<C>
     /**
      * Configure the tests with eventual parameters and sequences.
      * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
      */
     @SuppressWarnings("unchecked")
     public TestConfiguration<MixedConfigurationBuilder<C>> tests() {
@@ -114,7 +114,7 @@ public class MixedConfigurationBuilder<C>
     /**
      * Configures the speedConfig test.
      * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
      */
     public SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfig() {
         speedConfigurator.setActive(true);
@@ -125,7 +125,7 @@ public class MixedConfigurationBuilder<C>
      * Configures the used memory test. Used memory is the total memory
      * heap used by the test including those which is freed afterwards.
      * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
      */
     public MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfig() {
         usedMemConfigurator.setActive(true);
@@ -136,7 +136,7 @@ public class MixedConfigurationBuilder<C>
      * Configures the allocated memory test. Allocated memory is the
      * memory which stays allocated after the test has finished.
      * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.CallBackBuilder#end() } method</b>.
+     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
      */
     public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfig() {
         allocatedMemConfigurator.setActive(true);

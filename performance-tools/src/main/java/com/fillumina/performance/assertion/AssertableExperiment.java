@@ -6,9 +6,6 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
- * Contains named measurements that can be checked by
- * {@link ExperimentAssertion}s.
- * <p>
  * It's a collection of measures relative to named experiments.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>

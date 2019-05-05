@@ -1,6 +1,6 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.CallBackBuilder;
+import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
 import java.util.function.Consumer;
@@ -13,8 +13,9 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
+// TODO Wrong Name!
 public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
-        extends CallBackBuilder<C, AssertionBuilder<I,C>>
+        extends FluentBuilder<C, AssertionBuilder<I,C>>
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,7 +55,8 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     @Override
-    public AssertionBuilder<I,C> build() {
+    protected AssertionBuilder<I,C> build() {
+        // TODO report a basic Assertable
         return this;
     }
 
