@@ -9,7 +9,6 @@ import com.fillumina.performance.util.ToleranceAssertion;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -216,7 +215,7 @@ public class RunnableIteratorTest {
     Counter k1 = new Counter1();
     Counter k2 = new Counter2();
 
-    @Ignore @Test
+    @Test
     public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
         RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
                 () -> { Sink.drain(measure(k1)); });
@@ -224,7 +223,7 @@ public class RunnableIteratorTest {
                 () -> { Sink.drain(measure(k2)); });
 
         // not too many iterations otherwise optimization would kick in
-        final int iteration = 100_000_000;
+        final int iteration = 500_000_000;
         final int repetitions = 3;
 
         long la1 = loop(a, iteration, repetitions);
@@ -243,7 +242,7 @@ public class RunnableIteratorTest {
         /*
         la2 should be slightly faster because of optimizations
         */
-        ToleranceAssertion.assertLess("la1=" + la1 + " <= la2=" + la2,
+        ToleranceAssertion.assertGreater("la1=" + la1 + ", la2=" + la2,
                 la1, la2, Ratio.percentage(10));
     }
 
