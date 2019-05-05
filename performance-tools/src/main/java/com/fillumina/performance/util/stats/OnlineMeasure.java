@@ -158,4 +158,9 @@ public class OnlineMeasure extends Measure implements Serializable {
         mean += delta / count;
         M2 += delta * (x - mean);
     }
+
+    /** @return an immutable snapshot of the current measure. */
+    public Measure toImmutable() {
+        return new ImmutableMeasure(this);
+    }
 }

@@ -11,7 +11,7 @@ import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.stats.ReciprocalOnlineMeasureSampler;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
-import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
+import com.fillumina.performance.util.unit.ImmutableDimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.ThroughputUnit;
 import java.util.Map;
@@ -117,11 +117,11 @@ public class StopWatchTimer {
         map.forEach((s,m) -> {
                 PathName pname = PN.pname(s);
                 avgMap.put(pname,
-                        new DefaultDimensionalMeasure(
+                        new ImmutableDimensionalMeasure(
                                 m.getDirect(),
                                 AverageTimeUnit.NANOSECONDS));
                 tptMap.put(pname,
-                        new DefaultDimensionalMeasure(
+                        new ImmutableDimensionalMeasure(
                                 m.getInverse(),
                                 ThroughputUnit.GIGAOP));
         });

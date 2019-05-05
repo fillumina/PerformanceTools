@@ -16,7 +16,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.ReciprocalOnlineMeasureSampler;
 import com.fillumina.performance.util.stats.SingleMeasure;
 import com.fillumina.performance.util.unit.AverageTimeUnit;
-import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
+import com.fillumina.performance.util.unit.ImmutableDimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
@@ -188,15 +188,15 @@ public class EventFrequency {
                 Measure direct = m.getSampler().getDirect();
                 Measure inverse = m.getSampler().getInverse();
                 cntMap.put(pname,
-                        new DefaultDimensionalMeasure(
+                        new ImmutableDimensionalMeasure(
                                 new SingleMeasure(direct.getCount()),
                                 Magnitude.UNIT));
                 avgMap.put(pname,
-                        new DefaultDimensionalMeasure(
+                        new ImmutableDimensionalMeasure(
                                 direct,
                                 AverageTimeUnit.NANOSECONDS));
                 tptMap.put(pname,
-                        new DefaultDimensionalMeasure(
+                        new ImmutableDimensionalMeasure(
                                 inverse,
                                 ThroughputUnit.GIGAOP));
         });

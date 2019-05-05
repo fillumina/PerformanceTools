@@ -12,7 +12,7 @@ public class DimensionalMeasureTest {
 
     @Test
     public void shouldAdjustTheUnit() {
-        DefaultDimensionalMeasure m = new DefaultDimensionalMeasure(
+        ImmutableDimensionalMeasure m = new ImmutableDimensionalMeasure(
                 new SingleMeasure(1.0),
                 Magnitude.KILO);
 

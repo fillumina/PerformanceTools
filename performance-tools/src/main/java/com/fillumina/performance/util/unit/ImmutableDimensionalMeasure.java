@@ -1,5 +1,6 @@
 package com.fillumina.performance.util.unit;
 
+import com.fillumina.performance.util.stats.ImmutableMeasure;
 import com.fillumina.performance.util.stats.MarginOfErrorConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
@@ -8,13 +9,17 @@ import com.fillumina.performance.util.stats.Ratio;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DefaultDimensionalMeasure extends DimensionalMeasure {
+public class ImmutableDimensionalMeasure extends DimensionalMeasure {
     private final Measure measure;
     private final Unit<?> unit;
 
-    public DefaultDimensionalMeasure(Measure measure,
-            Unit<?> unit) {
-        this.measure = measure;
+    public ImmutableDimensionalMeasure(DimensionalMeasure measure) {
+        this.measure = new ImmutableMeasure(measure);
+        this.unit = measure.getUnit();
+    }
+
+    public ImmutableDimensionalMeasure(Measure measure, Unit<?> unit) {
+        this.measure = new ImmutableMeasure(measure);
         this.unit = unit;
     }
 

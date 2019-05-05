@@ -1,12 +1,13 @@
 package com.fillumina.performance.assertion;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class MeasureNotFoundException extends RuntimeException {
+public class MeasureNotFoundException extends NoSuchElementException {
     private static final long serialVersionUID = 1L;
 
     public MeasureNotFoundException(CharSequence name) {

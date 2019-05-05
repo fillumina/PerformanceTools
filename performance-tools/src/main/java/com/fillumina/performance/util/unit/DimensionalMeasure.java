@@ -30,7 +30,7 @@ public abstract class DimensionalMeasure extends Measure {
         if (!getUnit().isSameType(unit)) {
             throw new MismatchedUnitRuntimeException(getUnit(), unit);
         }
-        return new DefaultDimensionalMeasure(
+        return new ImmutableDimensionalMeasure(
                 multiplyBy(getUnit().getConversionFactorTo(unit)),
                 unit);
     }

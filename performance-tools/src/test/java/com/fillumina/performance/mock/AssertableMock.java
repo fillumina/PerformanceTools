@@ -7,7 +7,7 @@ import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.OnlineMeasure;
 import com.fillumina.performance.util.unit.Absolute;
-import com.fillumina.performance.util.unit.DefaultDimensionalMeasure;
+import com.fillumina.performance.util.unit.ImmutableDimensionalMeasure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.util.Collection;
@@ -97,7 +97,7 @@ public class AssertableMock extends AbstractAssertable<AssertableMock>
         if (!result.isPresent()) {
             throw new MeasureNotFoundException(testName, map.keySet());
         }
-        return new DefaultDimensionalMeasure(map.get(result.get()), unit);
+        return new ImmutableDimensionalMeasure(map.get(result.get()), unit);
     }
 
     @Override
