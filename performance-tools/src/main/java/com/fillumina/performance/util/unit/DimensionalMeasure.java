@@ -2,6 +2,7 @@ package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.stats.SingleMeasure;
 import java.util.Locale;
 
 /**
@@ -11,6 +12,24 @@ import java.util.Locale;
 public abstract class DimensionalMeasure extends Measure {
 
     public abstract Unit<?> getUnit();
+
+    public static DimensionalMeasure of(double ... values) {
+        return of(Absolute.UNIT, values);
+    }
+
+    public static DimensionalMeasure of(Unit<?> unit, double ... values) {
+        if (values.length == 1) {
+            return new ImmutableDimensionalMeasure(new SingleMeasure(values[0]), unit);
+        }
+        return new OnlineDimensionalMeasure(unit, values).toImmutable();
+    }
+
+
+    /** @return an immutable snapshot of the current measure. */
+    @Override
+    public DimensionalMeasure toImmutable() {
+        return new ImmutableDimensionalMeasure(this);
+    }
 
     public String toString(Unit<?> unit) {
         return toStringForConfidence(Ratio.P_95, unit);

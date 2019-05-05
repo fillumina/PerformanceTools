@@ -9,6 +9,11 @@ import java.util.Locale;
 public abstract class Measure {
     public static final double STD_FACTOR = 3.0;
 
+    /** @return an immutable snapshot of the current measure. */
+    public Measure toImmutable() {
+        return new ImmutableMeasure(this);
+    }
+
     /** @return the number of samples. */
     public abstract long getCount();
 
