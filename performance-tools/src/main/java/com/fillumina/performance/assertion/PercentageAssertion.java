@@ -88,4 +88,24 @@ class PercentageAssertion implements ExperimentAssertion, Serializable {
                 expectedRatio.toString() +
                 " (" + tolerance.toString() + ")";
     }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public CharSequence getTestName() {
+        return testName;
+    }
+
+    public Ratio getExpectedRatio() {
+        return expectedRatio;
+    }
+
+    public Ratio getTolerance() {
+        return tolerance;
+    }
+
+    public RelativeOrder getCondition() {
+        return condition;
+    }
 }

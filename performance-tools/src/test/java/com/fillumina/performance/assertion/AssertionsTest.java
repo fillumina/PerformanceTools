@@ -13,15 +13,6 @@ import org.junit.Test;
 public class AssertionsTest {
 
     @Test
-    public void shouldCreateWithGivenTolerance() {
-        Ratio tolerance = Ratio.percentage(77);
-        Assertions assertion =
-                Assertions.withTolerance(tolerance);
-
-        assertEquals(tolerance, assertion.getTolerance());
-    }
-
-    @Test
     public void shouldAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions assertion =
@@ -107,7 +98,7 @@ public class AssertionsTest {
 
         AssertionMock assertion = new AssertionMock();
 
-        statsAssertion.addAssertion(assertion);
+        statsAssertion.accept(assertion);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 00);
@@ -119,14 +110,4 @@ public class AssertionsTest {
                         .getName());
     }
 
-    @Test
-    public void shouldSetTolerance() {
-        Ratio tolerance = Ratio.percentage(17);
-
-        Assertions statsAssertion = new Assertions();
-
-        statsAssertion.setTolerance(tolerance);
-
-        assertEquals(tolerance, statsAssertion.getTolerance());
-    }
 }

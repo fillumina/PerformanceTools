@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 /**
  * Part of the {@link AssertStats} builder that creates assertions
- based on the decimal between a test and the one with the higher decimal
- expressed in percentage.
+ * based on the decimal between a test and the one with the higher decimal
+ * expressed in percentage.
  * This type of measurement is very interesting because it is less dependent
  * on a specific environment (relative differences tend to be more stable
  * across systems/environments).
@@ -32,6 +32,10 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     public I is(RelativeOrder equality, double expected) {
+        return is(equality, Ratio.percentage(expected));
+    }
+
+    public I is(RelativeOrder equality, Ratio expected) {
         switch(equality) {
             case EQUALS: return sameAs(expected);
             case LESS: return lessThan(expected);
@@ -41,27 +45,45 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     public I sameAs(final double expectedPercentage) {
-        return selector.addAssertion(new PercentageAssertion(
-                name,
-                RelativeOrder.EQUALS,
-                Ratio.percentage(expectedPercentage),
-                tolerance));
+        return sameAs(Ratio.percentage(expectedPercentage));
+    }
+
+    public I sameAs(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.EQUALS,
+                        expectedPercentage,
+                        tolerance);
+        return selector.accept(percentageAssertion);
     }
 
     public I lessThan(final double expectedPercentage) {
-        return selector.addAssertion(new PercentageAssertion(
-                name,
-                RelativeOrder.LESS,
-                Ratio.percentage(expectedPercentage),
-                tolerance));
+        return lessThan(Ratio.percentage(expectedPercentage));
+    }
+
+    public I lessThan(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.LESS,
+                        expectedPercentage,
+                        tolerance);
+        return selector.accept(percentageAssertion);
     }
 
     public I greaterThan(final double expectedPercentage) {
-        return selector.addAssertion(new PercentageAssertion(
-                name,
-                RelativeOrder.GREATER,
-                Ratio.percentage(expectedPercentage),
-                tolerance));
+        return greaterThan(Ratio.percentage(expectedPercentage));
+    }
+
+    public I greaterThan(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.GREATER,
+                        expectedPercentage,
+                        tolerance);
+        return selector.accept(percentageAssertion);
     }
 
 }

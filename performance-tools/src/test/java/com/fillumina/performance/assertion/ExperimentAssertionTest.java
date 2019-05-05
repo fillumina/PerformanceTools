@@ -13,7 +13,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertionTest {
+public class ExperimentAssertionTest {
 
     @Test
     public void shouldCheckAnAssertable() {

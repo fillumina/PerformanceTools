@@ -35,7 +35,7 @@ public class ValueAssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     public I is(RelativeOrder equality, Quantity<?> expected) {
         switch(equality) {
-            case EQUALS: return ValueAssertionBuilder.this.equalsTo(expected);
+            case EQUALS: return equalsTo(expected);
             case LESS: return lessThan(expected);
             case GREATER: return greaterThan(expected);
         }
@@ -44,8 +44,7 @@ public class ValueAssertionBuilder<I extends AssertionBuilder<I,C>, C>
 
     /** It compares against {@link Absolute} quantities only. */
     public I equalsTo(final double expectedValue) {
-        return ValueAssertionBuilder.this.equalsTo(
-                Absolute.UNIT.quantity(expectedValue));
+        return equalsTo(Absolute.UNIT.quantity(expectedValue));
     }
 
     /** It compares against {@link Absolute} quantities only. */
@@ -59,24 +58,21 @@ public class ValueAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     public I equalsTo(final Quantity<?> expectedValue) {
-        return assertPerformance.addAssertion(new ValueAssertion(name,
-                        RelativeOrder.EQUALS,
-                        expectedValue,
-                        tolerance));
+        final ValueAssertion valueAssertion = new ValueAssertion(
+                name, RelativeOrder.EQUALS, expectedValue, tolerance);
+        return assertPerformance.accept(valueAssertion);
     }
 
     public I lessThan(final Quantity<?> expectedValue) {
-        return assertPerformance.addAssertion(new ValueAssertion(name,
-                        RelativeOrder.LESS,
-                        expectedValue,
-                        tolerance));
+        final ValueAssertion valueAssertion = new ValueAssertion(
+                name, RelativeOrder.LESS, expectedValue, tolerance);
+        return assertPerformance.accept(valueAssertion);
     }
 
     public I greaterThan(final Quantity<?> expectedValue) {
-        return assertPerformance.addAssertion(new ValueAssertion(name,
-                        RelativeOrder.GREATER,
-                        expectedValue,
-                        tolerance));
+        final ValueAssertion valueAssertion = new ValueAssertion(
+                name, RelativeOrder.GREATER, expectedValue, tolerance);
+        return assertPerformance.accept(valueAssertion);
     }
 
 }

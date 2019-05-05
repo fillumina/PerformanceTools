@@ -13,7 +13,6 @@ import java.util.function.Consumer;
  *
  * @author Francesco Illuminati
  */
-// TODO Wrong Name!
 public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
         extends FluentBuilder<C, AssertionBuilder<I,C>>
         implements Serializable {
@@ -50,13 +49,12 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.assertionConsumer = assertionConsumer;
     }
 
-    protected Ratio getTolerance() {
+    public Ratio getTolerance() {
         return tolerance;
     }
 
     @Override
     protected AssertionBuilder<I,C> build() {
-        // TODO report a basic Assertable
         return this;
     }
 
@@ -96,7 +94,7 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * @param assertion A consumer that should implement a condition to check.
      */
     @SuppressWarnings("unchecked")
-    public I addAssertion(ExperimentAssertion assertion) {
+    public I accept(ExperimentAssertion assertion) {
         assertionConsumer.accept(assertion);
         return (I) this;
     }

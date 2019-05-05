@@ -78,4 +78,23 @@ class ValueAssertion implements ExperimentAssertion, Serializable {
                 " (" + tolerance.toString() + ")";
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public CharSequence getTestName() {
+        return testName;
+    }
+
+    public Quantity<?> getExpectedValue() {
+        return expectedValue;
+    }
+
+    public Ratio getTolerance() {
+        return tolerance;
+    }
+
+    public RelativeOrder getCondition() {
+        return condition;
+    }
 }

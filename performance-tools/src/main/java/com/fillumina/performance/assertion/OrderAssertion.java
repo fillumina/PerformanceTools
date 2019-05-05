@@ -74,4 +74,24 @@ class OrderAssertion implements ExperimentAssertion, Serializable {
         return firstTestName + " " + condition.getSymbol() + " " +
                 secondTestName + " (" + tolerance.toString() + ")";
     }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public RelativeOrder getCondition() {
+        return condition;
+    }
+
+    public CharSequence getFirstTestName() {
+        return firstTestName;
+    }
+
+    public CharSequence getSecondTestName() {
+        return secondTestName;
+    }
+
+    public Ratio getTolerance() {
+        return tolerance;
+    }
 }

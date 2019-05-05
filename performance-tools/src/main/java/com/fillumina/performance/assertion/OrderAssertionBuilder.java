@@ -37,20 +37,20 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
     }
 
     public I sameAs(final CharSequence other) {
-        return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, RelativeOrder.EQUALS,
-                        tolerance));
+        final OrderAssertion orderAssertion =
+                new OrderAssertion( name, other, RelativeOrder.EQUALS, tolerance);
+        return assertionBuilder.accept(orderAssertion);
     }
 
     public I greaterThan(final CharSequence other) {
-        return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, RelativeOrder.GREATER,
-                        tolerance));
+        final OrderAssertion orderAssertion =
+                new OrderAssertion(name, other, RelativeOrder.GREATER, tolerance);
+        return assertionBuilder.accept(orderAssertion);
     }
 
     public I lessThan(final CharSequence other) {
-        return assertionBuilder.addAssertion(new OrderAssertion(
-                        name, other, RelativeOrder.LESS,
-                        tolerance));
+        final OrderAssertion orderAssertion =
+                new OrderAssertion(name, other, RelativeOrder.LESS, tolerance);
+        return assertionBuilder.accept(orderAssertion);
     }
 }
