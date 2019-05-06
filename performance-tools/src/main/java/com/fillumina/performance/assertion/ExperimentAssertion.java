@@ -13,13 +13,9 @@ import java.util.function.Consumer;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface ExperimentAssertion
-        extends Consumer<AssertableExperiment>,
-        StringGenerator<AssertableExperiment> {
+        extends StringGenerator<AssertableExperiment> {
 
-    /** It's a more meaningful name for {@link #accept(Assertable)}. */
-    default void check(AssertableExperiment assertable) throws AssertionError {
-        accept(assertable);
-    }
+    public void check(AssertableExperiment exp) throws ExperimentAssertionError;
 
     /** @return true if the given {@link AssertableExperiment} complies. */
     default boolean satisfy(AssertableExperiment assertable) {

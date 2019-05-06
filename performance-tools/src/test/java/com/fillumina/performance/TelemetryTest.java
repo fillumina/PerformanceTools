@@ -183,7 +183,7 @@ public class TelemetryTest {
         executor.execute(worker);
         executor.execute(worker);
 
-        // This will make the executor accept no new threads
+        // This will make the executor check no new threads
         // and finish all existing threads in the queue
         executor.shutdown();
 

@@ -15,26 +15,28 @@ public class OnlineDimensionalMeasure extends DimensionalMeasure
         implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Absolute DEFAULT_UNIT = Absolute.UNIT;
+
     private final Unit<?> unit;
     private final OnlineMeasure measure;
 
     public OnlineDimensionalMeasure() {
-        this(Magnitude.UNIT);
+        this(DEFAULT_UNIT);
     }
 
     public OnlineDimensionalMeasure(double... values) {
         this.measure = new OnlineMeasure(values);
-        this.unit = Magnitude.UNIT;
+        this.unit = DEFAULT_UNIT;
     }
 
     public OnlineDimensionalMeasure(Collection<? extends Number> collection) {
         this.measure = new OnlineMeasure(collection);
-        this.unit = Magnitude.UNIT;
+        this.unit = DEFAULT_UNIT;
     }
 
     public OnlineDimensionalMeasure(Measure other) {
         this.measure = new OnlineMeasure(other);
-        this.unit = Magnitude.UNIT;
+        this.unit = DEFAULT_UNIT;
     }
 
     public OnlineDimensionalMeasure(Unit<?> unit) {
@@ -74,6 +76,14 @@ public class OnlineDimensionalMeasure extends DimensionalMeasure
 
     public OnlineMeasure addSample(double value) {
         return measure.addSample(value);
+    }
+
+    public OnlineMeasure addSample(double value, Unit<?> unit) {
+        return measure.addSample(this.unit.convert(value, unit));
+    }
+
+    public OnlineMeasure addSample(Quantity<?> quantity) {
+        return measure.addSample(quantity.as(unit));
     }
 
     @Override

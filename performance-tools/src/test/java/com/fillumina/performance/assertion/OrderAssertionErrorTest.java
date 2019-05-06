@@ -29,7 +29,7 @@ public class OrderAssertionErrorTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
         } catch(OrderAssertionError e) {
 
             assertEquals(12.3, e.getFirstMeasure().getMean(), 0);
@@ -59,7 +59,7 @@ public class OrderAssertionErrorTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
             fail();
         } catch(OrderAssertionError e) {
             assertTrue(e.getPredicate().test(RelativeOrder.GREATER,

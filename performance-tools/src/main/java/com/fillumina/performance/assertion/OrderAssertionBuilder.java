@@ -27,11 +27,19 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(RelativeOrder equality, CharSequence other) {
-        switch(equality) {
-            case EQUALS: return sameAs(other);
-            case LESS: return lessThan(other);
-            case GREATER: return greaterThan(other);
+    public I is(boolean negate, RelativeOrder equality, CharSequence other) {
+        if (negate) {
+            switch(equality) {
+                case EQUALS: return notSameAs(other);
+                case LESS: return greaterThanOrEquals(other);
+                case GREATER: return lessThanOrEquals(other);
+            }
+        } else {
+            switch(equality) {
+                case EQUALS: return sameAs(other);
+                case LESS: return lessThan(other);
+                case GREATER: return greaterThan(other);
+            }
         }
         throw new AssertionError("unexpected case: " + equality);
     }
@@ -42,15 +50,39 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         return assertionBuilder.accept(orderAssertion);
     }
 
+    public I notSameAs(final CharSequence other) {
+        final OrderAssertion orderAssertion =
+                new OrderAssertion( name, other, RelativeOrder.EQUALS, tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(orderAssertion);
+        return assertionBuilder.accept(negate);
+    }
+
     public I greaterThan(final CharSequence other) {
         final OrderAssertion orderAssertion =
                 new OrderAssertion(name, other, RelativeOrder.GREATER, tolerance);
         return assertionBuilder.accept(orderAssertion);
     }
 
+    public I lessThanOrEquals(final CharSequence other) {
+        final OrderAssertion orderAssertion =
+                new OrderAssertion(name, other, RelativeOrder.GREATER, tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(orderAssertion);
+        return assertionBuilder.accept(negate);
+    }
+
     public I lessThan(final CharSequence other) {
         final OrderAssertion orderAssertion =
                 new OrderAssertion(name, other, RelativeOrder.LESS, tolerance);
         return assertionBuilder.accept(orderAssertion);
+    }
+
+    public I greaterThanOrEquals(final CharSequence other) {
+        final OrderAssertion orderAssertion =
+                new OrderAssertion(name, other, RelativeOrder.LESS, tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(orderAssertion);
+        return assertionBuilder.accept(negate);
     }
 }

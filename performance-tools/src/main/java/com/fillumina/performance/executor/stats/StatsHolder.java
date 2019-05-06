@@ -261,7 +261,7 @@ public class StatsHolder extends Printable<StatsHolder>
     public StatsHolder check(ExperimentAssertion assertion) {
         if (assertion != null) {
             traverseLeaves((PathName name, Stats stats) -> {
-                assertion.accept(stats);
+                assertion.check(stats);
             });
         }
         return this;

@@ -65,7 +65,7 @@ public class AssertionBuilderTest {
         AssertionBuilderImpl builder = AssertionBuilderImpl.create();
         builder.accept(new ExperimentAssertion() {
             @Override
-            public void accept(AssertableExperiment t) {
+            public void check(AssertableExperiment t) {
                 //
             }
 

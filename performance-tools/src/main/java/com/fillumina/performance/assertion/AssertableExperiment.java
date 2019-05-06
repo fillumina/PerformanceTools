@@ -3,6 +3,7 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -10,7 +11,7 @@ import java.util.NoSuchElementException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertableExperiment {
+public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
 
     /** @return test names. */
     Collection<? extends CharSequence> getNames();
@@ -33,5 +34,21 @@ public interface AssertableExperiment {
      */
     default Measure getFirstMeasure() throws NoSuchElementException {
         return getMeasure(getNames().iterator().next());
+    }
+
+    @Override
+    public default Iterator<DimensionalMeasure> iterator() {
+        final Iterator<? extends CharSequence> it = getNames().iterator();
+        return new Iterator<DimensionalMeasure>() {
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public DimensionalMeasure next() {
+                return getMeasure(it.next());
+            }
+        };
     }
 }

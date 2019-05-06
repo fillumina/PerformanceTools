@@ -31,15 +31,23 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(RelativeOrder equality, double expected) {
-        return is(equality, Ratio.percentage(expected));
+    public I is(boolean negate, RelativeOrder equality, double expected) {
+        return is(negate, equality, Ratio.percentage(expected));
     }
 
-    public I is(RelativeOrder equality, Ratio expected) {
-        switch(equality) {
-            case EQUALS: return sameAs(expected);
-            case LESS: return lessThan(expected);
-            case GREATER: return greaterThan(expected);
+    public I is(boolean negate, RelativeOrder equality, Ratio expected) {
+        if (negate) {
+            switch(equality) {
+                case EQUALS: return notSameAs(expected);
+                case LESS: return greaterThanOrEquals(expected);
+                case GREATER: return lessThanOrEquals(expected);
+            }
+        } else {
+            switch(equality) {
+                case EQUALS: return sameAs(expected);
+                case LESS: return lessThan(expected);
+                case GREATER: return greaterThan(expected);
+            }
         }
         throw new AssertionError("unexpected case: " + equality);
     }
@@ -58,6 +66,22 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         return selector.accept(percentageAssertion);
     }
 
+    public I notSameAs(final double expectedPercentage) {
+        return notSameAs(Ratio.percentage(expectedPercentage));
+    }
+
+    public I notSameAs(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.EQUALS,
+                        expectedPercentage,
+                        tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(percentageAssertion);
+        return selector.accept(negate);
+    }
+
     public I lessThan(final double expectedPercentage) {
         return lessThan(Ratio.percentage(expectedPercentage));
     }
@@ -72,6 +96,22 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         return selector.accept(percentageAssertion);
     }
 
+    public I greaterThanOrEquals(final double expectedPercentage) {
+        return greaterThanOrEquals(Ratio.percentage(expectedPercentage));
+    }
+
+    public I greaterThanOrEquals(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.LESS,
+                        expectedPercentage,
+                        tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(percentageAssertion);
+        return selector.accept(negate);
+    }
+
     public I greaterThan(final double expectedPercentage) {
         return greaterThan(Ratio.percentage(expectedPercentage));
     }
@@ -84,6 +124,22 @@ public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
                         expectedPercentage,
                         tolerance);
         return selector.accept(percentageAssertion);
+    }
+
+    public I lessThanOrEquals(final double expectedPercentage) {
+        return lessThanOrEquals(Ratio.percentage(expectedPercentage));
+    }
+
+    public I lessThanOrEquals(final Ratio expectedPercentage) {
+        final PercentageAssertion percentageAssertion =
+                new PercentageAssertion(
+                        name,
+                        RelativeOrder.GREATER,
+                        expectedPercentage,
+                        tolerance);
+        final NegateExperimentAssertion negate =
+                new NegateExperimentAssertion(percentageAssertion);
+        return selector.accept(negate);
     }
 
 }

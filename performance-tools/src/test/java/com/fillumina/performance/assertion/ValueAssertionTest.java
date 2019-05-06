@@ -6,6 +6,8 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.Absolute;
 import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 /**
@@ -26,7 +28,7 @@ public class ValueAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
         throw new RuntimeException("shouln't be here");
     }
 
@@ -42,7 +44,7 @@ public class ValueAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -57,7 +59,7 @@ public class ValueAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class ValueAssertionTest {
                 Magnitude.UNIT,
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     @Test(expected = RuntimeException.class)
@@ -90,7 +92,82 @@ public class ValueAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
+    }
+
+    @Test
+    public void shouldConsumeNotEquals() {
+        ValueAssertion assertion =
+                new ValueAssertion(
+                        "first",
+                        RelativeOrder.EQUALS,
+                        Absolute.UNIT.quantity(12.3),
+                        Ratio.percentage(5));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        assertFalse(new NegateExperimentAssertion(assertion).satisfy(assertable));
+    }
+
+    @Test(expected = ExperimentAssertionError.class)
+    public void shouldThrowNotEquals() {
+        ValueAssertion assertion =
+                new ValueAssertion(
+                        "first",
+                        RelativeOrder.EQUALS,
+                        Absolute.UNIT.quantity(12.3),
+                        Ratio.percentage(5));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        new NegateExperimentAssertion(assertion).check(assertable);
+    }
+
+    @Test
+    public void shouldConsumeLessThanOrEquals() {
+        ValueAssertion assertion =
+                new ValueAssertion(
+                        "first",
+                        RelativeOrder.GREATER,
+                        Absolute.UNIT.quantity(20.0),
+                        Ratio.percentage(5));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        assertTrue(new NegateExperimentAssertion(assertion).satisfy(assertable));
+    }
+
+    @Test
+    public void shouldConsumeGreaterThanOrEquals() {
+        ValueAssertion assertion =
+                new ValueAssertion(
+                        "first",
+                        RelativeOrder.LESS,
+                        Absolute.UNIT.quantity(5.2),
+                        Ratio.percentage(5));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        assertTrue(new NegateExperimentAssertion(assertion).satisfy(assertable));
+    }
+
+    @Test
+    public void shouldNotConsumeGreaterThanOrEquals() {
+        ValueAssertion assertion =
+                new ValueAssertion(
+                        "first",
+                        RelativeOrder.LESS,
+                        Absolute.UNIT.quantity(5.2),
+                        Ratio.percentage(5));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        assertTrue(new NegateExperimentAssertion(assertion).satisfy(assertable));
     }
 
     public static void main(final String[] args) {
@@ -105,7 +182,7 @@ public class ValueAssertionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
         } catch(ValueAssertionError e) {
             System.out.println(e);
         }

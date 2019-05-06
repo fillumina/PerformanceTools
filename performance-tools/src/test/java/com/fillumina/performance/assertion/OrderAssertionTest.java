@@ -22,7 +22,7 @@ public class OrderAssertionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
         throw new RuntimeException("shouln't be here");
     }
 
@@ -36,7 +36,7 @@ public class OrderAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -49,7 +49,7 @@ public class OrderAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     public static void main(final String[] args) {
@@ -62,7 +62,7 @@ public class OrderAssertionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
         } catch(OrderAssertionError e) {
             System.out.println(e);
         }

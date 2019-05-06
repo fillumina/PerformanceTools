@@ -26,7 +26,7 @@ public class QuantityList
         private double max = Double.NEGATIVE_INFINITY;
 
         public Builder add(double value, Unit<?> unit) {
-            return add( Quantity.from(value, unit) );
+            return add( Quantity.of(value, unit) );
         }
 
         public Builder add(Quantity<?> q) {

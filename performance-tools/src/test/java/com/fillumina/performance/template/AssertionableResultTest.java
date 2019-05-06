@@ -46,7 +46,7 @@ public class AssertionableResultTest {
     @Test
     public void shouldReturnUnsatisfiedAssertion() {
         ExperimentAssertion assertion = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 throw new AssertionError();
             }
 
@@ -76,7 +76,7 @@ public class AssertionableResultTest {
     @Test
     public void shouldReturnAssertionNotFound() {
         ExperimentAssertion assertion = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 throw new MeasureNotFoundException("not found");
             }
 
@@ -107,7 +107,7 @@ public class AssertionableResultTest {
     @Test
     public void shouldReturnNothingIfAllAssertionsAreSatisfied() {
         ExperimentAssertion assertion = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 // do nothing
             }
 
@@ -135,7 +135,7 @@ public class AssertionableResultTest {
     @Test
     public void shouldReturnForDifferentResults() {
         ExperimentAssertion okAssertion = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 // do nothing
             }
 
@@ -148,7 +148,7 @@ public class AssertionableResultTest {
         };
 
         ExperimentAssertion failingAssertion1 = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 throw new AssertionError("not found");
             }
 
@@ -161,7 +161,7 @@ public class AssertionableResultTest {
         };
 
         ExperimentAssertion failingAssertion2 = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 throw new AssertionError("not found");
             }
 
@@ -174,7 +174,7 @@ public class AssertionableResultTest {
         };
 
         ExperimentAssertion notFoundAssertion = new ExperimentAssertion() {
-            @Override public void accept(AssertableExperiment t) {
+            @Override public void check(AssertableExperiment t) {
                 throw new MeasureNotFoundException("not found");
             }
 

@@ -22,10 +22,10 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
-    @Test(expected = PercentageAssertionError.class)
+    @Test(expected=PercentageAssertionError.class)
     public void shouldNotAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
@@ -35,7 +35,7 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
     }
 
     @Test
@@ -48,7 +48,85 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertOrderGreaterThanOrEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("full").greaterThanOrEquals("half");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test(expected=ExperimentAssertionError.class)
+    public void shouldAssertOrderNotGreaterThanOrEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("half").greaterThanOrEquals("full");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertOrderLessThanOrEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("half").lessThanOrEquals("full");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test(expected=ExperimentAssertionError.class)
+    public void shouldAssertOrderNotLessThanOrEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("full").lessThanOrEquals("half");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertOrderNotEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("full").notSameAs("half");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test(expected = ExperimentAssertionError.class)
+    public void shouldAssertOrderNotEqualsFailing() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertOrder("full").notSameAs("full");
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
     }
 
     @Test(expected = OrderAssertionError.class)
@@ -61,11 +139,11 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
     }
 
     @Test
-    public void shouldAssertValue() {
+    public void shouldAssertValueEquals() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
@@ -74,7 +152,72 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertValueGreaterThan() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertValue("half").greaterThan(20);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertValueLesssThan() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertValue("half").lessThan(80);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertValueNotEquals() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertValue("half").notEqualsTo(90);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertValueLessOrEqualsThan() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertValue("half").lessThanOrEquals(70);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertValuegreaterOrEqualsThan() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions statsAssertion =
+                Assertions.withTolerance(tolerance)
+                .assertValue("half").greaterThanOrEquals(20);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        statsAssertion.check(assertable);
     }
 
     @Test(expected = ValueAssertionError.class)
@@ -87,7 +230,7 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
     }
 
     @Test
@@ -103,7 +246,7 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 00);
 
-        statsAssertion.accept(assertable);
+        statsAssertion.check(assertable);
 
         assertEquals("test",
                 ((AssertableMock)assertion.getConsumedAssertableList().get(0))

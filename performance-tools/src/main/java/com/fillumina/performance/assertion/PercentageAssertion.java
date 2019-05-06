@@ -36,15 +36,13 @@ class PercentageAssertion implements ExperimentAssertion, Serializable {
     }
 
     @Override
-    public void accept(AssertableExperiment assertable) {
-        if (assertable != null) {
-            check(assertable, tolerance);
-        }
+    public void check(AssertableExperiment assertable) {
+        check(assertable, tolerance);
     }
 
     public void check(final AssertableExperiment assertable, final Ratio tolerance) {
-        Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
         if (assertable != null) {
+            Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
             RatioAgainstBiggerMeasureCalculator ratios =
                     new RatioAgainstBiggerMeasureCalculator(assertable);
             MeasureRatio actualRatio = ratios.getRatio(testName, confidence);

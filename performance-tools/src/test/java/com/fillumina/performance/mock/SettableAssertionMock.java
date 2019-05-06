@@ -26,7 +26,7 @@ public class SettableAssertionMock implements ExperimentAssertion {
     }
 
     @Override
-    public void accept(AssertableExperiment t) {
+    public void check(AssertableExperiment t) {
         consumer.accept(t);
     }
 

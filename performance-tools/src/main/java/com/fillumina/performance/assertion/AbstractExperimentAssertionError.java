@@ -10,7 +10,8 @@ import java.util.function.BiPredicate;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public abstract class AbstractExperimentAssertionError extends AssertionError {
+public abstract class AbstractExperimentAssertionError
+        extends ExperimentAssertionError {
     private static final long serialVersionUID = 1L;
 
     private final RelativeOrder relativeOrder;

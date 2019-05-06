@@ -4,6 +4,8 @@ import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 
 /**
@@ -32,11 +34,14 @@ class OrderAssertion implements ExperimentAssertion, Serializable {
     }
 
     @Override
-    public void accept(AssertableExperiment assertable)
+    public void check(AssertableExperiment assertable)
             throws MeasureNotFoundException {
         if (assertable != null) {
-            Measure firstMeasure = assertable.getMeasure(firstTestName);
-            Measure secondMeasure = assertable.getMeasure(secondTestName);
+            DimensionalMeasure firstMeasure = assertable.getMeasure(firstTestName);
+            DimensionalMeasure secondMeasure = assertable.getMeasure(secondTestName);
+            Unit<?> bestUnit = DimensionalMeasure.bestUnit(firstMeasure, secondMeasure);
+            firstMeasure = firstMeasure.in(bestUnit);
+            secondMeasure = secondMeasure.in(bestUnit);
 
             if (firstMeasure == null) {
                 throw new MeasureNotFoundException(firstTestName);

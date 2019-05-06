@@ -23,12 +23,12 @@ public class PercentageAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
         throw new RuntimeException("shouln't be here");
     }
 
     @Test
-    public void shouldConsumeLessThanAndBeOk() {
+    public void shouldConsumeLessThan() {
         PercentageAssertion assertion =
                 new PercentageAssertion(
                         "first",
@@ -39,7 +39,82 @@ public class PercentageAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
+    }
+
+    @Test
+    public void shouldNotConsumeLessThan() {
+        PercentageAssertion assertion =
+                new PercentageAssertion(
+                        "first",
+                        RelativeOrder.GREATER,
+                        Ratio.percentage(30),
+                        Ratio.percentage(3));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        new NegateExperimentAssertion(assertion).check(assertable);
+    }
+
+    @Test
+    public void shouldConsumeGreaterThan() {
+        PercentageAssertion assertion =
+                new PercentageAssertion(
+                        "first",
+                        RelativeOrder.GREATER,
+                        Ratio.percentage(5),
+                        Ratio.percentage(3));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        assertion.check(assertable);
+    }
+
+    @Test
+    public void shouldNotConsumeGreaterThan() {
+        PercentageAssertion assertion =
+                new PercentageAssertion(
+                        "first",
+                        RelativeOrder.LESS,
+                        Ratio.percentage(5),
+                        Ratio.percentage(3));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 45.6, "third", 34.5);
+
+        new NegateExperimentAssertion(assertion).check(assertable);
+    }
+
+    @Test
+    public void shouldConsumeEqualsTo() {
+        PercentageAssertion assertion =
+                new PercentageAssertion(
+                        "first",
+                        RelativeOrder.EQUALS,
+                        Ratio.percentage(12.3),
+                        Ratio.percentage(3));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 100.0, "third", 34.5);
+
+        assertion.check(assertable);
+    }
+
+    @Test
+    public void shouldConsumeNotEqualsTo() {
+        PercentageAssertion assertion =
+                new PercentageAssertion(
+                        "first",
+                        RelativeOrder.EQUALS,
+                        Ratio.percentage(66.6),
+                        Ratio.percentage(3));
+
+        AssertableMock assertable = AssertableMock.create(
+                "first", 12.3, "second", 100.0, "third", 34.5);
+
+        new NegateExperimentAssertion(assertion).check(assertable);
     }
 
     @Test(expected = PercentageAssertionError.class)
@@ -54,7 +129,7 @@ public class PercentageAssertionTest {
         AssertableMock assertable = AssertableMock.create(
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
-        assertion.accept(assertable);
+        assertion.check(assertable);
     }
 
     public static void main(final String[] args) {
@@ -69,7 +144,7 @@ public class PercentageAssertionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
         } catch(PercentageAssertionError e) {
             System.out.println(e);
         }

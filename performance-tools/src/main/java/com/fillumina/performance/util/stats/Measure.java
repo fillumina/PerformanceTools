@@ -9,6 +9,13 @@ import java.util.Locale;
 public abstract class Measure {
     public static final double STD_FACTOR = 3.0;
 
+    public static Measure of(double ... values) {
+        if (values.length == 1) {
+            return new SingleMeasure(values[0]);
+        }
+        return new OnlineMeasure(values).toImmutable();
+    }
+
     /** @return an immutable snapshot of the current measure. */
     public Measure toImmutable() {
         return new ImmutableMeasure(this);

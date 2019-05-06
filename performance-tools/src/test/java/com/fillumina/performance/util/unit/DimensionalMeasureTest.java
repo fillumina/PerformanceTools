@@ -22,4 +22,14 @@ public class DimensionalMeasureTest {
         assertEquals(1E-3, m.in(Magnitude.MEGA).getMean(), 0);
     }
 
+    @Test
+    public void shouldSetBestUnit() {
+        DimensionalMeasure dm1 = DimensionalMeasure.of(Magnitude.UNIT, 12000.0);
+        DimensionalMeasure dm2 = DimensionalMeasure.of(Magnitude.KILO, 1);
+        DimensionalMeasure dm3 = DimensionalMeasure.of(Magnitude.MEGA, 0.003);
+
+        final Unit<?> bestUnit = DimensionalMeasure.bestUnit(dm1, dm2, dm3);
+
+        assertEquals(Magnitude.KILO, bestUnit);
+    }
 }

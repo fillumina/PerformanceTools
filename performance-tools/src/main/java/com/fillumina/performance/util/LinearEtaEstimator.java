@@ -14,7 +14,7 @@ import com.fillumina.performance.util.unit.Quantity;
  */
 public class LinearEtaEstimator {
     public static final Quantity<IntervalUnit> ZERO =
-            Quantity.from(0, IntervalUnit.SECONDS);
+            Quantity.of(0, IntervalUnit.SECONDS);
 
     private final StopWatch stopWatch = new StopWatch();
     private long  totalTimeNs;
@@ -41,7 +41,7 @@ public class LinearEtaEstimator {
 
         double approxEtaNs = getApproxLinearEtaNs(error, totalTimeNs, past);
         Quantity<IntervalUnit> approxEta =
-                Quantity.from(approxEtaNs, IntervalUnit.NANOSECONDS);
+                Quantity.of(approxEtaNs, IntervalUnit.NANOSECONDS);
 
         return approxEta;
     }

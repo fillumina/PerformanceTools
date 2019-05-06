@@ -19,7 +19,7 @@ public class SampleValue implements PathNamed, Serializable {
     private final Quantity<?> quantity;
 
     public SampleValue(PathName name, double value, Unit<?> unit) {
-        this(name, Quantity.from(value, unit));
+        this(name, Quantity.of(value, unit));
     }
 
     public SampleValue(PathName name, Quantity<?> quantity) {

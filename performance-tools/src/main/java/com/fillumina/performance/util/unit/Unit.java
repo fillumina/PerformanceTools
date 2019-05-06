@@ -51,7 +51,7 @@ public interface Unit<U extends Unit<U>> extends Comparable<U> {
         return value * unit.getConversionFactorTo(this);
     }
 
-    /** Converts from the base unit (don't make assumptions about base). */
+    /** Converts of the base unit (don't make assumptions about base). */
     default double convertFromBase(final double value) {
         return value / getFactor();
     }

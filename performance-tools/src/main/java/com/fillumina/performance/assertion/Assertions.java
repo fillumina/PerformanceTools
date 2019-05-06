@@ -48,8 +48,8 @@ public class Assertions
      * @throws AssertionError  if the {@link AssertableExperiment} doesn't comply
      */
     @Override
-    public void accept(AssertableExperiment assertable) throws AssertionError {
-        collection.forEach(a -> a.accept(assertable) );
+    public void check(AssertableExperiment assertable) throws AssertionError {
+        collection.forEach(a -> a.check(assertable) );
     }
 
     @Override

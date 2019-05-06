@@ -48,7 +48,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
     }
 
     @Override
-    public void accept(AssertableExperiment assertable) {
+    public void check(AssertableExperiment assertable) {
         forEach(assertable, (assertion) -> {
             try {
                 assertion.check(assertable);
@@ -141,7 +141,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
         List<ExperimentAssertion> createAssertions(Collection<PathName> names);
 
         @Override
-        public default void accept(AssertableExperiment t) {
+        public default void check(AssertableExperiment t) {
             // do nothing
         }
 
@@ -218,6 +218,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             private final PathNameMatcher nameMatcher;
             private PathNameMatcher otherMatcher;
             private RelativeOrder equalityCondition;
+            private boolean negate;
 
             public OrderCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
@@ -289,7 +290,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                             ExperimentAssertion assertion = Assertions
                                     .withTolerance(tolerance)
                                     .assertOrder(aItem)
-                                    .is(equalityCondition, bItem);
+                                    .is(negate, equalityCondition, bItem);
                             list.add(assertion);
                         }
                     }
@@ -326,6 +327,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             private final Ratio tolerance;
             private RelativeOrder equalityCondition;
             private Ratio percentage;
+            private boolean negate;
 
             public PercentageCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
@@ -358,7 +360,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertPercentage(n)
-                            .is(equalityCondition, percentage.getPercentage());
+                            .is(negate, equalityCondition, percentage.getPercentage());
                     list.add(assertion);
                 }
                 return list;
@@ -393,6 +395,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
             private final Ratio tolerance;
             private RelativeOrder equalityCondition;
             private Quantity<?> value;
+            private boolean negate;
 
             public ValueCondition(PathNameMatcher nameMatcher, Ratio tolerance) {
                 this.nameMatcher = nameMatcher;
@@ -417,6 +420,27 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                 return addToEvaluators(this);
             }
 
+            public Builder<C> greaterThanOrEquals(double value) {
+                this.value = Absolute.UNIT.quantity(value);
+                equalityCondition = RelativeOrder.LESS;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> lessThanOrEquals(double value) {
+                this.value = Absolute.UNIT.quantity(value);
+                equalityCondition = RelativeOrder.GREATER;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> notEqualsTo(double value) {
+                this.value = Absolute.UNIT.quantity(value);
+                equalityCondition = RelativeOrder.EQUALS;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
             public Builder<C> lessThan(Quantity<?> value) {
                 this.value = value;
                 equalityCondition = RelativeOrder.LESS;
@@ -435,6 +459,27 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                 return addToEvaluators(this);
             }
 
+            public Builder<C> greaterThanOrEquals(Quantity<?> value) {
+                this.value = value;
+                equalityCondition = RelativeOrder.LESS;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> lessThanOrEquals(Quantity<?> value) {
+                this.value = value;
+                equalityCondition = RelativeOrder.GREATER;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
+            public Builder<C> notEqualsTo(Quantity<?> value) {
+                this.value = value;
+                equalityCondition = RelativeOrder.EQUALS;
+                negate = true;
+                return addToEvaluators(this);
+            }
+
             @Override
             public List<ExperimentAssertion> createAssertions(Collection<PathName> names) {
                 List<ExperimentAssertion> list = new ArrayList<>();
@@ -443,7 +488,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
                             .assertValue(aItem)
-                            .is(equalityCondition, value);
+                            .is(negate, equalityCondition, value);
                     list.add(assertion);
                 }
                 return list;

@@ -29,7 +29,7 @@ public class ValueAssertionErrorTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         try {
-            assertion.accept(assertable);
+            assertion.check(assertable);
             fail();
 
         } catch (ValueAssertionError e) {

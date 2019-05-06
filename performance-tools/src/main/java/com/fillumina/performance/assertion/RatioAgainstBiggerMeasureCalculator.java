@@ -3,6 +3,8 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
 
 /**
@@ -14,7 +16,7 @@ class RatioAgainstBiggerMeasureCalculator
     private static final long serialVersionUID = 1L;
 
     private final AssertableExperiment assertable;
-    private final Measure refMeasure;
+    private final DimensionalMeasure refMeasure;
     private final int refIndex;
     private final CharSequence refName;
 
@@ -22,15 +24,18 @@ class RatioAgainstBiggerMeasureCalculator
         this.assertable = assertable;
         CharSequence name = null;
         int index = -1;
-        Measure measure = null;
+        DimensionalMeasure measure = null;
+        double mean = Double.NEGATIVE_INFINITY;
 
         int i = 0;
         for (CharSequence n : assertable.getNames()) {
-            Measure m = assertable.getMeasure(n);
-            if (measure == null || measure.getMean() < m.getMean()) {
+            DimensionalMeasure dm = assertable.getMeasure(n);
+            double m = dm.getUnit().convertToBase(dm.getMean());
+            if (measure == null || mean < m) {
                 name = n;
                 index = i;
-                measure = m;
+                measure = dm;
+                mean = m;
             }
             i++;
         }
@@ -40,8 +45,10 @@ class RatioAgainstBiggerMeasureCalculator
     }
 
     public MeasureRatio getRatio(CharSequence name, Ratio confidence) {
-        Measure measure = assertable.getMeasure(name);
-        return new MeasureRatio(measure, refMeasure, confidence);
+        DimensionalMeasure measure = assertable.getMeasure(name);
+        Unit<?> unit = measure.getUnit();
+        Unit<?> bestUnit = unit.bestUnit(measure.getMean(), refMeasure.getMean());
+        return new MeasureRatio(measure.in(bestUnit), refMeasure.in(bestUnit), confidence);
     }
 
     public Measure getReferenceTestMeasure() {

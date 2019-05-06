@@ -80,7 +80,7 @@ public class TimeSampleCollector implements TimeSampleBuilder {
 
             SampleValue s = new TimeSampleValue(
                     name,
-                    Quantity.from(valueFunc.apply(ita), unit),
+                    Quantity.of(valueFunc.apply(ita), unit),
                     ita.getIterations(),
                     ita.getTimeNs());
 

@@ -33,7 +33,7 @@ class ValueAssertion implements ExperimentAssertion, Serializable {
     }
 
     @Override
-    public void accept(AssertableExperiment assertable) {
+    public void check(AssertableExperiment assertable) {
         if (assertable != null) {
             check(assertable, tolerance);
         }
@@ -43,9 +43,6 @@ class ValueAssertion implements ExperimentAssertion, Serializable {
         if (assertable != null) {
             DimensionalMeasure actualValue = assertable.getMeasure(testName);
 
-            if (actualValue == null) {
-                throw new MeasureNotFoundException(testName);
-            }
             new ValueAssertionError(testName, actualValue,
                         expectedValue, tolerance, condition, assertable)
                     .checkAndThrowExceptionIfNotSatisfied();

@@ -16,7 +16,7 @@ public class QuantityTest {
     @Test
     public void shouldAssingAnUnkownUnitToQuantity() {
         Unit<?> unit = MemUnit.KiB;
-        Quantity<?> q = Quantity.from(12.3, unit);
+        Quantity<?> q = Quantity.of(12.3, unit);
         assertNotNull(q);
     }
 
