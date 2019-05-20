@@ -69,7 +69,7 @@ public class AssertableMock extends DefaultAssertableExperiment {
 
     public AssertableMock(String name, Map<CharSequence, DimensionalMeasure> map,
             Unit<?> unit) {
-        super(unit, map);
+        super(map);
         this.name = name;
     }
 

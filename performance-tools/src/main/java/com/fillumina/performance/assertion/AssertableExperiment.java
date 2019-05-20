@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * It's a collection of measures relative to named experiments.
+ * A collection of measures relative to named experiments.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

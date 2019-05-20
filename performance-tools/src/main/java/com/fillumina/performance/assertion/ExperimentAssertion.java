@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Checks it an {@link AssertableExperiment} complies with the requirements.
+ * Checks if an {@link AssertableExperiment} complies with the requirements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
