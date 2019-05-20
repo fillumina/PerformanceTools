@@ -71,7 +71,7 @@ public class ValueAssertionTest {
                         Magnitude.MILLI.quantity(12.3E3),
                         Ratio.percentage(3));
 
-        AssertableMock assertable = AssertableMock.createWithNameAdUnit("",
+        AssertableMock assertable = AssertableMock.createWithNameAndUnit("",
                 Magnitude.UNIT,
                 "first", 12.3, "second", 45.6, "third", 34.5);
 

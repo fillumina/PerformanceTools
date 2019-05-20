@@ -43,12 +43,6 @@ class OrderAssertion implements ExperimentAssertion, Serializable {
             firstMeasure = firstMeasure.in(bestUnit);
             secondMeasure = secondMeasure.in(bestUnit);
 
-            if (firstMeasure == null) {
-                throw new MeasureNotFoundException(firstTestName);
-            }
-            if (secondMeasure == null) {
-                throw new MeasureNotFoundException(secondTestName);
-            }
             new OrderAssertionError(
                     firstTestName, firstMeasure,
                     secondTestName, secondMeasure,
@@ -61,17 +55,15 @@ class OrderAssertion implements ExperimentAssertion, Serializable {
     public void appendTo(Appendable appendable, AssertableExperiment assertable) {
         Measure firstMeasure = assertable.getMeasure(firstTestName);
         Measure secondMeasure = assertable.getMeasure(secondTestName);
-        if (firstMeasure != null && secondMeasure != null) {
-            new AppendableWrapper(appendable)
-                    .print('\'').print(firstTestName).print("' (")
-                    .print(firstMeasure).print(") ")
-                    .print(satisfy(assertable) ? " is " : "is not ")
-                    .print(condition.getMessage())
-                    .print(" \'").print(secondTestName).print("' (")
-                    .print(secondMeasure).print(") ")
-                    .print(" with a tolerance of ")
-                    .print(tolerance);
-        }
+        new AppendableWrapper(appendable)
+                .print('\'').print(firstTestName).print("' (")
+                .print(firstMeasure).print(") ")
+                .print(satisfy(assertable) ? " is " : "is not ")
+                .print(condition.getMessage())
+                .print(" \'").print(secondTestName).print("' (")
+                .print(secondMeasure).print(") ")
+                .print(" with a tolerance of ")
+                .print(tolerance);
     }
 
     @Override

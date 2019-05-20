@@ -7,8 +7,6 @@ import java.io.IOException;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class NegateExperimentAssertion implements ExperimentAssertion {
-    private static final long serialVersionUID = 1L;
-
     private final ExperimentAssertion inner;
 
     public NegateExperimentAssertion(ExperimentAssertion inner) {

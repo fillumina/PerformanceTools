@@ -27,7 +27,7 @@ import java.util.function.Function;
  * <li>worst case (hash clash) for insertion and extraction is linear O(N)
  * <li>removal is linear O(N)
  * <li>maintains insertion order
- * <li>views as random access lists
+ * <li>view as random access lists
  * <li>manages its own unmodifiable view of itself
  * <li>has copy constructor and clone constructor
  * </ul>

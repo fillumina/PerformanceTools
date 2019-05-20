@@ -17,7 +17,7 @@ public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
     Collection<? extends CharSequence> getNames();
 
     /**
-     * @return the named measure or null if it doesn't exist.
+     * @return the named measure.
      * @throws {@link NoSuchElementException} if there is no measure.
      */
     DimensionalMeasure getMeasure(CharSequence name)
@@ -30,7 +30,7 @@ public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
 
     /**
      * @return the first measure (useful if there is only one).
-     * @throws {@link NoSuchElementException} if there is no measure.
+     * @throws {@link NoSuchElementException} if there aren't any measure.
      */
     default Measure getFirstMeasure() throws NoSuchElementException {
         return getMeasure(getNames().iterator().next());

@@ -36,10 +36,15 @@ public class AssertableMock extends DefaultAssertableExperiment {
     }
 
     public static AssertableMock createWithName(String name, Object... o) {
-        return createWithNameAdUnit(name, Absolute.UNIT, o);
+        return createWithNameAndUnit(name, Absolute.UNIT, o);
     }
 
-    public static AssertableMock createWithNameAdUnit(String name, Unit<?> unit,
+    public static AssertableMock createWithUnit(Unit<?> unit,
+            Object... o) {
+        return createWithNameAndUnit("test", unit, o);
+    }
+
+    public static AssertableMock createWithNameAndUnit(String name, Unit<?> unit,
             Object... o) {
         int start = (o.length & 1); // return 1 if unpair
         IndexedHashMap<CharSequence,DimensionalMeasure> map = new IndexedHashMap<>();
