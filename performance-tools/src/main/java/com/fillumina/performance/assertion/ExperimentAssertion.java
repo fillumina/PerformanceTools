@@ -4,11 +4,9 @@ import com.fillumina.performance.util.StringGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
- * A {@link Consumer} that consumes a {@link AssertableExperiment} and checks
- * if it complies with the requirements.
+ * Checks it an {@link AssertableExperiment} complies with the requirements.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

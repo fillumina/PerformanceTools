@@ -36,6 +36,7 @@ public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
         return getMeasure(getNames().iterator().next());
     }
 
+    /** @return an iterator over measures. */
     @Override
     public default Iterator<DimensionalMeasure> iterator() {
         final Iterator<? extends CharSequence> it = getNames().iterator();

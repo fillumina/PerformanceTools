@@ -139,8 +139,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test(expected=ValueAssertionError.class)
     public void shouldCompareValueWithDifferentUnitBad() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 7.0, 8.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
@@ -152,8 +151,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test
     public void shouldCompareValueWithDifferentUnitOK() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 7.0, 8.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
@@ -165,8 +163,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test(expected=OrderAssertionError.class)
     public void shouldCompareOrderWithDifferentUnitBad() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 7.0, 8.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
@@ -178,8 +175,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test
     public void shouldCompareOrderWithDifferentUnitOk() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 7.0, 8.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
@@ -191,8 +187,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test(expected=PercentageAssertionError.class)
     public void shouldComparePercentageWithDifferentUnitBad() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 1.0))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 70.0, 80.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
@@ -204,8 +199,7 @@ public class DefaultAssertableExperimentTest {
 
     @Test
     public void shouldComparePercentageWithDifferentUnitOk() {
-        DefaultAssertableExperiment votes =
-                new DefaultAssertableExperiment(Magnitude.UNIT)
+        DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 1.0))
                 .add("Lola", DimensionalMeasure.of(Magnitude.UNIT, 70.0, 80.0))
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));

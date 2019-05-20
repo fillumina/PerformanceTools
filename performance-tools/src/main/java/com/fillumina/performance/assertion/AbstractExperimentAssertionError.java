@@ -42,6 +42,7 @@ public abstract class AbstractExperimentAssertionError
         return tolerance;
     }
 
+    // TODO what happens with new relative orders lessThanOrEquals?
     public RelativeOrder getRelativeOrder() {
         return relativeOrder;
     }

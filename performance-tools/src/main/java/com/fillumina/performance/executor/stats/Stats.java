@@ -25,10 +25,10 @@ import java.util.function.Predicate;
 
 /**
  * An {@link AssertableExperiment} representing the Statistics about an
- * experiment including various tests of the same type.
+ * experiment executed on different subjects.
  * In addition of the usual statistics it calculates ANOVA and performs the
  * Games-Howell HSD post-hoc test on all experiment pairs so to assess the
- * statistic significance of results.
+ * statistic significance of the results.
  * <p>
  * It is possible to add named payloads that contain configurable info about the
  * various stages of the creation of the stats.
@@ -51,7 +51,7 @@ public class Stats extends Printable<Stats>
     private final MultiMeasureSignificance multiMeasure;
     private final Unit<?> unit;
     private final Map<String, Object> payloadMap;
-    private final Predicate<String> filter;
+    private final Predicate<String> filter; // TODO sort this out
 
     private SignificancePrintable significancePrintable;
 
@@ -90,7 +90,7 @@ public class Stats extends Printable<Stats>
     /**
      * Full blown constructor.
      *
-     * @param type stats' type
+     * @param type stats type
      * @param measures the measures of the experiment
      * @param unit if null the unit is extracted from measures
      * @param payload various data not managed by the class
