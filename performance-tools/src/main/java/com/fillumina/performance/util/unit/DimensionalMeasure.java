@@ -1,6 +1,7 @@
 package com.fillumina.performance.util.unit;
 
 import com.fillumina.performance.util.stats.Measure;
+import com.fillumina.performance.util.stats.MeasureRatio;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.SingleMeasure;
 import java.util.ArrayList;
@@ -55,8 +56,14 @@ public abstract class DimensionalMeasure extends Measure {
     }
 
     @Override
+    public MeasureRatio ratio(Measure m, Ratio confidence) {
+        return new MeasureRatio(this, convertToSameUnit(m), confidence);
+    }
+
+    @Override
     public DimensionalMeasure join(Measure m) {
-        return new ImmutableDimensionalMeasure(super.join(m), getUnit());
+        return new ImmutableDimensionalMeasure(
+                super.join(convertToSameUnit(m)), getUnit());
     }
 
     @Override
@@ -71,18 +78,27 @@ public abstract class DimensionalMeasure extends Measure {
 
     @Override
     public DimensionalMeasure subtract(Measure m) {
-        return new ImmutableDimensionalMeasure(super.subtract(m), getUnit());
+        return new ImmutableDimensionalMeasure(
+                super.subtract(convertToSameUnit(m)), getUnit());
     }
 
     @Override
     public DimensionalMeasure sum(Measure m) {
-        return new ImmutableDimensionalMeasure(super.sum(m), getUnit());
+        return new ImmutableDimensionalMeasure(
+                super.sum(convertToSameUnit(m)), getUnit());
     }
 
     /** @return an immutable snapshot of the current measure. */
     @Override
     public DimensionalMeasure toImmutable() {
         return new ImmutableDimensionalMeasure(this);
+    }
+
+    protected Measure convertToSameUnit(Measure m) {
+        if (m instanceof DimensionalMeasure) {
+            return ((DimensionalMeasure) m).in(getUnit());
+        }
+        return m;
     }
 
     public String toString(Unit<?> unit) {
