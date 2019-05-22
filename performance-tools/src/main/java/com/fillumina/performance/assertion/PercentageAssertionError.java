@@ -17,6 +17,36 @@ public class PercentageAssertionError extends AbstractExperimentAssertionError {
     private final Ratio expected;
     private final AssertableExperiment assertableMultiTest;
 
+    public static PercentageAssertionError createWithPercentage(
+            AssertableExperiment assertable,
+            CharSequence firstTestName,
+            Number expectedPercentage,
+            RelativeOrder order,
+            Ratio tolerance) {
+        return createWithRatio(assertable, firstTestName,
+                Ratio.percentage(expectedPercentage.doubleValue()), order,
+                tolerance);
+    }
+
+    public static PercentageAssertionError createWithRatio(
+            AssertableExperiment assertable,
+            CharSequence firstTestName,
+            Ratio expectedRatio,
+            RelativeOrder order,
+            Ratio tolerance) {
+        Ratio confidence = Ratio.decimal(1 - tolerance.getDecimal());
+        RatioAgainstBiggerMeasureCalculator ratios =
+                new RatioAgainstBiggerMeasureCalculator(assertable);
+        MeasureRatio actualRatio = ratios.getRatio(firstTestName, confidence);
+
+        if (actualRatio == null) {
+            throw new MeasureNotFoundException(firstTestName);
+        }
+        return new PercentageAssertionError(firstTestName,
+                actualRatio, expectedRatio,
+                tolerance, order, assertable);
+    }
+
     public PercentageAssertionError(
             CharSequence testName,
             MeasureRatio actualRatio,

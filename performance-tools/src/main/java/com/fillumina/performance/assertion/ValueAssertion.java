@@ -14,6 +14,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated
 class ValueAssertion implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;

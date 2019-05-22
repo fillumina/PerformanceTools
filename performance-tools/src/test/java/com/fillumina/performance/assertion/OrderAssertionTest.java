@@ -13,7 +13,7 @@ public class OrderAssertionTest {
 
     @Test(expected = OrderAssertionError.class)
     public void shouldConsumeAndThrowException() {
-        OrderAssertion assertion =
+        ExperimentAssertion assertion =
                 new OrderAssertion("first", "second",
                         RelativeOrder.GREATER,
                         Ratio.percentage(3));

@@ -91,11 +91,11 @@ public class TelemetryTest {
         result.getStatsHolder(TimeStatsType.AVERAGE)
                 .appendTo(printout)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
-                    .assertPercentage(START).sameAs(0)
-                    .assertPercentage(ONE).sameAs(20)
-                    .assertPercentage(TWO).sameAs(10)
-                    .assertPercentage(REPEATING).sameAs(10)
-                    .assertPercentage(THREE).sameAs(100));
+                    .assertPercentage(START).equalsTo(0)
+                    .assertPercentage(ONE).equalsTo(20)
+                    .assertPercentage(TWO).equalsTo(10)
+                    .assertPercentage(REPEATING).equalsTo(10)
+                    .assertPercentage(THREE).equalsTo(100));
 
         result.getStatsHolder(TimeStatsType.THROUGHPUT)
                 .appendTo(printout);
@@ -138,9 +138,9 @@ public class TelemetryTest {
         Map<PathName, DimensionalMeasure> map = holder
                 .getStatsHolder(TimeStatsType.AVERAGE)
                 .check(Assertions.withTolerance(Ratio.percentage(5))
-                    .assertPercentage(START).sameAs(0)
-                    .assertPercentage(TWO).sameAs(10)
-                    .assertPercentage(THREE).sameAs(100))
+                    .assertPercentage(START).equalsTo(0)
+                    .assertPercentage(TWO).equalsTo(10)
+                    .assertPercentage(THREE).equalsTo(100))
                 .getStats()
                 .getMeasureMap();
 

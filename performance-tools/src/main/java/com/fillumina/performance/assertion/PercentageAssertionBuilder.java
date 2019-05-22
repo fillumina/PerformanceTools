@@ -14,6 +14,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
+@Deprecated
 public class PercentageAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -2,6 +2,7 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.Quantity;
 import java.io.Serializable;
 import java.util.function.Consumer;
 
@@ -65,9 +66,23 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * assertion.assertPercentage("some test").lessThan(35);
      * </pre>
      */
-    public PercentageAssertionBuilder<I,C> assertPercentage(
+    public FluentAssertionBuilder<I,Number> assertPercentage(
             final CharSequence name) {
-        return new PercentageAssertionBuilder<>(this, name, tolerance);
+        return new FluentAssertionBuilder<>(
+                this, name, tolerance, PercentageAssertionError::createWithPercentage);
+    }
+
+    /**
+     * Asserts the ratio of the specified measure compared to the reference
+     * (usually the bigger measure).
+     * <pre>
+     * assertion.assertPercentage("some test").lessThan(35);
+     * </pre>
+     */
+    public FluentAssertionBuilder<I,Ratio> assertRatio(
+            final CharSequence name) {
+        return new FluentAssertionBuilder<>(
+                this, name, tolerance, PercentageAssertionError::createWithRatio);
     }
 
     /**
@@ -76,8 +91,10 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * assertion.assertOrder("some test").lessThan("other test");
      * </pre>
      */
-    public OrderAssertionBuilder<I,C> assertOrder(final CharSequence name) {
-        return new OrderAssertionBuilder<>(this, name, tolerance);
+    public FluentAssertionBuilder<I, CharSequence> assertOrder(
+            final CharSequence name) {
+        return new FluentAssertionBuilder<>(
+                this, name, tolerance, OrderAssertionError::create);
     }
 
     /**
@@ -86,8 +103,22 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * assertion.assertValue("some test").lessThan(12.3);
      * </pre>
      */
-    public ValueAssertionBuilder<I,C> assertValue(final CharSequence name) {
-        return new ValueAssertionBuilder<>(this, name, tolerance);
+    public FluentAssertionBuilder<I,Number> assertValue(
+            final CharSequence name) {
+        return new FluentAssertionBuilder<>(
+                this, name, tolerance, ValueAssertionError::createValue);
+    }
+
+    /**
+     * Asserts the mean value of a measure.
+     * <pre>
+     * assertion.assertValue("some test").lessThan(12.3);
+     * </pre>
+     */
+    public FluentAssertionBuilder<I,Quantity<?>> assertQuantity(
+            final CharSequence name) {
+        return new FluentAssertionBuilder<>(
+                this, name, tolerance, ValueAssertionError::createQuantity);
     }
 
     /**

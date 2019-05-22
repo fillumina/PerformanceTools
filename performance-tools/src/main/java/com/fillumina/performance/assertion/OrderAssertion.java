@@ -7,6 +7,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.unit.Unit;
 import java.io.Serializable;
+import java.util.NoSuchElementException;
 
 /**
  * It uses the standard margin of error of the measures
@@ -14,6 +15,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+@Deprecated
 class OrderAssertion implements ExperimentAssertion, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,18 +39,24 @@ class OrderAssertion implements ExperimentAssertion, Serializable {
     public void check(AssertableExperiment assertable)
             throws MeasureNotFoundException {
         if (assertable != null) {
-            DimensionalMeasure firstMeasure = assertable.getMeasure(firstTestName);
-            DimensionalMeasure secondMeasure = assertable.getMeasure(secondTestName);
-            Unit<?> bestUnit = DimensionalMeasure.bestUnit(firstMeasure, secondMeasure);
-            firstMeasure = firstMeasure.in(bestUnit);
-            secondMeasure = secondMeasure.in(bestUnit);
-
-            new OrderAssertionError(
-                    firstTestName, firstMeasure,
-                    secondTestName, secondMeasure,
-                    tolerance, condition, assertable)
-                    .checkAndThrowExceptionIfNotSatisfied();
+            getAssertionError(assertable)
+                .checkAndThrowExceptionIfNotSatisfied();
         }
+    }
+
+    public AbstractExperimentAssertionError getAssertionError(
+            AssertableExperiment assertable)
+                throws NoSuchElementException {
+        DimensionalMeasure firstMeasure = assertable.getMeasure(firstTestName);
+        DimensionalMeasure secondMeasure = assertable.getMeasure(secondTestName);
+        Unit<?> bestUnit = DimensionalMeasure.bestUnit(firstMeasure, secondMeasure);
+        firstMeasure = firstMeasure.in(bestUnit);
+        secondMeasure = secondMeasure.in(bestUnit);
+
+        return new OrderAssertionError(
+                firstTestName, firstMeasure,
+                secondTestName, secondMeasure,
+                tolerance, condition, assertable);
     }
 
     @Override

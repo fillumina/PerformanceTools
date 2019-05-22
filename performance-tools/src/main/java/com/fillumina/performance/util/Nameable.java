@@ -6,5 +6,6 @@ package com.fillumina.performance.util;
  */
 public interface Nameable<I> {
 
+    // TODO change to CharSequence (it might include TName as well)
     I setName(String name);
 }

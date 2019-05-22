@@ -41,10 +41,10 @@ public class AllocatedMemAnalyzerTest {
     @Test
     public void shouldCheckMultipleAssertion() {
         ExperimentAssertion assertion = Assertions.withTolerance(Ratio.ZERO)
-                .assertValue(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
-                .assertValue(NOALLOCATED).equalsTo(MemUnit.B.quantity(0))
-                .assertValue(ALLOCATED).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
-                .assertOrder(NOMEMORY).sameAs(NOALLOCATED)
+                .assertQuantity(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
+                .assertQuantity(NOALLOCATED).equalsTo(MemUnit.B.quantity(0))
+                .assertQuantity(ALLOCATED).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
+                .assertOrder(NOMEMORY).equalsTo(NOALLOCATED)
                 .assertOrder(NOMEMORY).lessThan(ALLOCATED);
 
         assertion.check(MEMSTATS);
@@ -54,7 +54,7 @@ public class AllocatedMemAnalyzerTest {
     public void shouldNotAssertWrongOrder() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertOrder(NOALLOCATED).sameAs(ALLOCATED);
+                .assertOrder(NOALLOCATED).equalsTo(ALLOCATED);
 
         assertion.check(MEMSTATS);
     }
@@ -63,7 +63,7 @@ public class AllocatedMemAnalyzerTest {
     public void shouldAssertValueWithinTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ALLOCATED)
+                .assertQuantity(ALLOCATED)
                         .equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 1));
 
         assertion.check(MEMSTATS);
@@ -73,7 +73,7 @@ public class AllocatedMemAnalyzerTest {
     public void shouldNotAssertValueOutsideTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ALLOCATED)
+                .assertQuantity(ALLOCATED)
                         .equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 10));
 
         assertion.check(MEMSTATS);

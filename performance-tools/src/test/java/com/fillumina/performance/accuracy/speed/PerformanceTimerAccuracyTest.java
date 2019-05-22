@@ -98,10 +98,10 @@ public class PerformanceTimerAccuracyTest {
 
         holder.check(Assertions.
                 <Stats>withTolerance(Ratio.percentage(10))
-                .assertPercentage("zero").sameAs(0)
-                .assertPercentage("single").sameAs(33)
-                .assertPercentage("double").sameAs(66)
-                .assertPercentage("triple").sameAs(100));
+                .assertPercentage("zero").equalsTo(0)
+                .assertPercentage("single").equalsTo(33)
+                .assertPercentage("double").equalsTo(66)
+                .assertPercentage("triple").equalsTo(100));
     }
 
     private static int getConcurrencyLevel() {

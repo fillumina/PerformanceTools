@@ -487,7 +487,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                 for (PathName aItem : aList) {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
-                            .assertValue(aItem)
+                            .assertQuantity(aItem)
                             .is(negate, equalityCondition, value);
                     list.add(assertion);
                 }

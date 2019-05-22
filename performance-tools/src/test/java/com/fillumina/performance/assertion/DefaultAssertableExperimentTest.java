@@ -145,7 +145,7 @@ public class DefaultAssertableExperimentTest {
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
 
         Assertions.withTolerance(Ratio.percentage(25))
-                .assertValue("Kenny").equalsTo(Quantity.of(5, Magnitude.UNIT))
+                .assertQuantity("Kenny").equalsTo(Quantity.of(5, Magnitude.UNIT))
                 .check(votes);
     }
 
@@ -157,7 +157,7 @@ public class DefaultAssertableExperimentTest {
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
 
         Assertions.withTolerance(Ratio.percentage(25))
-                .assertValue("Kenny").equalsTo(Quantity.of(5, Magnitude.MILLI))
+                .assertQuantity("Kenny").equalsTo(Quantity.of(5, Magnitude.MILLI))
                 .check(votes);
     }
 
@@ -205,7 +205,7 @@ public class DefaultAssertableExperimentTest {
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
 
         Assertions.withTolerance(Ratio.percentage(25))
-                .assertPercentage("Lola").sameAs(7.5)
+                .assertPercentage("Lola").equalsTo(7.5)
                 .check(votes);
     }
 

@@ -56,8 +56,34 @@ public class AssertionsOrderTest {
         fail();
     }
 
+//    @Test
+//    public void shouldExceptionGiveInfoWithNegateAssertion() {
+//        final Assertions speedAssertion =
+//                Assertions.withTolerance(Ratio.ZERO)
+//                    .assertOrder("Second").lessThanOrEquals("First");
+//
+//        final AssertableMock assertable =
+//                AssertableMock.create(
+//                        "First", 33,
+//                        "Second", 66,
+//                        "Top", 100);
+//
+//        try {
+//            speedAssertion.check(assertable);
+//        } catch (ExperimentAssertionError e) {
+//            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
+//            assertEquals("Second", e.getFirstTestName().toString());
+//            assertEquals("First", e.getSecondTestName().toString());
+//            assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
+//            assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
+//            assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
+//            return;
+//        }
+//        fail();
+//    }
+
     @Test
-    public void shouldBeFasterWithTolerance10() {
+    public void shouldBeLessThanWithTolerance10() {
         final Assertions highToleranceAssertion =
                 Assertions.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
@@ -71,7 +97,7 @@ public class AssertionsOrderTest {
     }
 
     @Test
-    public void shouldNotBeFasterWithLowTolerance() {
+    public void shouldNotBeLessThanWithLowTolerance() {
         final Assertions lowToleranceAssertion =
                 Assertions.withTolerance(Ratio.percentage(10))
                     .assertOrder("First").lessThan("Second");
@@ -90,7 +116,7 @@ public class AssertionsOrderTest {
     }
 
     @Test
-    public void shouldNotBeSlower() {
+    public void shouldNotBeGreaterThan() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
                     .assertOrder("First").greaterThan("Second");
@@ -124,7 +150,7 @@ public class AssertionsOrderTest {
     public void shouldNotBeEquals() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").sameAs("Second");
+                    .assertOrder("First").equalsTo("Second");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -148,7 +174,7 @@ public class AssertionsOrderTest {
     public void shouldReportNonExistentTest() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").sameAs("NonExistent");
+                    .assertOrder("First").equalsTo("NonExistent");
 
         final AssertableMock assertable =
                 AssertableMock.create(

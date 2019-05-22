@@ -6,5 +6,6 @@ package com.fillumina.performance.util;
  */
 public interface Named {
 
+    // TODO change to CharSequence?
     String getName();
 }

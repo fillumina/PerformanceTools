@@ -33,8 +33,8 @@ public class UsedMemAnalyzerTest {
     public void shouldCheckMultipleAssertion() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
-                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
+                .assertQuantity(NOMEMORY).equalsTo(MemUnit.B.quantity(0))
+                .assertQuantity(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10))
                 .assertOrder(NOMEMORY).lessThan(ARRAY);
 
         MEMSTATS_HOLDER.check(assertion);
@@ -44,7 +44,7 @@ public class UsedMemAnalyzerTest {
     public void shouldNotAssertWrongOrder() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertOrder(NOMEMORY).sameAs(ARRAY);
+                .assertOrder(NOMEMORY).equalsTo(ARRAY);
 
         MEMSTATS_HOLDER.check(assertion);
     }
@@ -53,7 +53,7 @@ public class UsedMemAnalyzerTest {
     public void shouldAssertValueWithinTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 1));
+                .assertQuantity(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 1));
 
         MEMSTATS_HOLDER.check(assertion);
     }
@@ -62,7 +62,7 @@ public class UsedMemAnalyzerTest {
     public void shouldNotAssertValueOutsideTolerance() {
         ExperimentAssertion assertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                .assertValue(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 10));
+                .assertQuantity(ARRAY).equalsTo(MemUnit.B.quantity(16 + 4 * 10 + 10));
 
         MEMSTATS_HOLDER.check(assertion);
     }

@@ -41,7 +41,7 @@ public class AssertionBuilderTest {
         AssertionBuilderImpl builder = AssertionBuilderImpl.create();
         builder.assertPercentage("alpha").greaterThan(10);
         ExperimentAssertion ea = builder.getExperimentAssertion();
-        assertTrue(ea instanceof PercentageAssertion);
+        assertTrue(ea instanceof NegableExperimentAssertion);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class AssertionBuilderTest {
         AssertionBuilderImpl builder = AssertionBuilderImpl.create();
         builder.assertOrder("alpha").greaterThan("beta");
         ExperimentAssertion ea = builder.getExperimentAssertion();
-        assertTrue(ea instanceof OrderAssertion);
+        assertTrue(ea instanceof NegableExperimentAssertion);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class AssertionBuilderTest {
         AssertionBuilderImpl builder = AssertionBuilderImpl.create();
         builder.assertValue("alpha").greaterThan(10);
         ExperimentAssertion ea = builder.getExperimentAssertion();
-        assertTrue(ea instanceof ValueAssertion);
+        assertTrue(ea instanceof NegableExperimentAssertion);
     }
 
     @Test

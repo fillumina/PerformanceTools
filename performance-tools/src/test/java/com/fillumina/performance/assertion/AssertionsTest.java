@@ -17,7 +17,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions assertion =
                 Assertions.withTolerance(tolerance)
-                .assertPercentage("half").sameAs(50);
+                .assertPercentage("half").equalsTo(50);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -30,7 +30,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertPercentage("half").sameAs(10);
+                .assertPercentage("half").equalsTo(10);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -108,7 +108,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertOrder("full").notSameAs("half");
+                .assertOrder("full").notEqualsTo("half");
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -121,7 +121,7 @@ public class AssertionsTest {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertOrder("full").notSameAs("full");
+                .assertOrder("full").notEqualsTo("full");
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);

@@ -15,8 +15,8 @@ public class AssertionsPercentageTest {
     public void shouldConfirmTheExpectedPercentages() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").sameAs(33)
-            .assertPercentage("Second").sameAs(66);
+            .assertPercentage("First").equalsTo(33)
+            .assertPercentage("Second").equalsTo(66);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -77,7 +77,7 @@ public class AssertionsPercentageTest {
     public void shouldNotBeEquals() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").sameAs(10F);
+            .assertPercentage("First").equalsTo(10F);
 
         final AssertableMock assertable =
                 AssertableMock.create(

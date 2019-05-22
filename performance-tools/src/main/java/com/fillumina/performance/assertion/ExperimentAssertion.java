@@ -13,7 +13,8 @@ import java.util.Map;
 public interface ExperimentAssertion
         extends StringGenerator<AssertableExperiment> {
 
-    public void check(AssertableExperiment exp) throws ExperimentAssertionError;
+    public void check(AssertableExperiment assertable)
+            throws ExperimentAssertionError;
 
     /** @return true if the given {@link AssertableExperiment} complies. */
     default boolean satisfy(AssertableExperiment assertable) {
@@ -33,6 +34,7 @@ public interface ExperimentAssertion
      * @param unusedAssertionChecker   unchecked assertions (to recognize
      *                              unused assertions)
      */
+    // TODO move this out
     default void checkAndReport(AssertableExperiment assertable,
             Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
             UnusedAssertionChecker unusedAssertionChecker) {

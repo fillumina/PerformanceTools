@@ -8,6 +8,7 @@ import com.fillumina.performance.util.unit.IntervalUnit;
 import com.fillumina.performance.util.unit.Magnitude;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 
 /**
@@ -29,7 +30,7 @@ public class ValueAssertionTest {
                 "first", 12.3, "second", 45.6, "third", 34.5);
 
         assertion.check(assertable);
-        throw new RuntimeException("shouln't be here");
+        fail("shouln't be here");
     }
 
     @Test

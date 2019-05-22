@@ -5,6 +5,8 @@ import com.fillumina.performance.util.stats.ConfidenceInterval;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import com.fillumina.performance.util.unit.Unit;
 import java.util.function.BiPredicate;
 
 /**
@@ -14,25 +16,40 @@ import java.util.function.BiPredicate;
 public class OrderAssertionError extends AbstractExperimentAssertionError {
     private static final long serialVersionUID = 1L;
     private final CharSequence firstTestName;
-    private final Measure firstMeasure;
+    private final DimensionalMeasure firstMeasure;
     private final CharSequence secondTestName;
-    private final Measure secondMeasure;
-    private final AssertableExperiment assertableMultiTest;
+    private final DimensionalMeasure secondMeasure;
+    private final AssertableExperiment assertable;
+
+    public static OrderAssertionError create(
+            AssertableExperiment assertable,
+            CharSequence firstTestName,
+            CharSequence secondTestName,
+            RelativeOrder order,
+            Ratio tolerance) {
+        DimensionalMeasure m1 = assertable.getMeasure(firstTestName);
+        DimensionalMeasure m2 = assertable.getMeasure(secondTestName);
+        Unit<?> bestUnit = DimensionalMeasure.bestUnit(m1, m2);
+        return new OrderAssertionError(
+                firstTestName, m1.in(bestUnit),
+                secondTestName, m2.in(bestUnit),
+                tolerance, order, assertable);
+    }
 
     public OrderAssertionError(
             CharSequence firstTestName,
-            Measure firstMeasure,
+            DimensionalMeasure firstMeasure,
             CharSequence secondTestName,
-            Measure secondMeasure,
+            DimensionalMeasure secondMeasure,
             Ratio tolerance,
             RelativeOrder requiredCondition,
-            AssertableExperiment assertableMultiTest) {
+            AssertableExperiment assertable) {
         super(requiredCondition, tolerance);
         this.firstTestName = firstTestName;
         this.firstMeasure = firstMeasure;
         this.secondTestName = secondTestName;
         this.secondMeasure = secondMeasure;
-        this.assertableMultiTest = assertableMultiTest;
+        this.assertable = assertable;
     }
 
     @Override
@@ -88,7 +105,7 @@ public class OrderAssertionError extends AbstractExperimentAssertionError {
                 .append(getTolerance())
                 .append(System.lineSeparator());
                 appendWhatIfTolerance(buf);
-                buf.append(assertableMultiTest.toString());
+                buf.append(assertable.toString());
         return buf.toString();
     }
 }

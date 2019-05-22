@@ -1,5 +1,6 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.Comparison;
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Ratio;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati
  */
+@Deprecated
 public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -27,21 +29,16 @@ public class OrderAssertionBuilder<I extends AssertionBuilder<I,C>, C>
         this.tolerance = tolerance;
     }
 
-    public I is(boolean negate, RelativeOrder equality, CharSequence other) {
-        if (negate) {
-            switch(equality) {
-                case EQUALS: return notSameAs(other);
-                case LESS: return greaterThanOrEquals(other);
-                case GREATER: return lessThanOrEquals(other);
-            }
-        } else {
-            switch(equality) {
-                case EQUALS: return sameAs(other);
-                case LESS: return lessThan(other);
-                case GREATER: return greaterThan(other);
-            }
+    public I is(Comparison comparison, CharSequence value) {
+        switch (comparison) {
+            case EQUALS: return sameAs(value);
+            case NOT_EQUALS: return notSameAs(value);
+            case GREATER: return greaterThan(value);
+            case GREATER_OR_EQUALS: return greaterThanOrEquals(value);
+            case LESS: return lessThan(value);
+            case LESS_OR_EQUALS: return lessThanOrEquals(value);
         }
-        throw new AssertionError("unexpected case: " + equality);
+        throw new AssertionError("unexpected case: " + comparison);
     }
 
     public I sameAs(final CharSequence other) {

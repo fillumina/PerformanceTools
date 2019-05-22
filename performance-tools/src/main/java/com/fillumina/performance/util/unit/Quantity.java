@@ -16,9 +16,9 @@ public class Quantity<U extends Unit<U>>
     private final U unit;
 
     @SuppressWarnings("unchecked")
-    public static <U extends Unit<U>> Quantity<U> of(double value,
+    public static <U extends Unit<U>> Quantity<U> of(Number value,
             Unit<?> unit) {
-        return new Quantity<>(value, (U)unit);
+        return new Quantity<>(value.doubleValue(), (U)unit);
     }
 
     public Quantity(double value, U unit) {
