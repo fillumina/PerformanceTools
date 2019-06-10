@@ -54,7 +54,7 @@ public class QuantityInfo
         DimensionalMeasure actualMeasure =
                 getAssertable().getMeasure(getFirstTestName());
         Unit<?> actualUnit = actualMeasure.getUnit();
-        Quantity<?> expectedQuantity = getValue();
+        Quantity<?> expectedQuantity = getAssertionValue();
         Unit<?> expectedUnit = expectedQuantity.getUnit();
 
         double expectedValue;
@@ -97,7 +97,7 @@ public class QuantityInfo
     public String toString() {
         DimensionalMeasure actualMeasure =
                 getAssertable().getMeasure(getFirstTestName());
-        Quantity<?> expectedQuantity = getValue();
+        Quantity<?> expectedQuantity = getAssertionValue();
 
         StringBuilder buf = new StringBuilder();
         buf.append('\'').append(getFirstTestName()).append('\'')

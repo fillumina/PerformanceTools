@@ -18,7 +18,7 @@ public interface AssertionErrorInfo<T> extends AssertionEvaluator {
 
     Ratio getTolerance();
 
-    T getValue();
+    T getAssertionValue();
 
     Map<RelativeOrder, Ratio> getWhatIfToleranceMap();
 }

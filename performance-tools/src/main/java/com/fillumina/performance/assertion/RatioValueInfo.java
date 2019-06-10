@@ -59,8 +59,8 @@ public class RatioValueInfo
     }
 
     @Override
-    public Number getValue() {
-        Ratio ratio = evaluator.getValue();
+    public Number getAssertionValue() {
+        Ratio ratio = evaluator.getAssertionValue();
         return isDecimal ? ratio.getDecimal() : ratio.getPercentage();
     }
 

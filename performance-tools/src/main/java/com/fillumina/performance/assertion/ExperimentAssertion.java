@@ -14,6 +14,7 @@ import java.util.Map;
 public interface ExperimentAssertion
         extends StringGenerator<AssertableExperiment> {
 
+    /** Always OK assertion. */
     static ExperimentAssertion OK = new ExperimentAssertion() {
         @Override
         public void check(AssertableExperiment assertable) throws AssertionError {
@@ -27,10 +28,11 @@ public interface ExperimentAssertion
         }
     };
 
-    static ExperimentAssertion NOK = new ExperimentAssertion() {
+    /** Always failing assertion. */
+    static ExperimentAssertion FAIL = new ExperimentAssertion() {
         @Override
         public void check(AssertableExperiment assertable) throws AssertionError {
-            throw new AssertionError("nok");
+            throw new AssertionError("FAIL");
         }
 
         @Override
@@ -40,6 +42,13 @@ public interface ExperimentAssertion
         }
     };
 
+    /**
+     * The returned {@link AssertionError} may be specialized to
+     * contain detailed information about the failure.
+     *
+     * @param assertable
+     * @throws AssertionError
+     */
     public void check(AssertableExperiment assertable)
             throws AssertionError;
 

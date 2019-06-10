@@ -45,7 +45,7 @@ public class AssertionsPercentageTest {
             RatioValueInfo e = (RatioValueInfo) ex.getInfo();
 
             assertEquals("First", e.getFirstTestName().toString());
-            assertEquals(50.0, e.getValue().doubleValue(), 1E-3);
+            assertEquals(50.0, e.getAssertionValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
@@ -70,7 +70,7 @@ public class AssertionsPercentageTest {
             RatioValueInfo e = (RatioValueInfo) ex.getInfo();
 
             assertEquals("First", e.getFirstTestName().toString());
-            assertEquals(10.0, e.getValue().doubleValue(), 1E-3);
+            assertEquals(10.0, e.getAssertionValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
@@ -95,7 +95,7 @@ public class AssertionsPercentageTest {
             RatioValueInfo e = (RatioValueInfo) ex.getInfo();
 
             assertEquals("First", e.getFirstTestName().toString());
-            assertEquals(10.0, e.getValue().doubleValue(), 1E-3);
+            assertEquals(10.0, e.getAssertionValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }

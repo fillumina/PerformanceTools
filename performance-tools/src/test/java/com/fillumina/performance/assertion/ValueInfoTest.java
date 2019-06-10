@@ -124,7 +124,7 @@ public class ValueInfoTest {
         DimensionalMeasure firstMeasure = a.getMeasure(firstName);
         assertEquals(33, firstMeasure.getMean(), 1E-3);
 
-        double value = e.getValue().doubleValue();
+        double value = e.getAssertionValue().doubleValue();
         assertEquals(expectedValue, value, 0.0);
 
         assertEquals(expectedTolerance, e.getTolerance());

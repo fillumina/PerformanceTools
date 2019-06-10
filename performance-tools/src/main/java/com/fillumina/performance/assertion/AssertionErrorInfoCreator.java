@@ -9,7 +9,11 @@ import com.fillumina.performance.util.stats.Ratio;
  */
 public interface AssertionErrorInfoCreator<T> {
 
-    AssertionErrorInfo<T> create(AssertableExperiment assertable,
-            CharSequence testName, RelativeOrder order, T value, Ratio tolerance);
+    AssertionErrorInfo<T> create(
+            AssertableExperiment assertable,
+            CharSequence testName,
+            RelativeOrder order,
+            T value,
+            Ratio tolerance);
 
 }

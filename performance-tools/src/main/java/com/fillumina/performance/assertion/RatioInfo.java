@@ -39,7 +39,7 @@ public class RatioInfo
         return (condition, tol) -> {
             ToleranceEvaluator.Value expectedValue =
                     new ToleranceEvaluator(tol)
-                            .value(getValue().getDecimal());
+                            .value(getAssertionValue().getDecimal());
             switch (condition) {
                 case EQUALS:
                     return expectedValue.between(lower, upper);
@@ -64,7 +64,7 @@ public class RatioInfo
                 .append(" expected ")
                 .append(getRelativeOrder())
                 .append(' ')
-                .append(getValue())
+                .append(getAssertionValue())
                 .append(", found ")
                 .append(actualRatio.toStringAsPercentage())
                 .append(" with a tolerance of ")

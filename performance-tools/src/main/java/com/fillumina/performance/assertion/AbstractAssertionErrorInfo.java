@@ -75,7 +75,7 @@ public abstract class AbstractAssertionErrorInfo<T>
     }
 
     @Override
-    public T getValue() {
+    public T getAssertionValue() {
         return value;
     }
 

@@ -15,7 +15,6 @@ import java.util.NoSuchElementException;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-// it _could_ be a map, but implementing a map here would probably be an overhead
 public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
 
     /** @return test names. */

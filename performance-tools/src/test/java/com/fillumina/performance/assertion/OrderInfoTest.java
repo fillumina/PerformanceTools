@@ -250,7 +250,7 @@ public class OrderInfoTest {
             throws NoSuchElementException {
         assertEquals(firstName, e.getFirstTestName().toString());
 
-        final String secondTestName = e.getValue().toString();
+        final String secondTestName = e.getAssertionValue().toString();
         assertEquals(secondName, secondTestName);
 
         final AssertableExperiment a = e.getAssertable();

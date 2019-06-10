@@ -27,7 +27,7 @@ public class OrderInfo
             Ratio tolerance) {
         super(assertable, firstTestName, order, secondTestName, tolerance);
         DimensionalMeasure m1 = assertable.getMeasure(getFirstTestName());
-        DimensionalMeasure m2 = assertable.getMeasure(getValue());
+        DimensionalMeasure m2 = assertable.getMeasure(getAssertionValue());
         Unit<?> bestUnit = DimensionalMeasure.bestUnit(m1, m2);
         firstMeasure = m1.in(bestUnit);
         secondMeasure = m2.in(bestUnit);
@@ -69,7 +69,7 @@ public class OrderInfo
                 .append("' (").append(firstMeasure).append(") ")
                 .append("expected ").append(getRelativeOrder().getMessage())
                 .append(' ')
-                .append('\'').append(getValue())
+                .append('\'').append(getAssertionValue())
                 .append("' (").append(secondMeasure).append(") ")
                 .append(" with a tolerance of ")
                 .append(getTolerance())

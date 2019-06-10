@@ -41,7 +41,7 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
         // not equals
         public NegatedOrEqualsAssertion(T value) {
             negateAssertion = new InnerAssertion(value, RelativeOrder.EQUALS);
-            equalAssertion = ExperimentAssertion.NOK;
+            equalAssertion = ExperimentAssertion.FAIL;
         }
 
         // (less | greater) than or equals
