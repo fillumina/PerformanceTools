@@ -137,7 +137,7 @@ public class DefaultAssertableExperimentTest {
                 .check(votes);
     }
 
-    @Test(expected=ValueAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldCompareValueWithDifferentUnitBad() {
         DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
@@ -161,7 +161,7 @@ public class DefaultAssertableExperimentTest {
                 .check(votes);
     }
 
-    @Test(expected=OrderAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldCompareOrderWithDifferentUnitBad() {
         DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 6.5, 7.0, 5.5))
@@ -185,7 +185,7 @@ public class DefaultAssertableExperimentTest {
                 .check(votes);
     }
 
-    @Test(expected=PercentageAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldComparePercentageWithDifferentUnitBad() {
         DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", DimensionalMeasure.of(Magnitude.KILO, 1.0))
@@ -193,7 +193,7 @@ public class DefaultAssertableExperimentTest {
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
 
         Assertions.withTolerance(Ratio.percentage(25))
-                .assertPercentage("Lola").greaterThan(80)
+                .assertRatioPercentage("Lola").greaterThan(80)
                 .check(votes);
     }
 
@@ -205,11 +205,11 @@ public class DefaultAssertableExperimentTest {
                 .add("Kenny", DimensionalMeasure.of(Magnitude.MILLI, 4, 6.0, 5.5));
 
         Assertions.withTolerance(Ratio.percentage(25))
-                .assertPercentage("Lola").equalsTo(7.5)
+                .assertRatioPercentage("Lola").equalsTo(7.5)
                 .check(votes);
     }
 
-    @Test(expected=OrderAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldCheckException() {
         DefaultAssertableExperiment votes = new DefaultAssertableExperiment()
                 .add("Carl", 6.5, 7.0, 5.5)

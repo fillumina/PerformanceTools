@@ -359,7 +359,7 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
                 for (PathName n : matchingNames) {
                     ExperimentAssertion assertion = Assertions
                             .withTolerance(tolerance)
-                            .assertPercentage(n)
+                            .assertRatioPercentage(n)
                             .is(negate, equalityCondition, percentage.getPercentage());
                     list.add(assertion);
                 }

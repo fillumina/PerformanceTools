@@ -9,6 +9,8 @@ import java.util.Locale;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class Ratio implements Comparable<Ratio> {
+    private static final long serialVersionUID = 1L;
+
     private final double decimal;
     private static final double PRECISION = 1E6;
 
@@ -33,21 +35,22 @@ public class Ratio implements Comparable<Ratio> {
     /** MAX   */   public static final Ratio MAX = Ratio.decimal(Double.MAX_VALUE);
 
     /** Set the ratio as a decimal. i.e. 2% is entered here as 0.02 */
-    public static Ratio decimal(double decimal) {
+    public static Ratio decimal(Number decimal) {
+        double dec = decimal.doubleValue();
         try {
-            double integer = Math.round(decimal * 100);
-            if (integer == decimal * 100.0) {
+            double integer = Math.round(dec * 100);
+            if (integer == dec * 100.0) {
                 return percentages[(int)integer];
             }
         } catch (Exception e) {
             // nothing
         }
-        return new Ratio(decimal);
+        return new Ratio(dec);
     }
 
     /** Set the ratio as a percentage. i.e. 2% is entered here as 2.0 */
-    public static Ratio percentage(double percentage) {
-        return Ratio.decimal(percentage / 100.0);
+    public static Ratio percentage(Number percentage) {
+        return Ratio.decimal(percentage.doubleValue() / 100.0);
     }
 
     /** Set the ratio as a percentage. i.e. 2% is entered here as 2 */
@@ -58,11 +61,12 @@ public class Ratio implements Comparable<Ratio> {
         return percentage((double) percentage);
     }
 
-    protected Ratio(double decimal) {
-        if (decimal < 0.0) {
+    protected Ratio(Number decimal) {
+        double dec = decimal.doubleValue();
+        if (dec < 0.0) {
             throw new IllegalArgumentException("ratio cannot be negative");
         }
-        this.decimal = decimal;
+        this.decimal = dec;
     }
 
     /**

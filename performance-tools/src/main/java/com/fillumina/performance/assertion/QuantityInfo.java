@@ -2,7 +2,6 @@ package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.ConfidenceInterval;
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.stats.ToleranceEvaluator;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
@@ -15,14 +14,10 @@ import java.util.function.BiPredicate;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class ValueAssertionError extends AbstractExperimentAssertionError {
-    private static final long serialVersionUID = 1L;
-    private final CharSequence testName;
-    private final DimensionalMeasure actualMeasure;
-    private final Quantity<?> expectedQuantity;
-    private final AssertableExperiment assertableMultiTest;
+public class QuantityInfo
+        extends AbstractAssertionErrorInfo<Quantity<?>> {
 
-    private static enum SpecialUnit implements Unit<SpecialUnit> {
+    static enum SpecialUnit implements Unit<SpecialUnit> {
         UNIT;
 
         public static final Units<SpecialUnit> UNITS = new Units<>(values());
@@ -38,61 +33,43 @@ public class ValueAssertionError extends AbstractExperimentAssertionError {
         }
     }
 
-    public static ValueAssertionError createValue(
+    private final BiPredicate<RelativeOrder,Ratio> evaluator;
+
+    public QuantityInfo(
             AssertableExperiment assertable,
             CharSequence testName,
-            Number expectedValue,
             RelativeOrder order,
-            Ratio tolerance) {
-
-        return createQuantity(assertable, testName,
-                Quantity.of(expectedValue, SpecialUnit.UNIT),
-                order,
-                tolerance);
-    }
-
-    public static ValueAssertionError createQuantity(
-            AssertableExperiment assertable,
-            CharSequence testName,
             Quantity<?> expectedValue,
-            RelativeOrder order,
             Ratio tolerance) {
-        DimensionalMeasure actualValue = assertable.getMeasure(testName);
-
-        return new ValueAssertionError(testName, actualValue,
-                    expectedValue, tolerance, order, assertable);
-    }
-
-    public ValueAssertionError(
-            CharSequence testName,
-            DimensionalMeasure actualMeasure,
-            Quantity<?> expectedQuantity,
-            Ratio tolerance,
-            RelativeOrder requiredCondition,
-            AssertableExperiment assertableMultiTest) {
-        super(requiredCondition, tolerance);
-        this.testName = testName;
-        this.actualMeasure = actualMeasure;
-        this.expectedQuantity = expectedQuantity;
-        this.assertableMultiTest = assertableMultiTest;
+        super(assertable, testName, order, expectedValue, tolerance);
+        evaluator = createEvaluator();
     }
 
     @Override
-    protected BiPredicate<RelativeOrder,Ratio> getPredicate() {
+    protected BiPredicate<RelativeOrder, Ratio> getEvaluator() {
+        return evaluator;
+    }
 
+    private BiPredicate<RelativeOrder,Ratio> createEvaluator() {
+        DimensionalMeasure actualMeasure =
+                getAssertable().getMeasure(getFirstTestName());
         Unit<?> actualUnit = actualMeasure.getUnit();
+        Quantity<?> expectedQuantity = getValue();
         Unit<?> expectedUnit = expectedQuantity.getUnit();
 
         double expectedValue;
 
         if (expectedUnit.isSameType(SpecialUnit.UNIT)) {
             expectedValue = expectedQuantity.getValue();
+
         } else if (!actualUnit.isSameType(expectedUnit)) {
             throw new RuntimeException("value specified in the wrong unit, was " +
                     actualUnit.getUnitName() + " but " +
                     expectedUnit.getUnitName() + " was expected");
+
         } else {
             expectedValue = expectedQuantity.as(actualUnit);
+
         }
 
 
@@ -116,26 +93,14 @@ public class ValueAssertionError extends AbstractExperimentAssertionError {
         };
     }
 
-    public CharSequence getTestName() {
-        return testName;
-    }
-
-    public AssertableExperiment getAssertableMultiTest() {
-        return assertableMultiTest;
-    }
-
-    public Measure getActualValue() {
-        return actualMeasure;
-    }
-
-    public Quantity<?> getExpected() {
-        return expectedQuantity;
-    }
-
     @Override
-    public String getMessage() {
+    public String toString() {
+        DimensionalMeasure actualMeasure =
+                getAssertable().getMeasure(getFirstTestName());
+        Quantity<?> expectedQuantity = getValue();
+
         StringBuilder buf = new StringBuilder();
-        buf.append('\'').append(testName).append('\'')
+        buf.append('\'').append(getFirstTestName()).append('\'')
                 .append(" expected ")
                 .append(getRelativeOrder())
                 .append(' ')
@@ -146,7 +111,7 @@ public class ValueAssertionError extends AbstractExperimentAssertionError {
                 .append(getTolerance())
                 .append(System.lineSeparator());
                 appendWhatIfTolerance(buf);
-                buf.append(assertableMultiTest.toString());
+                buf.append(getAssertable().toString());
         return buf.toString();
     }
 }

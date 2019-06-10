@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class NamedMeasure<T> implements Serializable {
+public class NamedMeasure implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final CharSequence name;

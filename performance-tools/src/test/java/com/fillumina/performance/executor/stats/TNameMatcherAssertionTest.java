@@ -1,7 +1,6 @@
 package com.fillumina.performance.executor.stats;
 
-import com.fillumina.performance.assertion.OrderAssertionError;
-import com.fillumina.performance.assertion.ValueAssertionError;
+import com.fillumina.performance.assertion.ExperimentAssertionError;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.util.collection.IndexedHashMap;
@@ -32,7 +31,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=OrderAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldSetAndConsumeAnInvalidAssertion() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
@@ -67,7 +66,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=ValueAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldSetAndConsumeTwoAssertionsOneOfWhichIsInvalid() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
@@ -132,7 +131,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=ValueAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldInterceptNoTestExceptionAndCheckValidity() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
@@ -153,7 +152,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=ValueAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldUseFluidInterfaceAndCheckWrongValue() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
@@ -168,7 +167,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=ValueAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldUseShortNotationAndCheckWrongValue() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();
@@ -183,7 +182,7 @@ public class TNameMatcherAssertionTest {
         builder.build().check(stats);
     }
 
-    @Test(expected=OrderAssertionError.class)
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldUseShortNotationWithPrefixAndCheckWrongOrder() {
         TNameMatcherAssertion.Builder<Void> builder =
                 TNameMatcherAssertion.builder();

@@ -1,6 +1,5 @@
 package com.fillumina.performance.assertion;
 
-import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,8 +8,14 @@ import java.util.NoSuchElementException;
 /**
  * A collection of measures relative to named experiments.
  *
+ * <p>
+ * <b>Implementation Note:</b>
+ * It can be implemented by extending
+ * {@link java.util.HashMap<? extends CharSequence, ? extends DimensionalMeasure>}.
+ *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
+// it _could_ be a map, but implementing a map here would probably be an overhead
 public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
 
     /** @return test names. */
@@ -32,7 +37,7 @@ public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
      * @return the first measure (useful if there is only one).
      * @throws {@link NoSuchElementException} if there aren't any measure.
      */
-    default Measure getFirstMeasure() throws NoSuchElementException {
+    default DimensionalMeasure getFirstMeasure() throws NoSuchElementException {
         return getMeasure(getNames().iterator().next());
     }
 

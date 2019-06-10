@@ -1,9 +1,12 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.mock.AssertableMock;
+import com.fillumina.performance.util.RelativeOrder;
 import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.NormalDistributionMeasureBuilder;
 import com.fillumina.performance.util.stats.Ratio;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
+import java.util.NoSuchElementException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Test;
@@ -12,14 +15,14 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class AssertionsValueTest {
+public class ValueInfoTest {
 
     @Test
-    public void shouldConfirmTheExpectedPercentages() {
+    public void shouldConfirmTheExpectedValues() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-            .assertValue("First").equalsTo(33)
-            .assertValue("Second").equalsTo(66);
+                        .assertValue("First").equalsTo(33)
+                        .assertValue("Second").equalsTo(66);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -34,7 +37,7 @@ public class AssertionsValueTest {
     public void shouldNotBeGreater() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-            .assertValue("First").greaterThan(50);
+                        .assertValue("First").greaterThan(50);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -44,10 +47,14 @@ public class AssertionsValueTest {
 
         try {
             assertion.check(assertable);
-        } catch (ValueAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(0, e.getTolerance().getPercentage(), 0);
+
+        } catch (ExperimentAssertionError ex) {
+            ValueInfo e = (ValueInfo) ex.getInfo();
+
+            assertEquals(RelativeOrder.GREATER, e.getRelativeOrder());
+
+            checkValues(e, "First", 50, Ratio.ZERO);
+
             return;
         }
         fail();
@@ -57,7 +64,7 @@ public class AssertionsValueTest {
     public void shouldNotBeLesser() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertValue("First").lessThan(10F);
+                        .assertValue("First").lessThan(10F);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -67,10 +74,13 @@ public class AssertionsValueTest {
 
         try {
             assertion.check(assertable);
-        } catch (ValueAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
+        } catch (ExperimentAssertionError ex) {
+            ValueInfo e = (ValueInfo) ex.getInfo();
+
+            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
+
+            checkValues(e, "First", 10.0, Ratio.percentage(1));
+
             return;
         }
         fail();
@@ -80,7 +90,7 @@ public class AssertionsValueTest {
     public void shouldNotBeEquals() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertValue("First").equalsTo(10F);
+                        .assertValue("First").equalsTo(10F);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -90,13 +100,34 @@ public class AssertionsValueTest {
 
         try {
             assertion.check(assertable);
-        } catch (ValueAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(33, e.getActualValue().getMean(), 1E-3);
-            assertEquals(1.0, e.getTolerance().getPercentage(), 0);
+        } catch (ExperimentAssertionError ex) {
+            ValueInfo e = (ValueInfo) ex.getInfo();
+
+            assertEquals(RelativeOrder.EQUALS, e.getRelativeOrder());
+
+            checkValues(e, "First", 10.0, Ratio.percentage(1));
+
             return;
         }
         fail();
+    }
+
+    private void checkValues(ValueInfo e,
+            String firstTestName,
+            double expectedValue,
+            Ratio expectedTolerance) throws NoSuchElementException {
+        AssertableExperiment a = e.getAssertable();
+
+        final String firstName = e.getFirstTestName().toString();
+        assertEquals(firstTestName, firstName);
+
+        DimensionalMeasure firstMeasure = a.getMeasure(firstName);
+        assertEquals(33, firstMeasure.getMean(), 1E-3);
+
+        double value = e.getValue().doubleValue();
+        assertEquals(expectedValue, value, 0.0);
+
+        assertEquals(expectedTolerance, e.getTolerance());
     }
 
     public static void main(final String[] args) {

@@ -6,6 +6,7 @@ import com.fillumina.performance.util.stats.Measure;
 import com.fillumina.performance.util.stats.MeasureMock;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ import org.junit.Test;
  *
  * @author Francesco Illuminati
  */
-public class AssertionsOrderTest {
+public class OrderInfoTest {
 
     @Test
     public void shouldConfirmTheExpectedOrder() {
@@ -32,9 +33,36 @@ public class AssertionsOrderTest {
 
     @Test
     public void shouldExceptionGiveInfo() {
+        final Assertions assertion =
+                Assertions.withTolerance(Ratio.P_10)
+                       .assertOrder("Second").lessThan("First");
+
+        final AssertableMock assertable =
+                AssertableMock.create(
+                        "First", 33,
+                        "Second", 66,
+                        "Top", 100);
+
+        try {
+            assertion.check(assertable);
+        } catch (ExperimentAssertionError ex) {
+            AbstractAssertionErrorInfo<?> e =
+                    (AbstractAssertionErrorInfo<?>) ex.getInfo();
+
+            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
+
+            checkValues(e, "Second", 66, "First", 33, Ratio.P_10);
+
+            return;
+        }
+        fail();
+    }
+
+    @Test
+    public void shouldExceptionGiveInfoWithNegateAssertion() {
         final Assertions speedAssertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("Second").lessThan("First");
+                       .assertOrder("Second").lessThanOrEquals("First");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -44,49 +72,25 @@ public class AssertionsOrderTest {
 
         try {
             speedAssertion.check(assertable);
-        } catch (OrderAssertionError e) {
-            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
-            assertEquals("Second", e.getFirstTestName().toString());
-            assertEquals("First", e.getSecondTestName().toString());
-            assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
-            assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
+
+        } catch (ExperimentAssertionError ex) {
+            AbstractAssertionErrorInfo<?> e =
+                    (AbstractAssertionErrorInfo<?>) ex.getInfo();
+
+            // !(a <= b) is the same as (a > b)
+            assertEquals(RelativeOrder.GREATER, e.getRelativeOrder());
+
+            checkValues(e, "Second", 66, "First", 33, e.getTolerance());
             return;
         }
         fail();
     }
 
-//    @Test
-//    public void shouldExceptionGiveInfoWithNegateAssertion() {
-//        final Assertions speedAssertion =
-//                Assertions.withTolerance(Ratio.ZERO)
-//                    .assertOrder("Second").lessThanOrEquals("First");
-//
-//        final AssertableMock assertable =
-//                AssertableMock.create(
-//                        "First", 33,
-//                        "Second", 66,
-//                        "Top", 100);
-//
-//        try {
-//            speedAssertion.check(assertable);
-//        } catch (ExperimentAssertionError e) {
-//            assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
-//            assertEquals("Second", e.getFirstTestName().toString());
-//            assertEquals("First", e.getSecondTestName().toString());
-//            assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
-//            assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
-//            assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
-//            return;
-//        }
-//        fail();
-//    }
-
     @Test
     public void shouldBeLessThanWithTolerance10() {
         final Assertions highToleranceAssertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                    .assertOrder("First").lessThan("Second");
+                        .assertOrder("First").lessThan("Second");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -100,7 +104,7 @@ public class AssertionsOrderTest {
     public void shouldNotBeLessThanWithLowTolerance() {
         final Assertions lowToleranceAssertion =
                 Assertions.withTolerance(Ratio.percentage(10))
-                    .assertOrder("First").lessThan("Second");
+                        .assertOrder("First").lessThan("Second");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -116,10 +120,10 @@ public class AssertionsOrderTest {
     }
 
     @Test
-    public void shouldNotBeGreaterThan() {
+    public void shouldProduceWhatIfMap() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").greaterThan("Second");
+                        .assertOrder("First").greaterThan("Second");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -129,13 +133,13 @@ public class AssertionsOrderTest {
 
         try {
             assertion.check(assertable);
-        } catch (OrderAssertionError e) {
+        } catch (ExperimentAssertionError ex) {
+            AbstractAssertionErrorInfo<?> e =
+                    (AbstractAssertionErrorInfo<?>) ex.getInfo();
+
             assertEquals(RelativeOrder.GREATER, e.getRelativeOrder());
-            assertEquals("First", e.getFirstTestName().toString());
-            assertEquals("Second", e.getSecondTestName().toString());
-            assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
-            assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(0, e.getTolerance().getPercentage(), 1E-3);
+
+            checkValues(e, "First", 33, "Second", 66, e.getTolerance());
 
             Map<RelativeOrder,Ratio> whatIfMap = e.getWhatIfToleranceMap();
             assertEquals(1.01, whatIfMap.get(RelativeOrder.GREATER).getDecimal(), 0);
@@ -150,7 +154,7 @@ public class AssertionsOrderTest {
     public void shouldNotBeEquals() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").equalsTo("Second");
+                        .assertOrder("First").equalsTo("Second");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -161,12 +165,13 @@ public class AssertionsOrderTest {
         try {
             assertion.check(assertable);
             fail();
-        } catch (OrderAssertionError e) {
+        } catch (ExperimentAssertionError ex) {
+            AbstractAssertionErrorInfo<?> e =
+                    (AbstractAssertionErrorInfo<?>) ex.getInfo();
+
             assertEquals(RelativeOrder.EQUALS, e.getRelativeOrder());
-            assertEquals("Second", e.getSecondTestName().toString());
-            assertEquals("First", e.getFirstTestName().toString());
-            assertEquals(66, e.getSecondMeasure().getMean(), 1E-3);
-            assertEquals(33, e.getFirstMeasure().getMean(), 1E-3);
+
+            checkValues(e, "First", 33, "Second", 66, e.getTolerance());
         }
     }
 
@@ -174,7 +179,7 @@ public class AssertionsOrderTest {
     public void shouldReportNonExistentTest() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").equalsTo("NonExistent");
+                        .assertOrder("First").equalsTo("NonExistent");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -196,8 +201,8 @@ public class AssertionsOrderTest {
     public void shouldCheckTwoTestsSimultaneously() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").lessThan("Second")
-                    .assertOrder("Second").lessThan("Top");
+                        .assertOrder("First").lessThan("Second")
+                        .assertOrder("Second").lessThan("Top");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -216,8 +221,8 @@ public class AssertionsOrderTest {
     public void shouldFailSecondTest() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.ZERO)
-                    .assertOrder("First").lessThan("Second")
-                    .assertOrder("Second").lessThan("First");
+                        .assertOrder("First").lessThan("Second")
+                        .assertOrder("Second").lessThan("First");
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -228,13 +233,30 @@ public class AssertionsOrderTest {
         try {
             assertion.check(assertable);
             fail("second test should fail");
-        } catch (OrderAssertionError e) {
+        } catch (ExperimentAssertionError ex) {
+            AbstractAssertionErrorInfo<?> e =
+                    (AbstractAssertionErrorInfo<?>) ex.getInfo();
+
             assertEquals(RelativeOrder.LESS, e.getRelativeOrder());
-            assertEquals("Second", e.getFirstTestName().toString());
-            assertEquals("First", e.getSecondTestName().toString());
-            assertEquals(66, e.getFirstMeasure().getMean(), 1E-3);
-            assertEquals(33, e.getSecondMeasure().getMean(), 1E-3);
+
+            checkValues(e, "Second", 66, "First", 33, e.getTolerance());
         }
+    }
+
+    private void checkValues(AbstractAssertionErrorInfo<?> e,
+            String firstName, double firstMean,
+            String secondName, double secondMean,
+            final Ratio tolerance)
+            throws NoSuchElementException {
+        assertEquals(firstName, e.getFirstTestName().toString());
+
+        final String secondTestName = e.getValue().toString();
+        assertEquals(secondName, secondTestName);
+
+        final AssertableExperiment a = e.getAssertable();
+        assertEquals(firstMean, a.getMeasure(e.getFirstTestName()).getMean(), 1E-3);
+        assertEquals(secondMean, a.getMeasure(secondTestName).getMean(), 1E-3);
+        assertEquals(tolerance, e.getTolerance());
     }
 
     private static class MeasureImpl extends MeasureMock {

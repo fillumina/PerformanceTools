@@ -7,10 +7,23 @@ package com.fillumina.performance.assertion;
 public class ExperimentAssertionError extends AssertionError {
     private static final long serialVersionUID = 1L;
 
-    public ExperimentAssertionError() {
+    private final AssertionErrorInfo<?> info;
+
+    public ExperimentAssertionError(AssertionErrorInfo<?> info) {
+        this.info = info;
     }
 
-    public ExperimentAssertionError(String message) {
-        super(message);
+    public AssertionErrorInfo<?> getInfo() {
+        return info;
+    }
+
+    @Override
+    public String getMessage() {
+        return toString();
+    }
+
+    @Override
+    public String toString() {
+        return info.toString();
     }
 }

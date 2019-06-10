@@ -4,6 +4,7 @@ import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.util.stats.Ratio;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -13,11 +14,11 @@ import org.junit.Test;
 public class AssertionsTest {
 
     @Test
-    public void shouldAssertPercentage() {
+    public void shouldAssertRatioPercentage() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions assertion =
                 Assertions.withTolerance(tolerance)
-                .assertPercentage("half").equalsTo(50);
+                .assertRatioPercentage("half").equalsTo(50);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -25,12 +26,38 @@ public class AssertionsTest {
         assertion.check(assertable);
     }
 
-    @Test(expected=PercentageAssertionError.class)
+    @Test
+    public void shouldAssertRatioDecimal() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions assertion =
+                Assertions.withTolerance(tolerance)
+                .assertRatioDecimal("half").equalsTo(0.5);
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        assertion.check(assertable);
+    }
+
+    @Test
+    public void shouldAssertRatio() {
+        Ratio tolerance = Ratio.percentage(10);
+        Assertions assertion =
+                Assertions.withTolerance(tolerance)
+                .assertRatio("half").equalsTo(Ratio.percentage(50));
+
+        AssertableMock assertable = AssertableMock.createWithName("test",
+                    "half", 50, "full", 100);
+
+        assertion.check(assertable);
+    }
+
+    @Test(expected=ExperimentAssertionError.class)
     public void shouldNotAssertPercentage() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
                 Assertions.withTolerance(tolerance)
-                .assertPercentage("half").equalsTo(10);
+                .assertRatioPercentage("half").equalsTo(10);
 
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
@@ -129,7 +156,7 @@ public class AssertionsTest {
         statsAssertion.check(assertable);
     }
 
-    @Test(expected = OrderAssertionError.class)
+    @Test
     public void shouldNotAssertOrder() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =
@@ -139,7 +166,12 @@ public class AssertionsTest {
         AssertableMock assertable = AssertableMock.createWithName("test",
                     "half", 50, "full", 100);
 
-        statsAssertion.check(assertable);
+        try {
+            statsAssertion.check(assertable);
+        } catch (ExperimentAssertionError ex) {
+            OrderInfo evaluator = (OrderInfo) ex.getInfo();
+            assertNotNull(evaluator);
+        }
     }
 
     @Test
@@ -220,7 +252,7 @@ public class AssertionsTest {
         statsAssertion.check(assertable);
     }
 
-    @Test(expected = ValueAssertionError.class)
+    @Test(expected = ExperimentAssertionError.class)
     public void shouldNotAssertValue() {
         Ratio tolerance = Ratio.percentage(10);
         Assertions statsAssertion =

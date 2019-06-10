@@ -17,30 +17,33 @@ import org.junit.Test;
  */
 public class AssertableExperimentTest {
 
-    public static class AssertableExperimentImpl implements AssertableExperiment {
+    /**
+     * Proving that {@link AssertableExperiment } can effectively be
+     * implemented by a standard {@link Map<CharSequence,DimensionalMeasure>}.
+     */
+    public static class AssertableExperimentAsMap
+            extends HashMap<String, DimensionalMeasure>
+            implements AssertableExperiment {
 
-        private final Map<String, DimensionalMeasure> map;
-
-        public AssertableExperimentImpl(Object ... args) {
-            this.map = new HashMap<>();
+        public AssertableExperimentAsMap(Object ... args) {
             for (int i=0; i<args.length; i+=2) {
                 final double value = (double) args[i+1];
-                map.put((String)args[i], dm(value));
+                put((String)args[i], dm(value));
             }
         }
 
-        public AssertableExperimentImpl(Map<String, DimensionalMeasure> map) {
-            this.map = map;
+        public AssertableExperimentAsMap(Map<String, DimensionalMeasure> map) {
+            super(map);
         }
 
         @Override
         public Collection<? extends CharSequence> getNames() {
-            return map.keySet();
+            return keySet();
         }
 
         @Override
         public DimensionalMeasure getMeasure(CharSequence name) {
-            final DimensionalMeasure dm = map.get(name.toString());
+            final DimensionalMeasure dm = get(name.toString());
             if (dm == null) {
                 throw new NoSuchElementException(name.toString());
             }
@@ -50,8 +53,8 @@ public class AssertableExperimentTest {
 
     @Test
     public void shouldGetNames() {
-        AssertableExperimentImpl ae =
-                new AssertableExperimentImpl("a", 1.0, "b", 2.0);
+        AssertableExperimentAsMap ae =
+                new AssertableExperimentAsMap("a", 1.0, "b", 2.0);
 
         final Collection<? extends CharSequence> names = ae.getNames();
         assertEquals(2, names.size());
@@ -61,7 +64,7 @@ public class AssertableExperimentTest {
 
     @Test
     public void shouldGetEmptyNames() {
-        AssertableExperimentImpl ae = new AssertableExperimentImpl();
+        AssertableExperimentAsMap ae = new AssertableExperimentAsMap();
 
         final Collection<? extends CharSequence> names = ae.getNames();
         assertTrue(names.isEmpty());
@@ -69,23 +72,23 @@ public class AssertableExperimentTest {
 
     @Test(expected=NoSuchElementException.class)
     public void shouldReturnNullMeasureIfEmptyNames() {
-        AssertableExperimentImpl ae = new AssertableExperimentImpl();
+        AssertableExperimentAsMap ae = new AssertableExperimentAsMap();
 
         ae.getMeasure("not_existent");
     }
 
     @Test(expected=NoSuchElementException.class)
     public void shouldThrowNSEEIfMeasureIfNotPresent() {
-        AssertableExperimentImpl ae =
-                new AssertableExperimentImpl("a", 1.0, "b", 2.0);
+        AssertableExperimentAsMap ae =
+                new AssertableExperimentAsMap("a", 1.0, "b", 2.0);
 
         assertNull(ae.getMeasure("not_existent"));
     }
 
     @Test
     public void shouldGetMeasure() {
-        AssertableExperimentImpl ae =
-                new AssertableExperimentImpl("a", 1.0, "b", 2.0);
+        AssertableExperimentAsMap ae =
+                new AssertableExperimentAsMap("a", 1.0, "b", 2.0);
 
         assertEquals(dm(1.0), ae.getMeasure("a"));
         assertEquals(dm(2.0), ae.getMeasure("b"));
@@ -93,22 +96,22 @@ public class AssertableExperimentTest {
 
     @Test
     public void shouldBeEmpty() {
-        AssertableExperimentImpl ae = new AssertableExperimentImpl();
+        AssertableExperimentAsMap ae = new AssertableExperimentAsMap();
 
         assertTrue(ae.isEmpty());
     }
 
     @Test
     public void shouldGetFirstMeasure() {
-        AssertableExperimentImpl ae =
-                new AssertableExperimentImpl("a", 1.0, "b", 2.0);
+        AssertableExperimentAsMap ae =
+                new AssertableExperimentAsMap("a", 1.0, "b", 2.0);
 
         assertEquals(dm(1.0), ae.getFirstMeasure());
     }
 
     @Test(expected=NoSuchElementException.class)
     public void shouldReturnNullFirstMeasureIfEmpty() {
-        AssertableExperimentImpl ae = new AssertableExperimentImpl();
+        AssertableExperimentAsMap ae = new AssertableExperimentAsMap();
 
         ae.getFirstMeasure();
     }

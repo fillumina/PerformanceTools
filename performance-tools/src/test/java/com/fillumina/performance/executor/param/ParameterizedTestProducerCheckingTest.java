@@ -1,6 +1,6 @@
 package com.fillumina.performance.executor.param;
 
-import com.fillumina.performance.assertion.OrderAssertionError;
+import com.fillumina.performance.assertion.ExperimentAssertionError;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
@@ -117,7 +117,7 @@ public class ParameterizedTestProducerCheckingTest {
                 .lessThan().string("a", "two").end();
     }
 
-    @Test(expected = OrderAssertionError.class)
+    @Test(expected = ExperimentAssertionError.class)
     public void shouldNotAssertOrderCondition() {
         holder.check()
                 .order().string("a", "one").end()

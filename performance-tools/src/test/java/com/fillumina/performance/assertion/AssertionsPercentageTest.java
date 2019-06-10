@@ -15,8 +15,8 @@ public class AssertionsPercentageTest {
     public void shouldConfirmTheExpectedPercentages() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").equalsTo(33)
-            .assertPercentage("Second").equalsTo(66);
+            .assertRatioPercentage("First").equalsTo(33)
+            .assertRatioPercentage("Second").equalsTo(66);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -31,7 +31,7 @@ public class AssertionsPercentageTest {
     public void shouldNotBeGreater() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").greaterThan(50);
+            .assertRatioPercentage("First").greaterThan(50);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -41,9 +41,11 @@ public class AssertionsPercentageTest {
 
         try {
             assertion.check(assertable);
-        } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+        } catch (ExperimentAssertionError ex) {
+            RatioValueInfo e = (RatioValueInfo) ex.getInfo();
+
+            assertEquals("First", e.getFirstTestName().toString());
+            assertEquals(50.0, e.getValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
@@ -54,7 +56,7 @@ public class AssertionsPercentageTest {
     public void shouldNotBeLesser() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").lessThan(10F);
+            .assertRatioPercentage("First").lessThan(10F);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -64,9 +66,11 @@ public class AssertionsPercentageTest {
 
         try {
             assertion.check(assertable);
-        } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+        } catch (ExperimentAssertionError ex) {
+            RatioValueInfo e = (RatioValueInfo) ex.getInfo();
+
+            assertEquals("First", e.getFirstTestName().toString());
+            assertEquals(10.0, e.getValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }
@@ -77,7 +81,7 @@ public class AssertionsPercentageTest {
     public void shouldNotBeEquals() {
         final Assertions assertion =
                 Assertions.withTolerance(Ratio.percentage(1))
-            .assertPercentage("First").equalsTo(10F);
+            .assertRatioPercentage("First").equalsTo(10F);
 
         final AssertableMock assertable =
                 AssertableMock.create(
@@ -87,9 +91,11 @@ public class AssertionsPercentageTest {
 
         try {
             assertion.check(assertable);
-        } catch (PercentageAssertionError e) {
-            assertEquals("First", e.getTestName().toString());
-            assertEquals(0.33, e.getRatio().getValue(), 1E-3);
+        } catch (ExperimentAssertionError ex) {
+            RatioValueInfo e = (RatioValueInfo) ex.getInfo();
+
+            assertEquals("First", e.getFirstTestName().toString());
+            assertEquals(10.0, e.getValue().doubleValue(), 1E-3);
             assertEquals(1.0, e.getTolerance().getPercentage(), 0);
             return;
         }

@@ -63,26 +63,29 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      * Asserts the ratio of the specified measure compared to the reference
      * (usually the bigger measure).
      * <pre>
-     * assertion.assertPercentage("some test").lessThan(35);
-     * </pre>
+ assertion.assertRatioPercentage("some test").lessThan(35);
+ </pre>
      */
-    public FluentAssertionBuilder<I,Number> assertPercentage(
+    public FluentAssertionBuilder<I,Number> assertRatioPercentage(
             final CharSequence name) {
-        return new FluentAssertionBuilder<>(
-                this, name, tolerance, PercentageAssertionError::createWithPercentage);
+        return assertEvaluator(name, RatioValueInfo::createWithPercentage);
+    }
+
+    public FluentAssertionBuilder<I,Number> assertRatioDecimal(
+            final CharSequence name) {
+        return assertEvaluator(name, RatioValueInfo::createWithDecimal);
     }
 
     /**
      * Asserts the ratio of the specified measure compared to the reference
      * (usually the bigger measure).
      * <pre>
-     * assertion.assertPercentage("some test").lessThan(35);
-     * </pre>
+ assertion.assertRatioPercentage("some test").lessThan(35);
+ </pre>
      */
     public FluentAssertionBuilder<I,Ratio> assertRatio(
             final CharSequence name) {
-        return new FluentAssertionBuilder<>(
-                this, name, tolerance, PercentageAssertionError::createWithRatio);
+        return assertEvaluator(name, RatioInfo::new);
     }
 
     /**
@@ -93,8 +96,7 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      */
     public FluentAssertionBuilder<I, CharSequence> assertOrder(
             final CharSequence name) {
-        return new FluentAssertionBuilder<>(
-                this, name, tolerance, OrderAssertionError::create);
+        return assertEvaluator(name, OrderInfo::new);
     }
 
     /**
@@ -105,8 +107,7 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      */
     public FluentAssertionBuilder<I,Number> assertValue(
             final CharSequence name) {
-        return new FluentAssertionBuilder<>(
-                this, name, tolerance, ValueAssertionError::createValue);
+        return assertEvaluator(name, ValueInfo::new);
     }
 
     /**
@@ -117,8 +118,13 @@ public class AssertionBuilder<I extends AssertionBuilder<I,C>, C>
      */
     public FluentAssertionBuilder<I,Quantity<?>> assertQuantity(
             final CharSequence name) {
-        return new FluentAssertionBuilder<>(
-                this, name, tolerance, ValueAssertionError::createQuantity);
+        return assertEvaluator(name, QuantityInfo::new);
+    }
+
+    public <T> FluentAssertionBuilder<I, T> assertEvaluator(
+            final CharSequence name,
+            final AssertionErrorInfoCreator<T> creator) {
+        return new FluentAssertionBuilder<>(this, name, tolerance, creator);
     }
 
     /**

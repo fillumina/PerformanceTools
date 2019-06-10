@@ -17,21 +17,62 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public interface AssertionErrorCreator<T> {
+    private static class NegatedExperimentAssertionError
+            extends ExperimentAssertionError {
 
-        AbstractExperimentAssertionError create(
-                AssertableExperiment assertable,
-                CharSequence testName,
-                T value,
-                RelativeOrder order,
-                Ratio tolerance);
+        private static final long serialVersionUID = 1L;
+
+        public NegatedExperimentAssertionError(AssertionErrorInfo<?> info) {
+            super(info);
+        }
+
+        @Override
+        public String toString() {
+            return "not " + super.toString();
+        }
     }
 
-    private class InnerAssertion implements NegableExperimentAssertion {
+    private class NegatedOrEqualsAssertion
+            implements ExperimentAssertion {
+
+        private final InnerAssertion negateAssertion;
+        private final ExperimentAssertion equalAssertion;
+
+        // not equals
+        public NegatedOrEqualsAssertion(T value) {
+            negateAssertion = new InnerAssertion(value, RelativeOrder.EQUALS);
+            equalAssertion = ExperimentAssertion.NOK;
+        }
+
+        // (less | greater) than or equals
+        public NegatedOrEqualsAssertion(T value, RelativeOrder order) {
+            negateAssertion = new InnerAssertion(value, order);
+            equalAssertion = new InnerAssertion(value, RelativeOrder.EQUALS);
+        }
+
+        @Override
+        public void check(AssertableExperiment assertable)
+                throws AssertionError {
+            if (! equalAssertion.satisfy(assertable) &&
+                    negateAssertion.satisfy(assertable)) {
+                AssertionErrorInfo<?> info = negateAssertion.getInfo(assertable);
+                throw new NegatedExperimentAssertionError(info);
+            }
+        }
+
+        @Override
+        public void appendTo(Appendable appendable, AssertableExperiment assExp)
+                throws IOException {
+            appendable.append("not ");
+            negateAssertion.appendTo(appendable, assExp);
+        }
+    }
+
+    private class InnerAssertion implements ExperimentAssertion {
         private final T value;
         private final RelativeOrder order;
 
-        private AbstractExperimentAssertionError error;
+        private AssertionErrorInfo<T> info;
         private AssertableExperiment assertable;
 
         public InnerAssertion(T value, RelativeOrder order) {
@@ -39,23 +80,21 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
             this.order = order;
         }
 
-        @Override
-        public AbstractExperimentAssertionError getAssertionError(
-                AssertableExperiment assertable) {
+        public AssertionErrorInfo<T> getInfo(AssertableExperiment assertable) {
             if (assertable.equals(this.assertable)) {
-                return error;
+                return info;
             }
-            error = errorCreator
-                    .create(assertable, testName, value, order, tolerance);
-            return error;
+            info = infoCreator
+                    .create(assertable, testName, order, value, tolerance);
+            return info;
         }
 
         @Override
         public void check(AssertableExperiment assertable)
                 throws ExperimentAssertionError {
-            if (assertable != null) {
-                getAssertionError(assertable)
-                    .checkAndThrowExceptionIfNotSatisfied();
+            getInfo(assertable);
+            if (!info.isConditionSatisfied()) {
+                throw new ExperimentAssertionError(info);
             }
         }
 
@@ -72,12 +111,11 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
                     .print(' ').print(value)
                     .print(" with a tolerance of ")
                     .print(tolerance);
-            }
-
+        }
     }
 
     private final AssertionBuilder<I,?> assertionBuilder;
-    private final AssertionErrorCreator<T> errorCreator;
+    private final AssertionErrorInfoCreator<T> infoCreator;
     private final CharSequence testName;
     private final Ratio tolerance;
 
@@ -85,31 +123,33 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
             final AssertionBuilder<I,?> assertionBuilder,
             final CharSequence name,
             final Ratio tolerance,
-            final AssertionErrorCreator<T> errorCreator) {
+            final AssertionErrorInfoCreator<T> evaluatorCreator) {
         this.assertionBuilder = assertionBuilder;
-        this.errorCreator = errorCreator;
+        this.infoCreator = evaluatorCreator;
         this.testName = name;
         this.tolerance = tolerance;
     }
 
-    @Deprecated // TODO remove this, negate use is confusing
-    public I is(boolean negate, RelativeOrder equality, T other) {
-        if (negate) {
-            switch(equality) {
-                case EQUALS: return notEqualsTo(other);
-                case LESS: return greaterThanOrEquals(other);
-                case GREATER: return lessThanOrEquals(other);
-            }
-        } else {
-            switch(equality) {
-                case EQUALS: return equalsTo(other);
-                case LESS: return lessThan(other);
-                case GREATER: return greaterThan(other);
-            }
-        }
-        throw new AssertionError("unexpected case: " + equality);
+    /**
+     * Accepts a configurable assertion.
+     *
+     * @param negate    negate the equality constraint
+     * @param relativeOrder  constraint
+     * @param value     value to use in the evaluation
+     * @return self
+     */
+    public I is(boolean negate, RelativeOrder relativeOrder, T value) {
+        Comparison comparison = Comparison.from(relativeOrder, negate);
+        return is(comparison, value);
     }
 
+    /**
+     * Accepts a configurable assertion.
+     *
+     * @param comparison constraint
+     * @param value      value to use in the evaluation
+     * @return self
+     */
     public I is(Comparison comparison, T value) {
         switch (comparison) {
             case EQUALS: return equalsTo(value);
@@ -123,44 +163,44 @@ public class FluentAssertionBuilder<I extends AssertionBuilder<I,?>, T>
     }
 
     public I equalsTo(final T value) {
-        final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.EQUALS);
-        return assertionBuilder.accept(assertion);
+        return createAssertion(value, RelativeOrder.EQUALS);
     }
 
     public I notEqualsTo(final T value) {
-        final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.EQUALS);
-        final NegateExperimentAssertion negate =
-                new NegateExperimentAssertion(assertion);
-        return assertionBuilder.accept(negate);
+        return createNotEqualAssertion(value);
     }
 
     public I greaterThan(final T value) {
-        final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.GREATER);
-        return assertionBuilder.accept(assertion);
+        return createAssertion(value, RelativeOrder.GREATER);
     }
 
     public I lessThanOrEquals(final T value) {
-        final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.GREATER);
-        final NegateExperimentAssertion negate =
-                new NegateExperimentAssertion(assertion);
-        return assertionBuilder.accept(negate);
+        return createNegatedAssertion(value, RelativeOrder.GREATER);
     }
 
     public I lessThan(final T value) {
-        final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.LESS);
-        return assertionBuilder.accept(assertion);
+        return createAssertion(value, RelativeOrder.LESS);
     }
 
     public I greaterThanOrEquals(final T value) {
+        return createNegatedAssertion(value, RelativeOrder.LESS);
+    }
+
+    private I createAssertion(final T value, final RelativeOrder order) {
         final InnerAssertion assertion =
-                new InnerAssertion(value, RelativeOrder.LESS);
-        final NegateExperimentAssertion negate =
-                new NegateExperimentAssertion(assertion);
+                new InnerAssertion(value, order);
+        return assertionBuilder.accept(assertion);
+    }
+
+    private I createNegatedAssertion(final T value, final RelativeOrder order) {
+        final NegatedOrEqualsAssertion negate =
+                new NegatedOrEqualsAssertion(value, order);
+        return assertionBuilder.accept(negate);
+    }
+
+    private I createNotEqualAssertion(final T value) {
+        final NegatedOrEqualsAssertion negate =
+                new NegatedOrEqualsAssertion(value);
         return assertionBuilder.accept(negate);
     }
 }

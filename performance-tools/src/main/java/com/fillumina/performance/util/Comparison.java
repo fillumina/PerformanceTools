@@ -38,6 +38,23 @@ public enum Comparison {
         throw new AssertionError("unmanaged enum value: " + order);
     }
 
+    public static Comparison from(RelativeOrder order, boolean negate) {
+        if (negate) {
+            switch (order) {
+                case EQUALS: return NOT_EQUALS;
+                case GREATER: return LESS_OR_EQUALS;
+                case LESS: return GREATER_OR_EQUALS;
+            }
+        } else {
+            switch (order) {
+                case EQUALS: return EQUALS;
+                case GREATER: return GREATER;
+                case LESS: return LESS;
+            }
+        }
+        throw new AssertionError("unmanaged enum value: " + order);
+    }
+
     Comparison(String message, String symbol,
             boolean negate, RelativeOrder order) {
         this.message = message;

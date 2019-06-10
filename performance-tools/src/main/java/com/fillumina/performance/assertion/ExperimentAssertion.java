@@ -1,6 +1,7 @@
 package com.fillumina.performance.assertion;
 
 import com.fillumina.performance.util.StringGenerator;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,8 +14,34 @@ import java.util.Map;
 public interface ExperimentAssertion
         extends StringGenerator<AssertableExperiment> {
 
+    static ExperimentAssertion OK = new ExperimentAssertion() {
+        @Override
+        public void check(AssertableExperiment assertable) throws AssertionError {
+            // do nothing
+        }
+
+        @Override
+        public void appendTo(Appendable appendable, AssertableExperiment obj)
+                throws IOException {
+            appendable.append("OK");
+        }
+    };
+
+    static ExperimentAssertion NOK = new ExperimentAssertion() {
+        @Override
+        public void check(AssertableExperiment assertable) throws AssertionError {
+            throw new AssertionError("nok");
+        }
+
+        @Override
+        public void appendTo(Appendable appendable, AssertableExperiment obj)
+                throws IOException {
+            appendable.append("NOK");
+        }
+    };
+
     public void check(AssertableExperiment assertable)
-            throws ExperimentAssertionError;
+            throws AssertionError;
 
     /** @return true if the given {@link AssertableExperiment} complies. */
     default boolean satisfy(AssertableExperiment assertable) {

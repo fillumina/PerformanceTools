@@ -9,15 +9,15 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class DefaultAssertableExperiment implements AssertableExperiment {
-
-    private final Map<CharSequence, DimensionalMeasure> map;
+public class DefaultAssertableExperiment
+        extends LinkedHashMap<CharSequence, DimensionalMeasure>
+        implements AssertableExperiment {
+    private static final long serialVersionUID = 1L;
 
     public static DefaultAssertableExperiment create(Object ... values) {
         return create(Absolute.UNIT, values);
@@ -33,29 +33,29 @@ public class DefaultAssertableExperiment implements AssertableExperiment {
     }
 
     public DefaultAssertableExperiment() {
-        this(new LinkedHashMap<>());
+        super();
     }
 
     public DefaultAssertableExperiment(
             Map<CharSequence, DimensionalMeasure> map) {
-        this.map = map;
+        super(map);
     }
 
     public DefaultAssertableExperiment add(
             CharSequence name, double... values) {
-        map.put(name, DimensionalMeasure.of(Absolute.UNIT, values));
+        put(name, DimensionalMeasure.of(Absolute.UNIT, values));
         return this;
     }
 
     public DefaultAssertableExperiment add(
             CharSequence name, Unit<?> unit, double... values) {
-        map.put(name, DimensionalMeasure.of(unit, values));
+        put(name, DimensionalMeasure.of(unit, values));
         return this;
     }
 
     public DefaultAssertableExperiment add(CharSequence name,
             DimensionalMeasure measure) {
-        map.put(name, measure);
+        put(name, measure);
         return this;
     }
 
@@ -71,47 +71,16 @@ public class DefaultAssertableExperiment implements AssertableExperiment {
 
     @Override
     public Collection<? extends CharSequence> getNames() {
-        return map.keySet();
+        return keySet();
     }
 
     @Override
     public DimensionalMeasure getMeasure(CharSequence name)
             throws NoSuchElementException {
-        final DimensionalMeasure measure = map.get(name);
+        final DimensionalMeasure measure = get(name);
         if (measure == null) {
             throw new MeasureNotFoundException(name.toString(), getNames());
         }
         return measure;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + Objects.hashCode(this.map);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DefaultAssertableExperiment other =
-                (DefaultAssertableExperiment) obj;
-        if (!Objects.equals(this.map, other.map)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return map.toString();
     }
 }
