@@ -8,7 +8,9 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public interface AssertionErrorInfo<T> extends AssertionEvaluator {
+public interface AssertionErrorInfo<T> {
+    
+    boolean isConditionSatisfied();
 
     AssertableExperiment getAssertable();
 
