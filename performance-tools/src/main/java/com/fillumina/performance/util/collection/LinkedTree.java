@@ -23,7 +23,10 @@ import java.util.function.Function;
  * a {@link Map} interface and can iterate through its children in order of
  * insertion. The map is backed by a simple linked list
  * so its performance is quite bad but still OK for few entries.
+ * It can be set as read-only (cannot be reverted obviously)
+ * and has a deep clone constructor.
  * <p>
+ *
  * This class is not thread safe.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
@@ -322,6 +325,7 @@ public class LinkedTree<K,V>
         return key;
     }
 
+    @Override
     public V setValue(V value) {
         if (isUnmodifiable()) {
             throw new UnsupportedOperationException("unmodifiable tree.");
@@ -331,10 +335,12 @@ public class LinkedTree<K,V>
         return oldValue;
     }
 
+    @Override
     public V getValue() {
         return value;
     }
 
+    @Override
     public void clear() {
         if (isUnmodifiable()) {
             throw new UnsupportedOperationException("unmodifiable tree.");
@@ -619,7 +625,7 @@ public class LinkedTree<K,V>
         flatten(map, converter, new ArrayDeque<>(), this);
         return map;
     }
-    
+
     private <C> void flatten(
             Map<C, ? super V> map,
             Function<List<K>,C> converter,
@@ -971,7 +977,7 @@ public class LinkedTree<K,V>
             @Override
             public Iterator<V> iterator() {
                 return new Iterator<V>() {
-                    Iterator<LinkedTree<K,V>> it =
+                    private final Iterator<LinkedTree<K,V>> it =
                             LinkedTree.this.iterator();
 
                     @Override

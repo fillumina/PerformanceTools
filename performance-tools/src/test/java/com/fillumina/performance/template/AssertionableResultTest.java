@@ -6,6 +6,7 @@ import com.fillumina.performance.assertion.MeasureNotFoundException;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.mock.StatsMockBuilder;
+import com.fillumina.performance.util.AppendableWrapper;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.io.IOException;
 import java.util.List;
@@ -67,7 +68,8 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> map = result.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map =
+                result.getReport().getCatalog().getFailedAssertions();
 
         assertEquals(1, map.size());
         assertEquals(assertion, map.get(stats).get(0));
@@ -83,9 +85,8 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("TEST ASSERTION");
             }
-
         };
 
         final Stats stats = createStats("one");
@@ -97,11 +98,13 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> map =
-                aResult.getFailedAssertions();
+        List<ExperimentAssertion> list =
+                aResult.getReport().getUnused().getUnusedAssertionList();
 
-        assertEquals(1, map.size());
-        assertEquals(assertion, map.get(AssertionableResult.UNCHECKED).get(0));
+        //System.out.println(aResult.getReport().toString());
+
+        assertEquals(1, list.size());
+        assertEquals(assertion, list.get(0));
     }
 
     @Test
@@ -114,9 +117,8 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("TEST ASSERTION");
             }
-
         };
 
         final Stats stats = createStats("one");
@@ -127,7 +129,8 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> map = result.getFailedAssertions();
+        Map<AssertableExperiment, List<ExperimentAssertion>> map =
+                result.getReport().getCatalog().getFailedAssertions();
 
         assertTrue(map.isEmpty());
     }
@@ -142,9 +145,8 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("OK ASSERTION");
             }
-
         };
 
         ExperimentAssertion failingAssertion1 = new ExperimentAssertion() {
@@ -155,9 +157,8 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("FAIL ASSERTION 1");
             }
-
         };
 
         ExperimentAssertion failingAssertion2 = new ExperimentAssertion() {
@@ -168,9 +169,8 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("FAIL ASSERTION 2");
             }
-
         };
 
         ExperimentAssertion notFoundAssertion = new ExperimentAssertion() {
@@ -181,9 +181,10 @@ public class AssertionableResultTest {
             @Override
             public void appendTo(Appendable appendable, AssertableExperiment assertable)
                     throws IOException {
-                // do nothing
+                new AppendableWrapper(appendable).print("NOT FOUND ASSERTION");
             }
 
+            @Override public String toString() { return "NOT FOUND ASSERTION"; }
         };
 
         final Stats stats = createStats("one");
@@ -198,13 +199,21 @@ public class AssertionableResultTest {
                         .setStatsHolder(holder)
                         .buildWithSetter(null);
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> map = aResult.getFailedAssertions();
+        //System.out.println(aResult.getReport());
 
-        assertEquals(2, map.size());
-        assertEquals(notFoundAssertion,
-                map.get(AssertionableResult.UNCHECKED).get(0));
-        assertEquals(failingAssertion1, map.get(stats).get(0));
-        assertEquals(failingAssertion2, map.get(stats).get(1));
+        Map<AssertableExperiment, List<ExperimentAssertion>> map =
+                aResult.getReport().getCatalog().getFailedAssertions();
+
+        final List<ExperimentAssertion> failedList = map.get(stats);
+
+        assertEquals(2, failedList.size());
+        assertEquals(failingAssertion1, failedList.get(0));
+        assertEquals(failingAssertion2, failedList.get(1));
+
+        List<ExperimentAssertion> unusedList =
+                aResult.getReport().getUnused().getUnusedAssertionList();
+
+        assertEquals(notFoundAssertion, unusedList.get(0));
     }
 
 }

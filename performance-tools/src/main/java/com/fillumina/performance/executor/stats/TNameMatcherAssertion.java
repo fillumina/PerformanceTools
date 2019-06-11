@@ -1,10 +1,10 @@
 package com.fillumina.performance.executor.stats;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.AssertionReport;
 import com.fillumina.performance.assertion.Assertions;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.util.AppendableWrapperSentinel;
 import com.fillumina.performance.util.FluentBuilder;
@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 /**
@@ -60,18 +59,17 @@ public class TNameMatcherAssertion<C> implements ExperimentAssertion {
 
     @Override
     public void checkAndReport(AssertableExperiment assertable,
-            Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
-            UnusedAssertionChecker unusedAssertionChecker) {
+            AssertionReport report) {
+        AssertionReport innerReport = report.getUpdateableCatalogOnly();
         List<PathName> tnames = extractFullNames(assertable);
-        UnusedAssertionChecker dummy = new UnusedAssertionChecker();
         for (Evaluator evaluator : evaluators) {
             List<ExperimentAssertion> assertions = evaluator.createAssertions(tnames);
             if (assertions.isEmpty()) {
-                unusedAssertionChecker.setUnused(evaluator);
+                report.setUnused(evaluator);
             } else {
-                unusedAssertionChecker.setUsed(evaluator);
+                report.setUsed(evaluator);
                 for (ExperimentAssertion a : assertions) {
-                    a.checkAndReport(assertable, failedAssertions, dummy);
+                    a.checkAndReport(assertable, innerReport);
                 }
             }
         }

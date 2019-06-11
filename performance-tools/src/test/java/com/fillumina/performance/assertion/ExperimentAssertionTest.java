@@ -3,7 +3,6 @@ package com.fillumina.performance.assertion;
 import com.fillumina.performance.mock.AssertableMock;
 import com.fillumina.performance.mock.AssertionMock;
 import com.fillumina.performance.mock.SettableAssertionMock;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import static org.junit.Assert.assertEquals;
@@ -30,13 +29,14 @@ public class ExperimentAssertionTest {
 
         final AssertableMock assertable = new AssertableMock("one");
 
-        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
-                new LinkedHashMap<>();
+        AssertionReport report = new AssertionReport();
 
-        UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
+        assertion.checkAndReport(assertable, report);
 
-        assertEquals(0, unusedAssertion.getUnusedAssertionList().size());
+        assertEquals(0, report.getUnused().getUnusedAssertionList().size());
+
+        final Map<AssertableExperiment, List<ExperimentAssertion>>
+                failedAssertions = report.getCatalog().getFailedAssertions();
         assertEquals(1, failedAssertions.size());
         assertEquals(assertion, failedAssertions.get(assertable).get(0));
     }
@@ -47,15 +47,18 @@ public class ExperimentAssertionTest {
             throw new MeasureNotFoundException("not found");
         });
         final AssertableMock assertable = new AssertableMock("one");
-        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
-                new LinkedHashMap<>();
-        UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        assertion.checkAndReport(assertable, failedAssertions, unusedAssertion);
+
+        AssertionReport report = new AssertionReport();
+
+        assertion.checkAndReport(assertable, report);
+
+        final Map<AssertableExperiment, List<ExperimentAssertion>>
+                failedAssertions = report.getCatalog().getFailedAssertions();
 
         assertEquals(0, failedAssertions.size());
 
-        assertEquals(1, unusedAssertion.getUnusedAssertionList().size());
-        assertEquals(assertion, unusedAssertion.getUnusedAssertionList().get(0));
+        assertEquals(1, report.getUnused().getUnusedAssertionList().size());
+        assertEquals(assertion, report.getUnused().getUnusedAssertionList().get(0));
     }
 
 }

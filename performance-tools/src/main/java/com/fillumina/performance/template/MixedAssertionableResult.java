@@ -91,7 +91,7 @@ public class MixedAssertionableResult<C> {
     public boolean isSomeAssertionFailed() {
         boolean failed = false;
         for (AssertionableResult<C> singleStats : map.values()) {
-            failed |= !singleStats.getFailedAssertions().isEmpty();
+            failed |= !singleStats.getReport().isAllSuccessful();
         }
         return failed;
     }
@@ -140,7 +140,7 @@ public class MixedAssertionableResult<C> {
             appendTitle("FAILED ASSERTIONS", '=');
 
             for (AssertionableResult<?> singleStats : map.values()) {
-                singleStats.appendFailedAssertions(getAppendable());
+                singleStats.appendFailedAndUnusedAssertions(getAppendable());
             }
 
             return getAppendable();

@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Builds, holds and checks a collection of assertions.
@@ -54,10 +52,8 @@ public class Assertions
 
     @Override
     public void checkAndReport(AssertableExperiment assertable,
-            Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions,
-            UnusedAssertionChecker unusedAssertionChecker) {
-        collection.forEach(a ->
-                a.checkAndReport(assertable, failedAssertions, unusedAssertionChecker) );
+            AssertionReport report) {
+        collection.forEach(a -> a.checkAndReport(assertable, report) );
     }
 
     @Override

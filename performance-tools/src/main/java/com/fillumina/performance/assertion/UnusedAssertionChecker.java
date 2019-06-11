@@ -1,5 +1,7 @@
 package com.fillumina.performance.assertion;
 
+import com.fillumina.performance.util.AppendableWrapper;
+import com.fillumina.performance.util.Printable;
 import com.fillumina.performance.util.collection.UnmodifiableList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +13,21 @@ import java.util.Map;
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
-public class UnusedAssertionChecker {
-    private final Map<ExperimentAssertion, Boolean> checkedMap = new HashMap<>();
+public class UnusedAssertionChecker extends Printable<UnusedAssertionChecker> {
+    public static final UnusedAssertionChecker EMPTY =
+            new UnusedAssertionChecker(
+                    Collections.unmodifiableMap(Collections.emptyMap()) );
+
+    private final Map<ExperimentAssertion, Boolean> checkedMap;
+
+    public UnusedAssertionChecker() {
+        checkedMap = new HashMap<>();
+    }
+
+    public UnusedAssertionChecker(
+            Map<ExperimentAssertion, Boolean> checkedMap) {
+        this.checkedMap = checkedMap;
+    }
 
     public void setUsed(ExperimentAssertion assertion) {
         checkedMap.put(assertion, Boolean.TRUE);
@@ -38,5 +53,20 @@ public class UnusedAssertionChecker {
             return new UnmodifiableList<>(checkedMap.keySet());
         }
         return Collections.<ExperimentAssertion>emptyList();
+    }
+
+    @Override
+    public UnusedAssertionChecker appendTo(Appendable appendable) {
+        final List<ExperimentAssertion> list = getUnusedAssertionList();
+        if (!list.isEmpty()) {
+            AppendableWrapper app = new AppendableWrapper(appendable);
+            app.print("Unused Assertions: ");
+            app.println(list.size());
+            list.forEach(assertion -> {
+                app.println(assertion.toString());
+            });
+            app.newline();
+        }
+        return this;
     }
 }

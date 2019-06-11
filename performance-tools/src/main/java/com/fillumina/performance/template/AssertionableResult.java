@@ -1,9 +1,9 @@
 package com.fillumina.performance.template;
 
 import com.fillumina.performance.assertion.AssertableExperiment;
+import com.fillumina.performance.assertion.AssertionReport;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.assertion.MeasureNotFoundException;
-import com.fillumina.performance.assertion.UnusedAssertionChecker;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.FluentBuilder;
@@ -11,13 +11,10 @@ import com.fillumina.performance.util.Holder;
 import com.fillumina.performance.util.StringGenerator;
 import com.fillumina.performance.util.collection.IndexedHashMap;
 import com.fillumina.performance.util.pathname.PathName;
-import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Container for:
@@ -90,52 +87,18 @@ public class AssertionableResult<C>
         return statsHolder;
     }
 
-    public void appendFailedAssertions(Appendable appendable) {
-        getFailedAssertions().forEach( (AssertableExperiment assertable,
-                    List<ExperimentAssertion> failedAssertions) -> {
-                try {
-                    for (ExperimentAssertion a : failedAssertions) {
-                        a.appendTo(appendable, assertable);
-                    }
-                    appendable.append(System.lineSeparator());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-        });
+    public void appendFailedAndUnusedAssertions(Appendable appendable) {
+        getReport().appendTo(appendable);
     }
 
-    public static final AssertableExperiment UNCHECKED =
-            new AssertableExperiment() {
-        @Override public Collection<? extends CharSequence> getNames() {
-            return Collections.<CharSequence>emptyList();
-        }
-        @Override public DimensionalMeasure getMeasure(CharSequence name) {
-            return null; }
-        @Override public String toString() { return "UNCHECKED"; }
-    };
-
-    public Map<AssertableExperiment, List<ExperimentAssertion>>
-            getFailedAssertions() {
+    public AssertionReport getReport() {
         if (assertions == null) {
-            return Collections.<AssertableExperiment,
-                    List<ExperimentAssertion>>emptyMap();
+            return AssertionReport.EMPTY;
         }
-        Map<AssertableExperiment, List<ExperimentAssertion>> failedAssertions =
-                new IndexedHashMap<>();
-        UnusedAssertionChecker unusedAssertion = new UnusedAssertionChecker();
-        for (AssertableExperiment assertable :
-                getFlattenedAssertableMap().values()) {
-            assertions.forEach(assertion -> {
-                assertion.checkAndReport(assertable,
-                        failedAssertions, unusedAssertion);
-            });
-        }
-        List<ExperimentAssertion> unusedAssertionList =
-                unusedAssertion.getUnusedAssertionList();
-        if (!unusedAssertionList.isEmpty()) {
-            failedAssertions.put(UNCHECKED, unusedAssertionList);
-        }
-        return failedAssertions;
+
+        AssertionReport report = new AssertionReport();
+        report.addAll(assertions, getFlattenedAssertableMap().values());
+        return report;
     }
 
     public void appendNamedTestResults(Appendable appendable, PathName name) {
@@ -197,5 +160,5 @@ public class AssertionableResult<C>
         return this;
     }
 
-    // TODO add toString()
+    // TODO addAll toString()
 }
