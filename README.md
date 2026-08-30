@@ -1,3 +1,5 @@
+
+
 Performance-Tools
 =================
 
@@ -162,7 +164,7 @@ public class DivisionByTwoPerformanceTest
 
     // allows to run the test stand alone with some useful output
     public static void main(final String[] args) {
-        new DivisionByTwoPerformanceTest().testWithIntermediateOutput();
+        new DivisionByTwoPerformanceTest().executeWithIntermediateOutput();
     }
 
     @Override
