@@ -1,11 +1,18 @@
 Performance-Tools
 =================
 
-A framework for evaluating and **asserting** the comparative performance of code from
-inside an ordinary JUnit or TestNG suite. It measures the code that actually ships, in
-the environment that actually runs it, and reports the result as a ratio with a margin
-of error, so a regression fails the build instead of being a number somebody has to
-notice. See [why this rather than JMH](#why-this-rather-than-jmh).
+A framework for measuring the comparative performance of code, with statistics rigorous
+enough to tell a real difference from noise.
+
+It has two modes, and they work as a pair. Run it from a `static main` to **explore**: it
+reports ratios with standard deviations, uncertainty and pairwise significance for the code
+you point it at, which is how you find out *why* something is slow. Then **gate** the same
+comparison as an assertion inside an ordinary JUnit or TestNG suite, so the regression
+fails the build instead of being a number somebody has to notice.
+
+Throughout, it measures the code that actually ships, in the environment that actually runs
+it. See [why this rather than JMH](#why-this-rather-than-jmh) and
+[exploring, and then gating](#exploring-and-then-gating).
 
 - __version:__ 2.0-SNAPSHOT (not yet released)
 - __last commit:__ 11 June 2019
@@ -59,7 +66,7 @@ matter of degree:
 | Artefact | a synthetic measurement | a verdict in your test suite |
 | Environment | isolated, forked, idealised | the system the code ships on |
 | Code measured | a benchmark method | the real code path |
-| Outcome | a number | an assertion that fails the build |
+| Outcome | a number to interpret | a report to read, or an assertion to enforce |
 
 This project is built for the second column. It runs **inside your test suite**,
 against code that actually ships, in the environment that actually runs it, and it can
@@ -99,6 +106,45 @@ with a 1.5% margin. That is not a flattering result, and it is reported rather t
 asserted away, which is the point. A synthetic benchmark would not have surfaced it, and
 a tool that reports an unflattering truth about your own code is worth more than one
 that flatters it.
+
+### Exploring, and then gating
+
+The assertion use is the one this project is built around, but it is not the only one, and
+the other mode comes first in practice: a `static main` that produces information rather
+than a verdict, for when you do not yet know what to assert.
+
+`LookupExplorationApp` in the examples measures the same lookup two ways, at an easy
+position and at the worst position, and deliberately declares no assertions:
+
+```
+Average Time:
+Required measure confidence  :  99.000 %
+Max ratio percentage error   :  1.393 %
+ANOVA                        :  1.0
+
+idx  name         ratio vs slower    average time             stdev        uncertainty  smpl  significance
+0    linear_easy  5.19 +/- 0.08 %    11.482 +/- 0.120 ns/op   0.268 ns/op  1.048 %      33    0.999
+1    hash_easy    0.74 +/- 0.01 %    1.627 +/- 0.015 ns/op    0.034 ns/op  0.938 %      33    0.999
+2    linear_hard  100.01 +/- 1.39 %  221.175 +/- 2.146 ns/op  4.787 ns/op  0.970 %      33    0.100
+3    hash_hard    0.90 +/- 0.01 %    1.990 +/- 0.013 ns/op    0.028 ns/op  0.634 %      33    0.999
+```
+
+This is diagnostic, not merely comparative. The linear scan is 7x slower near the front
+and 110x slower at the back, while the map stays essentially flat — 1.6 to 2.0 ns/op
+regardless of position. That identifies the cost as the *scan*, which is the actual
+answer to "why is this lookup slow", and a single absolute number would never have told
+you. The `significance` column is what separates a real difference from noise, and the
+`uncertainty` column is what tells you whether any of it is worth acting on.
+
+The run also prints the resolved experiment plan, the filters in force, and live progress
+with an ETA and a note when the CPU had to be cooled, so you can see what the framework
+decided on your behalf and whether it had to intervene.
+
+So the two modes are a workflow rather than a choice: **explore with a `main` until you
+know what the real difference is, then encode it as an assertion** so it cannot silently
+come back. `SearchTypePerformanceTest` is the second half of exactly this example. Debugging
+a live application is also supported in-process through `Telemetry`, which samples named
+sections of a running system.
 
 ### Also worth knowing
 
