@@ -117,13 +117,53 @@ The assertion use is the one this project is built around, but it is not the onl
 the other mode comes first in practice: a `static main` that produces information rather
 than a verdict, for when you do not yet know what to assert.
 
-![A full run of the exploration example: configuration, the resolved experiment plan, live
-progress with an ETA, and the results tables](docs/images/exploration-run.png)
+A real run of `LookupExplorationApp` in the examples, unedited. It opens with the machine and
+the resolved plan, so you can see what was decided on your behalf and which filters are in
+force:
 
-That is one real run of `LookupExplorationApp` in the examples, unedited apart from colour.
-The assertion use is the one this project is built around, but it is not the only one, and
-the other mode comes first in practice: a `static main` that produces information rather
-than a verdict, for when you do not yet know what to assert.
+```
+CONFIGURATION
+=============
+
+# Date: 2026-09-27 14:10:39+0200
+# CPU: null; 32 "procs"
+# OS: Linux; 7.0.0-111031-tuxedo; amd64
+# JVM: Ubuntu; 25.0.4.1
+
+Experiment Plan
+---------------
+tests:
+ linear_easy
+ hash_easy
+ linear_hard
+ hash_hard
+
+Speed
+-----
+concurrencyLevel       : 1
+timeout                : 120.0000 s
+coolDownCpu            : true
+samples                : 33
+iterations             : auto
+millisecondsPerSample  : 250
+filterSamples          : [OutlierEliminatorFilter{stdevFactor=3.0},
+                          ConvergenceFilter{minStableSequenceLength=33,
+                          minUnoptimizedSequnenceLength=10, stdevFactor=3.0}]
+maxPercentageMargin    : 5.000 %
+confidence             : 99.000 %
+
+EXECUTION
+=========
+
+ 1 / 33 ETA=           --  iterations= 23171378, 142804032, 1274361, 116170129   required  CPU is cool
+ 2 / 33 ETA=               iterations= 24843139, 165828482, 1270641, 132506847   required
+ 3 / 33 ETA=          1 m  iterations= 23915348, 158046970, 1267775, 132987812   required  CPU is cool
+ 4 / 33 ETA=          1 m  iterations= 24972688, 170520204, 1263338, 139737547   required
+```
+
+Progress is live, with an ETA, and the run pauses to cool the CPU when the canary workload
+shows the machine is down-clocked — which is what those `CPU is cool` markers are. The run
+continues to a throughput table in the same shape, and totals 1m 32.691s.
 
 `LookupExplorationApp` in the examples measures the same lookup two ways, at an easy
 position and at the worst position, and deliberately declares no assertions:
