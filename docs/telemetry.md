@@ -6,7 +6,7 @@ time to execute. With telemetry you can divide your code into sections by
 inserting a static telemetry stop watch point and see the percentage of
 time spent in each of them:
 ```java
-Telemetry.segment("sorting");
+Telemetry.section("sorting");
 ```
 The sections does not require to be on any class or method boundary, they can
 just be wherever you want them to be.
