@@ -23,8 +23,12 @@ it. See [why this rather than JMH](#why-this-rather-than-jmh) and
 
 
 ## Index ##
-- [Why this rather than JMH](#why-this-rather-than-jmh)
+- [Exploring, and then gating](#exploring-and-then-gating)
+- [Also worth knowing](#also-worth-knowing)
+- [Exploring, and then gating](#exploring-and-then-gating)
+- [Tracing a running code path](#tracing-a-running-code-path)
 - [What it measures, and what it does not](#what-it-measures-and-what-it-does-not)
+- [How the numbers are obtained](./docs/statistics.md)
 - [Note to version](#note-to-version)
 - [Use with maven](#use-with-maven)
 - [History](#history)
@@ -107,8 +111,16 @@ asserted away, which is the point. A synthetic benchmark would not have surfaced
 a tool that reports an unflattering truth about your own code is worth more than one
 that flatters it.
 
-### Exploring, and then gating
+## Exploring, and then gating ##
 
+The assertion use is the one this project is built around, but it is not the only one, and
+the other mode comes first in practice: a `static main` that produces information rather
+than a verdict, for when you do not yet know what to assert.
+
+![A full run of the exploration example: configuration, the resolved experiment plan, live
+progress with an ETA, and the results tables](docs/images/exploration-run.png)
+
+That is one real run of `LookupExplorationApp` in the examples, unedited apart from colour.
 The assertion use is the one this project is built around, but it is not the only one, and
 the other mode comes first in practice: a `static main` that produces information rather
 than a verdict, for when you do not yet know what to assert.
@@ -146,7 +158,7 @@ come back. `SearchTypePerformanceTest` is the second half of exactly this exampl
 a live application is also supported in-process through `Telemetry`, which samples named
 sections of a running system.
 
-### Also worth knowing
+## Also worth knowing ##
 
 * no code generation, and multi-paradigm API (builder, fluent, template)
 * automatic discovery of sampling parameters, so you do not tune them by hand
@@ -159,6 +171,48 @@ The cost of the in-situ approach is that you have less control over the tested c
 the user should be aware of JVM optimisations such as dead code elimination, constant
 folding, loop unrolling, lock coalescing, in-lining and code profiling. The framework
 reports their effects rather than preventing them.
+
+## Tracing a running code path ##
+
+The third leg, and the one that reaches beyond isolated snippets. `Telemetry` does not need
+a benchmark at all: you drop a marker at a point of interest and it reports what share of the
+time was spent there. That is how you find out where a long algorithm actually spends its
+time, without first writing a benchmark for each stage.
+
+```java
+private static void handleRequest(final String user) {
+    Telemetry.start();
+    Telemetry.section("parse");
+    final List<Integer> items = parse(user);
+    Telemetry.section("transform");
+    final int total = transform(items);
+    Telemetry.section("serialize");
+}
+```
+
+Each call records the time elapsed since the previous one, so the sequence of calls is what
+defines the sections. A stage that runs a known number of times declares the count,
+`Telemetry.section("retry", 10)`, so its share is of the work rather than of the calls.
+
+`TelemetryExplorationApp` in the examples traces 2,000 requests through a small pipeline:
+
+```
+idx  name       ratio vs slower    mean                          stdev            uncertainty  smpl  significance
+0    parse      0.10 +/- 0.01 %    29.740 +/- 4.181 ns/op        72.597 ns/op     14.060 %     2000  0.999
+1    transform  68.88 +/- 2.80 %   20829.270 +/- 117.969 ns/op   2048.147 ns/op   0.566 %      2000  0.999
+2    serialize  100.16 +/- 5.70 %  30287.089 +/- 1219.459 ns/op  29941.682 ns/op  4.026 %      4000  0.100
+```
+
+Parsing is 0.1% of the request and can be ignored; transformation and serialisation are both
+material, and the figure tells you which to attack. Note that `serialize` shows 4,000
+samples for 2,000 requests, because the section is closed twice per request and the
+iteration count is accounted for.
+
+Markers can sit anywhere, including inside code you would rather not restructure, and each
+call returns `true` so that a marker can be wrapped in `assert` and compiled out entirely
+in production. It also works per-thread, so a server can report where one request type spends
+its time while others are in flight. The statistics, the filters and the interval estimates
+are the same machinery as the other two modes.
 
 ## What it measures, and what it does not ##
 
