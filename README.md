@@ -117,15 +117,16 @@ The assertion use is the one this project is built around, but it is not the onl
 the other mode comes first in practice: a `static main` that produces information rather
 than a verdict, for when you do not yet know what to assert.
 
-A real run of `LookupExplorationApp` in the examples, unedited. It opens with the machine and
-the resolved plan, so you can see what was decided on your behalf and which filters are in
-force:
+`LookupExplorationApp` in the examples measures the same lookup two ways, at an easy position
+and at the worst position, and deliberately declares no assertions. This is one real run,
+trimmed only where the output repeats itself. It opens with the machine and the resolved
+plan, so you can see what was decided on your behalf and which filters are in force:
 
 ```
 CONFIGURATION
 =============
 
-# Date: 2026-09-27 14:10:39+0200
+# Date: 2026-09-27 14:17:45+0200
 # CPU: null; 32 "procs"
 # OS: Linux; 7.0.0-111031-tuxedo; amd64
 # JVM: Ubuntu; 25.0.4.1
@@ -151,46 +152,60 @@ filterSamples          : [OutlierEliminatorFilter{stdevFactor=3.0},
                           minUnoptimizedSequnenceLength=10, stdevFactor=3.0}]
 maxPercentageMargin    : 5.000 %
 confidence             : 99.000 %
+```
 
+Then progress, live, with an ETA. The run pauses to cool the CPU whenever the canary
+workload shows the machine is down-clocked, which is what those `CPU is cool` markers are:
+
+```
 EXECUTION
 =========
 
- 1 / 33 ETA=           --  iterations= 23171378, 142804032, 1274361, 116170129   required  CPU is cool
- 2 / 33 ETA=               iterations= 24843139, 165828482, 1270641, 132506847   required
+ 1 / 33 ETA=           --  iterations= 23325260, 154770077, 1274098, 109909356   required  CPU is cool
+ 2 / 33 ETA=               iterations= 24551038, 161994820, 1271050, 128364477   required
  3 / 33 ETA=          1 m  iterations= 23915348, 158046970, 1267775, 132987812   required  CPU is cool
- 4 / 33 ETA=          1 m  iterations= 24972688, 170520204, 1263338, 139737547   required
 ```
 
-Progress is live, with an ETA, and the run pauses to cool the CPU when the canary workload
-shows the machine is down-clocked — which is what those `CPU is cool` markers are. The run
-continues to a throughput table in the same shape, and totals 1m 32.691s.
-
-`LookupExplorationApp` in the examples measures the same lookup two ways, at an easy
-position and at the worst position, and deliberately declares no assertions:
+And the results, in two views of the same samples:
 
 ```
 Average Time:
 Required measure confidence  :  99.000 %
-Max ratio percentage error   :  1.393 %
+Max ratio percentage error   :  3.936 %
 ANOVA                        :  1.0
 
-idx  name         ratio vs slower    average time             stdev        uncertainty  smpl  significance
-0    linear_easy  5.19 +/- 0.08 %    11.482 +/- 0.120 ns/op   0.268 ns/op  1.048 %      33    0.999
-1    hash_easy    0.74 +/- 0.01 %    1.627 +/- 0.015 ns/op    0.034 ns/op  0.938 %      33    0.999
-2    linear_hard  100.01 +/- 1.39 %  221.175 +/- 2.146 ns/op  4.787 ns/op  0.970 %      33    0.100
-3    hash_hard    0.90 +/- 0.01 %    1.990 +/- 0.013 ns/op    0.028 ns/op  0.634 %      33    0.999
+idx  name         ratio vs slower    average time             stdev         uncertainty  smpl  significance
+0    linear_easy  5.44 +/- 0.18 %    12.210 +/- 0.200 ns/op   0.446 ns/op   1.637 %      33    0.999
+1    hash_easy    0.75 +/- 0.03 %    1.673 +/- 0.038 ns/op    0.085 ns/op   2.268 %      33    0.999
+2    linear_hard  100.08 +/- 3.94 %  224.572 +/- 6.155 ns/op  13.727 ns/op  2.741 %      33    0.100
+3    hash_hard    0.91 +/- 0.03 %    2.034 +/- 0.041 ns/op    0.091 ns/op   2.017 %      33    0.999
+
+Throughput:
+Required measure confidence  :  99.000 %
+Max ratio percentage error   :  2.895 %
+ANOVA                        :  1.0
+
+idx  name         ratio vs faster    throughput                stdev         uncertainty  smpl  significance
+0    linear_easy  13.69 +/- 0.35 %   82.002 +/- 1.286 Mop/s    2.868 Mop/s   1.569 %      33    0.999
+1    hash_easy    100.04 +/- 2.89 %  599.173 +/- 12.079 Mop/s  26.939 Mop/s  2.016 %      33    0.100
+2    linear_hard  0.75 +/- 0.02 %    4.467 +/- 0.109 Mop/s     0.243 Mop/s   2.443 %      33    0.999
+3    hash_hard    82.25 +/- 2.27 %   492.637 +/- 9.030 Mop/s   20.137 Mop/s  1.833 %      33    0.999
+
+Performance test total time:  1m 32.427s
 ```
 
 This is diagnostic, not merely comparative. The linear scan is 7x slower near the front
-and 110x slower at the back, while the map stays essentially flat — 1.6 to 2.0 ns/op
-regardless of position. That identifies the cost as the *scan*, which is the actual
-answer to "why is this lookup slow", and a single absolute number would never have told
-you. The `significance` column is what separates a real difference from noise, and the
-`uncertainty` column is what tells you whether any of it is worth acting on.
+(12.210 against 1.673 ns/op) and 110x slower at the back (224.572 against 2.034), while
+the map stays essentially flat regardless of position. That identifies the cost as the
+*scan*, which is the actual answer to "why is this lookup slow" — and a single absolute
+number would never have told you, because both positions would simply have returned a
+number.
 
-The run also prints the resolved experiment plan, the filters in force, and live progress
-with an ETA and a note when the CPU had to be cooled, so you can see what the framework
-decided on your behalf and whether it had to intervene.
+The two columns to read are `significance`, which separates a real difference from noise, and
+`uncertainty`, which tells you whether the difference is worth acting on at all. Note that
+this run reports a 3.936% maximum ratio error where an earlier run of the same test on the
+same machine reported 0.675%: the margin is a property of the machine at that moment, which
+is exactly why the ratio is the portable quantity and the absolute figures are not.
 
 So the two modes are a workflow rather than a choice: **explore with a `main` until you
 know what the real difference is, then encode it as an assertion** so it cannot silently
