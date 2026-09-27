@@ -63,9 +63,6 @@ public interface ExperimentAssertion
      * Adds itself to the given {@link failedAssertions} in case of failure.
      *
      * @param assertable            the {@link AssertableExperiment} to check
-     * @param catalog      failed assertions for each assertable
-     * @param unused   unchecked assertions (to recognize
-     *                              unused assertions)
      */
     default void checkAndReport(AssertableExperiment assertable,
             AssertionReport report) {

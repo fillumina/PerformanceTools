@@ -8,7 +8,7 @@ import java.util.function.BiPredicate;
 
 /**
  *
- * @param T type of input
+ * @param <T> type of input
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

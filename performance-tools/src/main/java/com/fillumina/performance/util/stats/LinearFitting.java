@@ -3,8 +3,8 @@ package com.fillumina.performance.util.stats;
 import java.util.Collection;
 
 /**
- * Given the points the class calculates the linear function that fits:
- * y = m x + b
+ * Given the points this class calculates the linear function that fits:
+ * {@literal y = m x + b}
  *
  * @see https://en.wikipedia.org/wiki/Simple_linear_regression
  *

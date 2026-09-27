@@ -30,7 +30,7 @@ package com.fillumina.performance.util.instrument;
  * </pre>
  * <p>
  *
- * @param I self
+ * @param <I> self
  *
  * @see Instrumenter
  * @author Francesco Illuminati <fillumina@gmail.com>

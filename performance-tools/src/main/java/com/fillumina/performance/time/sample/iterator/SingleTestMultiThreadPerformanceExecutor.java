@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This executor takes statistics from each thread executing the same test.
- * It will also execute the test on ingle thread as a comparison.
+ * It will also execute the test on single thread as a comparison.
  * <p>
  * This {@link PerformanceExecutor} uses many threads and
  * workers to run a code as a multi-threaded environment.

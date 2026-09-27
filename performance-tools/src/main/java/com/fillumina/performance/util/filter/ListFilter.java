@@ -6,7 +6,6 @@ import java.util.function.Function;
 /**
  * Filters element of a {@link List}.
  *
- * @param T the type of the {@link List}
  * @param V the type which would be used for filtering
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

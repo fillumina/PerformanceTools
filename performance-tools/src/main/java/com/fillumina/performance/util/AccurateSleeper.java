@@ -1,7 +1,7 @@
 package com.fillumina.performance.util;
 
 /**
- * If you are interested in measuring/calculating elapsed time, then always
+ * If you are interested in measuring/calculating elapsed times, then always
  * use System.nanoTime(). On most systems it will give a resolution on the
  * order of microseconds. Be aware though, this call can also take microseconds
  * to execute on some platforms.

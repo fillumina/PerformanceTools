@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Evaluates the amount of time spent by different parts of a code.
  * It can be used in a multi-threaded environment (i.e. tracing a single
- * request on a web server). Remember that to have significant results
- * the code must be executed several times.
+ * request on a web server). Remember that to have statistically significant results
+ * the code must be executed as many times as possible.
  * <pre>
  * assert Telemetry.section("calculation");
  * </pre>
@@ -88,7 +88,6 @@ public class Telemetry {
     /**
      * End the performance sampling process and return the statistics.
      *
-     * @param confidence the required confidence of the returned measure
      * @return the statistics
      */
     @SuppressWarnings("unchecked")

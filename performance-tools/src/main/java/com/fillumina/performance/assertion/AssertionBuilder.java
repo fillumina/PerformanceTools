@@ -9,8 +9,8 @@ import java.util.function.Consumer;
 /**
  * Helper to build {@link ExperimentAssertion}s.
  *
- * @param I self
- * @param C caller used for fluent interface
+ * @param <I> self
+ * @param <C> caller used for fluent interface
  *
  * @author Francesco Illuminati
  */

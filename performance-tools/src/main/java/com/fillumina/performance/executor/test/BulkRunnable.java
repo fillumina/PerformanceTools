@@ -8,14 +8,14 @@ import com.fillumina.performance.executor.annotation.BeforeSample;
  * because the state of the object changes as a result of the test itself
  * making it non repeatable.<br>
  * A benchmark that estimates the speed of removing an element from a map
- * filled at 50% cannot be realized without some clever trick.
+ * filled at 50% cannot be realized without some clever tricks.
  * Adding back the element after deletion would take time that will be wrongly
  * accounted into the deletion. Adding it in a different method
  * would make the measure limited to only 1 iteration which is often
  * insufficient to reach a decent accuracy.
  * To overcome this problem the same operation can be
  * performed on a collection of objects of the same type.
- * This class helps taking this approach.
+ * This template helps taking this approach.
  * <p>
  * Remember to specify <code>setBulkSpecificConfig()</code> in the
  * speed configuration.

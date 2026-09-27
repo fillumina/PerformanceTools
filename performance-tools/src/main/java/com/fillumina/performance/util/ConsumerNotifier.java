@@ -1,8 +1,8 @@
 package com.fillumina.performance.util;
 
 /**
- * @param I self
- * @param C type of notification passed to consumers
+ * @param <I> self
+ * @param <C> type of notification passed to consumers
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */

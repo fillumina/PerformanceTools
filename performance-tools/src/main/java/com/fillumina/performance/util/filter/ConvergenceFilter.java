@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * JVM continously optimizes the executing code improving its performances so,
  * if the iterations for each sample are enough, it might be that the last
- * samples iterates over a code which is very different from that used in the
+ * samples iterates over a code which is very different from the one used in the
  * first samples.
  * <p>
  * This filter starts from the last samples and go back until it finds a

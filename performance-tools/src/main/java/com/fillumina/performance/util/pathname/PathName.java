@@ -14,7 +14,7 @@ import java.util.ListIterator;
  * strings from the root down to that node. Different roots can be created.
  * It's an efficient way to use path names without having to manage lists or
  * arrays and consuming as little memory as possible maintaining an acceptable
- * speed.
+ * speed.<br>
  * Names are weak referenced so they are automatically reclaimed when not needed.
  * The class is synchronized so it is thread safe.
  *

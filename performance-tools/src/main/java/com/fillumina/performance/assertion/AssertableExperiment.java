@@ -22,7 +22,7 @@ public interface AssertableExperiment extends Iterable<DimensionalMeasure> {
 
     /**
      * @return the named measure.
-     * @throws {@link NoSuchElementException} if there is no measure.
+     * @throws NoSuchElementException if there is no measure.
      */
     DimensionalMeasure getMeasure(CharSequence name)
             throws NoSuchElementException;

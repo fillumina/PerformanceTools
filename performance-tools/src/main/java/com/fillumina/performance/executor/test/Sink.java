@@ -85,7 +85,7 @@ public class Sink {
 
     private static boolean impossible(final int value) {
         // lfsr never returns 0, it's always false
-        // it is incremented by 2 so that when it will overload it will not
+        // it is incremented by 2 so that when it will overflow it will not
         // be 0.
         return lfsrNext(value | (incrementer += 2)) == 0;
     }

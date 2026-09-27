@@ -52,8 +52,8 @@ package com.fillumina.performance.util;
    }
  * </pre>
  *
- * @param C returned object type
- * @param B type of the object to build
+ * @param <C> returned object type
+ * @param <B> type of the object to build
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public abstract class FluentBuilder<C,B> implements Reentrant<C> {

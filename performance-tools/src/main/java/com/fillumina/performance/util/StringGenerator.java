@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * Returns a String representation of the given object.
  *
- * @param T assertable
+ * @param <T> object type
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public interface StringGenerator<T> {

@@ -5,7 +5,7 @@ import com.fillumina.performance.util.rnd.XorShiftPlusRandom;
 /**
  * Minimal CPU usage test that doesn't use system calls,
  * has a very small footprint, doesn't allocate any extra memory
- * and it's quite stable.
+ * and it's quite stable. Use as a null-code comparator.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
