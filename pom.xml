@@ -24,7 +24,6 @@
         <module>performance-tools-junit</module>
         <module>performance-tools-examples</module>
         <module>performance-tools-testng</module>
-    <module>jmh-ptcomparison</module>
     </modules>
 
     <scm>
@@ -59,6 +58,19 @@
     </build>
 
     <profiles>
+        <!--
+             The JMH comparison module is not part of the default reactor. It
+             vendors Oracle's JMH sample suite, which is long out of date and
+             breaks on modern JDKs, so it must never gate the ordinary build.
+             Enable it explicitly to build the comparison harness:
+                 mvn -Pjmh-comparison clean package
+        -->
+        <profile>
+            <id>jmh-comparison</id>
+            <modules>
+                <module>jmh-ptcomparison</module>
+            </modules>
+        </profile>
         <profile>
             <id>release</id>
             <build>

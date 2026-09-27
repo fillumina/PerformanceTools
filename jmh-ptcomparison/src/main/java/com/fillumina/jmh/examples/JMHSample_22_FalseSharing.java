@@ -199,8 +199,10 @@ public class JMHSample_22_FalseSharing {
     /*
      * APPROACH 4:
      *
-     * @Contended (since JDK 8):
-     *  Uncomment the annotation if building with JDK 8.
+     * @Contended:
+     *  Resolved to {@code jdk.internal.vm.annotation.Contended}, which
+     *  needs {@code --add-exports java.base/jdk.internal.vm.annotation=ALL-UNNAMED}
+     *  at compile time (the build adds it).
      *  Remember to flip -XX:-RestrictContended to enable.
      */
 
@@ -208,7 +210,7 @@ public class JMHSample_22_FalseSharing {
     public static class StateContended {
         int readOnly;
 
-        @sun.misc.Contended
+        @jdk.internal.vm.annotation.Contended
         int writeOnly;
     }
 
@@ -273,34 +275,34 @@ public class JMHSample_22_FalseSharing {
                 .end()
                 .tests()
                     .addTest("baseline", new ParallelTest()
-                        .addTask("reader", 1, () -> {
+                        .addTask("reader", 1, i -> {
                             Sink.drain(test.reader(baseline));
                         })
-                        .addTask("writer", 1, () -> {test.writer(baseline); }))
+                        .addTask("writer", 1, i -> {test.writer(baseline); }))
 
                     .addTest("padded", new ParallelTest()
-                        .addTask("reader", 1, () -> {
+                        .addTask("reader", 1, i -> {
                             Sink.drain(test.reader(padded));
                         })
-                        .addTask("writer", 1, () -> {test.writer(padded); }))
+                        .addTask("writer", 1, i -> {test.writer(padded); }))
 
                     .addTest("hierarchy", new ParallelTest()
-                        .addTask("reader", 1, () -> {
+                        .addTask("reader", 1, i -> {
                             Sink.drain(test.reader(hierarchy));
                         })
-                        .addTask("writer", 1, () -> {test.writer(hierarchy); }))
+                        .addTask("writer", 1, i -> {test.writer(hierarchy); }))
 
                     .addTest("contended", new ParallelTest()
-                        .addTask("reader", 1, () -> {
+                        .addTask("reader", 1, i -> {
                             Sink.drain(test.reader(contended));
                         })
-                        .addTask("writer", 1, () -> {test.writer(contended); }))
+                        .addTask("writer", 1, i -> {test.writer(contended); }))
 
                     .addTest("sparse", new ParallelTest()
-                        .addTask("reader", 1, () -> {
+                        .addTask("reader", 1, i -> {
                             Sink.drain(test.reader(sparse));
                         })
-                        .addTask("writer", 1, () -> {test.writer(sparse); }))
+                        .addTask("writer", 1, i -> {test.writer(sparse); }))
 
                 .end()
             .end()

@@ -116,10 +116,10 @@ public class JMHSample_18_Control {
         PerformanceBuilder
             .speedTest()
                 .addTest(new ParallelTest()
-                    .addTask("ping", 1, () -> {
+                    .addTask("ping", 1, i -> {
                         while(!flag.compareAndSet(false, true)) {}
                     })
-                    .addTask("pong", 1, () -> {
+                    .addTask("pong", 1, i -> {
                         while(!flag.compareAndSet(true, false)) {}
                     }))
             .end()
