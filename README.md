@@ -1,7 +1,11 @@
 Performance-Tools
 =================
 
-A framework based on a very configurable and expandable API to easily execute code performance speed and memory tests in a JVM agnostic way and to analyze the results with a powerful set of statistical functions. It aims in particular towards **micro-benchmarks**.
+A framework for evaluating and **asserting** the comparative performance of code from
+inside an ordinary JUnit or TestNG suite. It measures the code that actually ships, in
+the environment that actually runs it, and reports the result as a ratio with a margin
+of error, so a regression fails the build instead of being a number somebody has to
+notice. See [why this rather than JMH](#why-this-rather-than-jmh).
 
 - __version:__ 2.0-SNAPSHOT (not yet released)
 - __last commit:__ 11 June 2019
@@ -12,6 +16,8 @@ A framework based on a very configurable and expandable API to easily execute co
 
 
 ## Index ##
+- [Why this rather than JMH](#why-this-rather-than-jmh)
+- [What it measures, and what it does not](#what-it-measures-and-what-it-does-not)
 - [Note to version](#note-to-version)
 - [Use with maven](#use-with-maven)
 - [History](#history)
@@ -20,7 +26,6 @@ A framework based on a very configurable and expandable API to easily execute co
 - [Compilation and installation](#compilation-and-installation)
 - [Usage Example](#usage)
 - [Documentation](./docs/documentation_index.md)
-
 
 ## Note to version ##
 
@@ -36,39 +41,103 @@ of results
 - outliers and steady state filters remove the need to have a warm-up phase
 
 
-## Differences from JMH
+## Why this rather than JMH ##
 
-__[JMH](http://openjdk.java.net/projects/code-tools/jmh/)__ is an outstanding
-and accurate tool characterized by the fact that it analyzes the code
-in a very controlled environment to avoid common pitfalls and external
-influences. It is based on a deep knowledge of the JVM internals that it
-uses to isolate the code under test and to make it run in ideal conditions.
+[JMH](https://openjdk.java.net/projects/code-tools/jmh/) is an outstanding tool and this
+project does not try to replace it. JMH isolates the code under test in a tightly
+controlled environment, fights dead-code elimination, constant folding and loop
+unrolling, and forks a fresh JVM per iteration. If you want to know **how many
+nanoseconds something takes**, JMH is the right tool and an absolute figure produced
+here is not a substitute for it.
 
-__PerformnaceTools__ on the other hand tries to make minimal assumptions on the JVM internals and uses advanced statistics to extract a whole bunch of useful information. That means that you can run your test in whatever environment you need and results will apply to those particular conditions rather than being referred to a synthetic abstraction.
+The two answer different questions, and the difference is structural rather than a
+matter of degree:
 
-It doesn't fight optimizations or even pitfalls (which by the way you might expect in real world code), it just tries to
-**evaluate** and **report** their *effects*.
-In fact it should not be considered a **score generator** as much as a tool to investigate the comparative performances of different codes which is much more reliable and informative of a bare number.
-It's a tool by which it is possible to evaluate quickly and reliably if a modification to an algorithm has improved its speed or not.
+| | JMH | PerformanceTools |
+|---|---|---|
+| Question | how fast is this? | did my change make it slower? |
+| Artefact | a synthetic measurement | a verdict in your test suite |
+| Environment | isolated, forked, idealised | the system the code ships on |
+| Code measured | a benchmark method | the real code path |
+| Outcome | a number | an assertion that fails the build |
 
-### PROS:
+This project is built for the second column. It runs **inside your test suite**,
+against code that actually ships, in the environment that actually runs it, and it can
+**assert** — so a regression becomes a build failure rather than a number somebody has
+to remember to look at. A synthetic benchmark cannot do that, because what it would
+have to measure is not the thing that regressed.
 
-* it can be executed everywhere, even in unit tests
-([JUnit](http://junit.org/) and [TestNG](http://testng.org/) supported
-natively, other frameworks are easy to add)!
-* doesn't generate code
-* it supports complex assertions (so speed performances can be included into unit tests)
-* automatic discovery of optimal testing parameters
-* used and allocated memory analysis
-* powerful statistical functions
-* multi paradigm (builder, fluent, template) and easy to extend API
-* supports a special bulk testing mode for objects that cannot be modified
-* interleaves tests (and other tricks) to mitigate CPU throttling and OS multitasking.
+### It is aimed at comparison, not at absolute figures
 
-### CONS:
+The reliable output is the ratio, not the nanoseconds. Compared tests are interleaved
+and their order shuffled on every round, so a disturbance — thermal throttling, a
+frequency change, a scheduler move, a background task — hits both variants and largely
+cancels. A constant canary workload is also timed between samples; if the canary
+degrades, the CPU is treated as down-clocked and the run is paused to cool.
 
-* less control over tested code (user should be aware of JVM code optimizations such as dead code elimination, constant folding, loop unrolling, lock coalescing, in-lining, code profiling...).
+Measured on a 13th-generation Intel i9-13900HX (hybrid cores, CPU scaling reported at
+39%), comparing two workloads in a true 20:25 ratio:
 
+| Run | measured ratio | reported margin of error |
+|---|---|---|
+| 1 | 80.98% | 0.84% |
+| 2 | 80.96% | 0.56% |
+| 3 | 80.40% | 0.79% |
+
+Three independent JVM runs, a spread under one percentage point against a ground truth
+of 80.00%, with the framework reporting an error estimate that brackets its own spread.
+The absolute figures moved by roughly 0.8% between those runs; the ratio barely did.
+That asymmetry is the behaviour the design exists to produce.
+
+### It measures the shipped artefact
+
+`ShippedCodeGateTest` in the examples is a gate over shipped code rather than over
+synthetic loops: it compares this library's own `IndexedHashMap` against
+`java.util.HashMap`, the class real applications actually use. On the machine above the
+shipped map is about **29% slower** — 643 against 499 ns/op, resolved over 33 samples
+with a 1.5% margin. That is not a flattering result, and it is reported rather than
+asserted away, which is the point. A synthetic benchmark would not have surfaced it, and
+a tool that reports an unflattering truth about your own code is worth more than one
+that flatters it.
+
+### Also worth knowing
+
+* no code generation, and multi-paradigm API (builder, fluent, template)
+* automatic discovery of sampling parameters, so you do not tune them by hand
+* outlier and convergence filters, which is why there is no warm-up phase to write
+* a bulk mode for code that cannot be looped (removing an entry from a map, say)
+* used and allocated memory analysis alongside time
+* methods and whole applications are in scope, not only microbenchmarks
+
+The cost of the in-situ approach is that you have less control over the tested code, and
+the user should be aware of JVM optimisations such as dead code elimination, constant
+folding, loop unrolling, lock coalescing, in-lining and code profiling. The framework
+reports their effects rather than preventing them.
+
+## What it measures, and what it does not ##
+
+Stated plainly, because the argument above only holds if these are respected.
+
+* **Absolutes are session-local.** `28.7 us/op` describes that run, on that machine. It
+  is not comparable across machines or across runs. Compare within a session.
+* **The ratio is the reliable quantity.** It is what the interleaving, the filters and
+  the stopping rule all exist to deliver.
+* **No CPU pinning, and no awareness of core types.** On a hybrid CPU the operating
+  system can migrate a test onto an efficiency core mid-run, a two to three times
+  penalty. Neither the interleaving nor the canary corrects that, because the canary is
+  a separate workload that may land on a different core. It is absorbed statistically —
+  more samples, wider margin — rather than mechanically. When chasing a small delta,
+  pin your threads.
+* **Samples are assumed independent.** Timings on a shared machine are autocorrelated,
+  so the confidence interval can understate the real uncertainty. The outlier and
+  convergence filters are heuristics, not a model. This is the direct price of
+  measuring in situ, and it is the regime in which a small reported difference should
+  be trusted least.
+* **It does not fight the JIT.** Constant folding, dead-code elimination and friends
+  still apply. Use `Sink` and `RndRunnable` where you need them excluded.
+* **Memory measurement is retained heap, not allocation volume.** A transient
+  `new Object()` measures as zero, because nothing is retained. Anything short-lived is
+  invisible to it. Treat it as a footprint estimator rather than an allocation counter.
 
 ## Use with maven ##
 
@@ -230,14 +299,19 @@ The JUnit templates jar is in the folder `performance-tools-junit/target`.
 
 ### The JMH comparison module
 
-The `jmh-ptcomparison` module is **not** part of the default build. It vendors Oracle's JMH sample
-suite, which is long out of date and does not compile on current JDKs, so it must never be able to
-break an ordinary build. It lives behind an opt-in profile:
+The `jmh-ptcomparison` module is **not** part of the default build. It vendors a selection of
+Oracle's JMH samples, kept in this repository precisely so both tools can be built together and
+compared on the same code, in the same JVM, on the same machine, at the same moment. That
+shared build is the point: split across two repositories the versions drift and the result is
+a comparison of two unrelated runs rather than a comparison of anything.
+
+It is behind an opt-in profile so it can never break an ordinary build:
 
     mvn -Pjmh-comparison clean package
 
-It exists to compare this framework against JMH on the same problem; see the `main_pt` methods in
-the samples. It has no tests and is never run as part of `mvn verify` without the profile.
+Only the 22 samples that run a real side-by-side are kept; each has a `main_pt` method that
+runs the same problem through this framework. The remaining Oracle tutorial samples were
+removed. The module has no tests and never runs as part of `mvn verify` without the profile.
 
 
 ### Failing tests
@@ -246,9 +320,18 @@ __Please note that performance tests cannot be assured to be stable under any po
 
 In particular unit tests environments are more prone to failure especially with strict tolerances. In unit tests execute avoid executing tests in parallel.
 
-The memory test uses a trick to evaluate the used memory: because the used memory is reported with a granularity which is usually way bigger than the memory to measure (about 1 MiB on a x64 linux system), after the test has finished the memory is allocated incrementally until a change in the reported usage happens.
-By knowing how much memory has been allocated the exact memory used by the test can be deduced.
-This method works very well but sometimes it glitches and reports strange results (for example if a Garbage Collection has been executed in the meantime).
+The memory test infers used memory rather than reading it: the JVM reports usage at a
+granularity usually far coarser than the amount being measured (about 1 MiB on x64 Linux), so
+after the test the framework allocates incrementally until the reported figure moves, and the
+amount allocated implies the amount used.
+
+A garbage collection during the measurement invalidates the sample. Those are now detected and
+the sample is retried rather than averaged in; ten consecutive failures raise an error instead
+of returning a meaningless figure.
+
+Note also that this measures *retained* heap, not allocation volume: a transient
+`new Object()` measures as zero, because nothing survives it. Treat it as a footprint
+estimator. See [what it measures, and what it does not](#what-it-measures-and-what-it-does-not).
 
 ## Usage ##
 
