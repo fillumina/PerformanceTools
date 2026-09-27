@@ -13,6 +13,12 @@ public class AllocatedMemSampleExecutor implements MemSampleExecutor {
     private final int REPETITIONS =
             (int) (MC.getMinimalAllocableMemory() / MC.getAlignment());
 
+    /**
+     * How many times a sample is retried when a garbage collection invalidates it
+     * before the measurement is given up on.
+     */
+    private static final int MAX_ATTEMPTS = 10;
+
     private final int zero;
 
     public static final AllocatedMemSampleExecutor INSTANCE =
@@ -41,18 +47,25 @@ public class AllocatedMemSampleExecutor implements MemSampleExecutor {
     }
 
     public static long innerExecute(int repetitions, Runnable runnable) {
-        int i;
-        long usedMemory;
-        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
-        executeGc();
-        MemoryConsumption.INSTANCE.start();
-        for (i = 0; i < repetitions; i++) {
-            runnable.run();
+        for (int attempt = 1; ; attempt++) {
+            AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
+            executeGc();
+            MemoryConsumption.INSTANCE.start();
+            for (int i = 0; i < repetitions; i++) {
+                runnable.run();
+            }
+            executeGc();
+            long usedMemory = MemoryConsumption.INSTANCE.getUsedMemory();
+            if (usedMemory != MemoryConsumption.GC_OCCURRED) {
+                AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
+                return usedMemory / repetitions;
+            }
+            AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
+            if (attempt == MAX_ATTEMPTS) {
+                throw new AssertionError("a garbage collection invalidated "
+                        + MAX_ATTEMPTS + " consecutive memory samples");
+            }
         }
-        executeGc();
-        usedMemory = MemoryConsumption.INSTANCE.getUsedMemory() / repetitions;
-        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
-        return usedMemory;
     }
 
     private static void executeGc() {

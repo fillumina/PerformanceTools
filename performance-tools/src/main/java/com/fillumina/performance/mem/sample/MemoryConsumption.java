@@ -40,6 +40,14 @@ final class MemoryConsumption {
 
     private static final int SAMPLES = 33;
 
+    /**
+     * Returned when a garbage collection makes a measurement unusable. It must be
+     * discarded before any arithmetic is done on it: subtracting from
+     * {@link Long#MIN_VALUE} overflows into a large positive value that then
+     * silently poisons averages and comparisons.
+     */
+    public static final long GC_OCCURRED = Long.MIN_VALUE;
+
     private final Runtime rt;
 
     /**
@@ -187,17 +195,13 @@ final class MemoryConsumption {
     }
 
     /**
-     * Call this method after the code to analyze.
-     * Remember that if a garbage collection takes place while testing
-     * the result of this test will be garbage. Always take several samples
-     * so to be able to exclude outliers.
-     *
-     * @return the byte used by the code.
+     * @return the bytes used by the measured code, or {@link #GC_OCCURRED} if a
+     * garbage collection invalidated the measurement.
      */
     public synchronized final long getUsedMemory() {
-        long result = usedMemory() - zero;
+        long measured = usedMemory();
         filler = null;
-        return result;
+        return measured == GC_OCCURRED ? GC_OCCURRED : measured - zero;
     }
 
     private long usedMemory() {
@@ -209,7 +213,7 @@ final class MemoryConsumption {
             } else if (usedMem < 0) {
                 // gc happend
                 // System.out.println("GC occurred, returning " + Long.MIN_VALUE);
-                return Long.MIN_VALUE; // so it is filtered out as an outlier
+                return GC_OCCURRED;
             }
         }
         throw new AssertionError("used memory assessment failed: " +

@@ -8,6 +8,12 @@ import static com.fillumina.performance.mem.sample.AbstractMemSampleProducer.MC;
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
 public class UsedMemSampleExecutor implements MemSampleExecutor {
+    /**
+     * How many times a sample is retried when a garbage collection invalidates it
+     * before the measurement is given up on.
+     */
+    private static final int MAX_ATTEMPTS = 10;
+
     private final int REPETITIONS =
             (int) (MC.getMinimalAllocableMemory() / MC.getAlignment());
 
@@ -44,17 +50,23 @@ public class UsedMemSampleExecutor implements MemSampleExecutor {
     }
 
     private long innerExecute(int repetitions, Runnable runnable) {
-        int i = 0;
-        long usedMemory;
-        AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
-        MC.start();
-        for (; i < repetitions; i++) {
-            runnable.run();
+        for (int attempt = 1; ; attempt++) {
+            AnnotatedRunnableSetter.INSTANCE.onBeforeSample(runnable, repetitions);
+            MC.start();
+            for (int i = 0; i < repetitions; i++) {
+                runnable.run();
+            }
+            long usedMemory = MC.getUsedMemory();
+            if (usedMemory != MemoryConsumption.GC_OCCURRED) {
+                AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
+                return approxToMinMemory(usedMemory / repetitions);
+            }
+            AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
+            if (attempt == MAX_ATTEMPTS) {
+                throw new AssertionError("a garbage collection invalidated "
+                        + MAX_ATTEMPTS + " consecutive memory samples");
+            }
         }
-        usedMemory = MC.getUsedMemory();
-        usedMemory = approxToMinMemory(usedMemory / repetitions);
-        AnnotatedRunnableSetter.INSTANCE.onAfterSample(runnable, repetitions);
-        return usedMemory;
     }
 
     private long approxToMinMemory(long mem) {
