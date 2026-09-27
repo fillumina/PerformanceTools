@@ -1,9 +1,17 @@
-/target/
-/performance-tools-junit/target/
-/Examples/target/
-/performance-tools-examples/target/
-/performance-tools/target/
-/perfomance-tools-testng/target/
-/performance-tools-testng/target/
-/performance-tools/nbproject/
-/jmh-ptcomparison/target/
+# Build output
+target/
+nbproject/
+nb-configuration.xml
+nbactions.xml
+
+# Editor and IDE backups
+*~
+*.swp
+
+# Crash logs and JVM scratch files that must never be committed
+hs_err_pid*.log
+jshell.history
+replay_pid*.log
+
+# Agent tooling state
+.pi/
