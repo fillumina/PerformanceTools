@@ -1,0 +1,41 @@
+name: build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    name: compile (JDK ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['17', '21']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+      - name: Compile every module
+        run: mvn -B -DskipTests verify
+
+  tests:
+    name: tests (JDK 17)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Run the test suite
+        # Performance tests measure real time on a shared runner, so a failed
+        # sample is not always a defect. Surefire reruns failed tests once
+        # before recording the failure.
+        run: mvn -B verify -Dsurefire.rerunFailingTestsCount=2
