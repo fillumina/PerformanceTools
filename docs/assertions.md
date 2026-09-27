@@ -45,6 +45,9 @@ assertion.withPercentageTolerance(7)
     .assertPercentageFor("LinkedList").lessThan(30);
 ```
 
+An assertion that matches no measure is counted as unused and fails the gate.
+Check the measure names when this happens, especially for parameterized tests.
+
 Note that usually performances assessed in a unit test run are much less
 precise than when you run them in a stand-alone program.
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -115,27 +116,23 @@ public class MultiThreadPerformanceExecutor
         final List<IteratingRunnable> tasks =
                 createTasks(runnable, iterations);
 
-        boolean alreadyTerminated = false;
-        final long elapsed;
-
+        List<Future<?>> futures = new ArrayList<>(tasks.size());
         final long time = System.nanoTime();
-
-        tasks.forEach((task) -> executor.execute(task) );
-
-        executor.shutdown();
-
         try {
-            alreadyTerminated = executor.awaitTermination(timeoutMillis,
-                    TimeUnit.MILLISECONDS);
-            elapsed = System.nanoTime() - time;
+            tasks.forEach(task -> futures.add(executor.submit(task)));
+            executor.shutdown();
+            if (!executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                throw createTaskTookTooLongException(null);
+            }
+            long elapsed = System.nanoTime() - time;
+            WorkerTasks.checkFailures(futures);
+            return elapsed;
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw createTaskTookTooLongException(e);
+        } finally {
+            executor.shutdownNow();
         }
-        if (!alreadyTerminated) {
-            throw createTaskTookTooLongException(null);
-        }
-
-        return elapsed;
     }
 
     private List<IteratingRunnable> createTasks(

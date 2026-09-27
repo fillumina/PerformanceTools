@@ -3,6 +3,7 @@ package com.fillumina.performance.executor.stats;
 import com.fillumina.performance.mock.MockStatsType;
 import com.fillumina.performance.mock.SampleCreator;
 import com.fillumina.performance.util.filter.ListFilter;
+import com.fillumina.performance.util.filter.OutlierEliminatorFilter;
 import com.fillumina.performance.util.unit.Magnitude;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,43 @@ public class StatsCreatorTest {
         assertEquals(5, stats.getMeasure("one").getCount());
     }
 
+
+    @Test
+    public void shouldDiscardTheWholeRoundWhenOnlyOneVariantIsAnOutlier() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
+        for (int i = 0; i < 40; i++) {
+            creator.addSample(SampleCreator.createSample("one", i == 25 ? 1000 : 1,
+                    "two", 10));
+        }
+        Stats stats = creator.createStats(OutlierEliminatorFilter.INSTANCE);
+        assertEquals(39, stats.getMeasure("one").getCount());
+        assertEquals("the other variant must lose the same round", 39,
+                stats.getMeasure("two").getCount());
+        assertEquals(10, stats.getMeasure("two").getMean(), 0);
+    }
+
+    @Test
+    public void shouldRemoveSharedDisturbancesAsOneRound() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
+        for (int i = 0; i < 40; i++) {
+            creator.addSample(SampleCreator.createSample("one", i == 20 ? 100 : 1,
+                    "two", i == 20 ? 200 : 2));
+        }
+        Stats stats = creator.createStats(OutlierEliminatorFilter.INSTANCE);
+        assertEquals(39, stats.getMeasure("one").getCount());
+        assertEquals(39, stats.getMeasure("two").getCount());
+        assertEquals(2, stats.getMeasure("two").getMean(), 0);
+    }
+
+    @Test
+    public void shouldRetainObservationsFromSparseRounds() {
+        StatsCreator creator = new StatsCreator(MockStatsType.INSTANCE);
+        creator.addSample(SampleCreator.createSample("one", 1));
+        creator.addSample(SampleCreator.createSample("two", 2));
+        Stats stats = creator.createStats(OutlierEliminatorFilter.INSTANCE);
+        assertEquals(1, stats.getMeasure("one").getCount());
+        assertEquals(1, stats.getMeasure("two").getCount());
+    }
 
     @Test
     public void shouldCreateFilteredStats() {

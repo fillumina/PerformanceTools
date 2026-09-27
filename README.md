@@ -1,8 +1,8 @@
 Performance-Tools
 =================
 
-A framework for measuring the comparative performance of code, with statistics rigorous
-enough to tell a real difference from noise.
+A framework for measuring the comparative performance of code. Its statistical
+intervals rely on independent samples; they are not calibrated for every machine.
 
 It has two modes, and they work as a pair. Run it from a `static main` to **explore**: it
 reports ratios with standard deviations, uncertainty and pairwise significance for the code
@@ -95,6 +95,8 @@ Measured on a 13th-generation Intel i9-13900HX (hybrid cores, CPU scaling report
 | 2 | 80.96% | 0.56% |
 | 3 | 80.40% | 0.79% |
 
+The measured figures and transcripts below predate independent validation.
+They illustrate the output, not a measurement of the current version.
 Three independent JVM runs, a spread under one percentage point against a ground truth
 of 80.00%, with the framework reporting an error estimate that brackets its own spread.
 The absolute figures moved by roughly 0.8% between those runs; the ratio barely did.
@@ -283,11 +285,14 @@ Stated plainly, because the argument above only holds if these are respected.
   a separate workload that may land on a different core. It is absorbed statistically —
   more samples, wider margin — rather than mechanically. When chasing a small delta,
   pin your threads.
-* **Samples are assumed independent.** Timings on a shared machine are autocorrelated,
-  so the confidence interval can understate the real uncertainty. The outlier and
-  convergence filters are heuristics, not a model. This is the direct price of
-  measuring in situ, and it is the regime in which a small reported difference should
-  be trusted least.
+* **Adaptive results use fresh validation samples.** Exploration still filters and
+  stops adaptively, but the reported statistics use at least 33 new, unfiltered
+  samples. A wide ratio margin or obvious lag-one dependence fails the run. This
+  costs additional time; fixed-sample tests retain their existing behavior.
+* **Independence is not guaranteed.** Strongly correlated timings can evade the
+  lag-one check, and the confidence interval can still understate uncertainty on a
+  shared machine. The percentage is conditional on the independent-sample model,
+  not a calibrated guarantee for every environment.
 * **It does not fight the JIT.** Constant folding, dead-code elimination and friends
   still apply. Use `Sink` and `RndRunnable` where you need them excluded.
 * **Memory measurement is retained heap, not allocation volume.** A transient
@@ -474,6 +479,11 @@ removed. The module has no tests and never runs as part of `mvn verify` without 
 __Please note that performance tests cannot be assured to be stable under any possible condition!__
 
 In particular unit tests environments are more prone to failure especially with strict tolerances. In unit tests execute avoid executing tests in parallel.
+An assertion that matches no measure fails the gate rather than silently passing. If a
+ratio interval is not valid, adaptive sampling continues until it becomes valid or the
+run times out; a fixed-sample run fails instead. Exceptions from timed worker tasks
+fail the test. A parallel task needs at least as many pool threads as simultaneous
+workers, otherwise it is rejected before execution.
 
 The memory test infers used memory rather than reading it: the JVM reports usage at a
 granularity usually far coarser than the amount being measured (about 1 MiB on x64 Linux), so

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -147,27 +148,24 @@ public class SingleTestMultiThreadPerformanceExecutor
         final ExecutorService executor = createExecutor();
 
         final long time = System.nanoTime();
-
-        for (IteratingRunnable task: tasks) {
-            executor.execute(task);
-        }
-
-        executor.shutdown();
-
-        boolean alreadyTerminated = false;
-        final long elapsed;
+        List<Future<?>> futures = new ArrayList<>(tasks.size());
         try {
-            alreadyTerminated = executor.awaitTermination(timeoutMillis,
-                    TimeUnit.MILLISECONDS);
-            elapsed = System.nanoTime() - time;
+            for (IteratingRunnable task : tasks) {
+                futures.add(executor.submit(task));
+            }
+            executor.shutdown();
+            if (!executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                throw createTaskTookTooLongException(null);
+            }
+            long elapsed = System.nanoTime() - time;
+            WorkerTasks.checkFailures(futures);
+            return elapsed;
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw createTaskTookTooLongException(e);
+        } finally {
+            executor.shutdownNow();
         }
-        if (!alreadyTerminated) {
-            throw createTaskTookTooLongException(null);
-        }
-
-        return elapsed;
     }
 
     private ExecutorService createExecutor() {

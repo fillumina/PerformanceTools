@@ -38,6 +38,12 @@ public class MixedStatsHolderCreator {
         return statsBuilder;
     }
 
+    /** Whether any unfiltered series shows strong lag-one dependence. */
+    public boolean hasStrongSerialDependence() {
+        return buildersMap.values().stream()
+                .anyMatch(StatsCreator::hasStrongSerialDependence);
+    }
+
     public MixedStatsHolder getMixedAssertableHolder(
             ListFilter<Double> filter) {
         MixedStatsHolder.Builder builder = MixedStatsHolder.builder();

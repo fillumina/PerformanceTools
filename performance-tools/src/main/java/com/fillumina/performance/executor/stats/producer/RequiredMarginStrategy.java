@@ -4,6 +4,7 @@ import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.Stats;
 import com.fillumina.performance.executor.stats.StatsHolder;
 import com.fillumina.performance.util.collection.UnmodifiableIntList;
+import com.fillumina.performance.util.unit.DimensionalMeasure;
 import com.fillumina.performance.util.stats.Ratio;
 import java.util.Collection;
 
@@ -143,6 +144,13 @@ public class RequiredMarginStrategy
         Ratio maxMargin =
                 getMaxPercentageMargin(status.getLastStats(), confidence);
 
+        if (!maxMargin.isValid()) {
+            if (fixedSamples) {
+                throw new IllegalStateException("cannot validate a ratio with the fixed sample count");
+            }
+            message = "ratio interval is not valid yet";
+            return 1.0; // continue until the interval becomes valid or the run times out
+        }
         if (!fixedSamples &&
                 maxMargin.isGreaterThan(maxRequiredPercentageMargin)) {
             double error = maxMargin.getDecimal() -
@@ -165,11 +173,37 @@ public class RequiredMarginStrategy
         for (StatsHolder h : holders) {
             Stats stats = h.getStats();
             final Ratio margin = stats.getMaximumPercentageMargin(confidence);
+            if (!margin.isValid()) {
+                return Ratio.INVALID;
+            }
             if (margin.isGreaterThan(max)) {
                 max = margin;
             }
         }
         return max;
+    }
+
+    @Override
+    public int getValidationSamples() {
+        return fixedSamples ? 0 : Math.max(33, minSamples);
+    }
+
+    @Override
+    public void validate(MixedStatsHolder result) {
+        for (StatsHolder holder : result.getStatsMap().values()) {
+            for (DimensionalMeasure measure :
+                    holder.getStats().getMeasureMap().values()) {
+                if (measure.getCount() < 33) {
+                    throw new IllegalStateException("independent validation needs " +
+                            "at least 33 observations per variant");
+                }
+            }
+        }
+        Ratio margin = getMaxPercentageMargin(result, confidence);
+        if (!margin.isValid() || margin.isGreaterThan(maxRequiredPercentageMargin)) {
+            throw new IllegalStateException("independent validation did not meet the " +
+                    "required ratio margin: " + margin);
+        }
     }
 
     @Override

@@ -31,10 +31,12 @@ public class Telemetry {
      *
      * @return always true so that it can be put on an assert
      */
+    @SuppressWarnings("deprecation") // Java 17 has no Thread.threadId().
     public static boolean init() {
         StopWatchTimer timer = new StopWatchTimer();
         THREAD_LOCAL_TELEMETRY.set(timer);
-        MAP.put(Thread.currentThread().getName(), timer);
+        Thread thread = Thread.currentThread();
+        MAP.put(thread.getName() + "#" + thread.getId(), timer);
         return true;
     }
 
@@ -90,7 +92,6 @@ public class Telemetry {
      *
      * @return the statistics
      */
-    @SuppressWarnings("unchecked")
     public static MixedStatsHolder stopAndGetStats() {
         StopWatchTimer stopWatchTimer = THREAD_LOCAL_TELEMETRY.get();
         THREAD_LOCAL_TELEMETRY.set(null);
@@ -101,7 +102,8 @@ public class Telemetry {
     }
 
     /**
-     * @return the statistics map of all threads.
+     * @return the statistics map, keyed by thread name and unique thread ID.
+     *         Entries remain available until {@link #clear()} is called.
      */
     public static Map<String, MixedStatsHolder> getStatsFromAllThreads() {
         Map<String,MixedStatsHolder> result = new HashMap<>();

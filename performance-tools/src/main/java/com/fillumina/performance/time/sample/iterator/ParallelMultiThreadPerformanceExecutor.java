@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -98,6 +99,10 @@ public class ParallelMultiThreadPerformanceExecutor
 
             List<IteratingRunnable> workerList =
                     createWorkers(testName, iterations, runnable);
+            if (concurrencyLevel > 0 && concurrencyLevel < workerList.size()) {
+                throw new IllegalArgumentException("parallel test requires " +
+                        workerList.size() + " threads but has " + concurrencyLevel);
+            }
 
             runnableSetter.setUp(runnable);
             runnableSetter.onBeforeSample(runnable, totalWorkersNeeded);
@@ -150,27 +155,37 @@ public class ParallelMultiThreadPerformanceExecutor
         tasks.forEach(ir -> ir.setCountDownLatch(
                 setupCountDownLatch, startCountDownLatch, endCountDownLatch));
 
-        for (IteratingRunnable task: tasks) {
-            executor.execute(task);
-        }
-
-        final long elapsed;
+        List<Future<?>> futures = new ArrayList<>(tasks.size());
         try {
-            setupCountDownLatch.await();
+            for (IteratingRunnable task : tasks) {
+                futures.add(executor.submit(task));
+            }
+            if (!setupCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                throw createTaskTookTooLongException(null);
+            }
             startCountDownLatch.countDown();
             final long time = System.nanoTime();
             if (iterations > 0) {
-                endCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS);
+                if (!endCountDownLatch.await(timeoutMillis, TimeUnit.MILLISECONDS)) {
+                    throw createTaskTookTooLongException(null);
+                }
+                WorkerTasks.checkFailures(futures);
             } else {
+                executor.shutdown();
                 executor.awaitTermination(timeoutMillis, TimeUnit.MILLISECONDS);
+                for (Future<?> future : futures) {
+                    if (future.isDone()) {
+                        WorkerTasks.checkFailures(java.util.Collections.singletonList(future));
+                    }
+                }
             }
-            elapsed = System.nanoTime() - time;
-            executor.shutdownNow();
+            return System.nanoTime() - time;
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw createTaskTookTooLongException(e);
+        } finally {
+            executor.shutdownNow();
         }
-
-        return elapsed;
     }
 
     protected class IteratingRunnable implements Runnable {
@@ -213,23 +228,26 @@ public class ParallelMultiThreadPerformanceExecutor
                 throw new RuntimeException(ex);
             }
             final long time = System.nanoTime();
-            if (iterations > 0) {
-                it = iterations;
-                for (; it != 0; it--) {
-                    r.run(idx);
-                }
-                endCountDownLatch.countDown();
-            } else {
-                while (true) {
-                    r.run(idx);
-                    it++;
-                    if (Thread.currentThread().isInterrupted()) {
-                        iterations = it;
-                        break;
+            try {
+                if (iterations > 0) {
+                    it = iterations;
+                    for (; it != 0; it--) {
+                        r.run(idx);
+                    }
+                } else {
+                    while (true) {
+                        r.run(idx);
+                        it++;
+                        if (Thread.currentThread().isInterrupted()) {
+                            iterations = it;
+                            break;
+                        }
                     }
                 }
+                elapsed = System.nanoTime() - time;
+            } finally {
+                endCountDownLatch.countDown();
             }
-            elapsed = System.nanoTime() - time;
         }
     }
 

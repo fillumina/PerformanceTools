@@ -124,6 +124,15 @@ public class ConfigurableStatsProducer
          */
         boolean repeatExecution(final Collection<Stats> stats);
 
+        /** Fixed independent samples used for final inference, if any. */
+        default int getValidationSamples() {
+            return 0;
+        }
+
+        /** Reject a validation run whose precision is insufficient. */
+        default void validate(MixedStatsHolder result) {
+        }
+
         /** @return status message. */
         String getStatusMessage();
     }
@@ -241,6 +250,36 @@ public class ConfigurableStatsProducer
                     throwTimeoutException(status);
                 }
             } while (error != 0);
+
+            int validationSamples = strategy.getValidationSamples();
+            if (validationSamples > 0) {
+                MixedStatsHolderCreator validation =
+                        new MixedStatsHolderCreator(getPathName());
+                for (int i = 1; i <= validationSamples; i++) {
+                    UnmodifiableIntList iterations = strategy.getIterations();
+                    Map<StatsType, Sample> sample =
+                            executeTests(iterations.toIntArray());
+                    validation.addSample(sample);
+                    if (coolDownCpu) {
+                        coolerTime = HeatDetector.INSTANCE.checkCpuHeat();
+                    }
+                    mixedHolder = validation.getMixedAssertableHolder(
+                            ListFilter.<Double>identity());
+                    status = new SampleProgressionStatus(i, validationSamples,
+                            repetitions, iterations, sample, mixedHolder,
+                            coolerTime, "independent validation");
+                    status.setError(1.0 - i * 1.0 / validationSamples);
+                    notifySampleListeners(status);
+                    if (isTimeout(start)) {
+                        throwTimeoutException(status);
+                    }
+                }
+                if (validation.hasStrongSerialDependence()) {
+                    throw new IllegalStateException("independent validation contains " +
+                            "strongly autocorrelated samples");
+                }
+                strategy.validate(mixedHolder);
+            }
             tearDownTests();
 
             statsMap = getAllAssertables(mixedHolder);

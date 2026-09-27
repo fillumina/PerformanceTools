@@ -9,6 +9,7 @@ import com.fillumina.performance.util.stats.Ratio;
 import com.fillumina.performance.util.pathname.PathName;
 import com.fillumina.performance.util.unit.DimensionalMeasure;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -164,6 +165,40 @@ public class TelemetryTest {
         Telemetry.clear();
 
         assertEquals(0, Telemetry.getStatsFromAllThreads().size());
+    }
+
+    @Test
+    public void shouldRetainSeparateResultsFromThreadsWithTheSameName()
+            throws InterruptedException {
+        Telemetry.clear();
+        CountDownLatch ready = new CountDownLatch(2);
+        CountDownLatch release = new CountDownLatch(1);
+        Runnable worker = () -> {
+            Telemetry.init();
+            Telemetry.start();
+            Telemetry.section("work");
+            ready.countDown();
+            try {
+                release.await();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        };
+        Thread first = new Thread(worker, "same-name");
+        Thread second = new Thread(worker, "same-name");
+        first.start();
+        second.start();
+        try {
+            assertTrue(ready.await(2, TimeUnit.SECONDS));
+            Map<String, MixedStatsHolder> results = Telemetry.getStatsFromAllThreads();
+            assertEquals("both distinct threads must remain visible", 2, results.size());
+            assertTrue(results.keySet().stream().allMatch(key -> key.startsWith("same-name")));
+        } finally {
+            release.countDown();
+            first.join();
+            second.join();
+            Telemetry.clear();
+        }
     }
 
     @Test

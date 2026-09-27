@@ -66,7 +66,8 @@ public class AssertionReport extends Printable<AssertionReport> {
     }
 
     public boolean isAllSuccessful() {
-        return catalog.getFailedAssertions().isEmpty();
+        return catalog.getFailedAssertions().isEmpty() &&
+                unused.getUnusedAssertionList().isEmpty();
     }
 
     public AssertionCatalog getCatalog() {

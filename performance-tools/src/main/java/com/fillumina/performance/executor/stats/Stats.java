@@ -262,12 +262,17 @@ public class Stats extends Printable<Stats>
     /**
      * @return the higher margin of error of the ratios of each measure
      *         in the experiment confronted with the bigger one. It's an
-     *         estimation of the accuracy of the experiment.
+     *         estimation of the accuracy of the experiment. Returns
+     *         {@link Ratio#INVALID} if any ratio interval is invalid.
      */
     public Ratio getMaximumPercentageMargin(Ratio confidence) {
         double max = 0;
         for (CharSequence name : getNames()) {
-            double moe = getRatioWithRef(name, confidence).getMarginOfError();
+            MeasureRatio ratio = getRatioWithRef(name, confidence);
+            if (!ratio.isValid() || !Double.isFinite(ratio.getMarginOfError())) {
+                return Ratio.INVALID;
+            }
+            double moe = ratio.getMarginOfError();
             if (moe > max) {
                 max = moe;
             }

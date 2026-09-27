@@ -51,8 +51,9 @@ iteration count itself unless you pin it, aiming for roughly 250 ms of work
 per sample, and raises the count when a test turns out to be very fast.
 
 Statistics are then computed over the per-test series of sample values. With
-33 samples you have 33 observations per variant, which is enough for the
-interval estimates below to be meaningful and is the configured default floor.
+33 samples you have 33 observations per variant. An adaptive run uses those
+as exploration and then takes at least 33 more unfiltered samples for reporting.
+Fixed-sample runs retain their configured count and do not add validation.
 
 Environmental control: interleaving and the canary
 ---------------------------------------------------
@@ -87,12 +88,11 @@ explicit warm-up phase that you must size by hand, and get wrong.
 deviation. It tolerates up to 10 non-conforming samples before it decides it
 has left the stable region, requires at least 33 stable samples to accept its
 result, and if it cannot assemble those it returns the original series
-unfiltered rather than returning something it does not trust. What survives is
-the JIT-warmed, steady-state tail.
-
-The practical consequence is that there is no warm-up parameter to tune, and
-that the figure you get is the code as the JIT actually leaves it — which is
-the version that will run in production.
+unfiltered rather than returning something it does not trust. Exploration
+uses the stable tail to choose when to stop, but the final adaptive result
+comes from fresh unfiltered validation samples. There is no separate warm-up
+parameter to tune; convergence during exploration does not prove the JIT will
+remain stable during validation.
 
 Outlier elimination
 -------------------
@@ -107,6 +107,9 @@ The reason for filtering at all is external: an operating-system preemption, a
 GC pause, or a background process produces a sample that is not a measurement
 of your code. Those samples are real events and they belong in the record, but
 they must not be allowed to masquerade as a property of the algorithm.
+When any variant rejects an observation, filtering discards the entire round
+from the exploratory comparison. The later validation run is not filtered,
+to avoid selecting the data used for the reported interval.
 
 From samples to an interval
 ---------------------------
@@ -141,9 +144,12 @@ repeat. The reported error is also monotone in practice, which is what lets the
 framework display a meaningful ETA, and a timeout guard aborts a pathological
 run loudly instead of hanging.
 
-This is why you do not choose a sample count. If a variant is stable, the run
-stops early; if it is noisy, the run lengthens to compensate. Hard-coding 33
-samples and hoping would be worse in both directions.
+This is why you do not choose an exploratory sample count. Once it stops, the
+framework takes a separate fixed validation set of at least 33 samples and
+reports only that set. If its ratio margin exceeds the requirement, or an
+obvious lag-one serial dependence is detected, the run fails inconclusively
+instead of selecting another favorable endpoint. Validation adds time and
+remains subject to the overall timeout.
 
 Comparing measures: ratios and significance
 -------------------------------------------
@@ -185,7 +191,9 @@ Reading the output
     average time, +/-           : mean and margin of error
     stdev                       : sample standard deviation
     uncertainty                 : margin of error as a percentage of the mean
-    smpl                        : samples actually retained after filtering
+    smpl                        : observations in the reported set (unfiltered
+                                  for adaptive validation; possibly filtered
+                                  for a fixed-sample run)
     significance                : 0.999 means "these two are different";
                                   0.100 means "no evidence of a difference"
 
@@ -204,8 +212,11 @@ Stated plainly, because the value of everything above depends on it.
 Successive timings are autocorrelated — a sample that runs slow makes the next
 one more likely to run slow — and the confidence intervals above are the
 independent-sample intervals. On a loaded or thermally throttling machine the
-true uncertainty is therefore larger than reported. The filters are
-heuristics, not a model, and they do not repair this. This is the direct price
+true uncertainty may therefore be larger than reported. A simple lag-one
+check rejects strong dependence in adaptive validation; weaker or higher-lag
+dependence can remain. The seeded coverage tests show undercoverage for strongly
+autocorrelated data. Neither the filter nor the check is a complete model.
+This is the direct price
 of measuring in situ rather than in isolation, and it is the regime in which a
 small reported difference should be trusted least.
 

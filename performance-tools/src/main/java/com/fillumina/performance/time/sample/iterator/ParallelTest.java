@@ -57,10 +57,8 @@ public class ParallelTest implements Runnable {
 
     /**
      * Adds <i>count</i> workers that will run the given <i>test</i>
-     * concurrently. The workers will be allocated to active threads accordingly
-     * to the specified configurations. In case of a single thread all the
-     * workers will be executed consecutively and their time will be
-     * accounted together;
+     * concurrently. A fixed thread pool must have at least as many threads
+     * as this test has workers; otherwise execution fails before starting.
      *
      * @param name  test name
      * @param count number of workers to add

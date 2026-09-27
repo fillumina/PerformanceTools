@@ -12,7 +12,9 @@ The sections does not require to be on any class or method boundary, they can
 just be wherever you want them to be.
 Telemetry can be used in a multi-threaded environment (i.e. in a web server
 where it can trace a single request against other requests being executed
-at the same time).
+at the same time). `getStatsFromAllThreads()` uses keys of the form
+`thread-name#thread-id`, so two threads with the same name remain distinct.
+Call `Telemetry.clear()` when the collected timers are no longer needed.
 
 You should execute the code for some iterations to allows the telemetry to be
 effective and gives valuable results.
