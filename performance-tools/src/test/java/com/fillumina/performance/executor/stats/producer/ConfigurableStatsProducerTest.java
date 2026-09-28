@@ -120,7 +120,7 @@ public class ConfigurableStatsProducerTest
         producer.execute();
     }
 
-    @Test(expected=RuntimeException.class)
+    @Test
     public void shouldTimeout() {
         ConfigurationImpl conf = new ConfigurationImpl();
         conf.timeout = IntervalUnit.NANOSECONDS.quantity(1);
@@ -135,7 +135,13 @@ public class ConfigurableStatsProducerTest
 
         producer.addTest(() -> {});
 
-        producer.execute();
+        try {
+            producer.execute();
+            fail("expected a timeout");
+        } catch (RuntimeException timeout) {
+            assertTrue(timeout.getMessage(),
+                    timeout.getMessage().contains(".000000001s"));
+        }
     }
 
     @Test

@@ -81,9 +81,7 @@ public class ShippedCodeGateTest extends PerformanceTemplate {
         assertions
                 .tolerance(Ratio.percentage(10))
                 .avgTime()
-                    .forTest("indexedHashMapLookup")
-                        .order("jdkHashMapLookup").lessThan("indexedHashMapLookup")
-                    .end()
+                    .order("jdkHashMapLookup").lessThan("indexedHashMapLookup")
                 .end();
     }
 }

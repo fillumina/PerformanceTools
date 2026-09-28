@@ -15,6 +15,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Test;
 
 /**
+ * Compares concurrent maps using fixed samples. Its ordering assertion is
+ * useful as an example, but does not establish independent timing samples.
  *
  * @author Francesco Illuminati
  */
@@ -57,7 +59,7 @@ public class MapMultiThreadedPerformanceTest extends PerformanceTemplate {
             .setName("Map Multi Threaded")
             .speedConfig()
                 .setConcurrencyLevel(Runtime.getRuntime().availableProcessors())
-                .setMaxPercentageMargin(Ratio.percentage(10));
+                .setFixedSamples(33);
     }
 
     private final int[] randomArray = createRandomIndexes(MAX_CAPACITY);

@@ -124,9 +124,12 @@ public class ReflectionHelper {
             if (enclosingClass == parameters[0].getType()) {
                 Field f = getFieldValueWithType(clazz, enclosingClass);
                 try {
-                    f.setAccessible(true);
-                    Object enclosing = f.get(origin);
-                    vars[0] = enclosing;
+                    // The constructor may retain an enclosing parameter even
+                    // when javac omits its unused synthetic field.
+                    if (f != null) {
+                        f.setAccessible(true);
+                        vars[0] = f.get(origin);
+                    }
                     c.setAccessible(true);
                     return (T) c.newInstance(vars);
                 } catch (IllegalArgumentException |

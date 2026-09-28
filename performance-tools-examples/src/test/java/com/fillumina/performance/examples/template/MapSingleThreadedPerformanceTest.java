@@ -16,7 +16,8 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.Test;
 
 /**
- * TreeMap is not that bad for small sizes.
+ * Compares map reads and writes. Only lookup order is a gate; write order
+ * depends on the JVM and workload.
  *
  * @author Francesco Illuminati
  */
@@ -49,7 +50,7 @@ public class MapSingleThreadedPerformanceTest extends PerformanceTemplate {
         configuration
             .setName("map single threaded")
                 .speedConfig()
-                    .setMaxPercentageMargin(Ratio.percentage(5));
+                    .setFixedSamples(10);
     }
 
 
@@ -62,8 +63,6 @@ public class MapSingleThreadedPerformanceTest extends PerformanceTemplate {
 
             @Sequence
             private int capacity;
-
-            private int i;
 
             @SetUp
             public void setUp() {
@@ -83,8 +82,6 @@ public class MapSingleThreadedPerformanceTest extends PerformanceTemplate {
 
             @Sequence
             private int capacity;
-
-            private int i;
 
             @SetUp
             public void setUp() {
@@ -116,7 +113,6 @@ public class MapSingleThreadedPerformanceTest extends PerformanceTemplate {
         assertions.avgTime()
             .tolerance(tolerance)
                 .forTest("capacity_50", RANDOM_READ).order(INDEXED_HASH_MAP).greaterThan(HASH_MAP)
-                .forTest("capacity_50", RANDOM_WRITE).order(INDEXED_HASH_MAP).greaterThan(HASH_MAP)
             .end();
 
     }

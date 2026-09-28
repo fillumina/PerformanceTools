@@ -40,6 +40,7 @@ public class TestableDeadCodeTest {
 
         pt.instrumentedBy(RequiredMarginStrategy.builder()
                 .samples(10)
+                .fixedSampels(true) // JIT behavior changes during this accuracy exercise.
                 .maxAllowedMargin(Ratio.percentage(5))
                 .setStatsTimeout(IntervalUnit.MINUTES.quantity(2))
                 .buildStatsProducer())

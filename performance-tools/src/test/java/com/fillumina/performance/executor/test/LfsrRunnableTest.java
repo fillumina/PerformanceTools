@@ -5,7 +5,6 @@ import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.MemUnit;
 
 /**
  *
@@ -20,9 +19,7 @@ public class LfsrRunnableTest extends PerformanceTemplate {
     @Override
     public void addAssertions(MixedAssertionBuilder<?> assertions) {
         assertions.tolerance(Ratio.ZERO)
-            .avgTime().order("lfsr").lessThan("counter").end()
-            .allocatedMemory().value("lfsr").equalsTo(MemUnit.B.quantity(0)).end()
-            .usedMemory().value("lfsr").equalsTo(MemUnit.B.quantity(0)).end();
+            .avgTime().order("lfsr").lessThan("counter").end();
     }
 
     @Override

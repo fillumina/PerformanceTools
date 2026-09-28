@@ -4,7 +4,6 @@ import com.fillumina.performance.executor.generator.PerformanceGenerator;
 import com.fillumina.performance.executor.generator.TestConfiguration;
 import com.fillumina.performance.executor.stats.MixedStatsHolder;
 import com.fillumina.performance.executor.stats.StatsType;
-import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.StopWatch;
 import com.fillumina.performance.util.unit.IntervalUnit;
@@ -33,16 +32,6 @@ public class PerformanceBuilder {
         return testWith(config().speedConfig().end());
     }
 
-    /** Performs a fully automated used memory only test. */
-    public static TestConfiguration<PerformanceBuilder> usedMemTest() {
-        return testWith(config().usedMemConfig().end());
-    }
-
-    /** Performs a fully automated allocated memory only test. */
-    public static TestConfiguration<PerformanceBuilder> allocatedMemTest() {
-        return testWith(config().allocatedMemConfig().end());
-    }
-
     private static TestConfiguration<PerformanceBuilder> testWith(
             MixedConfigurationBuilder<PerformanceBuilder> mcb) {
         Configuration conf = mcb.build();
@@ -68,14 +57,6 @@ public class PerformanceBuilder {
 
         public AssertionableResult<MixedHolder> throughput() {
             return mixedStats.getStats(TimeStatsType.THROUGHPUT);
-        }
-
-        public AssertionableResult<MixedHolder> usedMem() {
-            return mixedStats.getStats(MemStatsType.USED);
-        }
-
-        public AssertionableResult<MixedHolder> allocatedMem() {
-            return mixedStats.getStats(MemStatsType.ALLOCATED);
         }
 
     }

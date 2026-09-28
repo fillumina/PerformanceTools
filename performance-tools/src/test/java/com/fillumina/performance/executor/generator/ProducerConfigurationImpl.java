@@ -31,7 +31,8 @@ public class ProducerConfigurationImpl implements ProducerConfiguration {
     private int[] iterations;
     private int warmupSamples = 0;
     private int samples = 33;
-    private boolean fixedSamples = false;
+    // Synthetic test data are ordered; generator tests check wiring, not inference.
+    private boolean fixedSamples = true;
     private Ratio maxAllowedMargin = Ratio.percentage(5);
     private int concurrencyLevel = 0;
     private int workerNumber = 0;

@@ -3,10 +3,6 @@ package com.fillumina.performance.template;
 import com.fillumina.performance.executor.PN;
 import com.fillumina.performance.executor.generator.ProducerConfiguration;
 import com.fillumina.performance.executor.generator.TestConfiguration;
-import com.fillumina.performance.mem.MemStatsType;
-import com.fillumina.performance.mem.sample.AllocatedMemSampleProducer;
-import com.fillumina.performance.mem.sample.UsedMemSampleProducer;
-import com.fillumina.performance.template.MixedConfigurationBuilder.Configuration;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.Activable;
 import com.fillumina.performance.util.FluentBuilder;
@@ -27,8 +23,6 @@ public class MixedConfigurationBuilder<C>
     private TestConfiguration<?> testConfigurator;
 
     private final SpeedConfiguration<MixedConfigurationBuilder<C>> speedConfigurator;
-    private final MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfigurator;
-    private final MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfigurator;
     private final MixedAssertionableResult.Builder mixedAssertionableResultBuilder;
 
     private PathName testName = PN.EMPTY;
@@ -50,25 +44,16 @@ public class MixedConfigurationBuilder<C>
 
         speedConfigurator = new SpeedConfiguration<>(this);
 
-        usedMemConfigurator = new MemConfiguration<>(this,
-                new UsedMemSampleProducer(), "used",
-                MemStatsType.USED);
-
-        allocatedMemConfigurator = new MemConfiguration<>(this,
-                new AllocatedMemSampleProducer(), "allocated",
-                MemStatsType.ALLOCATED);
-
         // sets the test order
         mixedAssertionableResultBuilder = MixedAssertionableResult.builder(
                 TimeStatsType.AVERAGE,
-                TimeStatsType.THROUGHPUT,
-                MemStatsType.USED,
-                MemStatsType.ALLOCATED
+                TimeStatsType.THROUGHPUT
             );
     }
 
     @Override
     public Configuration build() {
+        checkIfAllInactive();
         return new Configuration();
     }
 
@@ -121,28 +106,6 @@ public class MixedConfigurationBuilder<C>
         return speedConfigurator;
     }
 
-    /**
-     * Configures the used memory test. Used memory is the total memory
-     * heap used by the test including those which is freed afterwards.
-     * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
-     */
-    public MemConfiguration<MixedConfigurationBuilder<C>> usedMemConfig() {
-        usedMemConfigurator.setActive(true);
-        return usedMemConfigurator;
-    }
-
-    /**
-     * Configures the allocated memory test. Allocated memory is the
-     * memory which stays allocated after the test has finished.
-     * Remember to <b>always end the builder with the
-     * {@link com.fillumina.performance.util.FluentBuilder#end() } method</b>.
-     */
-    public MemConfiguration<MixedConfigurationBuilder<C>> allocatedMemConfig() {
-        allocatedMemConfigurator.setActive(true);
-        return allocatedMemConfigurator;
-    }
-
     public MixedConfigurationBuilder<C> setFailureAudioFilename(final String value) {
         this.failureAudioFilename = value;
         return this;
@@ -164,14 +127,10 @@ public class MixedConfigurationBuilder<C>
         return this;
     }
 
-    /** If all tests are inactive then activate them all. */
+    /** If no test is active, activate the speed test. */
     private void checkIfAllInactive() {
-        if (!speedConfigurator.isActive() &&
-                !usedMemConfigurator.isActive() &&
-                !allocatedMemConfigurator.isActive()) {
+        if (!speedConfigurator.isActive()) {
             speedConfigurator.setActive(true);
-            usedMemConfigurator.setActive(true);
-            allocatedMemConfigurator.setActive(true);
         }
     }
 
@@ -183,8 +142,6 @@ public class MixedConfigurationBuilder<C>
         appendObject(buf, "Experiment Plan",
                 testConfigurator.toString(testName.toString()));
         appendActivable(buf, "Speed", speedConfigurator);
-        appendActivable(buf, "Used Memory", usedMemConfigurator);
-        appendActivable(buf, "Allocated Memory", allocatedMemConfigurator);
         return buf.toString();
     }
 
@@ -214,9 +171,7 @@ public class MixedConfigurationBuilder<C>
 
         private final MixedProducerConfiguration[] prodConfs =
                 new MixedProducerConfiguration[] {
-                        speedConfigurator.build(),
-                        usedMemConfigurator.build(),
-                        allocatedMemConfigurator.build()
+                        speedConfigurator.build()
                 };
 
         @Override

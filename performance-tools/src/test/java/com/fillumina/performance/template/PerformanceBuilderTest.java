@@ -123,17 +123,34 @@ public class PerformanceBuilderTest {
     }
 
     @Test
+    public void shouldEnableSpeedOnlyWhenNoModeIsConfigured() {
+        MixedConfigurationBuilder<PerformanceBuilder>.Configuration configuration =
+                PerformanceBuilder.config().build();
+
+        assertEquals(1, configuration.getProducers().size());
+        assertTrue(configuration.getProducers().get(0).isActive());
+    }
+
+    @Test
+    public void shouldCreateSpeedTestShortcut() {
+        assertEquals(1, PerformanceBuilder.speedTest()
+                .addTest(() -> {})
+                .getTests().size());
+    }
+
+    @Test
     public void shouldExecuteShortSpeedTest() {
         Holder.Boolean holder = new Holder.Boolean(false);
 
-        PerformanceBuilder
-                .speedTest()
+        PerformanceBuilder.config()
+                .speedConfig().setFixedSamples(5).end()
+                .tests()
                     .addTest(() -> {
                         boolean b = true;
                         holder.setValue(b);
                         Sink.drain(b);
                     })
-                .end()
+                .end().end()
                 .executeWithoutOutput();
 
         assertEquals(true, holder.getValue());

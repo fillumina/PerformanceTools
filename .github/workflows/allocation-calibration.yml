@@ -1,0 +1,27 @@
+name: allocation calibration
+
+# Observation-only: never runs on push or pull requests and never gates a release.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  observe:
+    name: allocation observations (JDK 21)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Compile calibration without running project tests
+        run: mvn -B -pl performance-tools -am -DskipTests test-compile
+      - name: Observe comparisons in five fresh JVMs
+        env:
+          RUNS: '5'
+        run: bash scripts/allocation-calibration.sh

@@ -204,6 +204,11 @@ public class TimeFormatTest {
     }
 
     @Test
+    public void shouldPadFractionalNanosecondsInText() {
+        assertEquals(" .000000001s", TimeFormat.TEXT.nanos(1));
+    }
+
+    @Test
     public void shouldFormatTextMillisWith0Seconds() {
         assertEquals(" 1m 5.123s",
                 TimeFormat.TEXT.millis(65_123));

@@ -14,10 +14,8 @@ Throughout, it measures the code that actually ships, in the environment that ac
 it. See [why this rather than JMH](#why-this-rather-than-jmh) and
 [exploring, and then gating](#exploring-and-then-gating).
 
-- __version:__ 2.0-SNAPSHOT (not yet released)
-- __last commit:__ 11 June 2019
-- __tags:__ `1.0`, `1.1`, `v3.0` (the `v3.0` tag sits on the same commit as the
-  current source, so no 2.x has ever been published from this tree)
+- __version:__ 4.0.0-SNAPSHOT (v4.0.0 not yet released)
+- __previous tags:__ `1.0`, `1.1`, `v3.0` (retained unchanged)
 - __author:__ Francesco Illuminati (fillumina@gmail.com)
 - __license:__ [apache 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -40,10 +38,14 @@ it. See [why this rather than JMH](#why-this-rather-than-jmh) and
 
 ## Note to version ##
 
+Java 21 is required to build and run every module. Maven compiles against the
+Java 21 API using `--release 21`. The optional JMH comparison profile remains
+unsupported on modern JDKs.
+
 - completely rewritten new architecture (compatibility unfortunately lost, sorry)
 - powerful statistical analysis functions and data presentation
 - improved accuracy and reproducibility of results
-- used and allocated memory estimator
+- experimental calling-thread allocated-byte comparison; GC-based heap estimates retired
 - automatic discovery of optimal testing parameters
 - special test mode to evaluate the performance of unmodifiable objects
 (i.e. to estimate the speed of the removal of one entry from a map of given size)
@@ -221,7 +223,7 @@ sections of a running system.
 * automatic discovery of sampling parameters, so you do not tune them by hand
 * outlier and convergence filters, which is why there is no warm-up phase to write
 * a bulk mode for code that cannot be looped (removing an entry from a map, say)
-* used and allocated memory analysis alongside time
+* opt-in calling-thread allocated-byte comparison alongside timing tests
 * methods and whole applications are in scope, not only microbenchmarks
 
 The cost of the in-situ approach is that you have less control over the tested code, and
@@ -295,15 +297,15 @@ Stated plainly, because the argument above only holds if these are respected.
   not a calibrated guarantee for every environment.
 * **It does not fight the JIT.** Constant folding, dead-code elimination and friends
   still apply. Use `Sink` and `RndRunnable` where you need them excluded.
-* **Memory measurement is retained heap, not allocation volume.** A transient
-  `new Object()` measures as zero, because nothing is retained. Anything short-lived is
-  invisible to it. Treat it as a footprint estimator rather than an allocation counter.
+* **GC-based memory estimates have been retired.** The opt-in allocated-byte
+  comparison below measures allocations on the calling thread, not retained
+  heap usage.
 
 ## Use with maven ##
 
-The coordinates below are the intended ones for the 2.0 release. Nothing has been
-published to Maven Central from this source tree, so these will not resolve yet;
-build and install locally with `mvn clean install` to use them.
+The coordinates below are for the current development build. The v4.0.0 release
+has not been tagged yet; build and install locally with `mvn clean install` to
+use them.
 
 This project can be used with maven by adding the following dependencies to your project configuration `pom.xml`.
 
@@ -313,7 +315,7 @@ The core project can be used alone but it's easier to use through templates (jus
 <dependency>
     <groupId>com.fillumina</groupId>
     <artifactId>performance-tools</artifactId>
-    <version>2.0</version>
+    <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -323,7 +325,7 @@ This module contains the templates for [JUnit](http://junit.org/):
 <dependency>
     <groupId>com.fillumina</groupId>
     <artifactId>performance-tools-junit</artifactId>
-    <version>2.0</version>
+    <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -333,7 +335,7 @@ This module contains the templates for [TestNG](http://testng.org/):
 <dependency>
     <groupId>com.fillumina</groupId>
     <artifactId>performance-tools-testng</artifactId>
-    <version>2.0</version>
+    <version>4.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -341,10 +343,11 @@ Because templates depend on the core project you only need to specify the right 
 
 ## History ##
 
- - **2.0** in preparation, never released: completely rewritten API. The poms
-   are still `2.0-SNAPSHOT` and there is no `2.0` tag.
- - **v3.0** tag: present, but it points at the same commit as the current source,
-   so it does not correspond to a published artifact.
+ - **v4.0.0** in preparation: Java 21 is required, the API has changed, and
+   GC-based memory estimates have been retired. Until the release, the Maven
+   version is `4.0.0-SNAPSHOT`; do not tag it before CI verification.
+ - **v3.0**: the last tag made by the maintainer, retained unchanged.
+ - **2.0**: developed as a snapshot but never tagged as a release.
  - **1.1** tagged 1 August 2014
  - **1.0** tagged 31 July 2014: first version released to maven central
 
@@ -396,7 +399,7 @@ to be used in unit tests;
 * execute __everywhere__ (no need for a separate environment);
 * The structure of the API is very open and interface centric so that it is
 __highly customizable and expandable__;
-* estimate __used__ and __allocated memory__;
+* compare calling-thread allocated bytes with an experimental opt-in API;
 * be used with two different paradigms: __fluent interface__ (builders) and __templates__;
 * It heavily relies on __statistics__ to produce solid results;
 * It supports __bulk tests__ to test codes that cannot be looped.
@@ -485,18 +488,53 @@ run times out; a fixed-sample run fails instead. Exceptions from timed worker ta
 fail the test. A parallel task needs at least as many pool threads as simultaneous
 workers, otherwise it is rejected before execution.
 
-The memory test infers used memory rather than reading it: the JVM reports usage at a
-granularity usually far coarser than the amount being measured (about 1 MiB on x64 Linux), so
-after the test the framework allocates incrementally until the reported figure moves, and the
-amount allocated implies the amount used.
+The GC-based `usedMemConfig()`, `allocatedMemConfig()`, `usedMemory()`,
+`allocatedMemory()`, `MemStatsProducer`, `MemAnalyzer`, and `AssertMem` APIs have
+been removed. Templates now run only timing tests. Use the experimental
+allocated-byte comparison below when that narrower metric is appropriate.
+It does not measure retained heap usage.
 
-A garbage collection during the measurement invalidates the sample. Those are now detected and
-the sample is retried rather than averaged in; ten consecutive failures raise an error instead
-of returning a meaningless figure.
+### Experimental allocated-byte comparison
 
-Note also that this measures *retained* heap, not allocation volume: a transient
-`new Object()` measures as zero, because nothing survives it. Treat it as a footprint
-estimator. See [what it measures, and what it does not](#what-it-measures-and-what-it-does-not).
+`ThreadAllocationComparison.compare(reference, candidate, 33)` takes fixed,
+randomized-order rounds after warming both operations. It returns `Stats` with
+`reference` and `candidate` in bytes. The counters must be enabled on the JVM;
+`isSupported()` checks that. It does not invoke garbage collection.
+
+```java
+Stats result = ThreadAllocationComparison.compare(reference, candidate, 33);
+MeasureRatio change = result.getRatio("candidate", "reference", Ratio.P_99);
+```
+
+This opt-in path counts bytes allocated on the *calling thread*, including
+short-lived objects. It excludes allocations made by threads started or used
+by the workload. It does not measure retained memory or GC cost. The ratio
+interval assumes independent samples; compilation changes or differential
+workload drift can defeat a same-run reference. It is an experiment, not yet
+a CI gate: do not treat a significant interval from one run as a calibrated
+false-positive rate on a server.
+
+In a local JDK 25 probe, 12 default-flag, four compact-header, two
+interpreted, three Serial-GC, and four simultaneously running JVM processes
+each ran 20 equal-workload, doubled-allocation, and
+one-extra-array-after-sixteen comparisons at 99% nominal confidence and
+33 rounds. That is 500 comparisons per case, with zero false gates, missed
+increases, or invalid intervals. The probes use synthetic escaping arrays;
+these results do not establish reliability on real workloads or remote CI.
+`ThreadAllocationCalibration` reproduces the probe from `target/test-classes`.
+The manual [allocation calibration workflow](.github/workflows/allocation-calibration.yml)
+runs five fresh JVMs on JDK 21 and writes these counts to the job
+summary. Unsupported counters or crashes fail that job; statistical misses are
+recorded, not treated as a release gate. It does not yet include an application
+workload. To run the same probe locally:
+
+```sh
+mvn -B -pl performance-tools -am -DskipTests test-compile
+bash scripts/allocation-calibration.sh
+```
+
+The existing build workflow also runs its full suite on pushes to `master`;
+the manual calibration workflow does not change that trigger.
 
 ## Usage ##
 

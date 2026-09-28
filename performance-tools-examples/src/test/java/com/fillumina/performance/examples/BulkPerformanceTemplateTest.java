@@ -6,7 +6,6 @@ import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
-import com.fillumina.performance.util.stats.Ratio;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,7 +44,7 @@ public class BulkPerformanceTemplateTest
                 .setName(getClass().getSimpleName())
                 .speedConfig()
                     .setMillisecondsPerSample(50)
-                    .setMaxPercentageMargin(Ratio.percentage(7));
+                    .setFixedSamples(5);
     }
 
     @Override

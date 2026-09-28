@@ -330,7 +330,7 @@ public class ConfigurableStatsProducer
         throw new RuntimeException("Timeout occurred: test " + testName +
                 "was lasting " +
                 "more than required maximum of " +
-                TimeFormat.TEXT.second(timeoutNanoseconds) +
+                TimeFormat.TEXT.nanos(timeoutNanoseconds) +
                 System.lineSeparator() + status.toString());
     }
 

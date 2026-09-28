@@ -45,7 +45,7 @@ public class SameClassAccuracyTest extends PerformanceTemplate {
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
         config.speedConfig()
-                .setSamples(10)
+                .setFixedSamples(10) // Accuracy exercise, not an adaptive validation gate.
                 .setConfidence(Ratio.P_99);
     }
 

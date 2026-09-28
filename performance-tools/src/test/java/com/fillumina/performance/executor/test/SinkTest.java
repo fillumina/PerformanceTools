@@ -2,7 +2,6 @@ package com.fillumina.performance.executor.test;
 
 import static com.fillumina.performance.executor.test.Sink.drain;
 import static com.fillumina.performance.executor.test.Sink.pass;
-import com.fillumina.performance.mem.MemAnalyzer;
 import com.fillumina.performance.mock.NullRunnable;
 import com.fillumina.performance.time.sample.InvalidTestException;
 import java.util.ArrayList;
@@ -246,22 +245,6 @@ public class SinkTest extends SinkTestHelper {
     public void shouldIntegerParamCallObject() {
         Integer i = 5;
         assertEquals("object", call(i));
-    }
-
-    @Test
-    public void shouldNotAllocateMemory() {
-        long safed = MemAnalyzer.allocated(() -> Sink.drain(new Object()));
-        long unsafed = MemAnalyzer.allocated(() -> new Object());
-
-        assertEquals(safed, unsafed);
-    }
-
-    @Test
-    public void shouldNotUseMemory() {
-        long safed = MemAnalyzer.used(() -> Sink.drain(new Object()));
-        long unsafed = MemAnalyzer.used(() -> new Object());
-
-        assertEquals(safed, unsafed);
     }
 
     public static void main(final String[] args) {

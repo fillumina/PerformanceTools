@@ -4,7 +4,6 @@ import com.fillumina.performance.assertion.AssertionBuilder;
 import com.fillumina.performance.assertion.ExperimentAssertion;
 import com.fillumina.performance.executor.stats.StatsType;
 import com.fillumina.performance.executor.stats.TNameMatcherAssertion;
-import com.fillumina.performance.mem.MemStatsType;
 import com.fillumina.performance.time.TimeStatsType;
 import com.fillumina.performance.util.FluentBuilder;
 import com.fillumina.performance.util.stats.Ratio;
@@ -81,11 +80,4 @@ public class MixedAssertionBuilder<C>
         return addAssertionMatcher(TimeStatsType.THROUGHPUT);
     }
 
-    public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> usedMemory() {
-        return addAssertionMatcher(MemStatsType.USED);
-    }
-
-    public TNameMatcherAssertion.Builder<MixedAssertionBuilder<C>> allocatedMemory() {
-        return addAssertionMatcher(MemStatsType.ALLOCATED);
-    }
 }

@@ -3,17 +3,17 @@ package com.fillumina.performance.integration;
 import com.fillumina.performance.executor.annotation.Param;
 import com.fillumina.performance.executor.annotation.Sequence;
 import com.fillumina.performance.executor.generator.TestConfiguration;
+import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.template.MixedAssertionBuilder;
 import com.fillumina.performance.template.MixedConfigurationBuilder;
 import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.Test;
 
 /**
  * Uses parameters and sequences to specify a complex test executed against
- * speed and memory. Checks complex assertions against it.
+ * speed. Checks an ordered comparison against it.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -38,6 +38,7 @@ public class ParameterizedSequencePerformanceTemplateTest
 
     @Override
     public void config(MixedConfigurationBuilder<?> config) {
+        config.speedConfig().setFixedSamples(5).end();
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ParameterizedSequencePerformanceTemplateTest
                 private int size;
 
                 @Override public void run() {
-                    creator.create(size);
+                    Sink.drain(creator.create(size));
                 }
             })
             .addParameter("creator")
@@ -69,21 +70,6 @@ public class ParameterizedSequencePerformanceTemplateTest
                 .forTest("size_1", TEST)
                     .tolerance(Ratio.percentage(5))
                     .order("byte").lessThan("double")
-                .end()
-            .usedMemory()
-                .forTest("size_1", TEST)
-                    .tolerance(Ratio.percentage(5))
-                    .order("byte").lessThan("double")
-                    .value("byte").equalsTo(MemUnit.B.quantity(120))
-                .forTest("size_2", TEST)
-                    .tolerance(Ratio.percentage(5))
-                    .order("byte").lessThan("double")
-                .end()
-            .allocatedMemory()
-                .with().all().end()
-                    .tolerance(Ratio.percentage(5))
-                    .value("byte").equalsTo(MemUnit.B.zero())
-                    .value("double").equalsTo(MemUnit.B.zero())
                 .end()
             .build();
     }

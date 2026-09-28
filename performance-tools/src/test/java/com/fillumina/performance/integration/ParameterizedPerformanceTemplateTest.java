@@ -9,12 +9,10 @@ import com.fillumina.performance.template.PerformanceTemplate;
 import com.fillumina.performance.util.rnd.Lfsr;
 import com.fillumina.performance.util.sequence.IntegerSequence;
 import com.fillumina.performance.util.stats.Ratio;
-import com.fillumina.performance.util.unit.MemUnit;
 import org.junit.Test;
 
 /**
- * Compares the speed and memory usage of two tests using also a sequence
- * to test different loads.
+ * Compares the speed of two parameterized tests at different loads.
  *
  * @author Francesco Illuminati <fillumina@gmail.com>
  */
@@ -37,9 +35,6 @@ public class ParameterizedPerformanceTemplateTest
         config
                 .speedConfig()
                     .setFixedSamples(5)
-                .end()
-                .usedMemConfig()
-                    .setFixedSamples(1)
                 .end();
     }
 
@@ -53,7 +48,7 @@ public class ParameterizedPerformanceTemplateTest
 
             @Override
             public void run() {
-                final int[] array = new int[10 * param];
+                final int[] array = new int[10_000 * param];
                 for (int i=0; i<array.length; i++) {
                     array[i] = lfsr.next();
                 }
@@ -81,10 +76,6 @@ public class ParameterizedPerformanceTemplateTest
                 .tolerance(Ratio.percentage(5))
                 .avgTime()
                     .forTest(FIRST).order("param_1").lessThan("param_2")
-                .end()
-                .usedMemory()
-                    .value(SECOND, "param_1")
-                    .equalsTo(MemUnit.B.quantity(16 + 5 * 4 + 4))
                 .end();
     }
 

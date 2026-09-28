@@ -77,6 +77,7 @@ public class PerformanceTimerAccuracyTest {
         StatsProducer<?> producer =
                 pt.instrumentedBy(RequiredMarginStrategy.builder()
                         .samples(10)
+                        .fixedSampels(true) // Accuracy exercise, not an adaptive gate.
                         .setCoolDownCpuActive(false)
                         .maxAllowedMargin(Ratio.percentage(15))
                         .setStatsTimeout(IntervalUnit.MINUTES.quantity(2))

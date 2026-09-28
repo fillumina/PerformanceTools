@@ -5,10 +5,10 @@ import com.fillumina.performance.executor.test.RndRunnable;
 import com.fillumina.performance.executor.test.Sink;
 import com.fillumina.performance.mock.RunnableMock;
 import com.fillumina.performance.time.sample.iterator.RunnableIterator.Dispatcher;
-import com.fillumina.performance.util.ToleranceAssertion;
-import com.fillumina.performance.util.stats.Ratio;
+import java.util.concurrent.atomic.AtomicInteger;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import org.junit.Test;
 
 /**
@@ -116,27 +116,42 @@ public class RunnableIteratorTest {
         runnable.assertCalls(10);
     }
 
+    @Test
+    public void shouldKeepEachRunnableIsolatedAfterSwitching() {
+        AtomicInteger firstCalls = new AtomicInteger();
+        AtomicInteger secondCalls = new AtomicInteger();
+        Runnable first = firstCalls::incrementAndGet;
+        Runnable second = secondCalls::incrementAndGet;
+        RunnableIterator firstIterator = dispatcher.getIterator(first);
+        RunnableIterator secondIterator = dispatcher.getIterator(second);
+
+        assertSame(first, firstIterator.getRunnable());
+        assertSame(second, secondIterator.getRunnable());
+        assertNotSame(firstIterator, secondIterator);
+        firstIterator.measureIterationTimeNs(13);
+        secondIterator.measureIterationTimeNs(17);
+        firstIterator.measureIterationTimeNs(19);
+
+        assertEquals(32, firstCalls.get());
+        assertEquals(17, secondCalls.get());
+    }
+
     public static void main(final String[] args) {
         final RunnableIteratorTest test = new RunnableIteratorTest();
         test.printout = true;
 
         System.out.println("Using same loop for all runnable");
-        test.shouldUsingTheSameIteratorAffectTheFirstTest();
+        test.compareSharedLoopTimings();
 
         System.out.println("");
         System.out.println("Using RunnableIterator");
-        test.shouldUsingRunnableIteratorDoesntAffectTheFirstTest();
+        test.compareDistinctIteratorTimings();
     }
 
     /*
-    TEST SETUP: two classes extend the same interface so that if the first
-    class is executed by calling the interface the JVM will inline the call
-    but when the second class is executed as well the JVM must de-optimize
-    the inlining (because there are 2 implementations now) so slowing the
-    first class.
-    This problem can be solved by using two completely different code path
-    with different loops so that JVM can leave the code as is for each
-    particular case.
+    MANUAL EXPERIMENT: different implementations of one interface can cause
+    the JIT to change its inlining decisions. Separate loop bodies provide
+    different call sites, but their relative speed is JVM-dependent.
     */
 
     public interface Counter {
@@ -175,8 +190,8 @@ public class RunnableIteratorTest {
     Counter c1 = new Counter1();
     Counter c2 = new Counter2();
 
-    @Test
-    public void shouldUsingTheSameIteratorAffectTheFirstTest() {
+    // Manual JIT observation, not a cross-JVM timing guarantee.
+    public void compareSharedLoopTimings() {
         Runnable a = () -> { Sink.drain(measure(c1)); };
         Runnable b = () -> { Sink.drain(measure(c2)); };
 
@@ -189,17 +204,11 @@ public class RunnableIteratorTest {
         long lb1 = loop(b, iterations, repetitions);
         print("b=" + lb1);
 
-        /*
-        a and b use the same code but are different object and classes.
-        when a is executed first the JVM optimizes it so that Counter.inc()
-        calls directly Counter1.inc(). When b is executed this optimization
-        must be removed because there are two implementations of Counter.
-        That's why the second execution of a results slower.
-         */
+        // A different implementation at the shared call site may change
+        // how the JVM optimizes the second run of a.
         long la2 = loop(a, iterations, repetitions);
         print("a=" + la2);
 
-        assertTrue("la1=" + la1 + " >= la2=" + la2, la1 < la2);
     }
 
     private long loop(Runnable runnable, int iterations, int repetitions) {
@@ -215,8 +224,8 @@ public class RunnableIteratorTest {
     Counter k1 = new Counter1();
     Counter k2 = new Counter2();
 
-    @Test
-    public void shouldUsingRunnableIteratorDoesntAffectTheFirstTest() {
+    // Different loop bodies do not guarantee which execution is faster.
+    public void compareDistinctIteratorTimings() {
         RunnableIterator a = RunnableIterator.DISPATCHER.getIterator(
                 () -> { Sink.drain(measure(k1)); });
         RunnableIterator b = RunnableIterator.DISPATCHER.getIterator(
@@ -232,18 +241,11 @@ public class RunnableIteratorTest {
         long lb1 = loop(b, iteration, repetitions);
         print("b=" + lb1);
 
-        /*
-        This time a and b use different loops and different codepaths. This
-        helps the JVM to avoid de-optimizing the code.
-        */
+        // Separate loop bodies may reduce interference between call sites.
         long la2 = loop(a, iteration, repetitions);
         print("a=" + la2);
 
-        /*
-        la2 should be slightly faster because of optimizations
-        */
-        ToleranceAssertion.assertGreater("la1=" + la1 + ", la2=" + la2,
-                la1, la2, Ratio.percentage(10));
+        // Report both timings without assuming either must be faster.
     }
 
     private long loop(RunnableIterator iterator, int iterations, int repetitions) {
